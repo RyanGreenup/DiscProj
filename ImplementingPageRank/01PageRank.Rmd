@@ -115,15 +115,19 @@ $$
 (p_new <- S %*% p)
 ```
 
+However this vector does not sum to 1 so the scale should be adjusted (for probabilities the vector should sum to 1):
+
+```{r}
+(p_new <- p_new/sum(p_new))
+```
+
 
 ### Power Value Method
 
-Using the power method should give the same result, which it indeed does if it starts at the solution:
+Using the power method should give the same result, which it indeed does, but for the scale: 
 
 ```{r}
-# p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-# p_new
-# p_new <- S %*% p
+p_new <- p_new *123456789
     
 while (sum(round(p, 9) != round(p_new, 9))) {
     (p     <- p_new) 
@@ -135,10 +139,16 @@ p
 
 ```
 
+This answer is however identical in direction, if it scaled to 1 the same value will be returned:
 
-### Comparison
+```{r}
+(p_new <- p_new/sum(p_new))
+```
 
-However it seems to converge to a different solution if the IC is otherwise:
+
+### Scaling
+
+However if the initial state sums to 1, then the scale of the stationary vector will also sum to 1.
 
 ```{r}
 p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -150,7 +160,6 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 }
 
 cbind(p_new, p)
-
 ```
 
 
