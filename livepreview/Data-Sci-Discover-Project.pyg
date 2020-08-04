@@ -1,0 +1,31 @@
+# #+begin_src javascript :exports code
+@startdot
+strict digraph graphName {
+concentrate=true
+fillcolor=green
+color=blue
+style="filled, rounded"
+ A [shape=box, fillcolor="#a31621", style="rounded, filled"]
+
+ edge [
+    arrowhead="none"
+  ];
+
+ node[
+    fontname="Fira Code",
+    shape="square",
+    fixedsize=false,
+    style=rounded
+  ];
+
+
+# A -> B [dir="both"]
+A -> B
+B [shape=box, fillcolor="#bfdbf7", style="rounded, filled"]
+B -> A
+C [shape=box, fillcolor="#eaf4d3", style="rounded, filled"]
+C -> D
+D [shape=box, fillcolor="#0f5257", style="rounded, filled"]
+D -> C
+}
+@enddot

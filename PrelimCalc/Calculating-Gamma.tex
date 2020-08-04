@@ -1,0 +1,124 @@
+%% ! TEX root = /home/ryan/Dropbox/Studies/MathModelling/Notes/Diffeq/latex_working/00_master.tex
+% Copy realpath with Spc-f-y
+
+\documentclass[12 pt]{article}
+\usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
+\usepackage[psfrag]{graphviz} %psfrag option
+\usepackage{auto-pst-pdf} %to process .ps into .pdf
+\usepackage{psfrag} %provides \psfrag
+
+
+%\usepackage{~/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
+%LaTeX doesn't work with the ~
+
+
+%%%%%%%Title
+\title{\color{coltit} \Huge Power Walk Calculations}
+\author{Ryan Greenup ; 1780-5315}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%4%%%%%%%%%
+%%%%%%%Document%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%
+\begin{document}
+
+\maketitle
+
+Take the exemplar Graph from Figure 1:
+\ \\
+\ \\
+%LaTex code used at the graph
+%% \psfrag{x2}[cc][cc]{$x^2$}
+\psfrag{v1}[cc][cc]{$\mathrm{V}_1$}
+\psfrag{v2}[cc][cc]{$\mathrm{V}_2$}
+\psfrag{v3}[cc][cc]{$\mathrm{V}_3$}
+\psfrag{v4}[cc][cc]{$\mathrm{V}_4$}
+
+\digraph{abc}{
+  rankdir=LR;
+
+  %edges
+  v1 -> v2;
+  v3 -> v4;
+}
+\ \\
+
+$$
+\begin{aligned}
+    \Gamma =  I - n D^{- 1}_B \\
+\end{aligned}
+$$
+
+Where we have the following:
+
+$$
+\begin{aligned}
+    \beta &= 10 \\
+    B &= \beta^A \\ 
+    A &= 
+    \begin{bmatrix} 
+0& 1& 0& 0 \\
+1& 0& 0& 0 \\
+0& 0& 0& 1 \\
+0& 0& 1& 0
+    \end{bmatrix} \\
+     \implies  
+    B &= \begin{bmatrix} 
+	 10 & 1 & 1 & 1 \\
+	 1 & 10 & 1 & 1 \\
+	 1 & 1 & 10 & 1 \\
+	 1 & 1 & 1 & 10 \\
+     \end{bmatrix}  \\
+     \text{$D_B$ is a diagonal matrix of the column sums:}\\
+     D &= \begin{bmatrix} 
+	 13 & 0 & 0 & 0 \\
+	 0 & 13 & 0 & 0 \\
+	 0 & 0 & 13 & 0 \\
+	 0 & 0 & 0 & 13 
+     \end{bmatrix}  \\
+     \text{Hence the Inverse is:}\\
+	 D_B^{-1}&= \frac{I}{13}\\
+     \text{Putting it all together:}\\
+	 \Gamma &=  I - n D^{- 1}_B \\
+	 &= I - \frac{4 \cdot I}{13} \\
+	 &= \frac{9}{13} \cdot  I \\
+	 &= \begin{bmatrix} 
+	     \frac{9}{13} & 0 & 0 & 0 \\
+	     0 & \frac{9}{13} & 0 & 0 \\
+	     0 & 0 & \frac{9}{13} & 0 \\
+	     0 & 0 & 0 &  \frac{9}{13}
+	 \end{bmatrix}  \\
+	 & \approx \begin{bmatrix} 
+	     0.6923 & 0 & 0 & 0 \\
+	     0 & 0.6923 & 0 & 0 \\
+	     0 & 0 & 0.6923 & 0 \\
+	     0 & 0 & 0 & 0.6923 
+     \end{bmatrix} 
+
+	 
+
+\end{aligned}
+$$
+
+
+\end{document}
+
+
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: "/home/ryan/Dropbox/Studies/MathModelling/Notes/Diffeq/latex_working/00_master.tex"
+%%% End: 
+
+
+% !TeX TXS-program:compile = txs:///pdflatex/[--shell-escape]
+
+
+
+
+
+
+
+
+

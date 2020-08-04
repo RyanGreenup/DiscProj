@@ -1,0 +1,6 @@
+digraph abc {
+rankdir=LR;
+
+v1 -> v2;
+v3 -> v4;
+}

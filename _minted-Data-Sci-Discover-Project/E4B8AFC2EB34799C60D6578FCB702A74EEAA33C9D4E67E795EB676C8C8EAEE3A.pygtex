@@ -1,0 +1,33 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{err}{\PYGZsh{}} \PYG{err}{\PYGZsh{}}\PYG{o}{+}\PYG{n+nx}{begin\PYGZus{}src} \PYG{n+nx}{javascript} \PYG{o}{:}\PYG{n+nx}{exports} \PYG{n+nx}{code}
+\PYG{err}{@}\PYG{n+nx}{startdot}
+\PYG{n+nx}{strict} \PYG{n+nx}{digraph} \PYG{n+nx}{graphName} \PYG{p}{\PYGZob{}}
+\PYG{n+nx}{concentrate}\PYG{o}{=}\PYG{k+kc}{true}
+\PYG{n+nx}{fillcolor}\PYG{o}{=}\PYG{n+nx}{green}
+\PYG{n+nx}{color}\PYG{o}{=}\PYG{n+nx}{blue}
+\PYG{n+nx}{style}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}filled, rounded\PYGZdq{}}
+ \PYG{n+nx}{A} \PYG{p}{[}\PYG{n+nx}{shape}\PYG{o}{=}\PYG{n+nx}{box}\PYG{p}{,} \PYG{n+nx}{fillcolor}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}\PYGZsh{}a31621\PYGZdq{}}\PYG{p}{,} \PYG{n+nx}{style}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}rounded, filled\PYGZdq{}}\PYG{p}{]}
+
+ \PYG{n+nx}{edge} \PYG{p}{[}
+    \PYG{n+nx}{arrowhead}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}none\PYGZdq{}}
+  \PYG{p}{];}
+
+ \PYG{n+nx}{node}\PYG{p}{[}
+    \PYG{n+nx}{fontname}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}Fira Code\PYGZdq{}}\PYG{p}{,}
+    \PYG{n+nx}{shape}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}square\PYGZdq{}}\PYG{p}{,}
+    \PYG{n+nx}{fixedsize}\PYG{o}{=}\PYG{k+kc}{false}\PYG{p}{,}
+    \PYG{n+nx}{style}\PYG{o}{=}\PYG{n+nx}{rounded}
+  \PYG{p}{];}
+
+
+\PYG{err}{\PYGZsh{}} \PYG{n+nx}{A} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nx}{B} \PYG{p}{[}\PYG{n+nx}{dir}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}both\PYGZdq{}}\PYG{p}{]}
+\PYG{n+nx}{A} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nx}{B}
+\PYG{n+nx}{B} \PYG{p}{[}\PYG{n+nx}{shape}\PYG{o}{=}\PYG{n+nx}{box}\PYG{p}{,} \PYG{n+nx}{fillcolor}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}\PYGZsh{}bfdbf7\PYGZdq{}}\PYG{p}{,} \PYG{n+nx}{style}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}rounded, filled\PYGZdq{}}\PYG{p}{]}
+\PYG{n+nx}{B} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nx}{A}
+\PYG{n+nx}{C} \PYG{p}{[}\PYG{n+nx}{shape}\PYG{o}{=}\PYG{n+nx}{box}\PYG{p}{,} \PYG{n+nx}{fillcolor}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}\PYGZsh{}eaf4d3\PYGZdq{}}\PYG{p}{,} \PYG{n+nx}{style}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}rounded, filled\PYGZdq{}}\PYG{p}{]}
+\PYG{n+nx}{C} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nx}{D}
+\PYG{n+nx}{D} \PYG{p}{[}\PYG{n+nx}{shape}\PYG{o}{=}\PYG{n+nx}{box}\PYG{p}{,} \PYG{n+nx}{fillcolor}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}\PYGZsh{}0f5257\PYGZdq{}}\PYG{p}{,} \PYG{n+nx}{style}\PYG{o}{=}\PYG{l+s+s2}{\PYGZdq{}rounded, filled\PYGZdq{}}\PYG{p}{]}
+\PYG{n+nx}{D} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n+nx}{C}
+\PYG{p}{\PYGZcb{}}
+\PYG{err}{@}\PYG{n+nx}{enddot}
+\end{Verbatim}

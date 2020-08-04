@@ -1,0 +1,166 @@
+% Created 2020-07-31 Fri 18:42
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
+\addbibresource{./../references.bib}
+\author{Ryan Greenup}
+\date{\today}
+\title{Propsal}
+\hypersetup{
+ pdfauthor={Ryan Greenup},
+ pdftitle={Propsal},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.4)}, 
+ pdflang={English}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+:SlowDown:
+
+
+\section{Notes}
+\label{sec:org44c0716}
+
+\subsection{Question}
+\label{sec:orge366a61}
+
+\emph{Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \(\alpha\)}
+
+\begin{quote}
+Yes. An open question for the Power Walk method is, can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \(\alpha\). The second eigenvalue determines how long the algorithm takes to converge and how stable the solution is.
+To begin, implement the method for computing PageRank and then the Power Walk. It can all be done using sparse matrices, so it only requires a fraction of the memory and is each iteration is quick.
+\end{quote}
+
+\subsection{Working}
+\label{sec:orgedd20db}
+
+Take the exemplar Graph from Figure 1:
+
+
+\begin{listing}[htbp]
+\begin{minted}[]{plantuml}
+# #+begin_src javascript :exports code
+@startdot
+strict digraph graphName {
+concentrate=true
+fillcolor=green
+color=blue
+style="filled, rounded"
+ A [shape=box, fillcolor="#a31621", style="rounded, filled"]
+
+ edge [
+    arrowhead="none"
+  ];
+
+ node[
+    fontname="Fira Code",
+    shape="square",
+    fixedsize=false,
+    style=rounded
+  ];
+
+
+# A -> B [dir="both"]
+A -> B
+B [shape=box, fillcolor="#bfdbf7", style="rounded, filled"]
+B -> A
+C [shape=box, fillcolor="#eaf4d3", style="rounded, filled"]
+C -> D
+D [shape=box, fillcolor="#0f5257", style="rounded, filled"]
+D -> C
+}
+@enddot
+\end{minted}
+\caption{\label{org0a9f353}Code to Generate DOT Graph}
+\end{listing}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./Media/Example.png}
+\end{center}
+
+
+
+$$\begin{aligned}
+    \Gamma =  I - n D^{- 1}_B \\
+\end{aligned}$$
+
+Where we have the following:
+
+\$\$\begin{aligned}
+    \(\beta\) \&= 10 \\
+    B \&= \(\beta\)\textsuperscript{A} \\
+    A \&=
+    \begin{bmatrix}
+0& 1& 0& 0 \\
+1& 0& 0& 0 \\
+0& 0& 0& 1 \\
+0& 0& 1& 0
+    \end{bmatrix} \\
+     \implies
+    B &= \begin{bmatrix}
+     10 & 1 & 1 & 1 \\
+     1 & 10 & 1 & 1 \\
+     1 & 1 & 10 & 1 \\
+     1 & 1 & 1 & 10 \\
+     \end{bmatrix}  \\
+     \text{$D_B$ is a diagonal matrix of the column sums:}\\
+     D &= \begin{bmatrix}
+     13 & 0 & 0 & 0 \\
+     0 & 13 & 0 & 0 \\
+     0 & 0 & 13 & 0 \\
+     0 & 0 & 0 & 13
+     \end{bmatrix}  \\
+     \text{Hence the Inverse is:}\\
+     D_B^{-1}&= \frac{I}{13}\\
+     \text{Putting it all together:}\\
+     \Gamma &=  I - n D^{- 1}_B \\
+     &= I - \frac{4 \cdot I}{13} \\
+     &= \frac{9}{13} \cdot  I \\
+     &= \begin{bmatrix}
+         \frac{9}{13} & 0 & 0 & 0 \\
+         0 & \frac{9}{13} & 0 & 0 \\
+         0 & 0 & \frac{9}{13} & 0 \\
+         0 & 0 & 0 &  \frac{9}{13}
+     \end{bmatrix}  \\
+     & \approx \begin{bmatrix}
+         0.6923 & 0 & 0 & 0 \\
+         0 & 0.6923 & 0 & 0 \\
+         0 & 0 & 0.6923 & 0 \\
+         0 & 0 & 0 & 0.6923
+     \end{bmatrix}
+
+
+
+\end{aligned}\$\$
+
+
+$\backslash$* References
+This section is necessary for references to work in \emph{HTML} export, however it breaks \LaTeX{} export because that relies on BibLaTex NOT BibTex which this is for.
+
+Org-ref hasn't been updated to allow a way to use HTML references with the syntax for biblatex.
+
+The Auto Sync is handled from inside
+
++\label{org3b2015f}
+\bibliographystyle{unsrt}
+
+\label{org5fa8bcd}
+\bibliography{../references}
+\end{document}

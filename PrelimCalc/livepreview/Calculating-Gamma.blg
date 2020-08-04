@@ -1,0 +1,9 @@
+[0] Config.pm:304> INFO - This is Biber 2.14
+[0] Config.pm:307> INFO - Logfile is 'livepreview/Calculating-Gamma.blg'
+[62] biber:322> INFO - === Fri Jul 31, 2020, 12:33:41
+[75] Biber.pm:415> INFO - Reading 'livepreview/Calculating-Gamma.bcf'
+[124] Biber.pm:943> INFO - Found 0 citekeys in bib section 0
+[129] Utils.pm:304> WARN - The file 'livepreview/Calculating-Gamma.bcf' does not contain any citations!
+[136] bbl.pm:652> INFO - Writing 'livepreview/Calculating-Gamma.bbl' with encoding 'UTF-8'
+[136] bbl.pm:755> INFO - Output to livepreview/Calculating-Gamma.bbl
+[136] Biber.pm:128> INFO - WARNINGS: 1

@@ -1,0 +1,81 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{kamvarAdaptiveMethodsComputation2004}{article}{}
+      \name{author}{3}{}{%
+        {{hash=73c55e74069152b3ac7680b13ebdd7b4}{%
+           family={Kamvar},
+           familyi={K\bibinitperiod},
+           given={Sepandar},
+           giveni={S\bibinitperiod}}}%
+        {{hash=7b7065e349af2a3505ccfbe205c56572}{%
+           family={Haveliwala},
+           familyi={H\bibinitperiod},
+           given={Taher},
+           giveni={T\bibinitperiod}}}%
+        {{hash=23923ccfdde2f6663af778e44cdfb81f}{%
+           family={Golub},
+           familyi={G\bibinitperiod},
+           given={Gene},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{efc491980f149e7fbf41ff2abce50a41}
+      \strng{fullhash}{efc491980f149e7fbf41ff2abce50a41}
+      \strng{bibnamehash}{efc491980f149e7fbf41ff2abce50a41}
+      \strng{authorbibnamehash}{efc491980f149e7fbf41ff2abce50a41}
+      \strng{authornamehash}{efc491980f149e7fbf41ff2abce50a41}
+      \strng{authorfullhash}{efc491980f149e7fbf41ff2abce50a41}
+      \field{sortinit}{K}
+      \field{sortinithash}{d3edc18d54b9438a72c24c925bfb38f4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We observe that the convergence patterns of pages in the PageRank algorithm have a nonuniform distribution. Specifically, many pages converge to their true PageRank quickly, while relatively few pages take a much longer time to converge. Furthermore, we observe that these slow-converging pages are generally those pages with high PageRank. We use this observation to devise a simple algorithm to speed up the computation of PageRank, in which the PageRank of pages that have converged are not recomputed at each iteration after convergence. This algorithm, which we call Adaptive PageRank, speeds up the computation of PageRank by nearly 30\%.}
+      \field{day}{15}
+      \field{issn}{0024-3795}
+      \field{journaltitle}{Linear Algebra and its Applications}
+      \field{langid}{english}
+      \field{month}{7}
+      \field{series}{Special {{Issue}} on the {{Conference}} on the {{Numerical Solution}} of {{Markov Chains}} 2003}
+      \field{title}{Adaptive Methods for the Computation of {{PageRank}}}
+      \field{urlday}{31}
+      \field{urlmonth}{7}
+      \field{urlyear}{2020}
+      \field{volume}{386}
+      \field{year}{2004}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{51\bibrangedash 65}
+      \range{pages}{15}
+      \verb{doi}
+      \verb 10.1016/j.laa.2003.12.008
+      \endverb
+      \verb{urlraw}
+      \verb http://www.sciencedirect.com/science/article/pii/S0024379504000023
+      \endverb
+      \verb{url}
+      \verb http://www.sciencedirect.com/science/article/pii/S0024379504000023
+      \endverb
+      \keyw{Eigenvalue problem,PageRank,Web matrix}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
