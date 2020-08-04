@@ -149,8 +149,7 @@ while (sum(round(p, 9) != round(p_new, 9))) {
     (p_new <- S %*% p)
 }
 
-p_new
-p
+cbind(p_new, p)
 
 ```
 
