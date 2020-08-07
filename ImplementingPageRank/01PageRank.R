@@ -10,7 +10,6 @@ if (require("pacman")) {
   mise()
 
 library(Matrix)
-
 ## Create Example Matrix
 n <- 20
 m <- 10^6
@@ -24,8 +23,8 @@ str(A) # note that *internally* 0-based row indices are used
 sparse_diag <- function(mat) {
   #' Diagonal Factors of Sparse Matrix
   #' 
-  #' Return a Diagonal Matrix of the 1 / colsum() such that
-  #' matrix multiplication with this matrix would have all column sums
+  #' Return a Diagonal Matrix containing either 1 / colsum() or 0 such that
+  #' matrix multiplication with this matrix would have all columns 
   #' sum to 1
   #' 
   #' This should take the transpose of an adjacency matrix in and the output
@@ -47,13 +46,19 @@ sparse_diag <- function(mat) {
   ## Return the Diagonal Matrix
   return(D)
 }
-D <- sparse_diag(t(A))
-summary(D)
-summary(t(A) %*% D)
 
 ## Make the prob trans
-
 adj_to_probTrans <- function(adjMat) {
+  #' Adjacency to Probability Transition Matrix
+  #' 
+  #' Returns a probability transition matrix from an input adjacency matrix
+  #' 
+  #' Transposes an input matrix and then scales each column to sum to 1. 
+  #' Implemented with the Matrix dgCMatrix class in mind however also
+  #' has logic to deal with a base matrix.
+  #' @param adjMat An adjacency matrix, ideally of the class dgCMatrix or 
+  #' atleast of the class matrix.
+
   mat <- t(adjMat)
   if (class(adjMat) == "dgCMatrix") {
     T <- mat %*% sparse_diag(mat)
