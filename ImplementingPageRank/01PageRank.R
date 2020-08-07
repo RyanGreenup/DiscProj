@@ -6,7 +6,8 @@ if (require("pacman")) {
     install.packages("pacman")
     library(pacman)
   }
-  pacman::p_load(Matrix, igraph, plotly)
+  pacman::p_load(Matrix, igraph, plotly, mise, docstring)
+  mise()
 ## * Code
 ##
 g1 <- igraph::graph.formula(1 -2, 1 - 3, 1 - 4, 2 - 3)
@@ -32,45 +33,114 @@ str(A) # note that *internally* 0-based row indices are used
 
 
 ## Create a way to Diagonalise a sparse matrix
-sparse_diag <- function(vec) {
+sparse_diag <- function(mat) {
+  ## Get the Dimensions 
+  n <- nrow(mat)
   
-  ## Work out which values are non-zero
-#  i <- which(vec != 0)
+  ## Make a Diagonal Matrix of Column Sums
+  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
   
-  ## What are those values
-#  x <- vec[i]
+  ## Throw away explicit Zeroes
+  D <- drop0(D)
   
-  ## Return a sparse diagonal matrix
-#  Matrix::sparseMatrix(i = i, j = j, x = x, dims = c(length(vec), length(vec)))
+  ## Inverse the Values
+  D@x <- 1/D@x
   
-  ## Better Approach
-  Diagonal(n = length(colSums(A)), colSums(A))
+  ## Return the Diagonal Matrix
+  return(D)
 }
+
+working_sparse_transpose <- function(sparseMat) {
+  #' Working Sparse Matrix Transpose
+  #' 
+  #' This transposes a sparse matrix, useful when working with 
+  #' adjacency matrices and needing to get a probability transition matrix.
+  #' 
+  #' The t() function seems to ocassionaly break matrix multiplication
+  #' so I needed to do it this way.
+  #' @param sparseMat A sparse Matrix created with the Matrix library
+  transmat <- sparseMatrix(p = sparseMat@p,
+                          j = sparseMat@i,
+                          x = sparseMat@x,
+                          dims = c(nrow(sparseMat),
+                                   ncol(sparseMat)))
+  return(transmat)
+}
+D <- sparse_diag(A)
+summary(D)
+summary(A %*% D)
+At <- working_sparse_transpose(A)
+summary(At)
+summary(At %*% D)
+
+
+str(A)
+
+B <- sparseMatrix(i = 1:5, j = 1:5, x = (1:5)^2)
+t(B)
+B@p 
+t(B) %*% B
+
+
+
 
 ## Make the prob trans
 
+
 adj_to_probTrans <- function(adjMat) {
-  adjMat_colSums     <- colSums(t(adjMat))
-  adjMat_colSums_inv <- adjMat_colSums@x**(-1)
-  t(adjMat) %*% sparse_diag(1/colSums(t(adjMat)))
+##  if (class(A) == "dgCMatrix") print("ERROR: Require class dgCMatrix"); return
+  t(adjMat) %*% sparse_diag(adjMat)
 }
 
 (T <- adj_to_probTrans(A))
 summary(T)
+summary(A)
 summary(t(A))
-summary(sparse_diag(colSums(A)))
-sparse_diag(colSums(A))@x
+
+summary(A %*% D)
+summary(t(A) %*% D)
+
+summary(A)
+A@j
+B <- sparseMatrix(i = 1:5, j = 1:5, x = 1:5, dims = c(5,5))
+summary(B)$i <- 77:81
+
+summ
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## Calculate the Random Surfer
 N <- nrow(A)
-B <- (T-T)/N
-Matrix::sparseMatrix(dd)
-l <- 0.8
-S <- l*T+(1-l)*B
+alpha <- 0.8
+summary(T)
+
+S <- alpha*T+(1-alpha)*B
 S
 
 T@x
+B <- T
+summary(B)
+Matrix::i
 
 
 ## Solve using the power method
