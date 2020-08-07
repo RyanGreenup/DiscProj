@@ -9,16 +9,17 @@ if (require("pacman")) {
   pacman::p_load(Matrix, igraph, plotly, mise, docstring)
   mise()
 
-library(Matrix)
-## Create Example Matrix
+## * Create Example Matrix
 n <- 20
 m <- 10^6
 i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 90)
 (A <- sparseMatrix(i, j, x = x, dims = c(m, m)))                    
 
+## * Inspect the Newly Created Matrix
 summary(A)
 str(A) # note that *internally* 0-based row indices are used
 
+## ** Create a Diagonalised Scaling Matrix
 ## Create a way to Diagonalise a sparse matrix
 sparse_diag <- function(mat) {
   #' Diagonal Factors of Sparse Matrix
@@ -47,7 +48,7 @@ sparse_diag <- function(mat) {
   return(D)
 }
 
-## Make the prob trans
+## * Function to create Prob Trans Mat
 adj_to_probTrans <- function(adjMat) {
   #' Adjacency to Probability Transition Matrix
   #' 
@@ -78,7 +79,7 @@ adj_to_probTrans <- function(adjMat) {
 (T <- adj_to_probTrans(A))
 summary(T)
 
-## State the Random Surfer
+## * State the Random Surfer (Can't be Implemented)
 N <- nrow(A)
 alpha <- 0.8
   ## We can't though because this is too slow
@@ -88,11 +89,14 @@ alpha <- 0.8
 ## Instead, with a bit of algebra we can jump right into the power method 
 ## by modifying the random surfer.
 
+## * Implement the Power Method to Solve Random Surfer (Modified Strategy)
+## ** Variables for Random Surfer (Alternative Algebra)
 ## Find Stationary point of random surfer
 N     <- nrow(A)
 alpha <- 0.8
 F     <- rep((1-alpha)/N, nrow(A))  ## A nx1 vector of (1-alpha)/N
 
+## ** Implement the Power Method Loop
 ## Solve using the power method
 p     <- rep(0, length.out = ncol(T)); p[1] <- 1
 p_new <- alpha*T %*% p + F
@@ -106,7 +110,3 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 }
 
 p %>% head() %>% print()
-
-
-
-  
