@@ -73,44 +73,34 @@ adj_to_probTrans <- function(adjMat) {
 (T <- adj_to_probTrans(A))
 summary(T)
 
-## Calculate the Random Surfer
+## State the Random Surfer
 N <- nrow(A)
-B <- T  # Use T as a template to save effort
-B@x <- B@x/B@x/N  # Change nonZero terms to 1/N
 alpha <- 0.8
+  ## We can't though because this is too slow
+    # rep(1/N, nrow(A)^2) %>% matrix(nrow = nrow(A)) -> B
+    # S <- alpha*T+(1-alpha)*B
 
-S <- alpha*T+(1-alpha)*B
+## Instead, with a bit of algebra we can jump right into the power method 
+## by modifying the random surfer.
 
-
-summary(T)
-summary(S)
-
+## Find Stationary point of random surfer
+N     <- nrow(A)
+alpha <- 0.8
+F     <- rep((1-alpha)/N, nrow(A))  ## A nx1 vector of (1-alpha)/N
 
 ## Solve using the power method
-p     <- rep(0, length.out = ncol(S)); p[1] <- 1
-p_new <- S %*% p
+p     <- rep(0, length.out = ncol(T)); p[1] <- 1
+p_new <- alpha*T %*% p + F
 
-p_new[p_new != 0]
-p[p != 0]
-
+## use a Counter to debug
 i <- 0
 while (sum(round(p, 9) != round(p_new, 9))) {
     p     <- p_new
-    p_new <- S %*% p
-p_new[p_new != 0]
-p[p != 0]
-    i <- i+1
-    print(i)
+    p_new <- alpha*T %*% p + F
+    (i <- i+1) %>% print()
 }
 
-p_new[p_new != 0]
-p[p != 0]
-
-
-
-Summary(t(A))
-
-matrix(1:9, nrow = 3)**(-1)
+p %>% head() %>% print()
 
 
 
