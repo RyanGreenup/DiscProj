@@ -1,0 +1,11 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYG{n}{p}     \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nf}{c}\PYG{p}{(}\PYG{l+m}{1}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{,} \PYG{l+m}{0}\PYG{p}{)}
+  \PYG{n}{p\PYGZus{}new} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n}{S} \PYG{o}{\PYGZpc{}*\PYGZpc{}} \PYG{n}{p}
+
+  \PYG{n+nf}{while }\PYG{p}{(}\PYG{n+nf}{sum}\PYG{p}{(}\PYG{n+nf}{round}\PYG{p}{(}\PYG{n}{p}\PYG{p}{,} \PYG{l+m}{9}\PYG{p}{)} \PYG{o}{!=} \PYG{n+nf}{round}\PYG{p}{(}\PYG{n}{p\PYGZus{}new}\PYG{p}{,} \PYG{l+m}{9}\PYG{p}{)))} \PYG{p}{\PYGZob{}}
+      \PYG{p}{(}\PYG{n}{p}     \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n}{p\PYGZus{}new}\PYG{p}{)}
+      \PYG{p}{(}\PYG{n}{p\PYGZus{}new} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n}{S} \PYG{o}{\PYGZpc{}*\PYGZpc{}} \PYG{n}{p}\PYG{p}{)}
+  \PYG{p}{\PYGZcb{}}
+
+  \PYG{n+nf}{cbind}\PYG{p}{(}\PYG{n}{p\PYGZus{}new}\PYG{p}{,} \PYG{n}{p}\PYG{p}{)}
+\end{Verbatim}

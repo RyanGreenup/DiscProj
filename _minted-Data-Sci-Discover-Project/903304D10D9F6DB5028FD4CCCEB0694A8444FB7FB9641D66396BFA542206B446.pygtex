@@ -1,0 +1,8 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYG{n+nf}{if }\PYG{p}{(}\PYG{n+nf}{require}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}pacman\PYGZdq{}}\PYG{p}{))} \PYG{p}{\PYGZob{}}
+      \PYG{n+nf}{library}\PYG{p}{(}\PYG{n}{pacman}\PYG{p}{)}
+    \PYG{p}{\PYGZcb{}}\PYG{n}{else}\PYG{p}{\PYGZob{}}
+      \PYG{n+nf}{install.packages}\PYG{p}{(}\PYG{l+s}{\PYGZdq{}pacman\PYGZdq{}}\PYG{p}{)}
+      \PYG{n+nf}{library}\PYG{p}{(}\PYG{n}{pacman}\PYG{p}{)}
+    \PYG{p}{\PYGZcb{}}
+\end{Verbatim}

@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYG{n}{p0} \PYG{o}{\PYGZpc{}*\PYGZpc{}} \PYG{n+nf}{diag}\PYG{p}{(}\PYG{l+m}{1}\PYG{o}{/}\PYG{n+nf}{colSums}\PYG{p}{(}\PYG{n}{p0}\PYG{p}{))}
+\end{Verbatim}

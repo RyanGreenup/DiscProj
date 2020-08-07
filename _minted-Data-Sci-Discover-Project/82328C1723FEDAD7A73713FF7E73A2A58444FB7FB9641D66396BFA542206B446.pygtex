@@ -1,0 +1,7 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYG{n}{adj\PYGZus{}to\PYGZus{}probTrans} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nf}{function}\PYG{p}{(}\PYG{n}{adjMat}\PYG{p}{)} \PYG{p}{\PYGZob{}}
+    \PYG{n+nf}{t}\PYG{p}{(}\PYG{n}{adjMat}\PYG{p}{)} \PYG{o}{\PYGZpc{}*\PYGZpc{}} \PYG{n+nf}{diag}\PYG{p}{(}\PYG{l+m}{1}\PYG{o}{/}\PYG{n+nf}{colSums}\PYG{p}{(}\PYG{n+nf}{t}\PYG{p}{(}\PYG{n}{adjMat}\PYG{p}{)))}
+  \PYG{p}{\PYGZcb{}}
+
+  \PYG{p}{(}\PYG{n+nb+bp}{T} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nf}{adj\PYGZus{}to\PYGZus{}probTrans}\PYG{p}{(}\PYG{n}{A}\PYG{p}{))} \PYG{o}{\PYGZpc{}\PYGZgt{}\PYGZpc{}} \PYG{n+nf}{round}\PYG{p}{(}\PYG{l+m}{2}\PYG{p}{)}
+\end{Verbatim}

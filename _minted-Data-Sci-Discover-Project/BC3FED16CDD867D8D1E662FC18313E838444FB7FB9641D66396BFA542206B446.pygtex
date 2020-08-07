@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+    \PYG{n}{pacman}\PYG{o}{::}\PYG{n+nf}{p\PYGZus{}load}\PYG{p}{(}\PYG{n}{tidyverse}\PYG{p}{,} \PYG{n}{Matrix}\PYG{p}{,} \PYG{n}{igraph}\PYG{p}{,} \PYG{n}{plotly}\PYG{p}{,} \PYG{n}{mise}\PYG{p}{,} \PYG{n}{docstring}\PYG{p}{)}
+\end{Verbatim}

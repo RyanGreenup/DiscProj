@@ -1,212 +1,80 @@
-#+TITLE: Data Sci Discover Project
-# #+STARTUP: latexpreview
-#+OPTIONS: broken-links:auto
-#+INFOJS_OPT: view:showall toc:3
-#+PLOT: title:"Citas" ind:1 deps:(3) type:2d with:histograms set:"yrange [0:]"
-#+OPTIONS: tex:t
-#+TODO: TODO IN-PROGRESS WAITING DONE
-#+CATEGORY: DProj
-:HTML:
-#+INFOJS_OPT: view:info toc:3
-#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="style.css">
-#+CSL_STYLE: /home/ryan/Templates/CSL/nature.csl
-:END:
-:R:
-#+PROPERTY: header-args:R :session TADMain :dir ./ :cache yes :eval never-export :exports both
-# exports: both (or code or whatever)
-# results: table (or output or whatever)
-:END:
-:SlowDown:
-# #+STARTUP: latexpreview
-#+LATEX_HEADER: \usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
-# #+LATEX_HEADER: \twocolumn
-#+latex_header: \addbibresource{references.bib}
-cite:kamvarAdaptiveMethodsComputation2004
-* Links
-- [[file:~/Dropbox/Notes/Org/ThinkingAboutData.org::+TITLE: Thinking About Data][Thinking About Data]]
-- [[file:laparkPowerWalk2013.pdf][Paper]]
-- [[file:Proposal/Propsal.org][Research Proposal]]
-  [[file:ImplementingPageRank/01PageRank.Rmd::---][Preliminary Implementation]]
+% Created 2020-08-07 Fri 14:44
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage{minted}
+\usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
+\addbibresource{references.bib}
+\author{Ryan Greenup}
+\date{\today}
+\title{Data Sci Discover Project}
+\hypersetup{
+ pdfauthor={Ryan Greenup},
+ pdftitle={Data Sci Discover Project},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.3 (Org mode 9.4)}, 
+ pdflang={English}}
+\begin{document}
 
+\maketitle
+\tableofcontents
 
-* Proposal
-
-** Question
-
-/Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \alpha/
-
-#+begin_quote
-Yes. An open question for the Power Walk method is, can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \alpha. The second eigenvalue determines how long the algorithm takes to converge and how stable the solution is.
-To begin, implement the method for computing PageRank and then the Power Walk. It can all be done using sparse matrices, so it only requires a fraction of the memory and is each iteration is quick.
-#+end_quote
-
-** Working
-
-Take the exemplar Graph from Figure 1:
-
-
-#+NAME: DotLib
-#+CAPTION: Code to Generate DOT Graph
-#+begin_src plantuml :output both :file ./Media/Example.png :exports both :eval never-export :eval never-export
-# #+begin_src javascript :exports code
-@startdot
-strict digraph graphName {
-concentrate=true
-fillcolor=green
-color=blue
-style="filled, rounded"
- A [shape=box, fillcolor="#a31621", style="rounded, filled"]
-
- edge [
-    arrowhead="none"
-  ];
-
- node[
-    fontname="Fira Code",
-    shape="square",
-    fixedsize=false,
-    style=rounded
-  ];
-
-
-# A -> B [dir="both"]
-A -> B
-B [shape=box, fillcolor="#bfdbf7", style="rounded, filled"]
-B -> A
-C [shape=box, fillcolor="#eaf4d3", style="rounded, filled"]
-C -> D
-D [shape=box, fillcolor="#0f5257", style="rounded, filled"]
-D -> C
-}
-@enddot
-#+end_src
-
-#+RESULTS: DotLib
-[[file:./Media/Example.png]]
-
-
-
-$$\begin{aligned}
-    \Gamma =  I - n D^{- 1}_B \\
-\end{aligned}$$
-
-Where we have the following:
-
-$$\begin{aligned}
-    \beta &= 10 \\
-    B &= \beta^A \\
-    A &=
-    \begin{bmatrix}
-0& 1& 0& 0 \\
-1& 0& 0& 0 \\
-0& 0& 0& 1 \\
-0& 0& 1& 0
-    \end{bmatrix} \\
-     \implies
-    B &= \begin{bmatrix}
-     10 & 1 & 1 & 1 \\
-     1 & 10 & 1 & 1 \\
-     1 & 1 & 10 & 1 \\
-     1 & 1 & 1 & 10 \\
-     \end{bmatrix}  \\
-     \text{$D_B$ is a diagonal matrix of the column sums:}\\
-     D &= \begin{bmatrix}
-     13 & 0 & 0 & 0 \\
-     0 & 13 & 0 & 0 \\
-     0 & 0 & 13 & 0 \\
-     0 & 0 & 0 & 13
-     \end{bmatrix}  \\
-     \text{Hence the Inverse is:}\\
-     D_B^{-1}&= \frac{I}{13}\\
-     \text{Putting it all together:}\\
-     \Gamma &=  I - n D^{- 1}_B \\
-     &= I - \frac{4 \cdot I}{13} \\
-     &= \frac{9}{13} \cdot  I \\
-     &= \begin{bmatrix}
-         \frac{9}{13} & 0 & 0 & 0 \\
-         0 & \frac{9}{13} & 0 & 0 \\
-         0 & 0 & \frac{9}{13} & 0 \\
-         0 & 0 & 0 &  \frac{9}{13}
-     \end{bmatrix}  \\
-     & \approx \begin{bmatrix}
-         0.6923 & 0 & 0 & 0 \\
-         0 & 0.6923 & 0 & 0 \\
-         0 & 0 & 0.6923 & 0 \\
-         0 & 0 & 0 & 0.6923
-     \end{bmatrix}
-
-
-
-\end{aligned}$$
-
-
-
-
-\* References
-This section is necessary for references to work in /HTML/ export, however it breaks LaTeX export because that relies on BibLaTex NOT BibTex which this is for.
-
-Org-ref hasn't been updated to allow a way to use HTML references with the syntax for biblatex.
-
-The Auto Sync is handled from inside
-
-# ####### Delete these!!!!!
-+<<bibliographystyle link>>
-bibliographystyle:unsrt
-
-<<bibliography link>>
-bibliography:./references.bib
-# ####### Delete these!!!!!
-
-#+end_example
-
-* Working
-#+BEGIN_SRC R
+\section{Working}
+\label{sec:orgd36bd90}
+\begin{minted}[]{r}
   if (require("pacman")) {
       library(pacman)
     }else{
       install.packages("pacman")
       library(pacman)
     }
-#+END_SRC
-#+BEGIN_SRC R
+\end{minted}
+\begin{minted}[]{r}
     pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)
-#+END_SRC
+\end{minted}
 
-** Implementing Page Rank Method on a small graph
-  :PROPERTIES:
-  :CUSTOM_ID: implementing-page-rank-methods
-  :END:
-
-*** Example Graph
-   :PROPERTIES:
-   :CUSTOM_ID: example-graph
-   :END:
-
+\subsection{Implementing Page Rank Method on a small graph}
+\label{sec:org17efc92}
+\subsubsection{Example Graph}
+\label{sec:org40e9a16}
 Consider the following Graph taken from the paper:
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
   plot(g1)
-#+END_SRC
+\end{minted}
 
-[[file:ImplementingPageRank/01PageRank_files/figure-html/unnamed-chunk-2-1.png]]
+\begin{center}
+\includegraphics[width=.9\linewidth]{ImplementingPageRank/01PageRank_files/figure-html/unnamed-chunk-2-1.png}
+\end{center}
 
-**** Adjacency Matrix
-    :PROPERTIES:
-    :CUSTOM_ID: adjacency-matrix
-    :END:
-
+\begin{enumerate}
+\item Adjacency Matrix
+\label{sec:org1fec0e3}
 The adjacency Matrix is given by:
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %>%
     as.matrix()
 
   ## Adjust the Order
   (A <- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))])
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##    1 2 3 4 5 6 7 8 9 10
   ## 1  0 1 0 0 0 0 0 0 0  0
   ## 2  1 0 0 0 0 0 0 0 0  0
@@ -218,20 +86,17 @@ The adjacency Matrix is given by:
   ## 8  1 1 0 0 1 1 1 0 0  0
   ## 9  0 1 1 1 0 0 0 0 0  0
   ## 10 0 0 1 1 0 0 0 0 0  0
-#+END_EXAMPLE
+\end{verbatim}
 
-**** State Distribution
-    :PROPERTIES:
-    :CUSTOM_ID: state-distribution
-    :END:
-
+\item State Distribution
+\label{sec:orgab4e182}
 The state distribution is the transpose of the adjacency matrix:
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   (p0 <- t(A))
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##    1 2 3 4 5 6 7 8 9 10
   ## 1  0 1 0 0 1 0 0 1 0  0
   ## 2  1 0 0 0 1 1 1 1 1  0
@@ -243,22 +108,19 @@ The state distribution is the transpose of the adjacency matrix:
   ## 8  0 0 0 0 0 0 0 0 0  0
   ## 9  0 0 0 0 0 0 0 0 0  0
   ## 10 0 0 0 0 0 0 0 0 0  0
-#+END_EXAMPLE
+\end{verbatim}
 
-**** Probability Transition Matrix
-    :PROPERTIES:
-    :CUSTOM_ID: probability-transition-matrix
-    :END:
-
+\item Probability Transition Matrix
+\label{sec:org12515f7}
 The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   p0 %*% diag(1/colSums(p0))
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]      [,9] [,10]
   ## 1     0    1    0    0 0.25  0.0    0  0.2 0.0000000   0.0
   ## 2     1    0    0    0 0.25  0.5    1  0.2 0.3333333   0.0
@@ -270,22 +132,20 @@ scaled to 1.
   ## 8     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
   ## 9     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
   ## 10    0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
-#+END_EXAMPLE
+\end{verbatim}
 
-***** Create a Function
-     :PROPERTIES:
-     :CUSTOM_ID: create-a-function
-     :END:
-
-#+BEGIN_SRC R
+\begin{enumerate}
+\item Create a Function
+\label{sec:org3644a88}
+\begin{minted}[]{r}
   adj_to_probTrans <- function(adjMat) {
     t(adjMat) %*% diag(1/colSums(t(adjMat)))
   }
 
   (T <- adj_to_probTrans(A)) %>% round(2)
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
   ## 1     0    1    0    0 0.25  0.0    0  0.2 0.00   0.0
   ## 2     1    0    0    0 0.25  0.5    1  0.2 0.33   0.0
@@ -297,17 +157,16 @@ scaled to 1.
   ## 8     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
   ## 9     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
   ## 10    0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
-#+END_EXAMPLE
+\end{verbatim}
+\end{enumerate}
+\end{enumerate}
 
-*** Page Rank Random Surfer
-   :PROPERTIES:
-   :CUSTOM_ID: page-rank-random-surfer
-   :END:
-
+\subsubsection{Page Rank Random Surfer}
+\label{sec:org61092d1}
 The random surfer page rank method modifies the probability transition
-matrix $T$ so that the method works also for non-ergodic graphs by
+matrix \(T\) so that the method works also for non-ergodic graphs by
 introducing the possibility of a random jump, we'll call the surfer
-transition matrix $S$:
+transition matrix \(S\):
 
 \begin{align}
     S &= \lambda T +  \left( 1- \lambda \right)B :\\
@@ -322,26 +181,24 @@ transition matrix $S$:
     \lambda &\in [0,1]
 \end{align}
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
   l <- 0.8
 
   S <- l*T+(1-l)*B
-#+END_SRC
+\end{minted}
 
-**** Eigen Value Method
-    :PROPERTIES:
-    :CUSTOM_ID: eigen-value-method
-    :END:
-
+\begin{enumerate}
+\item Eigen Value Method
+\label{sec:org877cf12}
 The eigenvector corresponding to the the eigenvalue of 1 will be the
 stationary point:
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   eigen(S, symmetric = FALSE)
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ## eigen() decomposition
   ## $values
   ##  [1]  1.000000e+00  8.000000e-01 -8.000000e-01 -8.000000e-01  3.117428e-09
@@ -370,10 +227,10 @@ stationary point:
   ##  [8,] -7.499367e-09 -1.208463e-16  1.668414e-16 -2.685569e-16  3.416862e-17
   ##  [9,] -7.499367e-09 -1.125898e-02  4.013399e-02 -3.989931e-01 -5.316106e-01
   ## [10,] -7.499367e-09 -1.125898e-02  4.013399e-02 -3.989931e-01  6.029746e-01
-#+END_EXAMPLE
+\end{verbatim}
 
-So in this case +the+ a stationary point is
-$\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle$
+So in this case \sout{the} a stationary point is
+\(\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle\)
 
 which can be verified:
 
@@ -381,20 +238,20 @@ $$
 1 \vec{p} = S\vec{p}
 $$
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1])
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##  [1] -0.48531271 -0.52732002 -0.49152601 -0.47977477 -0.05288058 -0.05288058
   ##  [7] -0.05288058 -0.04558671 -0.04558671 -0.04558671
-#+END_EXAMPLE
+\end{verbatim}
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   (p_new <- S %*% p)
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##           [,1]
   ## 1  -0.48531271
   ## 2  -0.52732002
@@ -406,16 +263,16 @@ $$
   ## 8  -0.04558671
   ## 9  -0.04558671
   ## 10 -0.04558671
-#+END_EXAMPLE
+\end{verbatim}
 
 However this vector does not sum to 1 so the scale should be adjusted
 (for probabilities the vector should sum to 1):
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   (p_new <- p_new/sum(p_new))
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##         [,1]
   ## 1  0.2129185
   ## 2  0.2313481
@@ -427,17 +284,14 @@ However this vector does not sum to 1 so the scale should be adjusted
   ## 8  0.0200000
   ## 9  0.0200000
   ## 10 0.0200000
-#+END_EXAMPLE
+\end{verbatim}
 
-**** Power Value Method
-    :PROPERTIES:
-    :CUSTOM_ID: power-value-method
-    :END:
-
+\item Power Value Method
+\label{sec:org22b1bc2}
 Using the power method should give the same result, which it indeed
 does, but for the scale:
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   p_new <- p_new *123456789
 
   while (sum(round(p, 9) != round(p_new, 9))) {
@@ -446,9 +300,9 @@ does, but for the scale:
   }
 
   p_new
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##        [,1]
   ## 1  26286237
   ## 2  28561500
@@ -460,13 +314,13 @@ does, but for the scale:
   ## 8   2469136
   ## 9   2469136
   ## 10  2469136
-#+END_EXAMPLE
+\end{verbatim}
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   p
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##        [,1]
   ## 1  26286237
   ## 2  28561500
@@ -478,16 +332,16 @@ does, but for the scale:
   ## 8   2469136
   ## 9   2469136
   ## 10  2469136
-#+END_EXAMPLE
+\end{verbatim}
 
 This answer is however identical in direction, if it scaled to 1 the
 same value will be returned:
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   (p_new <- p_new/sum(p_new))
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##         [,1]
   ## 1  0.2129185
   ## 2  0.2313481
@@ -499,17 +353,14 @@ same value will be returned:
   ## 8  0.0200000
   ## 9  0.0200000
   ## 10 0.0200000
-#+END_EXAMPLE
+\end{verbatim}
 
-**** Scaling
-    :PROPERTIES:
-    :CUSTOM_ID: scaling
-    :END:
-
+\item Scaling
+\label{sec:org5c3d257}
 However if the initial state sums to 1, then the scale of the stationary
 vector will also sum to 1.
 
-#+BEGIN_SRC R
+\begin{minted}[]{r}
   p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
   p_new <- S %*% p
 
@@ -519,9 +370,9 @@ vector will also sum to 1.
   }
 
   cbind(p_new, p)
-#+END_SRC
+\end{minted}
 
-#+BEGIN_EXAMPLE
+\begin{verbatim}
   ##         [,1]      [,2]
   ## 1  0.2129185 0.2129185
   ## 2  0.2313481 0.2313481
@@ -533,22 +384,25 @@ vector will also sum to 1.
   ## 8  0.0200000 0.0200000
   ## 9  0.0200000 0.0200000
   ## 10 0.0200000 0.0200000
-#+END_EXAMPLE
-** Implementing Page Rank on a much Larger Graph
-*** Creating the Probability Transition Matrix
+\end{verbatim}
+\end{enumerate}
+\subsection{Implementing Page Rank on a much Larger Graph}
+\label{sec:org8b3e04f}
+\subsubsection{Creating the Probability Transition Matrix}
+\label{sec:orgbdfee74}
 Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
 
 An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
 
 A matrix exhibiting this property is known as a sparse matrix CITE
 
-The properties of a sparse matrix can be implemented in order to improve performance, one such method to acheive this is /Compressed Sparse Row/ (CSR) storage, which involves creating a seperate array of values and corresponding indices. CITE
+The properties of a sparse matrix can be implemented in order to improve performance, one such method to acheive this is \emph{Compressed Sparse Row} (CSR) storage, which involves creating a seperate array of values and corresponding indices. CITE
 
-This is implemented by the Matrix package in */R/*. CITE
+This is implemented by the Matrix package in \textbf{\emph{R}}. CITE
 
-An sparse matrix can be created using the following syntax, which will return a matrix of the class ~dgCMatrix~:
+An sparse matrix can be created using the following syntax, which will return a matrix of the class \texttt{dgCMatrix}:
 
-#+begin_src R :results output
+\begin{minted}[]{r}
 library(Matrix)
 ## Create Example Matrix
 n <- 20
@@ -557,10 +411,9 @@ i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 9
 A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 
 summary(A)
-#+end_src
+\end{minted}
 
-#+RESULTS[26753ee076e693bdce4667779622cffec7f8d950]:
-#+begin_example
+\begin{verbatim}
 
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j   x
@@ -584,17 +437,19 @@ summary(A)
 18 821120 809688 103
 19 541818 976802  78
 20 595348 993420  85
-#+end_example
+\end{verbatim}
 
-As before in section [[#probability-transition-matrix]], the probability transition matrix can be found by:
+As before in section \ref{sec:org12515f7}, the probability transition matrix can be found by:
 
-1. Transposing the adjacency matrix, then
-2. Scaling the columns to one
+\begin{enumerate}
+\item Transposing the adjacency matrix, then
+\item Scaling the columns to one
+\end{enumerate}
 
-To implement this for a sparseMatrix of the class ~dgCMatrix~, the same technique of multiplying by a diagonalised matrix may be implemented, however to create this new matrix, a new ~sparseMatrix~ will need to be created using the properties of the original matrix, this can be done like so:
+To implement this for a sparseMatrix of the class \texttt{dgCMatrix}, the same technique of multiplying by a diagonalised matrix may be implemented, however to create this new matrix, a new \texttt{sparseMatrix} will need to be created using the properties of the original matrix, this can be done like so:
 
 
-#+begin_src R :results output
+\begin{minted}[]{r}
  sparse_diag <- function(mat) {
   #' Diagonal Factors of Sparse Matrix
   #'
@@ -623,10 +478,9 @@ To implement this for a sparseMatrix of the class ~dgCMatrix~, the same techniqu
 }
 D <- sparse_diag(t(A))
 summary(D)
-#+end_src
+\end{minted}
 
-#+RESULTS[175b4834319aa086de0fe8c242730344f4f80681]:
-#+begin_example
+\begin{verbatim}
 
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j           x
@@ -650,16 +504,15 @@ summary(D)
 18 803589 803589 0.008474576
 19 821120 821120 0.009708738
 20 821769 821769 0.012658228
-#+end_example
+\end{verbatim}
 
 and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
 
-#+begin_src R :results output
+\begin{minted}[]{r}
 summary(t(A) %*% D)
-#+end_src
+\end{minted}
 
-#+RESULTS[ad7d15da22594d5a66fdf838525c092c6f5f93e7]:
-#+begin_example
+\begin{verbatim}
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j x
 1  809115  57981 1
@@ -682,12 +535,13 @@ summary(t(A) %*% D)
 18  66922 803589 1
 19 809688 821120 1
 20 291405 821769 1
-#+end_example
+\end{verbatim}
 
-*** Solving the Random Surfer via the Power Method
+\subsubsection{Solving the Random Surfer via the Power Method}
+\label{sec:org9a52f30}
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
-However, creating a matrix of background probabilites (denoted by ~B~ is section [[#page-rank-random-surfer]]) will not be feasible, it would simply be too large, instead some algebra can be used to reduce $B$ from a matrix into a vector containing only $\frac{1-\alpha}{N}$.
+However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{sec:org61092d1}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
 
 The power method is given by:
 
@@ -703,7 +557,7 @@ S &= \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \\
 &= \alpha \mathbf{T}\vec{p} +  \left( 1-\alpha \right) \mathbf{B} \vec{p}
 \end{align}
 
-Let $\mathbf{F}= \mathbf{B}\vec{p}$, consider the value of $\mathbf{F}$ :
+Let \(\mathbf{F}= \mathbf{B}\vec{p}\), consider the value of \(\mathbf{F}\) :
 
 \begin{align}
 \mathbf{F} &=
@@ -733,7 +587,7 @@ Let $\mathbf{F}= \mathbf{B}\vec{p}$, consider the value of $\mathbf{F}$ :
 \end{align}
 So instead the power method can be implemented by performing an algorithm to the effect of:
 
-#+begin_src R
+\begin{minted}[]{r}
 ## Find Stationary point of random surfer
 N     <- nrow(A)
 alpha <- 0.8
@@ -752,4 +606,5 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 }
 
 p %>% head() %>% print()
-#+end_src
+\end{minted}
+\end{document}

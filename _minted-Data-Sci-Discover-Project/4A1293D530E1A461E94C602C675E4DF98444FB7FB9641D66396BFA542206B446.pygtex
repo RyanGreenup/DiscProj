@@ -1,0 +1,10 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{n+nf}{library}\PYG{p}{(}\PYG{n}{Matrix}\PYG{p}{)}
+\PYG{c+c1}{\PYGZsh{}\PYGZsh{} Create Example Matrix}
+\PYG{n}{n} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{l+m}{20}
+\PYG{n}{m} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{l+m}{10}\PYG{o}{\PYGZca{}}\PYG{l+m}{6}
+\PYG{n}{i} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nf}{sample}\PYG{p}{(}\PYG{l+m}{1}\PYG{o}{:}\PYG{n}{m}\PYG{p}{,} \PYG{n}{size} \PYG{o}{=} \PYG{n}{n}\PYG{p}{);} \PYG{n}{j} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nf}{sample}\PYG{p}{(}\PYG{l+m}{1}\PYG{o}{:}\PYG{n}{m}\PYG{p}{,} \PYG{n}{size} \PYG{o}{=} \PYG{n}{n}\PYG{p}{);} \PYG{n}{x} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nf}{rpois}\PYG{p}{(}\PYG{n}{n}\PYG{p}{,} \PYG{n}{lambda} \PYG{o}{=} \PYG{l+m}{90}\PYG{p}{)}
+\PYG{n}{A} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n+nf}{sparseMatrix}\PYG{p}{(}\PYG{n}{i}\PYG{p}{,} \PYG{n}{j}\PYG{p}{,} \PYG{n}{x} \PYG{o}{=} \PYG{n}{x}\PYG{p}{,} \PYG{n}{dims} \PYG{o}{=} \PYG{n+nf}{c}\PYG{p}{(}\PYG{n}{m}\PYG{p}{,} \PYG{n}{m}\PYG{p}{))}
+
+\PYG{n+nf}{summary}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)}
+\end{Verbatim}

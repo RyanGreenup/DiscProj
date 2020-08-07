@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+  \PYG{n+nf}{eigen}\PYG{p}{(}\PYG{n}{S}\PYG{p}{,} \PYG{n}{symmetric} \PYG{o}{=} \PYG{k+kc}{FALSE}\PYG{p}{)}
+\end{Verbatim}
