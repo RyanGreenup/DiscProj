@@ -1,0 +1,11 @@
+# Discovery Project
+
+* Implementing the Page Rank Method
+
+- [[file:Data-Sci-Discover-Project.org][Notes on Implementing Page Rank Method (org)]]
+  - [[file:Data-Sci-Discover-Project.html][HTML]]
+  - [[file:Data-Sci-Discover-Project.pdf][PDF]]
+- [[file:ImplementingPageRank/01PageRank.R][Large Sparse Matrix (R Script)]]
+- [[file:ImplementingPageRank/01PageRank.Rmd][Small Matrix (R Markdown)]]
+  - [[file:ImplementingPageRank/01PageRank.html][HTML]]
+  - [[file:ImplementingPageRank/01PageRank.pdf][pdf]]

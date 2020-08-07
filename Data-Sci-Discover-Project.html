@@ -4,7 +4,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-07-31 Fri 18:16 -->
+<!-- 2020-08-07 Fri 17:27 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Data Sci Discover Project</title>
@@ -270,11 +270,27 @@ org_html_manager.setup();  // activate after the parameters are set
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orga4451f8">1. Links</a></li>
-<li><a href="#org767e73c">2. Proposal</a>
+<li><a href="#org8479880">1. Links</a></li>
+<li><a href="#org6774fff">2. Proposal</a>
 <ul>
-<li><a href="#org270d98e">2.1. Question</a></li>
-<li><a href="#org52f364c">2.2. Working</a></li>
+<li><a href="#org4b3df34">2.1. Question</a></li>
+<li><a href="#orgaeb7cb9">2.2. Working</a></li>
+</ul>
+</li>
+<li><a href="#org1de28bf">3. Working</a>
+<ul>
+<li><a href="#implementing-page-rank-methods">3.1. Implementing Page Rank Method on a small graph</a>
+<ul>
+<li><a href="#example-graph">3.1.1. Example Graph</a></li>
+<li><a href="#page-rank-random-surfer">3.1.2. Page Rank Random Surfer</a></li>
+</ul>
+</li>
+<li><a href="#org2ebd575">3.2. Implementing Page Rank on a much Larger Graph</a>
+<ul>
+<li><a href="#orgfef0f3d">3.2.1. Creating the Probability Transition Matrix</a></li>
+<li><a href="#org79ad4d4">3.2.2. Solving the Random Surfer via the Power Method</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -287,24 +303,25 @@ org_html_manager.setup();  // activate after the parameters are set
 <p>
 <sup><a href="#citeproc_bib_item_1">1</a></sup>
 </p>
-<div id="outline-container-orga4451f8" class="outline-2">
-<h2 id="orga4451f8"><span class="section-number-2">1</span> Links</h2>
+<div id="outline-container-org8479880" class="outline-2">
+<h2 id="org8479880"><span class="section-number-2">1</span> Links</h2>
 <div class="outline-text-2" id="text-1">
 <ul class="org-ul">
 <li></li>
 <li><a href="laparkPowerWalk2013.pdf">Paper</a></li>
-<li><a href="./Propsal.html">Research Proposal</a></li>
+<li><a href="Proposal/Propsal.html">Research Proposal</a>
+<a href="ImplementingPageRank/01PageRank.Rmd#MissingReference">Preliminary Implementation</a></li>
 </ul>
 </div>
 </div>
 
 
-<div id="outline-container-org767e73c" class="outline-2">
-<h2 id="org767e73c"><span class="section-number-2">2</span> Proposal</h2>
+<div id="outline-container-org6774fff" class="outline-2">
+<h2 id="org6774fff"><span class="section-number-2">2</span> Proposal</h2>
 <div class="outline-text-2" id="text-2">
 </div>
-<div id="outline-container-org270d98e" class="outline-3">
-<h3 id="org270d98e"><span class="section-number-3">2.1</span> Question</h3>
+<div id="outline-container-org4b3df34" class="outline-3">
+<h3 id="org4b3df34"><span class="section-number-3">2.1</span> Question</h3>
 <div class="outline-text-3" id="text-2-1">
 <p>
 <i>Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter &alpha;</i>
@@ -319,8 +336,8 @@ To begin, implement the method for computing PageRank and then the Power Walk. I
 </div>
 </div>
 
-<div id="outline-container-org52f364c" class="outline-3">
-<h3 id="org52f364c"><span class="section-number-3">2.2</span> Working</h3>
+<div id="outline-container-orgaeb7cb9" class="outline-3">
+<h3 id="orgaeb7cb9"><span class="section-number-3">2.2</span> Working</h3>
 <div class="outline-text-3" id="text-2-2">
 <p>
 Take the exemplar Graph from Figure 1:
@@ -328,7 +345,7 @@ Take the exemplar Graph from Figure 1:
 
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 1: </span>Code to Generate DOT Graph</label><pre class="src src-plantuml" id="org34973fa"># #+begin_src javascript :exports code
+<label class="org-src-name"><span class="listing-number">Listing 1: </span>Code to Generate DOT Graph</label><pre class="src src-plantuml" id="org33eb7ed"># #+begin_src javascript :exports code
 @startdot
 strict digraph graphName {
 concentrate=true
@@ -444,12 +461,16 @@ Org-ref hasn&rsquo;t been updated to allow a way to use HTML references with the
 </p>
 
 <p>
-+<a id="orgcac7713"></a>
+The Auto Sync is handled from inside
+</p>
+
+<p>
++<a id="org656d8bb"></a>
 
 </p>
 
 <p>
-<a id="org05e04d6"></a>
+<a id="orge3eb87a"></a>
 </p>
 
 <style>.csl-left-margin{float: left; padding-right: 0em;} .csl-right-inline{margin: 0 0 0 1.2em;}</style><h2 class='citeproc-org-bib-h2'>Bibliography</h2>
@@ -465,10 +486,700 @@ Org-ref hasn&rsquo;t been updated to allow a way to use HTML references with the
 </div>
 </div>
 </div>
+
+<div id="outline-container-org1de28bf" class="outline-2">
+<h2 id="org1de28bf"><span class="section-number-2">3</span> Working</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-R">  <span style="color: #20b2aa; font-weight: bold;">if</span> (<span style="color: #1e90ff;">require</span>(<span style="color: #ffa07a;">"pacman"</span>)) {
+      <span style="color: #1e90ff;">library</span>(pacman)
+    }<span style="color: #20b2aa; font-weight: bold;">else</span>{
+      install.packages(<span style="color: #ffa07a;">"pacman"</span>)
+      <span style="color: #1e90ff;">library</span>(pacman)
+    }
+</pre>
+</div>
+<div class="org-src-container">
+<pre class="src src-R">    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)
+</pre>
+</div>
+</div>
+
+<div id="outline-container-implementing-page-rank-methods" class="outline-3">
+<h3 id="implementing-page-rank-methods"><span class="section-number-3">3.1</span> Implementing Page Rank Method on a small graph</h3>
+<div class="outline-text-3" id="text-implementing-page-rank-methods">
+</div>
+
+<div id="outline-container-example-graph" class="outline-4">
+<h4 id="example-graph"><span class="section-number-4">3.1.1</span> Example Graph</h4>
+<div class="outline-text-4" id="text-example-graph">
+<p>
+Consider the following Graph taken from the paper:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  g1 <span style="color: #1e90ff;">&lt;-</span> igraph::graph.formula(<span style="color: #1e90ff;">1</span>++<span style="color: #1e90ff;">2</span>, <span style="color: #1e90ff;">1</span>+-<span style="color: #1e90ff;">8</span>, <span style="color: #1e90ff;">1</span>+-<span style="color: #1e90ff;">5</span>, <span style="color: #1e90ff;">2</span>+-<span style="color: #1e90ff;">5</span>, <span style="color: #1e90ff;">2</span>+-<span style="color: #1e90ff;">7</span>, <span style="color: #1e90ff;">2</span>+-<span style="color: #1e90ff;">8</span>, <span style="color: #1e90ff;">2</span>+-<span style="color: #1e90ff;">6</span>, <span style="color: #1e90ff;">2</span>+-<span style="color: #1e90ff;">9</span>, <span style="color: #1e90ff;">3</span>++<span style="color: #1e90ff;">4</span>, <span style="color: #1e90ff;">3</span>+-<span style="color: #1e90ff;">5</span>, <span style="color: #1e90ff;">3</span>+-<span style="color: #1e90ff;">6</span>, <span style="color: #1e90ff;">3</span>+-<span style="color: #1e90ff;">9</span>, <span style="color: #1e90ff;">3</span>+-<span style="color: #1e90ff;">10</span>, <span style="color: #1e90ff;">4</span>+-<span style="color: #1e90ff;">9</span>, <span style="color: #1e90ff;">4</span>+-<span style="color: #1e90ff;">10</span>, <span style="color: #1e90ff;">4</span>+-<span style="color: #1e90ff;">5</span>, <span style="color: #1e90ff;">5</span>+-<span style="color: #1e90ff;">8</span>, <span style="color: #1e90ff;">6</span>+-<span style="color: #1e90ff;">8</span>, <span style="color: #1e90ff;">7</span>+-<span style="color: #1e90ff;">8</span>)
+  plot(g1)
+</pre>
+</div>
+
+
+<div class="figure">
+<p><img src="ImplementingPageRank/01PageRank_files/figure-html/unnamed-chunk-2-1.png" alt="unnamed-chunk-2-1.png" />
+</p>
+</div>
+</div>
+
+<ol class="org-ol">
+<li><a id="adjacency-matrix"></a>Adjacency Matrix<br />
+<div class="outline-text-5" id="text-adjacency-matrix">
+<p>
+The adjacency Matrix is given by:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  A <span style="color: #1e90ff;">&lt;-</span> igraph::get.adjacency(g1, names = <span style="color: #9370db;">TRUE</span>, sparse = <span style="color: #9370db;">FALSE</span>) <span style="color: #1e90ff;">%&gt;%</span>
+    as.matrix()
+
+  <span style="color: #cd853f;">## </span><span style="color: #cd853f;">Adjust the Order</span>
+  (A <span style="color: #1e90ff;">&lt;-</span> A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))])
+</pre>
+</div>
+
+<pre class="example">
+  ##    1 2 3 4 5 6 7 8 9 10
+  ## 1  0 1 0 0 0 0 0 0 0  0
+  ## 2  1 0 0 0 0 0 0 0 0  0
+  ## 3  0 0 0 1 0 0 0 0 0  0
+  ## 4  0 0 1 0 0 0 0 0 0  0
+  ## 5  1 1 1 1 0 0 0 0 0  0
+  ## 6  0 1 1 0 0 0 0 0 0  0
+  ## 7  0 1 0 0 0 0 0 0 0  0
+  ## 8  1 1 0 0 1 1 1 0 0  0
+  ## 9  0 1 1 1 0 0 0 0 0  0
+  ## 10 0 0 1 1 0 0 0 0 0  0
+</pre>
+</div>
+</li>
+
+<li><a id="state-distribution"></a>State Distribution<br />
+<div class="outline-text-5" id="text-state-distribution">
+<p>
+The state distribution is the transpose of the adjacency matrix:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  (p0 <span style="color: #1e90ff;">&lt;-</span> t(A))
+</pre>
+</div>
+
+<pre class="example">
+  ##    1 2 3 4 5 6 7 8 9 10
+  ## 1  0 1 0 0 1 0 0 1 0  0
+  ## 2  1 0 0 0 1 1 1 1 1  0
+  ## 3  0 0 0 1 1 1 0 0 1  1
+  ## 4  0 0 1 0 1 0 0 0 1  1
+  ## 5  0 0 0 0 0 0 0 1 0  0
+  ## 6  0 0 0 0 0 0 0 1 0  0
+  ## 7  0 0 0 0 0 0 0 1 0  0
+  ## 8  0 0 0 0 0 0 0 0 0  0
+  ## 9  0 0 0 0 0 0 0 0 0  0
+  ## 10 0 0 0 0 0 0 0 0 0  0
+</pre>
+</div>
+</li>
+
+<li><a id="probability-transition-matrix"></a>Probability Transition Matrix<br />
+<div class="outline-text-5" id="text-probability-transition-matrix">
+<p>
+The probability transition matrix is such that each column of the
+initial state distribution (i.e. the transposed adjacency matrix) is
+scaled to 1.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  p0 <span style="color: #1e90ff;">%*%</span> diag(<span style="color: #1e90ff;">1</span>/colSums(p0))
+</pre>
+</div>
+
+<pre class="example">
+  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]      [,9] [,10]
+  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.0000000   0.0
+  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.3333333   0.0
+  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.3333333   0.5
+  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.3333333   0.5
+  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+</pre>
+</div>
+
+<ol class="org-ol">
+<li><a id="create-a-function"></a>Create a Function<br />
+<div class="outline-text-6" id="text-create-a-function">
+<div class="org-src-container">
+<pre class="src src-R">  <span style="color: #00ff7f;">adj_to_probTrans</span> <span style="color: #1e90ff;">&lt;-</span> <span style="color: #20b2aa; font-weight: bold;">function</span>(adjMat) {
+    t(adjMat) <span style="color: #1e90ff;">%*%</span> diag(<span style="color: #1e90ff;">1</span>/colSums(t(adjMat)))
+  }
+
+  (T <span style="color: #1e90ff;">&lt;-</span> adj_to_probTrans(A)) <span style="color: #1e90ff;">%&gt;%</span> round(<span style="color: #1e90ff;">2</span>)
+</pre>
+</div>
+
+<pre class="example">
+  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.00   0.0
+  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.33   0.0
+  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.33   0.5
+  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.33   0.5
+  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+</pre>
+</div>
+</li>
+</ol>
+</li>
+</ol>
+</div>
+
+<div id="outline-container-page-rank-random-surfer" class="outline-4">
+<h4 id="page-rank-random-surfer"><span class="section-number-4">3.1.2</span> Page Rank Random Surfer</h4>
+<div class="outline-text-4" id="text-page-rank-random-surfer">
+<p>
+The random surfer page rank method modifies the probability transition
+matrix \(T\) so that the method works also for non-ergodic graphs by
+introducing the possibility of a random jump, we&rsquo;ll call the surfer
+transition matrix \(S\):
+</p>
+
+\begin{align}
+    S &= \lambda T +  \left( 1- \lambda \right)B :\\
+\ \\
+    B&= \begin{bmatrix}
+    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+        \vdots      & \vdots      & \ddots & \vdots \\
+    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \end{bmatrix}  \\
+    N&= \left| \left| V \right| \right| \\
+    \lambda &\in [0,1]
+\end{align}
+
+<div class="org-src-container">
+<pre class="src src-R">  B <span style="color: #1e90ff;">&lt;-</span> matrix(rep(<span style="color: #1e90ff;">1</span>/nrow(T), length.out = nrow(T)**<span style="color: #1e90ff;">2</span>), nrow = nrow(T))
+  l <span style="color: #1e90ff;">&lt;-</span> <span style="color: #1e90ff;">0.8</span>
+
+  S <span style="color: #1e90ff;">&lt;-</span> l*T+(<span style="color: #1e90ff;">1</span>-l)*B
+</pre>
+</div>
+</div>
+
+<ol class="org-ol">
+<li><a id="eigen-value-method"></a>Eigen Value Method<br />
+<div class="outline-text-5" id="text-eigen-value-method">
+<p>
+The eigenvector corresponding to the the eigenvalue of 1 will be the
+stationary point:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  eigen(S, symmetric = <span style="color: #9370db;">FALSE</span>)
+</pre>
+</div>
+
+<pre class="example">
+  ## eigen() decomposition
+  ## $values
+  ##  [1]  1.000000e+00  8.000000e-01 -8.000000e-01 -8.000000e-01  3.117428e-09
+  ##  [6] -3.117428e-09  1.233252e-17 -6.831762e-18  1.351981e-18  1.827902e-34
+  ##
+  ## $vectors
+  ##              [,1]          [,2]          [,3]          [,4]          [,5]
+  ##  [1,] -0.48531271  5.000000e-01  1.074642e-03  7.070996e-01  6.735753e-01
+  ##  [2,] -0.52732002  5.000000e-01 -1.074642e-03 -7.070996e-01  9.622505e-02
+  ##  [3,] -0.49152601 -5.000000e-01  7.071060e-01  3.197134e-03  9.622505e-02
+  ##  [4,] -0.47977477 -5.000000e-01 -7.071060e-01 -3.197134e-03  2.886751e-01
+  ##  [5,] -0.05288058  7.620569e-17  1.212133e-16 -3.419297e-18 -3.849002e-01
+  ##  [6,] -0.05288058  7.620569e-17 -7.099634e-17 -3.419297e-18 -3.849002e-01
+  ##  [7,] -0.05288058  7.620569e-17  2.943750e-17 -3.419297e-18 -3.849002e-01
+  ##  [8,] -0.04558671  6.926804e-17 -1.948070e-18 -4.183296e-17 -7.499367e-09
+  ##  [9,] -0.04558671  6.926804e-17  7.359376e-18 -4.183296e-17 -7.499367e-09
+  ## [10,] -0.04558671  6.926804e-17  7.359376e-18 -4.183296e-17 -7.499367e-09
+  ##                [,6]          [,7]          [,8]          [,9]         [,10]
+  ##  [1,] -6.735753e-01 -2.658112e-01  5.357798e-01 -4.171123e-01  2.122431e-01
+  ##  [2,] -9.622504e-02  1.896313e-01 -1.330801e-01 -7.334472e-02  1.241240e-01
+  ##  [3,] -9.622504e-02  1.990137e-01 -1.665251e-01  2.591495e-01 -1.598069e-04
+  ##  [4,] -2.886751e-01 -3.972519e-02  1.099005e-02 -1.886035e-02  6.690506e-02
+  ##  [5,]  3.849002e-01 -7.585250e-01  5.323206e-01  2.933789e-01 -4.964959e-01
+  ##  [6,]  3.849002e-01  4.774778e-01 -3.550303e-01  5.560197e-01 -1.341297e-01
+  ##  [7,]  3.849002e-01  2.204565e-01 -5.047228e-01  1.987554e-01  1.561493e-01
+  ##  [8,] -7.499367e-09 -1.208463e-16  1.668414e-16 -2.685569e-16  3.416862e-17
+  ##  [9,] -7.499367e-09 -1.125898e-02  4.013399e-02 -3.989931e-01 -5.316106e-01
+  ## [10,] -7.499367e-09 -1.125898e-02  4.013399e-02 -3.989931e-01  6.029746e-01
+</pre>
+
+<p>
+So in this case <del>the</del> a stationary point is
+\(\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle\)
+</p>
+
+<p>
+which can be verified:
+</p>
+
+<p>
+\[
+1 \vec{p} = S\vec{p}
+\]
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  (p     <span style="color: #1e90ff;">&lt;-</span> eigen(S)$values[<span style="color: #1e90ff;">1</span>] * eigen(S)$vectors[,<span style="color: #1e90ff;">1</span>])
+</pre>
+</div>
+
+<pre class="example">
+  ##  [1] -0.48531271 -0.52732002 -0.49152601 -0.47977477 -0.05288058 -0.05288058
+  ##  [7] -0.05288058 -0.04558671 -0.04558671 -0.04558671
+</pre>
+
+<div class="org-src-container">
+<pre class="src src-R">  (p_new <span style="color: #1e90ff;">&lt;-</span> S <span style="color: #1e90ff;">%*%</span> p)
+</pre>
+</div>
+
+<pre class="example">
+  ##           [,1]
+  ## 1  -0.48531271
+  ## 2  -0.52732002
+  ## 3  -0.49152601
+  ## 4  -0.47977477
+  ## 5  -0.05288058
+  ## 6  -0.05288058
+  ## 7  -0.05288058
+  ## 8  -0.04558671
+  ## 9  -0.04558671
+  ## 10 -0.04558671
+</pre>
+
+<p>
+However this vector does not sum to 1 so the scale should be adjusted
+(for probabilities the vector should sum to 1):
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  (p_new <span style="color: #1e90ff;">&lt;-</span> p_new/sum(p_new))
+</pre>
+</div>
+
+<pre class="example">
+  ##         [,1]
+  ## 1  0.2129185
+  ## 2  0.2313481
+  ## 3  0.2156444
+  ## 4  0.2104889
+  ## 5  0.0232000
+  ## 6  0.0232000
+  ## 7  0.0232000
+  ## 8  0.0200000
+  ## 9  0.0200000
+  ## 10 0.0200000
+</pre>
+</div>
+</li>
+
+<li><a id="power-value-method"></a>Power Value Method<br />
+<div class="outline-text-5" id="text-power-value-method">
+<p>
+Using the power method should give the same result, which it indeed
+does, but for the scale:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  p_new <span style="color: #1e90ff;">&lt;-</span> p_new *<span style="color: #1e90ff;">123456789</span>
+
+  <span style="color: #20b2aa; font-weight: bold;">while</span> (sum(round(p, <span style="color: #1e90ff;">9</span>) != round(p_new, <span style="color: #1e90ff;">9</span>))) {
+      (p     <span style="color: #1e90ff;">&lt;-</span> p_new)
+      (p_new <span style="color: #1e90ff;">&lt;-</span> S <span style="color: #1e90ff;">%*%</span> p)
+  }
+
+  p_new
+</pre>
+</div>
+
+<pre class="example">
+  ##        [,1]
+  ## 1  26286237
+  ## 2  28561500
+  ## 3  26622771
+  ## 4  25986282
+  ## 5   2864198
+  ## 6   2864198
+  ## 7   2864198
+  ## 8   2469136
+  ## 9   2469136
+  ## 10  2469136
+</pre>
+
+<div class="org-src-container">
+<pre class="src src-R">  p
+</pre>
+</div>
+
+<pre class="example">
+  ##        [,1]
+  ## 1  26286237
+  ## 2  28561500
+  ## 3  26622771
+  ## 4  25986282
+  ## 5   2864198
+  ## 6   2864198
+  ## 7   2864198
+  ## 8   2469136
+  ## 9   2469136
+  ## 10  2469136
+</pre>
+
+<p>
+This answer is however identical in direction, if it scaled to 1 the
+same value will be returned:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  (p_new <span style="color: #1e90ff;">&lt;-</span> p_new/sum(p_new))
+</pre>
+</div>
+
+<pre class="example">
+  ##         [,1]
+  ## 1  0.2129185
+  ## 2  0.2313481
+  ## 3  0.2156444
+  ## 4  0.2104889
+  ## 5  0.0232000
+  ## 6  0.0232000
+  ## 7  0.0232000
+  ## 8  0.0200000
+  ## 9  0.0200000
+  ## 10 0.0200000
+</pre>
+</div>
+</li>
+
+<li><a id="scaling"></a>Scaling<br />
+<div class="outline-text-5" id="text-scaling">
+<p>
+However if the initial state sums to 1, then the scale of the stationary
+vector will also sum to 1.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">  p     <span style="color: #1e90ff;">&lt;-</span> c(<span style="color: #1e90ff;">1</span>, <span style="color: #1e90ff;">0</span>, <span style="color: #1e90ff;">0</span>, <span style="color: #1e90ff;">0</span>, <span style="color: #1e90ff;">0</span>, <span style="color: #1e90ff;">0</span>, <span style="color: #1e90ff;">0</span>, <span style="color: #1e90ff;">0</span>, <span style="color: #1e90ff;">0</span>, <span style="color: #1e90ff;">0</span>)
+  p_new <span style="color: #1e90ff;">&lt;-</span> S <span style="color: #1e90ff;">%*%</span> p
+
+  <span style="color: #20b2aa; font-weight: bold;">while</span> (sum(round(p, <span style="color: #1e90ff;">9</span>) != round(p_new, <span style="color: #1e90ff;">9</span>))) {
+      (p     <span style="color: #1e90ff;">&lt;-</span> p_new)
+      (p_new <span style="color: #1e90ff;">&lt;-</span> S <span style="color: #1e90ff;">%*%</span> p)
+  }
+
+  cbind(p_new, p)
+</pre>
+</div>
+
+<pre class="example">
+  ##         [,1]      [,2]
+  ## 1  0.2129185 0.2129185
+  ## 2  0.2313481 0.2313481
+  ## 3  0.2156444 0.2156444
+  ## 4  0.2104889 0.2104889
+  ## 5  0.0232000 0.0232000
+  ## 6  0.0232000 0.0232000
+  ## 7  0.0232000 0.0232000
+  ## 8  0.0200000 0.0200000
+  ## 9  0.0200000 0.0200000
+  ## 10 0.0200000 0.0200000
+</pre>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org2ebd575" class="outline-3">
+<h3 id="org2ebd575"><span class="section-number-3">3.2</span> Implementing Page Rank on a much Larger Graph</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+<div id="outline-container-orgfef0f3d" class="outline-4">
+<h4 id="orgfef0f3d"><span class="section-number-4">3.2.1</span> Creating the Probability Transition Matrix</h4>
+<div class="outline-text-4" id="text-3-2-1">
+<p>
+Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
+</p>
+
+<p>
+An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
+</p>
+
+<p>
+A matrix exhibiting this property is known as a sparse matrix CITE
+</p>
+
+<p>
+The properties of a sparse matrix can be implemented in order to improve performance, one such method to acheive this is <i>Compressed Sparse Row</i> (CSR) storage, which involves creating a seperate array of values and corresponding indices. CITE
+</p>
+
+<p>
+This is implemented by the Matrix package in <b><i>R</i></b>. CITE
+</p>
+
+<p>
+An sparse matrix can be created using the following syntax, which will return a matrix of the class <code>dgCMatrix</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #1e90ff;">library</span>(Matrix)
+<span style="color: #cd853f;">## </span><span style="color: #cd853f;">Create Example Matrix</span>
+n <span style="color: #1e90ff;">&lt;-</span> <span style="color: #1e90ff;">20</span>
+m <span style="color: #1e90ff;">&lt;-</span> <span style="color: #1e90ff;">10</span>^<span style="color: #1e90ff;">6</span>
+i <span style="color: #1e90ff;">&lt;-</span> sample(<span style="color: #1e90ff;">1</span>:m, size = n); j <span style="color: #1e90ff;">&lt;-</span> sample(<span style="color: #1e90ff;">1</span>:m, size = n); x <span style="color: #1e90ff;">&lt;-</span> rpois(n, lambda = <span style="color: #1e90ff;">90</span>)
+A <span style="color: #1e90ff;">&lt;-</span> sparseMatrix(i, j, x = x, dims = c(m, m))
+
+summary(A)
+</pre>
+</div>
+
+<pre class="example">
+
+1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
+        i      j   x
+1  803589  66922 118
+2   61426  83355  97
+3  401058 103999  71
+4  610432 206922  84
+5  542888 217196  69
+6  821769 291405  79
+7  187782 364814  74
+8  152229 451810 104
+9  614645 462031  82
+10 776459 566334  91
+11 288279 630438  97
+12 233553 631441  84
+13 139900 649740  83
+14 381442 681415  87
+15 578270 755635  99
+16 175521 775788  98
+17  57981 809115  89
+18 821120 809688 103
+19 541818 976802  78
+20 595348 993420  85
+</pre>
+
+<p>
+As before in section <a href="#probability-transition-matrix">3.1.1.3</a>, the probability transition matrix can be found by:
+</p>
+
+<ol class="org-ol">
+<li>Transposing the adjacency matrix, then</li>
+<li>Scaling the columns to one</li>
+</ol>
+
+<p>
+To implement this for a sparseMatrix of the class <code>dgCMatrix</code>, the same technique of multiplying by a diagonalised matrix may be implemented, however to create this new matrix, a new <code>sparseMatrix</code> will need to be created using the properties of the original matrix, this can be done like so:
+</p>
+
+
+<div class="org-src-container">
+<pre class="src src-R"> <span style="color: #00ff7f;">sparse_diag</span> <span style="color: #1e90ff;">&lt;-</span> <span style="color: #20b2aa; font-weight: bold;">function</span>(mat) {
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">' Diagonal Factors of Sparse Matrix</span>
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">'</span>
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">' Return a Diagonal Matrix of the 1 / colsum() such that</span>
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">' matrix multiplication with this matrix would have all column sums</span>
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">' sum to 1</span>
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">'</span>
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">' This should take the transpose of an adjacency matrix in and the output</span>
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">' can be multiplied by the original matrix to scale it to 1.</span>
+  <span style="color: #cd853f;">#</span><span style="color: #cd853f;">' i</span>
+
+  <span style="color: #cd853f;">## </span><span style="color: #cd853f;">Get the Dimensions</span>
+  n <span style="color: #1e90ff;">&lt;-</span> nrow(mat)
+
+  <span style="color: #cd853f;">## </span><span style="color: #cd853f;">Make a Diagonal Matrix of Column Sums</span>
+  D <span style="color: #1e90ff;">&lt;-</span> sparseMatrix(i = <span style="color: #1e90ff;">1</span>:n, j = <span style="color: #1e90ff;">1</span>:n, x = colSums(mat), dims = c(n,n))
+
+  <span style="color: #cd853f;">## </span><span style="color: #cd853f;">Throw away explicit Zeroes</span>
+  D <span style="color: #1e90ff;">&lt;-</span> drop0(D)
+
+  <span style="color: #cd853f;">## </span><span style="color: #cd853f;">Inverse the Values</span>
+  D@x <span style="color: #1e90ff;">&lt;-</span> <span style="color: #1e90ff;">1</span>/D@x
+
+  <span style="color: #cd853f;">## </span><span style="color: #cd853f;">Return the Diagonal Matrix</span>
+  <span style="color: #20b2aa; font-weight: bold;">return</span>(D)
+}
+D <span style="color: #1e90ff;">&lt;-</span> sparse_diag(t(A))
+summary(D)
+</pre>
+</div>
+
+<pre class="example">
+
+1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
+        i      j           x
+1   57981  57981 0.011235955
+2   61426  61426 0.010309278
+3  139900 139900 0.012048193
+4  152229 152229 0.009615385
+5  175521 175521 0.010204082
+6  187782 187782 0.013513514
+7  233553 233553 0.011904762
+8  288279 288279 0.010309278
+9  381442 381442 0.011494253
+10 401058 401058 0.014084507
+11 541818 541818 0.012820513
+12 542888 542888 0.014492754
+13 578270 578270 0.010101010
+14 595348 595348 0.011764706
+15 610432 610432 0.011904762
+16 614645 614645 0.012195122
+17 776459 776459 0.010989011
+18 803589 803589 0.008474576
+19 821120 821120 0.009708738
+20 821769 821769 0.012658228
+</pre>
+
+<p>
+and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R">summary(t(A) <span style="color: #1e90ff;">%*%</span> D)
+</pre>
+</div>
+
+<pre class="example">
+1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
+        i      j x
+1  809115  57981 1
+2   83355  61426 1
+3  649740 139900 1
+4  451810 152229 1
+5  775788 175521 1
+6  364814 187782 1
+7  631441 233553 1
+8  630438 288279 1
+9  681415 381442 1
+10 103999 401058 1
+11 976802 541818 1
+12 217196 542888 1
+13 755635 578270 1
+14 993420 595348 1
+15 206922 610432 1
+16 462031 614645 1
+17 566334 776459 1
+18  66922 803589 1
+19 809688 821120 1
+20 291405 821769 1
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org79ad4d4" class="outline-4">
+<h4 id="org79ad4d4"><span class="section-number-4">3.2.2</span> Solving the Random Surfer via the Power Method</h4>
+<div class="outline-text-4" id="text-3-2-2">
+<p>
+Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
+</p>
+
+<p>
+However, creating a matrix of background probabilites (denoted by <code>B</code> is section <a href="#page-rank-random-surfer">3.1.2</a>) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
+</p>
+
+<p>
+The power method is given by:
+</p>
+
+\begin{align}
+\vec{p}= \mathbf{S} \vec{p}
+\end{align}
+
+<p>
+where:
+</p>
+
+\begin{align}
+S &= \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \\
+\vec{p} &= \left( \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \right) \vec{p}\\
+&= \alpha \mathbf{T}\vec{p} +  \left( 1-\alpha \right) \mathbf{B} \vec{p}
+\end{align}
+
+<p>
+Let \(\mathbf{F}= \mathbf{B}\vec{p}\), consider the value of \(\mathbf{F}\) :
+</p>
+
+\begin{align}
+\mathbf{F} &=
+\begin{bmatrix}
+\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+\vdots      & \vdots      & \ddots & \vdots \\
+\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+\end{bmatrix}
+\begin{bmatrix}
+\vec{p_1} \\ \vec{p_2} \\ \vdots \\ \vec{p_m}
+\end{bmatrix}  \\
+&= \begin{bmatrix}
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\vdots  \\
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\end{bmatrix}  \\
+& \text{Probabilities sum to 1 and hence:} \\
+&= \begin{bmatrix}
+\frac{1}{N} \\
+\frac{1}{N} \\
+\frac{1}{N} \\
+\vdots  \\
+\frac{1}{N} \\
+\end{bmatrix}
+\end{align}
+<p>
+So instead the power method can be implemented by performing an algorithm to the effect of:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-R"><span style="color: #cd853f;">## </span><span style="color: #cd853f;">Find Stationary point of random surfer</span>
+N     <span style="color: #1e90ff;">&lt;-</span> nrow(A)
+alpha <span style="color: #1e90ff;">&lt;-</span> <span style="color: #1e90ff;">0.8</span>
+F     <span style="color: #1e90ff;">&lt;-</span> rep((<span style="color: #1e90ff;">1</span>-alpha)/N, nrow(A))  <span style="color: #cd853f;">## </span><span style="color: #cd853f;">A nx1 vector of (1-alpha)/N</span>
+
+<span style="color: #cd853f;">## </span><span style="color: #cd853f;">Solve using the power method</span>
+p     <span style="color: #1e90ff;">&lt;-</span> rep(<span style="color: #1e90ff;">0</span>, length.out = ncol(T)); p[<span style="color: #1e90ff;">1</span>] <span style="color: #1e90ff;">&lt;-</span> <span style="color: #1e90ff;">1</span>
+p_new <span style="color: #1e90ff;">&lt;-</span> alpha*T <span style="color: #1e90ff;">%*%</span> p + F
+
+<span style="color: #cd853f;">## </span><span style="color: #cd853f;">use a Counter to debug</span>
+i <span style="color: #1e90ff;">&lt;-</span> <span style="color: #1e90ff;">0</span>
+<span style="color: #20b2aa; font-weight: bold;">while</span> (sum(round(p, <span style="color: #1e90ff;">9</span>) != round(p_new, <span style="color: #1e90ff;">9</span>))) {
+    p     <span style="color: #1e90ff;">&lt;-</span> p_new
+    p_new <span style="color: #1e90ff;">&lt;-</span> alpha*T <span style="color: #1e90ff;">%*%</span> p + F
+    (i <span style="color: #1e90ff;">&lt;-</span> i+<span style="color: #1e90ff;">1</span>) <span style="color: #1e90ff;">%&gt;%</span> print()
+}
+
+p <span style="color: #1e90ff;">%&gt;%</span> head() <span style="color: #1e90ff;">%&gt;%</span> print()
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Ryan Greenup</p>
-<p class="date">Created: 2020-07-31 Fri 18:16</p>
+<p class="date">Created: 2020-08-07 Fri 17:27</p>
 </div>
 </body>
 </html>
