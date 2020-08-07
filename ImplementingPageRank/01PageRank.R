@@ -75,16 +75,15 @@ summary(T)
 
 ## Calculate the Random Surfer
 N <- nrow(A)
+B <- T  # Use T as a template to save effort
+B@x <- B@x/B@x/N  # Change nonZero terms to 1/N
 alpha <- 0.8
-summary(T)
 
 S <- alpha*T+(1-alpha)*B
-S
 
-T@x
-B <- T
-summary(B)
-Matrix::i
+
+summary(T)
+summary(S)
 
 
 ## Solve using the power method
