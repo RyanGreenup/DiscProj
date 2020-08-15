@@ -18,15 +18,21 @@
 :END:
 :SlowDown:
 # #+STARTUP: latexpreview
-#+LATEX_HEADER: \usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
+# #+LATEX_HEADER: \usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
 # #+LATEX_HEADER: \twocolumn
 #+latex_header: \addbibresource{references.bib}
+:END:
+
 cite:kamvarAdaptiveMethodsComputation2004
+
 * Links
 - [[file:~/Dropbox/Notes/Org/ThinkingAboutData.org::+TITLE: Thinking About Data][Thinking About Data]]
 - [[file:laparkPowerWalk2013.pdf][Paper]]
 - [[file:Proposal/Propsal.org][Research Proposal]]
-  [[file:ImplementingPageRank/01PageRank.Rmd::---][Preliminary Implementation]]
+- [[file:ImplementingPageRank/01PageRank.Rmd::---][Preliminary Implementation]]
+- [[file:ImplementingPageRank/01PageRank.R][Implement Random Surfer on Sparse Matrix]]
+- [[file:ImplementingPowerWalk/01PowerWalk.R][Implement Power Walk on Sparse Matrix]]
+
 
 
 * Proposal
@@ -754,3 +760,62 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 p %>% head() %>% print()
 #+end_src
+* Notes
+
+- Eigenvector Centrality :: PageRank
+
+  - The probability of landing on a vertex in a random walk by adding a small random probability to each vertex.
+
+- Irreducible :: Ergodic
+  - All Vertices can be reached from any other vertex
+
+** Page Rank Methods
+
+These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.
+
+If each vertex is connected the graph is said to be ergodic and there is a closed solution for the limit values of the frequencies given this random walk:
+
+- The eigenvalue equal to 1
+- If the graph is not directed $\vec{p}$ is a vector of length $n$:
+  - $n$ is the number of nodes in the graph $G$
+  - $\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}$
+    - $\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v)] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v)] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v)]$
+
+For large matrices calculating the eigenvalues will be expensive and so instead the power method is used, which is essentially looping over until the vector converges to a solution.
+
+\begin{align}
+\vec{p} = \mathrm{T}\vec{p} \label{eq:pageRank-Method}
+\end{align}
+
+where:
+
+- $\mathrm{A}$ :: Is the adjacency Matrix, an element is 1 if movement from the row vertex to the column vertex is permitted.
+  - The matrix may be weighted in some way, for example 5 edges between vertices may be such that a 5 is used in the matrix not a 1
+  - An undirected graph will be such that $\mathbf{A} = \mathbf{A}^{\mathrm{\mathbf{T}}}$
+- $\mathrm{T}$ :: Is the transition probability matrix, an element in the matrix describes the probability of moving from the column-vertex to the row-vertex
+  - The transition matrix is intended to be such that for a given state distribution $\vec{p}$, the next iteration of a random walk will be $\mathrm{T}\vec{p}$
+  - Observe also that $\mathrm{T} = \mathrm{T} \cdot \mathrm{diag}(\mathtt{colsums}(\mathrm{A^{\mathrm{T}}}))$
+    - i.e. the transpose of the adjacency matrix with each column scaled to 1.
+
+
+*** Random Surfer
+
+If a graph is non-ergodic, then a random walk isn't as easy to implement because in escence there are multiple graphs, to address this, some value $\lambda$ is introduces which represents the probability of moving from one vertex to any other vertex.
+Essentially the difference here is
+
+*** Power Walk Method
+
+\begin{align}
+\mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
+\end{align}
+
+
+
+where:
+
+- $\mathbf{B}= \beta^{\mathbf{A}}$
+  - $x\beta^{1}$  :: probability of following an edge of weight 1
+  - $x\beta^{0}$  :: probability of following an edge of weight 0
+  - $x\beta^{-1}$ :: probability of following an edge of weight -
+- $D_{B} = \mathtt{colsums}(\mathbf{B})$
+- $\mathbf{A}$ :: The Adjacency Matrix
