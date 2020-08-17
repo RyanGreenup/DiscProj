@@ -1,11 +1,5 @@
-.auctex-auto
-Proposal/.auctex-auto
-Proposal/texfrag
-Proposal/_minted-Propsal
-_minted-Data-Sci-Discover-Project
-_region_.log
-_region_.tex
-texfrag
-Proposal/.auctex-auto
-.auctex-auto
-Proposal/.auctex-auto
+**/.auctex-auto
+**/texfrag
+**/_minted*
+**/_region_/*
+**/*.log
