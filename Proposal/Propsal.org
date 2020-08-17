@@ -11,8 +11,8 @@ and the model and graph parameters.
 #+CATEGORY: DProj
 :HTML:
 #+INFOJS_OPT: view:info toc:3
-#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="style.css">
-#+CSL_STYLE: /home/ryan/Templates/CSL/nature.csl
+#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="../resources/style.css">
+#+CSL_STYLE: ../resources/nature.csl
 :END:
 :R:
 #+PROPERTY: header-args:R :session TADMain :dir ./ :cache yes :eval never-export :exports both
@@ -21,7 +21,7 @@ and the model and graph parameters.
 :END:
 :SlowDown:
 # #+STARTUP: latexpreview
-#+LATEX_HEADER: \usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyleDV}
+#+LATEX_HEADER: \usepackage{../resources/style}
 # #+latex_header: \addbibresource{/home/ryan/Dropbox/Studies/Papers/references.bib}
 #+latex_header: \addbibresource{./../references.bib}
 # #+LATEX_HEADER: \twocolumn
