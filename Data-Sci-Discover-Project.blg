@@ -1,0 +1,9 @@
+[0] Config.pm:304> INFO - This is Biber 2.14
+[0] Config.pm:307> INFO - Logfile is 'Data-Sci-Discover-Project.blg'
+[61] biber:322> INFO - === Mon Aug 17, 2020, 13:39:47
+[73] Biber.pm:415> INFO - Reading 'Data-Sci-Discover-Project.bcf'
+[121] Biber.pm:943> INFO - Found 0 citekeys in bib section 0
+[126] Utils.pm:304> WARN - The file 'Data-Sci-Discover-Project.bcf' does not contain any citations!
+[132] bbl.pm:652> INFO - Writing 'Data-Sci-Discover-Project.bbl' with encoding 'UTF-8'
+[133] bbl.pm:755> INFO - Output to Data-Sci-Discover-Project.bbl
+[133] Biber.pm:128> INFO - WARNINGS: 1

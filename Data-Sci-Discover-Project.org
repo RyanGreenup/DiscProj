@@ -1,34 +1,30 @@
 #+TITLE: Data Sci Discover Project
-# #+STARTUP: latexpreview
+:PREAMBLE:
 #+OPTIONS: broken-links:auto
 #+INFOJS_OPT: view:showall toc:3
 #+PLOT: title:"Citas" ind:1 deps:(3) type:2d with:histograms set:"yrange [0:]"
 #+OPTIONS: tex:t
 #+TODO: TODO IN-PROGRESS WAITING DONE
 #+CATEGORY: DProj
+:END:
 :HTML:
 #+INFOJS_OPT: view:info toc:3
-#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="style.css">
+#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="resources/style.css">
 #+CSL_STYLE: /home/ryan/Templates/CSL/nature.csl
 :END:
 :R:
 #+PROPERTY: header-args:R :session TADMain :dir ./ :cache yes :eval never-export :exports both
-# exports: both (or code or whatever)
-# results: table (or output or whatever)
 :END:
-:SlowDown:
-# #+STARTUP: latexpreview
-# #+LATEX_HEADER: \usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
+:LATEX:
+# #+LATEX_HEADER: \usepackage{resources/style}
+#+LATEX_HEADER: \usepackage{resources/referencing}
+#+LATEX_HEADER: \addbibresource{resources/references.bib}
 # #+LATEX_HEADER: \twocolumn
-#+latex_header: \addbibresource{references.bib}
 :END:
-
-cite:kamvarAdaptiveMethodsComputation2004
 
 * Links
-- [[file:~/Dropbox/Notes/Org/ThinkingAboutData.org::+TITLE: Thinking About Data][Thinking About Data]]
-- [[file:laparkPowerWalk2013.pdf][Paper]]
 - [[file:Proposal/Propsal.org][Research Proposal]]
+- [[file:laparkPowerWalk2013.pdf][Paper]]
 - [[file:ImplementingPageRank/01PageRank.Rmd::---][Preliminary Implementation]]
 - [[file:ImplementingPageRank/01PageRank.R][Implement Random Surfer on Sparse Matrix]]
 - [[file:ImplementingPowerWalk/01PowerWalk.R][Implement Power Walk on Sparse Matrix]]
@@ -53,7 +49,7 @@ Take the exemplar Graph from Figure 1:
 
 #+NAME: DotLib
 #+CAPTION: Code to Generate DOT Graph
-#+begin_src plantuml :output both :file ./Media/Example.png :exports both :eval never-export :eval never-export
+#+begin_src plantuml :output results :file ./Media/Example.png :eval never-export
 # #+begin_src javascript :exports code
 @startdot
 strict digraph graphName {
@@ -92,13 +88,13 @@ D -> C
 
 
 
-$$\begin{aligned}
+\begin{align}
     \Gamma =  I - n D^{- 1}_B \\
-\end{aligned}$$
+\end{align}
 
 Where we have the following:
 
-$$\begin{aligned}
+\begin{align}
     \beta &= 10 \\
     B &= \beta^A \\
     A &=
@@ -140,30 +136,10 @@ $$\begin{aligned}
          0 & 0 & 0.6923 & 0 \\
          0 & 0 & 0 & 0.6923
      \end{bmatrix}
+\end{align}
 
 
 
-\end{aligned}$$
-
-
-
-
-\* References
-This section is necessary for references to work in /HTML/ export, however it breaks LaTeX export because that relies on BibLaTex NOT BibTex which this is for.
-
-Org-ref hasn't been updated to allow a way to use HTML references with the syntax for biblatex.
-
-The Auto Sync is handled from inside
-
-# ####### Delete these!!!!!
-+<<bibliographystyle link>>
-bibliographystyle:unsrt
-
-<<bibliography link>>
-bibliography:./references.bib
-# ####### Delete these!!!!!
-
-#+end_example
 
 * Working
 #+BEGIN_SRC R
@@ -779,7 +755,7 @@ If each vertex is connected the graph is said to be ergodic and there is a close
 - If the graph is not directed $\vec{p}$ is a vector of length $n$:
   - $n$ is the number of nodes in the graph $G$
   - $\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}$
-    - $\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v)] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v)] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v)]$
+    - $\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]$
 
 For large matrices calculating the eigenvalues will be expensive and so instead the power method is used, which is essentially looping over until the vector converges to a solution.
 
@@ -819,3 +795,7 @@ where:
   - $x\beta^{-1}$ :: probability of following an edge of weight -
 - $D_{B} = \mathtt{colsums}(\mathbf{B})$
 - $\mathbf{A}$ :: The Adjacency Matrix
+
+
+
+

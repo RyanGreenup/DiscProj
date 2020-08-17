@@ -1,4 +1,4 @@
-% Created 2020-08-07 Fri 14:44
+% Created 2020-08-17 Mon 13:37
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -15,8 +15,8 @@
 \usepackage{capt-of}
 \usepackage{hyperref}
 \usepackage{minted}
-\usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
-\addbibresource{references.bib}
+\usepackage{resources/referencing}
+\addbibresource{resources/references.bib}
 \author{Ryan Greenup}
 \date{\today}
 \title{Data Sci Discover Project}
@@ -25,15 +25,107 @@
  pdftitle={Data Sci Discover Project},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 26.3 (Org mode 9.4)}, 
+ pdfcreator={Emacs 27.1 (Org mode 9.4)}, 
  pdflang={English}}
 \begin{document}
 
 \maketitle
 \tableofcontents
 
+
+\section{Links}
+\label{sec:orgd0c0a3e}
+\begin{itemize}
+\item \href{file:///home/ryan/Dropbox/Notes/Org/ThinkingAboutData.org}{Thinking About Data}
+\item \href{laparkPowerWalk2013.pdf}{Paper}
+\item \href{Proposal/Propsal.org}{Research Proposal}
+\item \href{ImplementingPageRank/01PageRank.Rmd}{Preliminary Implementation}
+\item \href{ImplementingPageRank/01PageRank.R}{Implement Random Surfer on Sparse Matrix}
+\item \href{ImplementingPowerWalk/01PowerWalk.R}{Implement Power Walk on Sparse Matrix}
+\end{itemize}
+
+
+
+\section{Proposal}
+\label{sec:orgd23fe58}
+
+\subsection{Question}
+\label{sec:org9b9561c}
+
+\emph{Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \(\alpha\)}
+
+\begin{quote}
+Yes. An open question for the Power Walk method is, can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \(\alpha\). The second eigenvalue determines how long the algorithm takes to converge and how stable the solution is.
+To begin, implement the method for computing PageRank and then the Power Walk. It can all be done using sparse matrices, so it only requires a fraction of the memory and is each iteration is quick.
+\end{quote}
+
+\subsection{Working}
+\label{sec:org54f27c8}
+
+Take the exemplar Graph from Figure 1:
+
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./Media/Example.png}
+\end{center}
+
+
+
+\begin{align}
+    \Gamma =  I - n D^{- 1}_B \\
+\end{align}
+
+Where we have the following:
+
+\begin{align}
+    \beta &= 10 \\
+    B &= \beta^A \\
+    A &=
+    \begin{bmatrix}
+0& 1& 0& 0 \\
+1& 0& 0& 0 \\
+0& 0& 0& 1 \\
+0& 0& 1& 0
+    \end{bmatrix} \\
+     \implies
+    B &= \begin{bmatrix}
+     10 & 1 & 1 & 1 \\
+     1 & 10 & 1 & 1 \\
+     1 & 1 & 10 & 1 \\
+     1 & 1 & 1 & 10 \\
+     \end{bmatrix}  \\
+     \text{$D_B$ is a diagonal matrix of the column sums:}\\
+     D &= \begin{bmatrix}
+     13 & 0 & 0 & 0 \\
+     0 & 13 & 0 & 0 \\
+     0 & 0 & 13 & 0 \\
+     0 & 0 & 0 & 13
+     \end{bmatrix}  \\
+     \text{Hence the Inverse is:}\\
+     D_B^{-1}&= \frac{I}{13}\\
+     \text{Putting it all together:}\\
+     \Gamma &=  I - n D^{- 1}_B \\
+     &= I - \frac{4 \cdot I}{13} \\
+     &= \frac{9}{13} \cdot  I \\
+     &= \begin{bmatrix}
+         \frac{9}{13} & 0 & 0 & 0 \\
+         0 & \frac{9}{13} & 0 & 0 \\
+         0 & 0 & \frac{9}{13} & 0 \\
+         0 & 0 & 0 &  \frac{9}{13}
+     \end{bmatrix}  \\
+     & \approx \begin{bmatrix}
+         0.6923 & 0 & 0 & 0 \\
+         0 & 0.6923 & 0 & 0 \\
+         0 & 0 & 0.6923 & 0 \\
+         0 & 0 & 0 & 0.6923
+     \end{bmatrix}
+\end{align}
+
+
+
+
 \section{Working}
-\label{sec:orgd36bd90}
+\label{sec:org7a7e645}
 \begin{minted}[]{r}
   if (require("pacman")) {
       library(pacman)
@@ -47,9 +139,9 @@
 \end{minted}
 
 \subsection{Implementing Page Rank Method on a small graph}
-\label{sec:org17efc92}
+\label{implementing-page-rank-methods}
 \subsubsection{Example Graph}
-\label{sec:org40e9a16}
+\label{example-graph}
 Consider the following Graph taken from the paper:
 
 \begin{minted}[]{r}
@@ -63,7 +155,7 @@ Consider the following Graph taken from the paper:
 
 \begin{enumerate}
 \item Adjacency Matrix
-\label{sec:org1fec0e3}
+\label{adjacency-matrix}
 The adjacency Matrix is given by:
 
 \begin{minted}[]{r}
@@ -89,7 +181,7 @@ The adjacency Matrix is given by:
 \end{verbatim}
 
 \item State Distribution
-\label{sec:orgab4e182}
+\label{state-distribution}
 The state distribution is the transpose of the adjacency matrix:
 
 \begin{minted}[]{r}
@@ -111,7 +203,7 @@ The state distribution is the transpose of the adjacency matrix:
 \end{verbatim}
 
 \item Probability Transition Matrix
-\label{sec:org12515f7}
+\label{probability-transition-matrix}
 The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
@@ -136,7 +228,7 @@ scaled to 1.
 
 \begin{enumerate}
 \item Create a Function
-\label{sec:org3644a88}
+\label{create-a-function}
 \begin{minted}[]{r}
   adj_to_probTrans <- function(adjMat) {
     t(adjMat) %*% diag(1/colSums(t(adjMat)))
@@ -162,7 +254,7 @@ scaled to 1.
 \end{enumerate}
 
 \subsubsection{Page Rank Random Surfer}
-\label{sec:org61092d1}
+\label{page-rank-random-surfer}
 The random surfer page rank method modifies the probability transition
 matrix \(T\) so that the method works also for non-ergodic graphs by
 introducing the possibility of a random jump, we'll call the surfer
@@ -183,14 +275,14 @@ transition matrix \(S\):
 
 \begin{minted}[]{r}
   B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
-  l <- 0.8
+  l <- 0.8123456789
 
   S <- l*T+(1-l)*B
 \end{minted}
 
 \begin{enumerate}
 \item Eigen Value Method
-\label{sec:org877cf12}
+\label{eigen-value-method}
 The eigenvector corresponding to the the eigenvalue of 1 will be the
 stationary point:
 
@@ -199,34 +291,35 @@ stationary point:
 \end{minted}
 
 \begin{verbatim}
-  ## eigen() decomposition
-  ## $values
-  ##  [1]  1.000000e+00  8.000000e-01 -8.000000e-01 -8.000000e-01  3.117428e-09
-  ##  [6] -3.117428e-09  1.233252e-17 -6.831762e-18  1.351981e-18  1.827902e-34
-  ##
-  ## $vectors
-  ##              [,1]          [,2]          [,3]          [,4]          [,5]
-  ##  [1,] -0.48531271  5.000000e-01  1.074642e-03  7.070996e-01  6.735753e-01
-  ##  [2,] -0.52732002  5.000000e-01 -1.074642e-03 -7.070996e-01  9.622505e-02
-  ##  [3,] -0.49152601 -5.000000e-01  7.071060e-01  3.197134e-03  9.622505e-02
-  ##  [4,] -0.47977477 -5.000000e-01 -7.071060e-01 -3.197134e-03  2.886751e-01
-  ##  [5,] -0.05288058  7.620569e-17  1.212133e-16 -3.419297e-18 -3.849002e-01
-  ##  [6,] -0.05288058  7.620569e-17 -7.099634e-17 -3.419297e-18 -3.849002e-01
-  ##  [7,] -0.05288058  7.620569e-17  2.943750e-17 -3.419297e-18 -3.849002e-01
-  ##  [8,] -0.04558671  6.926804e-17 -1.948070e-18 -4.183296e-17 -7.499367e-09
-  ##  [9,] -0.04558671  6.926804e-17  7.359376e-18 -4.183296e-17 -7.499367e-09
-  ## [10,] -0.04558671  6.926804e-17  7.359376e-18 -4.183296e-17 -7.499367e-09
-  ##                [,6]          [,7]          [,8]          [,9]         [,10]
-  ##  [1,] -6.735753e-01 -2.658112e-01  5.357798e-01 -4.171123e-01  2.122431e-01
-  ##  [2,] -9.622504e-02  1.896313e-01 -1.330801e-01 -7.334472e-02  1.241240e-01
-  ##  [3,] -9.622504e-02  1.990137e-01 -1.665251e-01  2.591495e-01 -1.598069e-04
-  ##  [4,] -2.886751e-01 -3.972519e-02  1.099005e-02 -1.886035e-02  6.690506e-02
-  ##  [5,]  3.849002e-01 -7.585250e-01  5.323206e-01  2.933789e-01 -4.964959e-01
-  ##  [6,]  3.849002e-01  4.774778e-01 -3.550303e-01  5.560197e-01 -1.341297e-01
-  ##  [7,]  3.849002e-01  2.204565e-01 -5.047228e-01  1.987554e-01  1.561493e-01
-  ##  [8,] -7.499367e-09 -1.208463e-16  1.668414e-16 -2.685569e-16  3.416862e-17
-  ##  [9,] -7.499367e-09 -1.125898e-02  4.013399e-02 -3.989931e-01 -5.316106e-01
-  ## [10,] -7.499367e-09 -1.125898e-02  4.013399e-02 -3.989931e-01  6.029746e-01
+eigen() decomposition
+$values
+ [1]  1.000000e+00 -8.123457e-01 -8.123457e-01  8.123457e-01 -3.407464e-09  3.407464e-09
+ [7]  6.878591e-17 -4.393838e-17 -1.126771e-18 -1.292735e-32
+
+$vectors
+            [,1]          [,2]          [,3]          [,4]          [,5]          [,6]
+ [1,] 0.48726141 -7.071005e-01  1.590774e-03  5.000000e-01  6.735753e-01 -6.735753e-01
+ [2,] 0.52676629  7.071005e-01 -1.590774e-03  5.000000e-01  9.622504e-02 -9.622505e-02
+ [3,] 0.49149620 -2.975837e-03  7.071050e-01 -5.000000e-01  9.622504e-02 -9.622505e-02
+ [4,] 0.48044122  2.975837e-03 -7.071050e-01 -5.000000e-01  2.886751e-01 -2.886751e-01
+ [5,] 0.04932738  1.463673e-18 -5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [6,] 0.04932738  1.463673e-18  5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [7,] 0.04932738  1.463673e-18 -2.077937e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [8,] 0.04243328 -6.484884e-18 -1.103904e-17  6.319692e-17  8.072508e-09  8.072508e-09
+ [9,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
+[10,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
+               [,7]          [,8]          [,9]         [,10]
+ [1,] -3.963430e-01  3.962600e-01  1.828019e-01 -1.752367e-01
+ [2,] -1.291621e-01  2.027302e-01  2.199538e-01 -2.197680e-01
+ [3,] -3.955284e-01  3.894308e-02  2.223048e-01 -2.248876e-01
+ [4,] -4.215353e-01  1.043870e-01  2.747562e-01 -2.777266e-01
+ [5,]  5.166485e-01 -8.109210e-01 -8.798152e-01  8.790721e-01
+ [6,]  5.201366e-02 -1.308878e-01 -1.049028e-01  1.056778e-01
+ [7,]  1.346275e-01 -1.936007e-01  9.054366e-02 -9.554811e-02
+ [8,]  2.547528e-16 -1.352936e-16 -1.025353e-16  1.072771e-16
+ [9,]  3.196396e-01  1.965446e-01 -2.821213e-03 -5.466313e-03
+[10,]  3.196396e-01  1.965446e-01 -2.821213e-03  1.388344e-02
+
 \end{verbatim}
 
 So in this case \sout{the} a stationary point is
@@ -287,7 +380,7 @@ However this vector does not sum to 1 so the scale should be adjusted
 \end{verbatim}
 
 \item Power Value Method
-\label{sec:org22b1bc2}
+\label{power-value-method}
 Using the power method should give the same result, which it indeed
 does, but for the scale:
 
@@ -356,7 +449,7 @@ same value will be returned:
 \end{verbatim}
 
 \item Scaling
-\label{sec:org5c3d257}
+\label{scaling}
 However if the initial state sums to 1, then the scale of the stationary
 vector will also sum to 1.
 
@@ -387,9 +480,9 @@ vector will also sum to 1.
 \end{verbatim}
 \end{enumerate}
 \subsection{Implementing Page Rank on a much Larger Graph}
-\label{sec:org8b3e04f}
+\label{sec:orgcf71983}
 \subsubsection{Creating the Probability Transition Matrix}
-\label{sec:orgbdfee74}
+\label{sec:orgcd31bc8}
 Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
 
 An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
@@ -439,7 +532,7 @@ summary(A)
 20 595348 993420  85
 \end{verbatim}
 
-As before in section \ref{sec:org12515f7}, the probability transition matrix can be found by:
+As before in section \ref{probability-transition-matrix}, the probability transition matrix can be found by:
 
 \begin{enumerate}
 \item Transposing the adjacency matrix, then
@@ -538,10 +631,10 @@ summary(t(A) %*% D)
 \end{verbatim}
 
 \subsubsection{Solving the Random Surfer via the Power Method}
-\label{sec:org9a52f30}
+\label{sec:orgea532ed}
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
-However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{sec:org61092d1}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
+However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
 
 The power method is given by:
 
@@ -607,4 +700,91 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 p %>% head() %>% print()
 \end{minted}
+\section{Notes}
+\label{sec:org9b5f17b}
+
+\begin{description}
+\item[{Eigenvector Centrality}] PageRank
+
+\begin{itemize}
+\item The probability of landing on a vertex in a random walk by adding a small random probability to each vertex.
+\end{itemize}
+
+\item[{Irreducible}] Ergodic
+\begin{itemize}
+\item All Vertices can be reached from any other vertex
+\end{itemize}
+\end{description}
+
+\subsection{Page Rank Methods}
+\label{sec:org0e0bdda}
+
+These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.
+
+If each vertex is connected the graph is said to be ergodic and there is a closed solution for the limit values of the frequencies given this random walk:
+
+\begin{itemize}
+\item The eigenvalue equal to 1
+\item If the graph is not directed \(\vec{p}\) is a vector of length \(n\):
+\begin{itemize}
+\item \(n\) is the number of nodes in the graph \(G\)
+\item \(\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}\)
+\begin{itemize}
+\item \(\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]\)
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+For large matrices calculating the eigenvalues will be expensive and so instead the power method is used, which is essentially looping over until the vector converges to a solution.
+
+\begin{align}
+\vec{p} = \mathrm{T}\vec{p} \label{eq:pageRank-Method}
+\end{align}
+
+where:
+
+\begin{description}
+\item[{\(\mathrm{A}\)}] Is the adjacency Matrix, an element is 1 if movement from the row vertex to the column vertex is permitted.
+\begin{itemize}
+\item The matrix may be weighted in some way, for example 5 edges between vertices may be such that a 5 is used in the matrix not a 1
+\item An undirected graph will be such that \(\mathbf{A} = \mathbf{A}^{\mathrm{\mathbf{T}}}\)
+\end{itemize}
+\item[{\(\mathrm{T}\)}] Is the transition probability matrix, an element in the matrix describes the probability of moving from the column-vertex to the row-vertex
+\begin{itemize}
+\item The transition matrix is intended to be such that for a given state distribution \(\vec{p}\), the next iteration of a random walk will be \(\mathrm{T}\vec{p}\)
+\item Observe also that \(\mathrm{T} = \mathrm{T} \cdot \mathrm{diag}(\mathtt{colsums}(\mathrm{A^{\mathrm{T}}}))\)
+\begin{itemize}
+\item i.e. the transpose of the adjacency matrix with each column scaled to 1.
+\end{itemize}
+\end{itemize}
+\end{description}
+
+
+\subsubsection{Random Surfer}
+\label{sec:org7035fdf}
+
+If a graph is non-ergodic, then a random walk isn't as easy to implement because in escence there are multiple graphs, to address this, some value \(\lambda\) is introduces which represents the probability of moving from one vertex to any other vertex.
+Essentially the difference here is
+
+\subsubsection{Power Walk Method}
+\label{sec:org91001dc}
+
+\begin{align}
+\mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
+\end{align}
+
+
+
+where:
+
+\begin{itemize}
+\item \(\mathbf{B}= \beta^{\mathbf{A}}\)
+\begin{description}
+\item[{\(x\beta^{1}\) }] probability of following an edge of weight 1
+\item[{\(x\beta^{0}\) }] probability of following an edge of weight 0
+\item[{\(x\beta^{-1}\)}] probability of following an edge of weight -
+\end{description}
+\item \(D_{B} = \mathtt{colsums}(\mathbf{B})\)
+\item[{\(\mathbf{A}\)}] The Adjacency Matrix
+\end{itemize}
 \end{document}

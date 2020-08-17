@@ -2,6 +2,7 @@
 Ok. The discovery project is meant to be more of a data analysis project, so say
 that you will be investigating the relationship between the second eigenvalue
 and the model and graph parameters.
+:PREAMBLE:
 # #+STARTUP: latexpreview
 #+OPTIONS: broken-links:auto
 #+INFOJS_OPT: view:showall toc:3
@@ -9,6 +10,7 @@ and the model and graph parameters.
 #+OPTIONS: tex:t
 #+TODO: TODO IN-PROGRESS WAITING DONE
 #+CATEGORY: DProj
+:END:
 :HTML:
 #+INFOJS_OPT: view:info toc:3
 #+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="../resources/style.css">
@@ -16,15 +18,13 @@ and the model and graph parameters.
 :END:
 :R:
 #+PROPERTY: header-args:R :session TADMain :dir ./ :cache yes :eval never-export :exports both
-# exports: both (or code or whatever)
-# results: table (or output or whatever)
 :END:
-:SlowDown:
-# #+STARTUP: latexpreview
-#+LATEX_HEADER: \usepackage{../resources/style}
-# #+latex_header: \addbibresource{/home/ryan/Dropbox/Studies/Papers/references.bib}
-#+latex_header: \addbibresource{./../references.bib}
+:LATEX:
+# #+LATEX_HEADER: \usepackage{../resources/style}
+#+LATEX_HEADER: \usepackage{../resources/referencing}
+#+LATEX_HEADER: \addbibresource{../resources/references.bib}
 # #+LATEX_HEADER: \twocolumn
+:END:
 
 * TODO Introduction
 #+begin_quote
@@ -32,7 +32,10 @@ Your title should give a clear indication of your proposed research approach or
 key question
 #+end_quote
 
-Much information is interconnected,
+Much information is interconnected, cite:teamSparseMatrixOperations
+
+
+another test reference cite:kamvarAdaptiveMethodsComputation2004
 
 * TODO Background and Rationale
 ** Background of issue and proposed research
@@ -172,18 +175,18 @@ $$\begin{aligned}
 \end{aligned}$$
 
 
-\* References This section is necessary for references to work in /HTML/ export,
-however it breaks LaTeX export because that relies on BibLaTex NOT BibTex which
-this is for.
-
-Org-ref hasn't been updated to allow a way to use HTML references with the
-syntax for biblatex.
-
-The Auto Sync is handled from inside
-
-# ####### Delete these!!!!!
-+<<bibliographystyle link>> bibliographystyle:unsrt
-
-<<bibliography link>>
-bibliography:./../references.bib
-# ####### Delete these!!!!!
+#    * References This section is necessary for references to work in /HTML/ export,
+#    however it breaks LaTeX export because that relies on BibLaTex NOT BibTex which
+#    this is for.
+#
+#    Org-ref hasn't been updated to allow a way to use HTML references with the
+#    syntax for biblatex.
+#
+#    The Auto Sync is handled from inside
+#
+#    # ####### Delete these!!!!!
+#    +<<bibliographystyle link>> bibliographystyle:unsrt
+#
+#    <<bibliography link>>
+#    bibliography:./../references.bib
+#    # ####### Delete these!!!!!
