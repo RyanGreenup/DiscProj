@@ -1,0 +1,251 @@
+---
+title: "R Notebook"
+output:
+  html_document: 
+    keep_md: yes
+  html_notebook: default
+  pdf_document: default
+---
+
+```{r}
+if (require("pacman")) {
+    library(pacman)
+  }else{
+    install.packages("pacman")
+    library(pacman)
+  }
+  pacman::p_load(tidyverse)
+```
+
+# Implementing Page Rank Methods
+
+## Example Graph
+
+Consider the following Graph taken from the paper:
+
+```{r}
+g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
+plot(g1)
+```
+
+### Adjacency Matrix
+
+The adjacency Matrix is given by:
+
+```{r}
+A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %>% 
+  as.matrix()
+
+## Adjust the Order 
+(A <- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))])
+```
+
+### State Distribution
+
+The state distribution is the transpose of the adjacency matrix:
+
+```{r}
+(p0 <- t(A))
+```
+
+### Probability Transition Matrix
+
+The probability transition matrix is such that each column of the initial state
+distribution (i.e. the transposed adjacency matrix) is scaled to 1.
+
+```{r}
+p0 %*% diag(1/colSums(p0))
+```
+#### Create a Function
+
+```{r}
+adj_to_probTrans <- function(adjMat) {
+  t(adjMat) %*% diag(1/colSums(t(adjMat)))
+}
+
+(T <- adj_to_probTrans(A)) %>% round(2)
+```
+
+
+
+## Page Rank Random Surfer
+
+The random surfer page rank method modifies the probability transition matrix
+$T$ so that the method works also for non-ergodic graphs by introducing
+the possibility of a random jump, we'll call the surfer transition matrix $S$:
+
+\begin{align}
+    S &= \lambda T +  \left( 1- \lambda \right)B :\\
+\ \\
+    B&= \begin{bmatrix} 
+	\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+	\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+        \vdots      & \vdots      & \ddots & \vdots \\
+	\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \end{bmatrix}  \\
+    N&= \left| \left| V \right| \right| \\
+    \lambda &\in [0,1]
+\end{align}
+
+
+```{r}
+B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
+l <- 0.8
+
+S <- l*T+(1-l)*B
+```
+
+
+### Eigen Value Method
+
+The eigenvector corresponding to the the eigenvalue of 1 will be the stationary point:
+
+```{r}
+eigen(S, symmetric = FALSE)
+```
+
+So in this case ~~the~~ a stationary point is $\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle$
+
+which can be verified:
+
+$$
+1 \vec{p} = S\vec{p}
+$$
+
+```{r}
+(p     <- eigen(S)$values[1] * eigen(S)$vectors[,1])
+(p_new <- S %*% p)
+```
+
+However this vector does not sum to 1 so the scale should be adjusted (for probabilities the vector should sum to 1):
+
+```{r}
+(p_new <- p_new/sum(p_new))
+```
+
+
+### Power Value Method
+
+Using the power method should give the same result, which it indeed does, but for the scale: 
+
+```{r}
+p_new <- p_new *123456789
+    
+while (sum(round(p, 9) != round(p_new, 9))) {
+    (p     <- p_new) 
+    (p_new <- S %*% p)
+}
+
+p_new
+p
+
+```
+
+This answer is however identical in direction, if it scaled to 1 the same value will be returned:
+
+```{r}
+(p_new <- p_new/sum(p_new))
+```
+
+
+### Scaling
+
+However if the initial state sums to 1, then the scale of the stationary vector will also sum to 1.
+
+```{r}
+p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+p_new <- S %*% p
+    
+while (sum(round(p, 9) != round(p_new, 9))) {
+    (p     <- p_new) 
+    (p_new <- S %*% p)
+}
+
+cbind(p_new, p)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
