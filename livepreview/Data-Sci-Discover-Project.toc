@@ -1,9 +1,0 @@
-\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
-\defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {}Links}{1}{section.1}%
-\defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {}Proposal}{1}{section.2}%
-\defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {}Question}{1}{subsection.2.1}%
-\defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {}Working}{2}{subsection.2.2}%

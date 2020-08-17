@@ -1,7 +1,0 @@
-\begin{Verbatim}[commandchars=\\\{\}]
-  \PYG{n}{A} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n}{igraph}\PYG{o}{::}\PYG{n+nf}{get.adjacency}\PYG{p}{(}\PYG{n}{g1}\PYG{p}{,} \PYG{n}{names} \PYG{o}{=} \PYG{k+kc}{TRUE}\PYG{p}{,} \PYG{n}{sparse} \PYG{o}{=} \PYG{k+kc}{FALSE}\PYG{p}{)} \PYG{o}{\PYGZpc{}\PYGZgt{}\PYGZpc{}}
-    \PYG{n+nf}{as.matrix}\PYG{p}{()}
-
-  \PYG{c+c1}{\PYGZsh{}\PYGZsh{} Adjust the Order}
-  \PYG{p}{(}\PYG{n}{A} \PYG{o}{\PYGZlt{}\PYGZhy{}} \PYG{n}{A}\PYG{p}{[}\PYG{n+nf}{order}\PYG{p}{(}\PYG{n+nf}{as.integer}\PYG{p}{(}\PYG{n+nf}{row.names}\PYG{p}{(}\PYG{n}{A}\PYG{p}{))),} \PYG{n+nf}{order}\PYG{p}{(}\PYG{n+nf}{as.integer}\PYG{p}{(}\PYG{n+nf}{colnames}\PYG{p}{(}\PYG{n}{A}\PYG{p}{)))])}
-\end{Verbatim}
