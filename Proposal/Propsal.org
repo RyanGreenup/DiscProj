@@ -1,5 +1,7 @@
 #+TITLE: Relationship of Model Parameters and Solution Stability in the Power Walk Page Rank Method.
-Ok. The discovery project is meant to be more of a data analysis project, so say that you will be investigating the relationship between the second eigenvalue and the model and graph parameters.
+Ok. The discovery project is meant to be more of a data analysis project, so say
+that you will be investigating the relationship between the second eigenvalue
+and the model and graph parameters.
 # #+STARTUP: latexpreview
 #+OPTIONS: broken-links:auto
 #+INFOJS_OPT: view:showall toc:3
@@ -19,13 +21,19 @@ Ok. The discovery project is meant to be more of a data analysis project, so say
 :END:
 :SlowDown:
 # #+STARTUP: latexpreview
-#+LATEX_HEADER: \usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyle}
+#+LATEX_HEADER: \usepackage{/home/ryan/Dropbox/profiles/Templates/LaTeX/ScreenStyleDV}
 # #+latex_header: \addbibresource{/home/ryan/Dropbox/Studies/Papers/references.bib}
 #+latex_header: \addbibresource{./../references.bib}
 # #+LATEX_HEADER: \twocolumn
 
-* TODO Title
-Your title should give a clear indication of your proposed research approach or key question
+* TODO Introduction
+#+begin_quote
+Your title should give a clear indication of your proposed research approach or
+key question
+#+end_quote
+
+Much information is interconnected,
+
 * TODO Background and Rationale
 ** Background of issue and proposed research
 ** Indentify discipline
@@ -37,7 +45,9 @@ Structure the literature in a logical way
 *** Different Sources
 
 * TODO Research Question
-You should formulate these clearly, giving an explanation as to what problems and issues are to be explored and why they are worth exploring* TODO Research Methodology
+You should formulate these clearly, giving an explanation as to what problems
+and issues are to be explored and why they are worth exploring* TODO Research
+Methodology
 
 * Research Methodology
 
@@ -51,11 +61,17 @@ You should formulate these clearly, giving an explanation as to what problems an
 
 ** Question
 
-/Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \alpha/
+/Can we determine the second eigenvalue from the method parameters? For
+PageRank, the second eigenvalue is equal to the smoothing parameter \alpha/
 
 #+begin_quote
-Yes. An open question for the Power Walk method is, can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \alpha. The second eigenvalue determines how long the algorithm takes to converge and how stable the solution is.
-To begin, implement the method for computing PageRank and then the Power Walk. It can all be done using sparse matrices, so it only requires a fraction of the memory and is each iteration is quick.
+Yes. An open question for the Power Walk method is, can we determine the second
+eigenvalue from the method parameters? For PageRank, the second eigenvalue is
+equal to the smoothing parameter \alpha. The second eigenvalue determines how
+long the algorithm takes to converge and how stable the solution is. To begin,
+implement the method for computing PageRank and then the Power Walk. It can all
+be done using sparse matrices, so it only requires a fraction of the memory and
+is each iteration is quick.
 #+end_quote
 
 ** Working
@@ -65,7 +81,7 @@ Take the exemplar Graph from Figure 1:
 
 #+NAME: DotLib
 #+CAPTION: Code to Generate DOT Graph
-#+begin_src plantuml :output both :file ./Media/Example.png :exports both :eval never-export :eval never-export
+#+begin_src plantuml :output results :file ./Media/Example.png :exports both :eval never-export :eval never-export
 # #+begin_src javascript :exports code
 @startdot
 strict digraph graphName {
@@ -104,9 +120,7 @@ D -> C
 
 
 
-$$\begin{aligned}
-    \Gamma =  I - n D^{- 1}_B \\
-\end{aligned}$$
+$$\begin{aligned} \Gamma = I - n D^{- 1}_B \\ \end{aligned}$$
 
 Where we have the following:
 
@@ -158,16 +172,17 @@ $$\begin{aligned}
 \end{aligned}$$
 
 
-\* References
-This section is necessary for references to work in /HTML/ export, however it breaks LaTeX export because that relies on BibLaTex NOT BibTex which this is for.
+\* References This section is necessary for references to work in /HTML/ export,
+however it breaks LaTeX export because that relies on BibLaTex NOT BibTex which
+this is for.
 
-Org-ref hasn't been updated to allow a way to use HTML references with the syntax for biblatex.
+Org-ref hasn't been updated to allow a way to use HTML references with the
+syntax for biblatex.
 
 The Auto Sync is handled from inside
 
 # ####### Delete these!!!!!
-+<<bibliographystyle link>>
-bibliographystyle:unsrt
++<<bibliographystyle link>> bibliographystyle:unsrt
 
 <<bibliography link>>
 bibliography:./../references.bib
