@@ -1,4 +1,4 @@
-% Created 2020-08-17 Mon 13:37
+% Created 2020-08-19 Wed 07:58
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -15,7 +15,8 @@
 \usepackage{capt-of}
 \usepackage{hyperref}
 \usepackage{minted}
-\usepackage{resources/referencing}
+\IfFileExists{./resources/lllstyle}{\usepackage{resources/style}}{}
+\IfFileExists{./resources/referencing.sty}{\usepackage{resources/referencing}}{}
 \addbibresource{resources/references.bib}
 \author{Ryan Greenup}
 \date{\today}
@@ -25,7 +26,7 @@
  pdftitle={Data Sci Discover Project},
  pdfkeywords={},
  pdfsubject={},
- pdfcreator={Emacs 27.1 (Org mode 9.4)}, 
+ pdfcreator={Emacs 26.3 (Org mode 9.4)}, 
  pdflang={English}}
 \begin{document}
 
@@ -34,11 +35,10 @@
 
 
 \section{Links}
-\label{sec:orgd0c0a3e}
+\label{sec:orgd8cac5a}
 \begin{itemize}
-\item \href{file:///home/ryan/Dropbox/Notes/Org/ThinkingAboutData.org}{Thinking About Data}
-\item \href{laparkPowerWalk2013.pdf}{Paper}
 \item \href{Proposal/Propsal.org}{Research Proposal}
+\item \href{laparkPowerWalk2013.pdf}{Paper}
 \item \href{ImplementingPageRank/01PageRank.Rmd}{Preliminary Implementation}
 \item \href{ImplementingPageRank/01PageRank.R}{Implement Random Surfer on Sparse Matrix}
 \item \href{ImplementingPowerWalk/01PowerWalk.R}{Implement Power Walk on Sparse Matrix}
@@ -47,10 +47,10 @@
 
 
 \section{Proposal}
-\label{sec:orgd23fe58}
+\label{sec:org611f515}
 
 \subsection{Question}
-\label{sec:org9b9561c}
+\label{sec:org1f2d35c}
 
 \emph{Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \(\alpha\)}
 
@@ -60,7 +60,7 @@ To begin, implement the method for computing PageRank and then the Power Walk. I
 \end{quote}
 
 \subsection{Working}
-\label{sec:org54f27c8}
+\label{sec:orgedb3342}
 
 Take the exemplar Graph from Figure 1:
 
@@ -125,7 +125,7 @@ Where we have the following:
 
 
 \section{Working}
-\label{sec:org7a7e645}
+\label{sec:org53d06b1}
 \begin{minted}[]{r}
   if (require("pacman")) {
       library(pacman)
@@ -139,9 +139,9 @@ Where we have the following:
 \end{minted}
 
 \subsection{Implementing Page Rank Method on a small graph}
-\label{implementing-page-rank-methods}
+\label{sec:orgd1c7271}
 \subsubsection{Example Graph}
-\label{example-graph}
+\label{sec:orgb098a3f}
 Consider the following Graph taken from the paper:
 
 \begin{minted}[]{r}
@@ -155,7 +155,7 @@ Consider the following Graph taken from the paper:
 
 \begin{enumerate}
 \item Adjacency Matrix
-\label{adjacency-matrix}
+\label{sec:org39edb0e}
 The adjacency Matrix is given by:
 
 \begin{minted}[]{r}
@@ -181,7 +181,7 @@ The adjacency Matrix is given by:
 \end{verbatim}
 
 \item State Distribution
-\label{state-distribution}
+\label{sec:org66db707}
 The state distribution is the transpose of the adjacency matrix:
 
 \begin{minted}[]{r}
@@ -203,7 +203,7 @@ The state distribution is the transpose of the adjacency matrix:
 \end{verbatim}
 
 \item Probability Transition Matrix
-\label{probability-transition-matrix}
+\label{sec:org035b5f7}
 The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
@@ -228,7 +228,7 @@ scaled to 1.
 
 \begin{enumerate}
 \item Create a Function
-\label{create-a-function}
+\label{sec:orgc57a2a2}
 \begin{minted}[]{r}
   adj_to_probTrans <- function(adjMat) {
     t(adjMat) %*% diag(1/colSums(t(adjMat)))
@@ -254,7 +254,7 @@ scaled to 1.
 \end{enumerate}
 
 \subsubsection{Page Rank Random Surfer}
-\label{page-rank-random-surfer}
+\label{sec:org9cdc1f7}
 The random surfer page rank method modifies the probability transition
 matrix \(T\) so that the method works also for non-ergodic graphs by
 introducing the possibility of a random jump, we'll call the surfer
@@ -282,7 +282,7 @@ transition matrix \(S\):
 
 \begin{enumerate}
 \item Eigen Value Method
-\label{eigen-value-method}
+\label{sec:orgebc9380}
 The eigenvector corresponding to the the eigenvalue of 1 will be the
 stationary point:
 
@@ -380,7 +380,7 @@ However this vector does not sum to 1 so the scale should be adjusted
 \end{verbatim}
 
 \item Power Value Method
-\label{power-value-method}
+\label{sec:org1043859}
 Using the power method should give the same result, which it indeed
 does, but for the scale:
 
@@ -449,7 +449,7 @@ same value will be returned:
 \end{verbatim}
 
 \item Scaling
-\label{scaling}
+\label{sec:org2a7bcdb}
 However if the initial state sums to 1, then the scale of the stationary
 vector will also sum to 1.
 
@@ -480,9 +480,9 @@ vector will also sum to 1.
 \end{verbatim}
 \end{enumerate}
 \subsection{Implementing Page Rank on a much Larger Graph}
-\label{sec:orgcf71983}
+\label{sec:orgdfd9fdf}
 \subsubsection{Creating the Probability Transition Matrix}
-\label{sec:orgcd31bc8}
+\label{sec:orgc266609}
 Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
 
 An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
@@ -532,7 +532,7 @@ summary(A)
 20 595348 993420  85
 \end{verbatim}
 
-As before in section \ref{probability-transition-matrix}, the probability transition matrix can be found by:
+As before in section \ref{sec:org035b5f7}, the probability transition matrix can be found by:
 
 \begin{enumerate}
 \item Transposing the adjacency matrix, then
@@ -631,10 +631,10 @@ summary(t(A) %*% D)
 \end{verbatim}
 
 \subsubsection{Solving the Random Surfer via the Power Method}
-\label{sec:orgea532ed}
+\label{sec:org79c1ddc}
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
-However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
+However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{sec:org9cdc1f7}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
 
 The power method is given by:
 
@@ -701,7 +701,7 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 p %>% head() %>% print()
 \end{minted}
 \section{Notes}
-\label{sec:org9b5f17b}
+\label{sec:org5319e3b}
 
 \begin{description}
 \item[{Eigenvector Centrality}] PageRank
@@ -717,7 +717,7 @@ p %>% head() %>% print()
 \end{description}
 
 \subsection{Page Rank Methods}
-\label{sec:org0e0bdda}
+\label{sec:org56f39aa}
 
 These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.
 
@@ -761,13 +761,13 @@ where:
 
 
 \subsubsection{Random Surfer}
-\label{sec:org7035fdf}
+\label{sec:orgd71cd63}
 
 If a graph is non-ergodic, then a random walk isn't as easy to implement because in escence there are multiple graphs, to address this, some value \(\lambda\) is introduces which represents the probability of moving from one vertex to any other vertex.
 Essentially the difference here is
 
 \subsubsection{Power Walk Method}
-\label{sec:org91001dc}
+\label{sec:org9334651}
 
 \begin{align}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}

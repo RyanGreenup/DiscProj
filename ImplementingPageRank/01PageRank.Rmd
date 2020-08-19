@@ -1,4 +1,5 @@
 ---
+# results: table (or output or whatever)
 title: "R Notebook"
 output:
   html_document: 
