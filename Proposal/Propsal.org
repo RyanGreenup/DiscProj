@@ -20,8 +20,8 @@ and the model and graph parameters.
 #+PROPERTY: header-args:R :session TADMain :dir ./ :cache yes :eval never-export :exports both
 :END:
 :LATEX:
-# #+LATEX_HEADER: \usepackage{../resources/style}
-#+LATEX_HEADER: \usepackage{../resources/referencing}
+#+LATEX_HEADER: \IfFileExists{../resources/style.sty}{\usepackage{../resources/style}}{}
+#+LATEX_HEADER: \IfFileExists{../resources/referencing.sty}{\usepackage{../resources/referencing}}{}
 #+LATEX_HEADER: \addbibresource{../resources/references.bib}
 # #+LATEX_HEADER: \twocolumn
 :END:
