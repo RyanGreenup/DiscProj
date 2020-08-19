@@ -32,10 +32,56 @@ Your title should give a clear indication of your proposed research approach or
 key question
 #+end_quote
 
-Much information is interconnected, cite:teamSparseMatrixOperations
+Much information is interconnected, be it an article, research paper, movie, books, personal notes, knowledge bases, peronal releationships etc., this interconnectivity creates a network which can naturally visualised as a graph.
+
+Determining which vertex of this graph is centred is useful as it may assist in research, learning and collaborating. The /Page Rank/ method, which originally underpinned [[www.google.com][Google]], essentially asserts that the centre most vertex of a graph is the vertex that has the highest probability of being a destination after a random walk  cite:larrypageAnatomyLargescaleHypertextual1998, this method is popular, however, does not easily adapt to negatively weighted edges (which would suggest dissaproval as opposed to endorsement),  a limitation which is increasingly important as the area of /Sentiment Analysis/ within the field of /Text Mining/ is developed. cite:parkPowerWalkProceedings2013
+
+The /Power Walk/ Method is similar to the /Random Surfer/ model but takes a different approach in order to accomadate the potential for an edge to have some real weight. cite:parkPowerWalkProceedings2013
+
+This research project will be an investigation into the relationship between model parameters and the solution stability of the /Power Walk/ method.
+
+** Motivation
+
+Taking advantages of inter-related ideas allows for exploratory research which can promote both a deeper and broader understading of a topic, an example of this is the concept of a /pathfinder/, which is a list of central sources for a topic that can help in early stages of literature searches. cite:harbesonTeachingReferenceBibliography1972
+
+A comprehensive review of the pathfinder approach, however, reveals that many such subject guides are not consistent with the needs of those engaging in research on any such topic. cite:vilenoPaperElectronicEvolution2007 This is issue is somewhat analogous to the issue faced by Larry Page and Sergey Brin in that the centrality of an article of information corresponds very greatly to it's relevance. cite:larrypageAnatomyLargescaleHypertextual1998
+
+Using /Wikipedia/ can make for a very effective subject guide by following the various hyperlinks across wikipedia and leveraging [[https://www.mediawiki.org/wiki/Help:Categories][Category Pages]] cite:HelpCategoriesMediaWiki in order to map out a topic, referring to references as necessary, a strategy even recommended by some [[https://mville.libguides.com/c.php?g=370066&p=2500344][Library Study Guides]] cite:moskowitzLibraryGuidesWikipedia, this strategy has even been implemented in recommendation systems to overcome a lack of data cite:loizouUsingWikipediaAlleviate2010a (see section #CITE).
 
 
-another test reference cite:kamvarAdaptiveMethodsComputation2004
+
+to such an extent that some introductory texts in certain disciplines, such as law, even outright advise the use of an encyclopedia such as /WestLaw/ cite:WestlawAU before searching for material cite:bottNemesCossEffective2012.
+
+Institution examples:
+
+- [[https://libraries.mit.edu/experts/][/M.I.T./]] cite:mitResearchGuidesExpert
+- [[https://guides.library.harvard.edu/][/Harvard/]] cite:harvarduniversityResearchGuides
+- [[https://www.lib.berkeley.edu/libraries/business-library][Berkley University]] cite:berkleyuniversityBusinessLibraryUC
+- [[https://www.loc.gov/rr/scitech/tracer-bullets/][/Library of Congress/]] cite:ScienceTracerBullets
+  - The Library of Congress refers to a /PathFinder/ as a /Tracer Bullet/, which is both a very descriptive and very American name.
+
+Wiki Examples:
+
+- [[http://mathonline.wikidot.com/][Math Online]]  cite:Mathonline
+- [[https://brilliant.org/wiki/best/][Top /Brilliant/ Wiki Pages]] cite:Top100Wiki
+- [[https://www.mediawiki.org/wiki/Help:Categories][Category Pages within MediaWiki Sites]] cite:HelpCategoriesMediaWiki
+  - For example the [[https://en.wikipedia.org/wiki/Category:Mathematics][Mathematics Category Page]] cite:CategoryMathematics2019
+
+The [[https://en.wikipedia.org/wiki/Collective_Knowledge_(software)][/Zettelkasten/ method]] of note taking essentially involves a collection of small interlinked notes cite:OverviewZettelkastenMethod, much like a wiki, within the last two decades this method has peaked in popularity cite:GoogleBooksNgram, despite being a method dating back to atleast the 18th Century. cite:haarkoetterAllesWesentlicheFindet This is clearly driven in party by the development of the internet, /HTML/ and the increasing breadth and depth of human knowledge.
+
+
+- potential for deeper understanding
+- Related Ideas
+- Provides a sort of meta data over the top
+- Wikis are taking off
+- look at the Zettelkasten phenomena
+  - Zettlr
+  - zettel
+  - Roam
+    - Org-Roam
+    - Foam
+
+
 
 * TODO Background and Rationale
 ** Background of issue and proposed research
@@ -47,6 +93,14 @@ another test reference cite:kamvarAdaptiveMethodsComputation2004
 Structure the literature in a logical way
 *** Different Sources
 
+
+** To Sort out
+- Using Wikipedia to alleviate data sparsity issues in recommender systems
+  - cite:loizouUsingWikipediaAlleviate2010a
+  - The relationships in Wikipedia are very useful, we can use them sort of like a model, by mapping topics to articles and leveraging the interlinked pages we might be able to extrapolate that back out to useful recommendations.
+- /Network analysis of usergenerated content quality in Wikipedia/
+  + cite:ingawaleNetworkAnalysisUser2013a
+    - Can We relate Social Media to Wikipedia with respect to quality
 * TODO Research Question
 You should formulate these clearly, giving an explanation as to what problems
 and issues are to be explored and why they are worth exploring* TODO Research
