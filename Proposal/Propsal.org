@@ -1,6 +1,6 @@
 #+TITLE: Relationship of Model Parameters and Solution Stability in the Power Walk Page Rank Method.
 :PREAMBLE:
-# #+STARTUP: latexpreview
+#+OPTIONS: broken-links:auto todo:nil H:9
 #+OPTIONS: broken-links:auto
 #+INFOJS_OPT: view:showall toc:3
 #+PLOT: title:"Citas" ind:1 deps:(3) type:2d with:histograms set:"yrange [0:]"
