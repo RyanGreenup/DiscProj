@@ -1,6 +1,7 @@
 #+TITLE: Relationship of Model Parameters and Solution Stability in the Power Walk Page Rank Method.
 :PREAMBLE:
-#+OPTIONS: broken-links:auto todo:nil H:9
+# #+OPTIONS: broken-links:auto todo:nil H:9
+#+OPTIONS: broken-links:auto H:9
 #+OPTIONS: broken-links:auto
 #+INFOJS_OPT: view:showall toc:3
 #+PLOT: title:"Citas" ind:1 deps:(3) type:2d with:histograms set:"yrange [0:]"
@@ -21,7 +22,6 @@
 #+LATEX_HEADER: \IfFileExists{../resources/style.sty}{\usepackage{../resources/style}}{}
 #+LATEX_HEADER: \IfFileExists{../resources/referencing.sty}{\usepackage{../resources/referencing}}{}
 #+LATEX_HEADER: \addbibresource{../resources/references.bib}
-# #+LATEX_HEADER: \twocolumn
 :END:
 * Introduction
 
@@ -92,21 +92,8 @@ issue is somewhat analogous to the issue faced by Larry Page and Sergey Brin in
 that the centrality of an article of information corresponds very greatly to
 it's relevance. cite:larrypageAnatomyLargescaleHypertextual1998
 
-
-- potential for deeper understanding
-- Related Ideas
-- Provides a sort of meta data over the top
-- Wikis are taking off
-- look at the Zettelkasten phenomena
-  - Zettlr
-  - zettel
-  - Roam
-    - Org-Roam
-    - Foam
-
-
-* TODO Background and Rationale
-** Background of issue and proposed research
+* Background and Rationale
+** Background of issue
 Given some graph $G(V,E)$ with $\mid V \mid = n$, a corresponding adjacency
 matrix $\mathbf{A}$ describes the number of edges between vertex $i$ and $j$,
 such that $\mathbf{A}_{i, j}$ represents the number of edges between the
@@ -114,7 +101,7 @@ vertices, with respect to a directed graph the entry may either denote:
 
 - $i \rightarrow j$
   - One such example of this implementation being the ~igraph~ library cite:gaborcsardiIgraphManualPages2019
-- $j \rightarrow i$ [[cite:nicholsonLinearAlgebraApplications2009][\textsection 2.3]], OR
+- $j \rightarrow i$ [[cite:nicholsonLinearAlgebraApplications2009][\textsection 2.3]]
 
 While both definitions appear in the literature, the latter definition is more
 common/convenient when working with /probability transition matrices/ and will
@@ -124,18 +111,17 @@ hence be adopted here.
 :PROPERTIES:
 :CUSTOM_ID: stationary-distribution
 :END:
-
 Given this adjacency matrix $\mathbf{A}$, in order to have each element
 $\mathrm{A}_{i, j}$ represent the probability of leaving $j$ and travelling to
 $i$ during a random walk (as opposed to the number of edges), each column will
 need to be scaled to one, this can be acheived with matrix multiplication as
-shown in eqref:eq:mat-mult-colsum:
+illustrated in eqref:eq:mat-mult-colsum:
 
 \begin{align}
 \mathbf{T} = \mathbf{A} \enspace \mathrm{diag}\left( \mathtt{colsums}\left(
 \mathbf{A} \right) \right) \label{eq:mat-mult-colsum} \end{align}
 
-The state distribution $\vec{p}_{k}$ describes the frequency of visiting each
+The state distribution $\vec{p}_{k}$ describes the probability of visiting each
 vertex during a random walk for the $k^{\textrm{th}}$ step of the walk, given
 this, the stationary distribution $\vec{p}$ is given by
 eqref:eq:stationary-distribution:
@@ -156,9 +142,9 @@ eqref:eq:eigen-one:
 \lambda \vec{p} &= \mathbf{T} \vec{p} \nonumber \\ \lambda = 1 \implies \vec{p}
 &= \mathbf{T} \vec{p} \label{eq:eigen-one} \end{align}
 
-*** Random Surfer
+** Random Surfer
 If however a graph is non-ergodic, this random walk will not traverse every
-vertex, to overcome this, the /Random Surfer/ model is implemented
+vertex, to overcome this, the /Random Surfer/ model can be implemented
 cite:larrypageAnatomyLargescaleHypertextual1998, by essentially introducing,
 into the /probability transition matrix/ $(\mathbf{T})$, some probability
 $(\frac{1-\alpha}{n})$ of traversing to a disconnected vertex $(V)$, this is
@@ -171,9 +157,12 @@ shown in eqref:eq:random-surfer:
 where:
 
 - $\mathbf{B}$ :: Is matrix of size $n \times n$ such that $\mathbf{B}_{i, j} = \frac{1}{n}, \enspace \forall i,j \in \left[1, n\right]\cap \mathbb{N}$
+- In the literature $\alpha$ is often referred to as a damping factor see
+  cite:berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005
+  or a smoothing parameter.
 
-*** Power Walk
-This random surfer model, however, assumes that all edges are an edorsement of
+** Power Walk
+The random surfer model eqref:eq:random-surfer, however, assumes that all edges are an edorsement of
 the target, i.e. they are weighted positively, the power walk method
 cite:parkPowerWalkProceedings2013, shown in eqref:eq:power-walk-method, takes a
 different approach to create a /transition probability matrix/ $(\mathbf{W})$ and is compatible
@@ -193,19 +182,19 @@ where:
   making a jump to a vertex for which there is no path
   + i.e. $\beta x$ is the probability of following a path with a weight of 1.
 
-*** Solving the stationary distribution
+** Solving the stationary distribution
 Solving the EigenValue problem for a large matrix can be very resource
 intensive, for example /Wikipedia/ currently has over 6, 000, 000 pages
 cite:WikipediaSizeWikipedia2020 which would correspond to an adjacency matrix
 with over $10^{12}$ entries, yet even a relatively fast compiled language like
-/Julia/ can struggle to solve the eigen vector for a matrix of size
+/Julia/ can struggle to solve the eigen vectors for a matrix of size
 $(10^{4})^{2}$ as shown in listing [[eigen-julia]].
 
 The power method, first mentioned in section [[#stationary-distribution]], is a
 better suited approach, with respect to performance, because:
 
 1. The method is only looking for one solution
-2. The accuracy of the solution (measured by $\eta$) can be tuned to improve performance.
+2. The accuracy of the solution (measured by  $\exists\eta\in \mathbb{R}$) can be tuned to improve performance.
   
 
 
@@ -227,40 +216,42 @@ time_eigenvec(10^2) time_eigenvec(10^3)
 : 0.072302487
 : 0.814937083
 
-*** Proposed Research
-Consider the ordered set of EigenVectors $\{ \lambda_{k} \mid \enspace  \lambda_{k} < \lambda_{k-1}, \enspace k\in \mathbb{Z}^{+} \leq n \}$ of a positive transition probability matrix such as $\mathbf{S}$ or $\mathbf{T}$ as in eqref:eq:stationary-distribution  and eqref:eq:random-surfer.
+* Proposed Research
+Consider the ordered set of EigenVectors eqref:eq:eigen-set of a positive
+transition probability matrix such as $\mathbf{S}$ eqref:eq:random-surfer or
+$\mathbf{T}$ eqref:eq:stationary-distribution:
 
+\begin{align}
+\{ \lambda_{k} \mid \enspace  \lambda_{k} < \lambda_{k-1}, \enspace k\in \mathbb{Z}^{+} \leq n \} \label{eq:eigen-set}
+\end{align}
 
-***** Dominant EigenVector
+** Dominant EigenVector
 It has been shown that $\lambda_{k} \leq 1, \enspace \forall k \leq n$ and that
-the dominant $\lambda$ (i.e. the largest $\mid \lambda_{k} \mid$) can be
-computed by the /power method/. cite:farahatAuthorityRankingsHITS2006
+the dominant [fn:dom] $\lambda$ can be computed by the /power method/,
+cite:farahatAuthorityRankingsHITS2006 and that this solution can be reached in a limited number of steps ($\approx 50$) for graphs on the order of a million vertices [[cite:bianchiniPageRank2005][p. 123]] (assuming that $\alpha \in \left[0, 1\right]$ is not too close to 1, in which case convergence can become quite slow cite:tanNewExtrapolationMethod2017a)
 
-
-***** Stability and Convergence
-
-How quickly the /Power Method/ converges depends on the magnitude of $\mid \lambda_{2} \mid$, cite:bryan250000002006
-
-this can be seen by recalling that, by definition, all eigenvalues other than
-$\lambda_{1}$ are less than $\mid \lambda_{2} \mid$ and hence diagonalising the
-transition matrix in terms of its eigenvalue decomposition is simply a matter of
-observing that smaller numbers tend to zero sooner that larger numbers.
+** Stability and Convergence
+:PROPERTIES:
+:CUSTOM_ID: stability-convergence
+:END:
+How quickly the /Power Method/ converges depends on the magnitude of $\mid \lambda_{2} \mid$. cite:bryan250000002006
 
 With respect to the random surfer model eqref:eq:random-surfer, It has been shown
 that $\mid \lambda_{2} \mid \leq \alpha$ and if the corresponding graph contains
 two or more irreducible closed subgraphs that the $\mid \lambda_{2} \mid = \alpha$, this is demonstrated in listing [[random-surf-r]]
 and figure [[two-sub-graph]].
 
-It has also been shown that an $\alpha$ value near 1 will imply an unstable stationary distribution cite:ngStableAlgorithmsLink2001, this is because a small change to the corresponding graph could lead to $\lambda_{1} \leftrightarrow \lambda_{2}$ and hence different eigenvectors will correspond to the solution as shown in eqref:eq:eigen-one
+It has also been shown that an $\alpha$ value near 1 will imply an unstable stationary distribution cite:ngStableAlgorithmsLink2001 that converges slowly cite:tanNewExtrapolationMethod2017a, this is because a small change to the corresponding graph could lead to $\lambda_{1} \leftrightarrow \lambda_{2}$ and hence different eigenvectors will correspond to the solution as shown in eqref:eq:eigen-one
 
-However as $\alpha$ is reduced the probability of a random walk visiting any other vertex will become more and more uniform because $\frac{1-\alpha}{n} \rightarrow \frac{1}{n}$ as $\alpha \rightarrow 0$
+** Choosing $\alpha$
+Although section [[#stability-convergence]] might suggest that smaller values of $\alpha$ may be more ideal, it is worth recalling that as $\alpha$ is reduced the probability of a random walk visiting any other vertex will become more and more uniform because $\frac{1-\alpha}{n} \rightarrow \frac{1}{n}$ as $\alpha \rightarrow 0$.
 
-It seems that The value set originally by Larry Page was $\alpha = 0.85$ [[cite:larrypageAnatomyLargescaleHypertextual1998][p. 109]] and this appears to have persisted in the literature. cite:kamvarAdaptiveMethodsComputation2004b
+The value used originally by Page and Brin was $\alpha = 0.85$ See [[cite:larrypageAnatomyLargescaleHypertextual1998][p. 109]] and this appears to have widely adopted. cite:kamvarAdaptiveMethodsComputation2004b,boldiPageRankFunctionDamping2005, however research suggests that modifying the value by be useful in detecting spam cite:zhangMakingEigenvectorBasedReputation2004,boldiPageRankFunctionDamping2005
 
 
 #+NAME: random-surf-r
 #+CAPTION: Implementing the random surfer model for the graph shown in figure [[my-graph]]
-#+begin_src R :session graph-two :results output
+#+begin_src R :session graph-two :results output :exports code
 library(igraph)
 library(tidyverse)
 
@@ -283,11 +274,11 @@ S <- ɑ*T+(1-ɑ)*B
 
 
 eigen(S, symmetric = FALSE)$values
-#+end_src
 
-#+RESULTS[26baba112ee47d365a638631dccc8a9ad363c7f0]: random-surf-r
-:  [1]  1.000000e+00 -1.234568e-01  1.234568e-01 -1.234568e-01  2.231012e-10
-:  [6] -2.231012e-10 -8.488298e-18  3.570154e-18 -1.450336e-20  9.629650e-35
+
+## [1]  1.000000e+00 -1.234568e-01  1.234568e-01 -1.234568e-01  2.231012e-10
+## [6] -2.231012e-10 -8.488298e-18  3.570154e-18 -1.450336e-20  9.629650e-35
+#+end_src
 
 #+NAME: two-sub-graph-code
 #+CAPTION: Figure of a graph with two subgraphs, identical to graph published by Park and Simoff cite:parkPowerWalkProceedings2013
@@ -301,10 +292,9 @@ plot(g1)
 #+RESULTS[377d90f1148806c31aca042e87490655e75517cf]: two-sub-graph-code
 [[file:two-sub-graph-fig2.png]]
 
+** Research Question
 
-***** Research Question
-
-It has been shown that under specific circumstances the value of $\mid \lambda_{2}\mid$ can be predicted from the method parameters and properties of the graph. [[cite:parkPowerWalkProceedings2013][\textsection 3.4]]
+It is not clear how $\lambda_{2}$ behaves with respect to the /Power Walk/ method, eqref:eqref:eq:power-walk-method although it has been shown that under specific circumstances the value of $\mid \lambda_{2}\mid$ can be predicted from the method parameters and properties of the graph. [[cite:parkPowerWalkProceedings2013][\textsection 3.4]]
 
 This research will involve investigating the relationship between the second eigenvalue of the /Power Walk/ transition matrix and the features of a graph corresponding to some type of network (e.g. a social network, webpages, wiki, etc.)
 
@@ -334,20 +324,135 @@ Structure the literature in a logical way
 - Consensus Based Ranking Wikipedia cite:nemaConsensusbasedRankingWikipedia2017a
   + Bias the $\alpha$ assumption to favour websites that are more often visited in practice:
     - Thoughts: Could be dicy because nobody is going to the second page of Google.
-* TODO Research Question
-You should formulate these clearly, giving an explanation as to what problems
-and issues are to be explored and why they are worth exploring* TODO Research
-Methodology
 
-* Research Methodology
+** Skimming and summary
+*** Wikipedia
+**** [#A] Network analysis of user generated content quality in Wikipedia  cite:ingawaleNetworkAnalysisUser2013a
 
-** Theoretical Resources to be drawn on
-** Research Approach
-** Advantages and disadvantages
-* Plan of work
-- Regular consultations
+Is there a relationship between content quality and the structure of connections? Can high quality Wikipedia pages be used as a benchmark for the structure of connections.
 
-* Notes
+The network structure of interactions between articles plays an important role in the emergence of quality.
 
-** Question
+High quality articles clusture in hubs.
 
+**** [#B] Using Wikipedia to alleviate data sparsity issues in Recommender Systems cite:loizouUsingWikipediaAlleviate2010a
+For Recommender systems with limited access to data, Wikipedia can be used as an analogue with respect to connections to significantly improve performance.
+*** Page Rank
+**** [#A] A New Extrap method for PageRank computations cite:tanNewExtrapolationMethod2017a :performance:
+
+A new algorithm can be used to improve the convergence rate of the power rank method, compared to the /power method/ when the smoothing parameter $\alpha$ is near 0
+
+**** [#A] Page Rank Revisited cite:brinkmeierPageRankRevisited2006a :insight:
+The Page Rank method can be expressed as a power series and an algorithm for calculating the page rank can be derived, this corresponds to the /power method/ but offers insights into the mechanisms of the method.
+
+A slightly faster algorithm is suggested at \textsection 6.3.
+
+This is quite interesting because expressing the power walk method as a power series may offer insights with respect to the convergence and stability of the algorithm
+**** [#A] Ranking Nodes in Networks cite:berkhoutRankingNodesGeneral2018a :modification:
+The choice of damping factor of Googles page rank might have a large impact on the values given to vertices.
+
+This suggests an approach that uses structural network dynatims to provide an appropriate score distribution.
+
+The method implemented is not something I have come yet to understand, but it could be very interesting to see:
+
+- how it relates to the power walk method
+- whether or not it could offer insightts into the convergence and stability of the power walk method
+- Whether or not the method would be compatible with negatively weighted edges.
+
+**** [#A] Reordering for the pagerank cite:langvilleReorderingPageRankProblem2006 :performance:
+Reordering the pagerank problem and taking advantage of the fact that it is sparse can allow for an improved algorithm that can potentially improve performance or at worst offer no compromise in performance.
+**** [#A] Consensus based raking of Wikipedia cite:nemaConsensusbasedRankingWikipedia2017a :modification:
+Google's page rank method can be improved by replacing the background probability of $\frac{1}{n}$ with statistics of usage, this is referred to as the StatsRank, this can be aggregated with user opinion to give the ConsensusRank
+
+A limitation of this approach is that usage stats are only really available, in a neutral fashion for wikis, so too bad.
+
+**** [#A] Page rank as a function of the damping factor cite:boldiPageRankFunctionDamping2005 :insight:
+
+Demonstrates the behaviour of page rank for varying values of \alpha.
+
+Values nearer to 1 do not give a more meaningful ranking.
+
+Using iteration i.e. (the power rankmethod) gives the same exact result as the power series at the same step, similar to what was shown by brinkmeier cite:brinkmeierPageRankRevisited2006a
+
+This could be useful in developing analytical methods to solve the pagerank problem.
+**** [#B] Modified Page Rank Algorithm for Biology cite:zhangModifiedPageRankAlgorithm2018 :modification:
+
+The page rank method can be used for modelling gene expression.
+
+**** [#B] Small World for Random Surfers cite:mehrabianItSmallWorld2016 :insight:
+Graphs can be generated in order to model real world networks, these models can use the degree or  page rank of a given vertex as a parameter to create the next vertex in generating the graph.
+
+This paper discusses upper and lower bounds for the diameter of a graph generated using random-surfer web-graph model.
+**** [#B] Centrality ranking in Multiplex Networks cite:dingCentralityRankingMultiplex2018 :insight:
+
+A technique to measure node centrality for a multi-dimensional graph.
+
+**** [#B] Google's Page Rank :insight:
+A Discussion of the Math behind googles page rank
+
+**** [#B] Damping factor in Google Page Ranking cite:fuDampingFactorGoogle2006 :modification:
+The damping factor is critical in changing a website's ranking in a search, this
+modified algorithm, based on input-output ratio is proposed to substitute for
+the damping factor.
+
+It would be interesting to determine whether or not this type of a substitution could improve the performance of the /power walk/ method and what implications it would have on the method parameters and resulting convergence and stability.
+
+**** [#C] Tang Two-hop walks indicate PageRank order cite:tangTwohopWalksIndicate2019
+
+- I could not make out what the this one was about
+
+**** [#C] Bianchini, M., Gori, M., & Scarselli, F., Inside PageRank, , 5(1), 92–128 ().  http://dx.doi.org/10.1145/1052934.1052938 cite:bianchiniPageRank2005 :general:
+
+This is a discussion on the stability, complexity and critical role of parameters involved in the computation.
+
+- The page rank method will always converge for the random surfer eqref:eq:random-surfer provided that $\alpha < 1$ [[cite:bianchiniPageRank2005][\textsection 2.2]]
+
+**** [#C] survey of eigenvectors for web info cite:langvilleSurveyEigenvectorMethods2005 :general:
+Many methods for web information retrival involve eigen vectors.
+
+PageRank is impervious to spamming.
+**** [#C] PageRank of Integers :insight:
+Page rank can be used in pure mathematics.
+*** SEO
+**** [#A] Adaptive Methods for computation of page rank cite:kamvarAdaptiveMethodsComputation2004b :discoverability:
+Given a graph, how can we optimise the discoverability of a node by introducing a couple of edges. A node is considered as discoverable if it:
+
+1. Has a high page rank value
+2. The number of steps to reach that vertex from another vertex is low.
+
+**** [#B] Maximizing Page Rank :discoverability:insight:
+How can a domain be modified to improve it's page rank?
+
+Provides an optimal linkage strategy
+
+**** [#B] What is a tall poppy among web pages cite:WhatTallPoppy1998 :discoverability:
+With a training set of collected pages from typical queries a decision tree
+based machine learning algorithm is used to model a decision tree for a variety
+of search engines.
+
+Not totally relevant but a very interesting project and approach.
+**** [#C] Analysing google through SEO Data cite:AnalysingGoogleRankings
+Page Rank is an important feature of Search Engine Optimisation
+**** [#C] impact of webpage content characteristics on webpage visibility cite:zhangImpactWebpageContent2005 :discoverability:
+Webpage visibility can be improved by increasing the frequency of keywords
+*** From Paper
+**** [#A] Stable Algorithms for Link Analysis :modification:insight:eigenvalue:
+Investigates under what situations the pagerank of a matrix is resistant to perturbations of a graph, finding essentially that distance of $\lambda_{2}$ from 1 is important.
+
+A new algorithm is suggested
+**** [#A] The second EigenValue of the Google Matrix cite:haveliwalaSecondEigenvalueGoogle2003 :eigenvalue:
+Determine analytically the modulus of the second EigenValue for the /PageRank/ method.
+
+provides that $\lambda_{2} \leq \alpha$ and if there are 2 or more irreducible subgraphs $\lambda_{2}=\alpha$.
+
+This important for the rate of convergence of the algorithm.
+
+**** [#B] Community Based popularity cite:parkMiningWebMultiresolution :modification:
+A more general form of page rank using popularity scores dependent on a
+community rating can be used to improve precision.
+This is similar to the statsrank method cite:nemaConsensusbasedRankingWikipedia2017a
+**** [#B] Linear Algebra behind Google cite:bryan250000002006 :insight:
+A discussion on the algebra behind the pagerank method.
+* Footnotes
+
+[fn:dom] Dominant in this case refers to the the largest $\mid \lambda_{k} \mid$
