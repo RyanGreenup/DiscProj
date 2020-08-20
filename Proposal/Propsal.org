@@ -1,7 +1,4 @@
 #+TITLE: Relationship of Model Parameters and Solution Stability in the Power Walk Page Rank Method.
-Ok. The discovery project is meant to be more of a data analysis project, so say
-that you will be investigating the relationship between the second eigenvalue
-and the model and graph parameters.
 :PREAMBLE:
 # #+STARTUP: latexpreview
 #+OPTIONS: broken-links:auto
@@ -17,7 +14,8 @@ and the model and graph parameters.
 #+CSL_STYLE: ../resources/nature.csl
 :END:
 :R:
-#+PROPERTY: header-args:R :session TADMain :dir ./ :cache yes :eval never-export :exports both
+#+PROPERTY: header-args:R :session TADMain :dir ./ :cache yes :eval :exports both
+#+PROPERTY: header-args :eval never-export
 :END:
 :LATEX:
 #+LATEX_HEADER: \IfFileExists{../resources/style.sty}{\usepackage{../resources/style}}{}
@@ -25,49 +23,74 @@ and the model and graph parameters.
 #+LATEX_HEADER: \addbibresource{../resources/references.bib}
 # #+LATEX_HEADER: \twocolumn
 :END:
+* Introduction
 
-* TODO Introduction
-#+begin_quote
-Your title should give a clear indication of your proposed research approach or
-key question
-#+end_quote
+Much information is interconnected, be it an article, research paper, movie,
+books, personal notes, knowledge bases, peronal releationships etc., this
+interconnectivity creates a network which can naturally visualised as a graph.
 
-Much information is interconnected, be it an article, research paper, movie, books, personal notes, knowledge bases, peronal releationships etc., this interconnectivity creates a network which can naturally visualised as a graph.
+Determining which vertex of such a graph is most central is useful as it may
+assist in research, learning and collaborating. The /Page Rank/ method, which
+originally underpinned [[www.google.com][Google]]'s search-engine, essentially asserts that the
+centre most vertex of a graph could be considered the vertex that has the
+highest probability of being a destination following a random walk
+cite:larrypageAnatomyLargescaleHypertextual1998, although this method is
+popular, it does not however, easily adapt to negatively weighted edges (a
+negative weight in this case measuring dissaproval or an aversion to follow that
+link, like an advertisement, as opposed to endorsement). A limitation which is
+increasingly important as the area of /Sentiment Analysis/ within the field of
+/Text Mining/ is developed. cite:parkPowerWalkProceedings2013
 
-Determining which vertex of this graph is centred is useful as it may assist in research, learning and collaborating. The /Page Rank/ method, which originally underpinned [[www.google.com][Google]], essentially asserts that the centre most vertex of a graph is the vertex that has the highest probability of being a destination after a random walk  cite:larrypageAnatomyLargescaleHypertextual1998, this method is popular, however, does not easily adapt to negatively weighted edges (which would suggest dissaproval as opposed to endorsement),  a limitation which is increasingly important as the area of /Sentiment Analysis/ within the field of /Text Mining/ is developed. cite:parkPowerWalkProceedings2013
+The /Power Walk/ Method is similar to the /Random Surfer/ model but takes a
+different approach in order to accomadate the potential for an edge to have any
+arbirary real weight. cite:parkPowerWalkProceedings2013
 
-The /Power Walk/ Method is similar to the /Random Surfer/ model but takes a different approach in order to accomadate the potential for an edge to have some real weight. cite:parkPowerWalkProceedings2013
-
-This research project will be an investigation into the relationship between model parameters and the solution stability of the /Power Walk/ method.
+This research project will be an investigation into the relationship between
+model parameters and the solution stability of the /Power Walk/ method.
 
 ** Motivation
 
-Taking advantages of inter-related ideas allows for exploratory research which can promote both a deeper and broader understading of a topic, an example of this is the concept of a /pathfinder/, which is a list of central sources for a topic that can help in early stages of literature searches. cite:harbesonTeachingReferenceBibliography1972
+Taking advantages of inter-related ideas allows for exploratory research which
+can promote both a deeper and broader understading of a topic, an example of
+this is the concept of a /pathfinder/, which is a list of central sources for a
+topic that can help in early stages of literature searches,
+cite:harbesonTeachingReferenceBibliography1972
+Examples of such Pathfinders include:
 
-A comprehensive review of the pathfinder approach, however, reveals that many such subject guides are not consistent with the needs of those engaging in research on any such topic. cite:vilenoPaperElectronicEvolution2007 This is issue is somewhat analogous to the issue faced by Larry Page and Sergey Brin in that the centrality of an article of information corresponds very greatly to it's relevance. cite:larrypageAnatomyLargescaleHypertextual1998
+- Institution examples:
+  + [[https://libraries.mit.edu/experts/][/M.I.T./]] cite:mitResearchGuidesExpert
+  + [[https://guides.library.harvard.edu/][/Harvard/]] cite:harvarduniversityResearchGuides
+  + [[https://www.lib.berkeley.edu/libraries/business-library][Berkley University]] cite:berkleyuniversityBusinessLibraryUC
+  + [[https://www.loc.gov/rr/scitech/tracer-bullets/][/Library of Congress/]] cite:ScienceTracerBullets
+    - The Library of Congress refers to a /PathFinder/ as a /Tracer Bullet/, which is both a very descriptive and very American name.
+- Wiki Examples:
+  + [[http://mathonline.wikidot.com/][Math Online]]  cite:Mathonline
+  + [[https://brilliant.org/wiki/best/][Top /Brilliant/ Wiki Pages]] cite:Top100Wiki
+  + [[https://www.mediawiki.org/wiki/Help:Categories][Category Pages within MediaWiki Sites]] cite:HelpCategoriesMediaWiki
+    + For example the [[https://en.wikipedia.org/wiki/Category:Mathematics][Mathematics Category Page]] cite:CategoryMathematics2019
 
-Using /Wikipedia/ can make for a very effective subject guide by following the various hyperlinks across wikipedia and leveraging [[https://www.mediawiki.org/wiki/Help:Categories][Category Pages]] cite:HelpCategoriesMediaWiki in order to map out a topic, referring to references as necessary, a strategy even recommended by some [[https://mville.libguides.com/c.php?g=370066&p=2500344][Library Study Guides]] cite:moskowitzLibraryGuidesWikipedia, this strategy has even been implemented in recommendation systems to overcome a lack of data cite:loizouUsingWikipediaAlleviate2010a (see section #CITE).
+Using /Wikipedia/ for example can make for a very effective subject guide by
+following the various hyperlinks across wikipedia and leveraging [[https://www.mediawiki.org/wiki/Help:Categories][Category Pages]]
+cite:HelpCategoriesMediaWiki in order to map out a topic while referring to
+references as necessary. Such a strategy even recommended by some [[https://mville.libguides.com/c.php?g=370066&p=2500344][Library Study
+Guides]] cite:moskowitzLibraryGuidesWikipedia, and has even been
+implemented in recommendation systems to overcome a lack of data
+cite:loizouUsingWikipediaAlleviate2010a (see section of litreview? #CITE).
 
+Similarly the [[https://en.wikipedia.org/wiki/Collective_Knowledge_(software)][/Zettelkasten/ method]] of note taking essentially involves a collection of
+small interlinked notes cite:OverviewZettelkastenMethod, much like a wiki,
+within the last two decades this method has peaked in popularity
+cite:GoogleBooksNgram, despite being a method dating back to atleast the 18th
+Century. cite:haarkoetterAllesWesentlicheFindet This is clearly driven in party
+by the development of the internet, /HTML/ and the increasing breadth and depth
+of human knowledge.
 
-
-to such an extent that some introductory texts in certain disciplines, such as law, even outright advise the use of an encyclopedia such as /WestLaw/ cite:WestlawAU before searching for material cite:bottNemesCossEffective2012.
-
-Institution examples:
-
-- [[https://libraries.mit.edu/experts/][/M.I.T./]] cite:mitResearchGuidesExpert
-- [[https://guides.library.harvard.edu/][/Harvard/]] cite:harvarduniversityResearchGuides
-- [[https://www.lib.berkeley.edu/libraries/business-library][Berkley University]] cite:berkleyuniversityBusinessLibraryUC
-- [[https://www.loc.gov/rr/scitech/tracer-bullets/][/Library of Congress/]] cite:ScienceTracerBullets
-  - The Library of Congress refers to a /PathFinder/ as a /Tracer Bullet/, which is both a very descriptive and very American name.
-
-Wiki Examples:
-
-- [[http://mathonline.wikidot.com/][Math Online]]  cite:Mathonline
-- [[https://brilliant.org/wiki/best/][Top /Brilliant/ Wiki Pages]] cite:Top100Wiki
-- [[https://www.mediawiki.org/wiki/Help:Categories][Category Pages within MediaWiki Sites]] cite:HelpCategoriesMediaWiki
-  - For example the [[https://en.wikipedia.org/wiki/Category:Mathematics][Mathematics Category Page]] cite:CategoryMathematics2019
-
-The [[https://en.wikipedia.org/wiki/Collective_Knowledge_(software)][/Zettelkasten/ method]] of note taking essentially involves a collection of small interlinked notes cite:OverviewZettelkastenMethod, much like a wiki, within the last two decades this method has peaked in popularity cite:GoogleBooksNgram, despite being a method dating back to atleast the 18th Century. cite:haarkoetterAllesWesentlicheFindet This is clearly driven in party by the development of the internet, /HTML/ and the increasing breadth and depth of human knowledge.
+A comprehensive review of the pathfinder approach, however, reveals that many
+such subject guides are not consistent with the needs of those engaging in
+research on any given topic. cite:vilenoPaperElectronicEvolution2007 This
+issue is somewhat analogous to the issue faced by Larry Page and Sergey Brin in
+that the centrality of an article of information corresponds very greatly to
+it's relevance. cite:larrypageAnatomyLargescaleHypertextual1998
 
 
 - potential for deeper understanding
@@ -82,11 +105,216 @@ The [[https://en.wikipedia.org/wiki/Collective_Knowledge_(software)][/Zettelkast
     - Foam
 
 
-
 * TODO Background and Rationale
 ** Background of issue and proposed research
-** Indentify discipline
-** Summary of Developments in the field
+Given some graph $G(V,E)$ with $\mid V \mid = n$, a corresponding adjacency
+matrix $\mathbf{A}$ describes the number of edges between vertex $i$ and $j$,
+such that $\mathbf{A}_{i, j}$ represents the number of edges between the
+vertices, with respect to a directed graph the entry may either denote:
+
+- $i \rightarrow j$
+  - One such example of this implementation being the ~igraph~ library cite:gaborcsardiIgraphManualPages2019
+- $j \rightarrow i$ [[cite:nicholsonLinearAlgebraApplications2009][\textsection 2.3]], OR
+
+While both definitions appear in the literature, the latter definition is more
+common/convenient when working with /probability transition matrices/ and will
+hence be adopted here.
+
+*** Stationary Distribution
+:PROPERTIES:
+:CUSTOM_ID: stationary-distribution
+:END:
+
+Given this adjacency matrix $\mathbf{A}$, in order to have each element
+$\mathrm{A}_{i, j}$ represent the probability of leaving $j$ and travelling to
+$i$ during a random walk (as opposed to the number of edges), each column will
+need to be scaled to one, this can be acheived with matrix multiplication as
+shown in eqref:eq:mat-mult-colsum:
+
+\begin{align}
+\mathbf{T} = \mathbf{A} \enspace \mathrm{diag}\left( \mathtt{colsums}\left(
+\mathbf{A} \right) \right) \label{eq:mat-mult-colsum} \end{align}
+
+The state distribution $\vec{p}_{k}$ describes the frequency of visiting each
+vertex during a random walk for the $k^{\textrm{th}}$ step of the walk, given
+this, the stationary distribution $\vec{p}$ is given by
+eqref:eq:stationary-distribution:
+
+
+\begin{align}
+\vec{p_{i}} &= \mathbf{T} p_{i-1} \nonumber \\ \lim_{n \to \infty} \left[
+\vec{p_{i}} \right] &= \lim_{n \to \infty} \left[ \mathbf{T} \vec{p_{i-1}}
+\right] \nonumber \\ \implies \vec{p} &= \mathbf{T} \vec{p}
+\label{eq:stationary-distribution} \end{align}
+
+If $G(V, E)$ is an ergodic graph (i.e. all vertices may be reached from any
+initial vertex), this can be solved by iteration (referred to as the /Power
+Method/) or by solving the eigenvalue problem for $\lambda=1$ as shown in
+eqref:eq:eigen-one:
+
+\begin{align}
+\lambda \vec{p} &= \mathbf{T} \vec{p} \nonumber \\ \lambda = 1 \implies \vec{p}
+&= \mathbf{T} \vec{p} \label{eq:eigen-one} \end{align}
+
+*** Random Surfer
+If however a graph is non-ergodic, this random walk will not traverse every
+vertex, to overcome this, the /Random Surfer/ model is implemented
+cite:larrypageAnatomyLargescaleHypertextual1998, by essentially introducing,
+into the /probability transition matrix/ $(\mathbf{T})$, some probability
+$(\frac{1-\alpha}{n})$ of traversing to a disconnected vertex $(V)$, this is
+shown in eqref:eq:random-surfer:
+
+\begin{align}
+\mathbf{T}_{\textrm{RS}} = \mathbf{S} = \alpha \mathbf{T} + (1-\alpha) \mathbf{B}
+\label{eq:random-surfer} \end{align}
+
+where:
+
+- $\mathbf{B}$ :: Is matrix of size $n \times n$ such that $\mathbf{B}_{i, j} = \frac{1}{n}, \enspace \forall i,j \in \left[1, n\right]\cap \mathbb{N}$
+
+*** Power Walk
+This random surfer model, however, assumes that all edges are an edorsement of
+the target, i.e. they are weighted positively, the power walk method
+cite:parkPowerWalkProceedings2013, shown in eqref:eq:power-walk-method, takes a
+different approach to create a /transition probability matrix/ $(\mathbf{W})$ and is compatible
+with a negatively weighted edges:
+
+\begin{align}
+\mathbf{W}_{i, j} &= \frac{\beta^{\mathbf{A'}{i, j}}}{\sum^{n}_{j = 1} \left[
+\beta^{a_{i, j}} \right]} \label{eqref:eq:power-walk-method} \end{align}
+
+
+where:
+
+- $\mathbf{A'}$ :: is a weighted adjacency matrix such that $\mathbf{A}_{i, j} \in \mathbb{R}$
+- $x$ :: is the probability of travelling to a vertex for which there is no connection.
+  + Similarly to eqref:eq:random-surfer , $x = \frac{1-\alpha}{n}$
+- $\mathbf{\beta}$ :: is the ratio of probability between following an edge and
+  making a jump to a vertex for which there is no path
+  + i.e. $\beta x$ is the probability of following a path with a weight of 1.
+
+*** Solving the stationary distribution
+Solving the EigenValue problem for a large matrix can be very resource
+intensive, for example /Wikipedia/ currently has over 6, 000, 000 pages
+cite:WikipediaSizeWikipedia2020 which would correspond to an adjacency matrix
+with over $10^{12}$ entries, yet even a relatively fast compiled language like
+/Julia/ can struggle to solve the eigen vector for a matrix of size
+$(10^{4})^{2}$ as shown in listing [[eigen-julia]].
+
+The power method, first mentioned in section [[#stationary-distribution]], is a
+better suited approach, with respect to performance, because:
+
+1. The method is only looking for one solution
+2. The accuracy of the solution (measured by $\eta$) can be tuned to improve performance.
+  
+
+
+#+NAME: eigen-julia
+#+CAPTION: Time to Solve Eigen Value for matrix of size n
+#+begin_src julia :results output
+using LinearAlgebra using TimerOutputs
+
+function time_eigenvec(n)
+    T = [ x-n+n*y for x in rand(n), y in rand(n) ]
+    t = @elapsed eigvecs(T) return t end
+
+time_eigenvec(10^2) time_eigenvec(10^3)
+# time_eigenvec(10^4) # times out
+#+end_src
+
+#+RESULTS: eigen-julia
+: time_eigenvec (generic function with 1 method)
+: 0.072302487
+: 0.814937083
+
+*** Proposed Research
+Consider the ordered set of EigenVectors $\{ \lambda_{k} \mid \enspace  \lambda_{k} < \lambda_{k-1}, \enspace k\in \mathbb{Z}^{+} \leq n \}$ of a positive transition probability matrix such as $\mathbf{S}$ or $\mathbf{T}$ as in eqref:eq:stationary-distribution  and eqref:eq:random-surfer.
+
+
+***** Dominant EigenVector
+It has been shown that $\lambda_{k} \leq 1, \enspace \forall k \leq n$ and that
+the dominant $\lambda$ (i.e. the largest $\mid \lambda_{k} \mid$) can be
+computed by the /power method/. cite:farahatAuthorityRankingsHITS2006
+
+
+***** Stability and Convergence
+
+How quickly the /Power Method/ converges depends on the magnitude of $\mid \lambda_{2} \mid$, cite:bryan250000002006
+
+this can be seen by recalling that, by definition, all eigenvalues other than
+$\lambda_{1}$ are less than $\mid \lambda_{2} \mid$ and hence diagonalising the
+transition matrix in terms of its eigenvalue decomposition is simply a matter of
+observing that smaller numbers tend to zero sooner that larger numbers.
+
+With respect to the random surfer model eqref:eq:random-surfer, It has been shown
+that $\mid \lambda_{2} \mid \leq \alpha$ and if the corresponding graph contains
+two or more irreducible closed subgraphs that the $\mid \lambda_{2} \mid = \alpha$, this is demonstrated in listing [[random-surf-r]]
+and figure [[two-sub-graph]].
+
+It has also been shown that an $\alpha$ value near 1 will imply an unstable stationary distribution cite:ngStableAlgorithmsLink2001, this is because a small change to the corresponding graph could lead to $\lambda_{1} \leftrightarrow \lambda_{2}$ and hence different eigenvectors will correspond to the solution as shown in eqref:eq:eigen-one
+
+However as $\alpha$ is reduced the probability of a random walk visiting any other vertex will become more and more uniform because $\frac{1-\alpha}{n} \rightarrow \frac{1}{n}$ as $\alpha \rightarrow 0$
+
+It seems that The value set originally by Larry Page was $\alpha = 0.85$ [[cite:larrypageAnatomyLargescaleHypertextual1998][p. 109]] and this appears to have persisted in the literature. cite:kamvarAdaptiveMethodsComputation2004b
+
+
+#+NAME: random-surf-r
+#+CAPTION: Implementing the random surfer model for the graph shown in figure [[my-graph]]
+#+begin_src R :session graph-two :results output
+library(igraph)
+library(tidyverse)
+
+g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
+
+A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %>%
+  as.matrix()
+
+## Adjust the Order
+A <- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))]
+
+adj_to_probTrans <- function(adjMat) {
+  t(adjMat) %*% diag(1/colSums(t(adjMat)))
+}
+
+B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
+ɑ <- 0.123456789
+
+S <- ɑ*T+(1-ɑ)*B
+
+
+eigen(S, symmetric = FALSE)$values
+#+end_src
+
+#+RESULTS[26baba112ee47d365a638631dccc8a9ad363c7f0]: random-surf-r
+:  [1]  1.000000e+00 -1.234568e-01  1.234568e-01 -1.234568e-01  2.231012e-10
+:  [6] -2.231012e-10 -8.488298e-18  3.570154e-18 -1.450336e-20  9.629650e-35
+
+#+NAME: two-sub-graph-code
+#+CAPTION: Figure of a graph with two subgraphs, identical to graph published by Park and Simoff cite:parkPowerWalkProceedings2013
+#+begin_src R :session graph-two :results output graphics file :file two-sub-graph-fig2.png :exports results
+plot(g1)
+#+end_src
+
+
+#+NAME: two-sub-graph
+#+CAPTION: Graph with two closed irreducible subgraphs
+#+RESULTS[377d90f1148806c31aca042e87490655e75517cf]: two-sub-graph-code
+[[file:two-sub-graph-fig2.png]]
+
+
+***** Research Question
+
+It has been shown that under specific circumstances the value of $\mid \lambda_{2}\mid$ can be predicted from the method parameters and properties of the graph. [[cite:parkPowerWalkProceedings2013][\textsection 3.4]]
+
+This research will involve investigating the relationship between the second eigenvalue of the /Power Walk/ transition matrix and the features of a graph corresponding to some type of network (e.g. a social network, webpages, wiki, etc.)
+
+In particular, open questions are whether or not the value of the second eigenvalue can:
+
+- be predicted from the parameters of the model and/or features of the graph
+  + e.g. some function of $\alpha$
+- indicate the stability of the stationary distribution of a
+- indicate how quickly the /Power Method/ will converge to a solution
+
 * TODO Literature Review
 ** Introduction
 ** Body
@@ -97,10 +325,15 @@ Structure the literature in a logical way
 ** To Sort out
 - Using Wikipedia to alleviate data sparsity issues in recommender systems
   - cite:loizouUsingWikipediaAlleviate2010a
-  - The relationships in Wikipedia are very useful, we can use them sort of like a model, by mapping topics to articles and leveraging the interlinked pages we might be able to extrapolate that back out to useful recommendations.
+  - The relationships in Wikipedia are very useful, we can use them sort of like
+    a model, by mapping topics to articles and leveraging the interlinked pages
+    we might be able to extrapolate that back out to useful recommendations.
 - /Network analysis of usergenerated content quality in Wikipedia/
   + cite:ingawaleNetworkAnalysisUser2013a
     - Can We relate Social Media to Wikipedia with respect to quality
+- Consensus Based Ranking Wikipedia cite:nemaConsensusbasedRankingWikipedia2017a
+  + Bias the $\alpha$ assumption to favour websites that are more often visited in practice:
+    - Thoughts: Could be dicy because nobody is going to the second page of Google.
 * TODO Research Question
 You should formulate these clearly, giving an explanation as to what problems
 and issues are to be explored and why they are worth exploring* TODO Research
@@ -118,129 +351,3 @@ Methodology
 
 ** Question
 
-/Can we determine the second eigenvalue from the method parameters? For
-PageRank, the second eigenvalue is equal to the smoothing parameter \alpha/
-
-#+begin_quote
-Yes. An open question for the Power Walk method is, can we determine the second
-eigenvalue from the method parameters? For PageRank, the second eigenvalue is
-equal to the smoothing parameter \alpha. The second eigenvalue determines how
-long the algorithm takes to converge and how stable the solution is. To begin,
-implement the method for computing PageRank and then the Power Walk. It can all
-be done using sparse matrices, so it only requires a fraction of the memory and
-is each iteration is quick.
-#+end_quote
-
-** Working
-
-Take the exemplar Graph from Figure 1:
-
-
-#+NAME: DotLib
-#+CAPTION: Code to Generate DOT Graph
-#+begin_src plantuml :output results :file ./Media/Example.png :exports both :eval never-export :eval never-export
-# #+begin_src javascript :exports code
-@startdot
-strict digraph graphName {
-concentrate=true
-fillcolor=green
-color=blue
-style="filled, rounded"
- A [shape=box, fillcolor="#a31621", style="rounded, filled"]
-
- edge [
-    arrowhead="none"
-  ];
-
- node[
-    fontname="Fira Code",
-    shape="square",
-    fixedsize=false,
-    style=rounded
-  ];
-
-
-# A -> B [dir="both"]
-A -> B
-B [shape=box, fillcolor="#bfdbf7", style="rounded, filled"]
-B -> A
-C [shape=box, fillcolor="#eaf4d3", style="rounded, filled"]
-C -> D
-D [shape=box, fillcolor="#0f5257", style="rounded, filled"]
-D -> C
-}
-@enddot
-#+end_src
-
-#+RESULTS: DotLib
-[[file:./Media/Example.png]]
-
-
-
-$$\begin{aligned} \Gamma = I - n D^{- 1}_B \\ \end{aligned}$$
-
-Where we have the following:
-
-$$\begin{aligned}
-    \beta &= 10 \\
-    B &= \beta^A \\
-    A &=
-    \begin{bmatrix}
-0& 1& 0& 0 \\
-1& 0& 0& 0 \\
-0& 0& 0& 1 \\
-0& 0& 1& 0
-    \end{bmatrix} \\
-     \implies
-    B &= \begin{bmatrix}
-     10 & 1 & 1 & 1 \\
-     1 & 10 & 1 & 1 \\
-     1 & 1 & 10 & 1 \\
-     1 & 1 & 1 & 10 \\
-     \end{bmatrix}  \\
-     \text{$D_B$ is a diagonal matrix of the column sums:}\\
-     D &= \begin{bmatrix}
-     13 & 0 & 0 & 0 \\
-     0 & 13 & 0 & 0 \\
-     0 & 0 & 13 & 0 \\
-     0 & 0 & 0 & 13
-     \end{bmatrix}  \\
-     \text{Hence the Inverse is:}\\
-     D_B^{-1}&= \frac{I}{13}\\
-     \text{Putting it all together:}\\
-     \Gamma &=  I - n D^{- 1}_B \\
-     &= I - \frac{4 \cdot I}{13} \\
-     &= \frac{9}{13} \cdot  I \\
-     &= \begin{bmatrix}
-         \frac{9}{13} & 0 & 0 & 0 \\
-         0 & \frac{9}{13} & 0 & 0 \\
-         0 & 0 & \frac{9}{13} & 0 \\
-         0 & 0 & 0 &  \frac{9}{13}
-     \end{bmatrix}  \\
-     & \approx \begin{bmatrix}
-         0.6923 & 0 & 0 & 0 \\
-         0 & 0.6923 & 0 & 0 \\
-         0 & 0 & 0.6923 & 0 \\
-         0 & 0 & 0 & 0.6923
-     \end{bmatrix}
-
-
-
-\end{aligned}$$
-
-
-#    * References This section is necessary for references to work in /HTML/ export,
-#    however it breaks LaTeX export because that relies on BibLaTex NOT BibTex which
-#    this is for.
-#
-#    Org-ref hasn't been updated to allow a way to use HTML references with the
-#    syntax for biblatex.
-#
-#    The Auto Sync is handled from inside
-#
-#    # ####### Delete these!!!!!
-#    +<<bibliographystyle link>> bibliographystyle:unsrt
-#
-#    <<bibliography link>>
-#    bibliography:./../references.bib
-#    # ####### Delete these!!!!!
