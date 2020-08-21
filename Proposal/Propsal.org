@@ -75,7 +75,7 @@ cite:HelpCategoriesMediaWiki in order to map out a topic while referring to
 references as necessary. Such a strategy even recommended by some [[https://mville.libguides.com/c.php?g=370066&p=2500344][Library Study
 Guides]] cite:moskowitzLibraryGuidesWikipedia, and has even been
 implemented in recommendation systems to overcome a lack of data
-cite:loizouUsingWikipediaAlleviate2010a (see section of litreview? #CITE).
+cite:loizouUsingWikipediaAlleviate2010a (see section of litreview? [[#wiki-networks]]).
 
 Similarly the [[https://en.wikipedia.org/wiki/Collective_Knowledge_(software)][/Zettelkasten/ method]] of note taking essentially involves a collection of
 small interlinked notes cite:OverviewZettelkastenMethod, much like a wiki,
@@ -134,9 +134,9 @@ eqref:eq:stationary-distribution:
 \label{eq:stationary-distribution} \end{align}
 
 If $G(V, E)$ is an ergodic graph (i.e. all vertices may be reached from any
-initial vertex), this can be solved by iteration (referred to as the /Power
-Method/) or by solving the eigenvalue problem for $\lambda=1$ as shown in
-eqref:eq:eigen-one:
+initial vertex), this can be solved by iteration by setting some threshold
+$(\eta)$ for convergence (which will be referred to as the /Power Method/) or by
+solving the eigenvalue problem for $\lambda=1$ as shown in eqref:eq:eigen-one:
 
 \begin{align}
 \lambda \vec{p} &= \mathbf{T} \vec{p} \nonumber \\ \lambda = 1 \implies \vec{p}
@@ -164,7 +164,7 @@ where:
 ** Power Walk
 The random surfer model eqref:eq:random-surfer, however, assumes that all edges are an edorsement of
 the target, i.e. they are weighted positively, the power walk method
-cite:parkPowerWalkProceedings2013, shown in eqref:eq:power-walk-method, takes a
+cite:parkPowerWalkProceedings2013, shown in eqref:eqref:eq:power-walk-method, takes a
 different approach to create a /transition probability matrix/ $(\mathbf{W})$ and is compatible
 with a negatively weighted edges:
 
@@ -183,6 +183,9 @@ where:
   + i.e. $\beta x$ is the probability of following a path with a weight of 1.
 
 ** Solving the stationary distribution
+:PROPERTIES:
+:CUSTOM_ID: iterative-power-method
+:END:
 Solving the EigenValue problem for a large matrix can be very resource
 intensive, for example /Wikipedia/ currently has over 6, 000, 000 pages
 cite:WikipediaSizeWikipedia2020 which would correspond to an adjacency matrix
@@ -244,9 +247,22 @@ and figure [[two-sub-graph]].
 It has also been shown that an $\alpha$ value near 1 will imply an unstable stationary distribution cite:ngStableAlgorithmsLink2001 that converges slowly cite:tanNewExtrapolationMethod2017a, this is because a small change to the corresponding graph could lead to $\lambda_{1} \leftrightarrow \lambda_{2}$ and hence different eigenvectors will correspond to the solution as shown in eqref:eq:eigen-one
 
 ** Choosing $\alpha$
-Although section [[#stability-convergence]] might suggest that smaller values of $\alpha$ may be more ideal, it is worth recalling that as $\alpha$ is reduced the probability of a random walk visiting any other vertex will become more and more uniform because $\frac{1-\alpha}{n} \rightarrow \frac{1}{n}$ as $\alpha \rightarrow 0$.
+:PROPERTIES:
+:CUSTOM_ID: choosing-alpha
+:END:
+Although section [[#stability-convergence]] might suggest that smaller values of
+$\alpha$ may be more ideal, it is worth recalling that as $\alpha$ is reduced
+the probability of a random walk visiting any other vertex will become more and
+more uniform because $\frac{1-\alpha}{n} \rightarrow \frac{1}{n}$ as $\alpha
+\rightarrow 0$. cite:parkPowerWalkRevisiting2013
 
-The value used originally by Page and Brin was $\alpha = 0.85$ See [[cite:larrypageAnatomyLargescaleHypertextual1998][p. 109]] and this appears to have widely adopted. cite:kamvarAdaptiveMethodsComputation2004b,boldiPageRankFunctionDamping2005, however research suggests that modifying the value by be useful in detecting spam cite:zhangMakingEigenvectorBasedReputation2004,boldiPageRankFunctionDamping2005
+The value used originally by Page and Brin was $\alpha = 0.85$ See
+[[cite:larrypageAnatomyLargescaleHypertextual1998][p. 109]] and this appears to
+have widely adopted.
+cite:kamvarAdaptiveMethodsComputation2004b,boldiPageRankFunctionDamping2005,
+however research suggests that modifying the value by be useful in detecting
+spam
+cite:zhangMakingEigenvectorBasedReputation2004,boldiPageRankFunctionDamping2005
 
 
 #+NAME: random-surf-r
@@ -458,6 +474,10 @@ Page Rank is an important feature of Search Engine Optimisation
 Webpage visibility can be improved by increasing the frequency of keywords
 
 * Literature Review
+:PROPERTIES:
+:CUSTOM_ID: summary-lit-review
+:END:
+
 The proposed research (see section [[#research-question]]) relates broadly to the /PageRank/ method, Random-Surfer model, sentiment
 analysis and graph centrality, for which material is quite abundant, although much
 of the literature is concerned with either:
@@ -465,48 +485,170 @@ of the literature is concerned with either:
 1. The original /PageRank/ method developed by Page and Brin,
 cite:larrypageAnatomyLargescaleHypertextual1998 OR
 2. Modifying the pagerank method to improve upon:
-  + Precision and accuracy
+  + Precision and accuracy see cite:ngStableAlgorithmsLink2001,berkhoutRankingNodesGeneral2018a,nemaConsensusbasedRankingWikipedia2017a,fuDampingFactorGoogle2006
   + Performance with respect to:
-    - Rate of convergence in terms of iterations and time
-    - Stability of any given solution
+    - Rate of convergence in terms of iterations and time, see cite:tanNewExtrapolationMethod2017a,langvilleReorderingPageRankProblem2006
+    - Stability of any given solution, see cite:ngStableAlgorithmsLink2001
 
-Although either of these points are not a direct analogue for the proposed
-research which relates in itself to a modified /PageRank/ algorithm, much of the
-work will be very similar in approach hopefully offer and much insight upon
+Although neither of these points are a direct analogue for the proposed
+research, which relates in itself to a modified /PageRank/ algorithm, much of
+the work will be very similar in approach and hopefully offer much insight upon
 closer inspection.
 
-** Literature Referred to in Primary Resource
+** Building on Literature Referred to in Primary Resource
 This research is focused primarily on the /Power Walk/ method or approach to the
 PageRank algorithm proposed by Park and Simoff in a 2013 conference paper,
 cite:parkPowerWalkProceedings2013 this paper contained some discussion of
 relevant research.
-
-
 *** Stability and Convergence
-Haveliwala and Kamvar cite:haveliwalaSecondEigenvalueGoogle2003 proved that the $\lambda_{2}$ (see eqref:eq:eigen-set)
+:PROPERTIES:
+:CUSTOM_ID: stability-convergence-lit-review
+:END:
 
-research releating to the second eigenvalue of the /PageRank/ probability transition matrix
+Haveliwala and Kamvar cite:haveliwalaSecondEigenvalueGoogle2003 proved that
+$\lambda_{2}$ (see eqref:eq:eigen-set) is bounded above by the smoothing
+constant $\alpha$ and in the case that the corresponding graph has more than 1
+closed subgraph is equal to $\alpha$. This is an important revelation because it
+has been shown that the further the second eigenvalue is from 1, the more
+resistant the stationary distriubtion of the pagerank is to perturbations in the
+corresponding graph, cite:ngStableAlgorithmsLink2001 and the faster the pagerank
+will converge cite:bryan250000002006.
+
+It has been shown that the /power method/ (see section [[#iterative-power-method]])
+will always converge $\forall \alpha <1$ cite:bianchiniPageRank2005 and that an
+$\alpha$ closer to the value of 1 does not necessarily correspond to a more
+meaningful ranking, cite:boldiPageRankFunctionDamping2005 hence, given the upper
+bound of $\lambda_{2} \leq \alpha$, the value of $\alpha$ can be tuned away from
+1 in order to improve the convergence and stability of the /PageRank/ (however a
+value of $\alpha$ that is too small will indeed be meaningless as discussed in
+section [[#choosing-alpha]]). cite:parkPowerWalkRevisiting2013
+
+This works provides a framework for considering the method parameters and
+$\lambda_{2}$ with respect to the convergence and stability of the /Power Walk/
+method.
+
+*** Building on the Random Surfer
+
+Related work referred to in the paper has involved using community ratings of
+web pages to improve upon the /PageRank/ method
+cite:parkMiningWebMultiresolution2007, similar work has also been researched
+more recently that found a combination of usage statistics and content quality
+scores can significantly improve the precision and accuracy of the page rank
+method. cite:nemaConsensusbasedRankingWikipedia2017a
+
+Such a strategy is however limited to websites that make usage statistics
+public, such as wikis.
+
+An extension to this research could involve an investigation into the precision
+of the /Power Walk/ method in conjuction with usage statistics compared with the
+/Power Walk/ method.
+
+**** Wikis
+:PROPERTIES:
+:CUSTOM_ID: wiki-networks
+:END:
+
+There is literature suggesting that the network structure of wiki articles can
+be an important feature in the emergence of quality
+cite:ingawaleNetworkAnalysisUser2013a, related work also shows that /Wikipedia/
+can be used to improve performance of recommender systems when there is limited
+data cite:loizouUsingWikipediaAlleviate2010a and it would be very interesting to
+see how the /Power Walk/ method would perform compared to the /PageRank/ method
+in those situations.
+
+** Page Rank
+*** Building on the /PageRank/ Method
+The /PageRank/ method is a relatively versatile approach[fn:vers] that is
+relatively robust to manipulation compared with other methods for dealing with
+information retrieval, cite:langvilleSurveyEigenvectorMethods2005 perhaps for
+this reason there is much literature on modifying the /PageRank/ method to
+improve upon it as discussed generally in section [[#summary-lit-review]].
+
+Choosing a smoothing constant, however, is somewhat difficult task because it can have an
+impact on the behaviour of the model (see cite:fuDampingFactorGoogle2006 and  section
+[[#stability-convergence-lit-review]]) but also because without empirical guidance
+it can feel somewhat arbitrary, there is an approach in the literature that
+involves using input/output ratios to determine an appropriate value
+cite:fuDampingFactorGoogle2006 and another that seeks to use structural network
+dynamics to provide a score distribution and obviate the need for a smoothing
+constant entirely. cite:berkhoutRankingNodesGeneral2018a
+
+It is not entirely clear if this approach will offer much to this method but a
+more careful inspection may reveal helpful perspectives.
+*** Stability and Convergence
+Improving the rate of convergence of the /PowerRank/ is obviously desirable and
+there has been considerable mathematical resarch to develop better algorithms.
+
+As previously mentioned in, the stability and convergence of the /Power Rank/
+method is poor when the smoothing constant $\alpha$ is close to 1, a 2016 paper
+published in the /Journal of Computational and Applied Mathematics/
+cite:tanNewExtrapolationMethod2017a found that the trace of a matrix can be used
+to produce a considerably more efficient approach to solve the /PageRank/ for
+values of $\alpha$ near 1. It is not clear how relevant this is given that
+$\alpha$ values near 1 offer no improvement in precision
+cite:boldiPageRankFunctionDamping2005 and that the solution is unstable
+cite:ngStableAlgorithmsLink2001 (see sections [[#choosing-alpha]] and
+[[#stability-convergence]]), but, it is yet to be shown if these characteristics
+necessarily apply to the /Power Walk/ method and such an approach may prove to
+be insighful nonetheless.
+
+Another approach involves involves reordering the problem and taking advantage
+of the fact that the transition probability matrix is sparse [fn:sprs] in order
+to produce a new algorithm which cannot perform worse than the /power method/
+but has been shown to improve the rate of convergence in certain cases.
+cite:langvilleReorderingPageRankProblem2006.
+
+*** Insightful Miscellaneous Work
+**** PageRank as a Power Series
+Research has shown that the /PageRank/ Method can be expressed as a power series
+and an algorithm for calculating the page rank derived,
+cite:brinkmeierPageRankRevisited2006a the solution corresponds to the /power
+method/ but a slightly faster algorithm is also presented. Seperate work has
+been undertaken to similarly express the PageRank in terms of a /McLaurin
+Series/, finding that each partial sum of the series corresponds to an iteration
+of the /power method/. cite:boldiPageRankFunctionDamping2005 This work is
+extremely relevant to the /Power Walk/ method because the exponent in that
+method (see eqref:eqref:eq:power-walk-method) suggests that an generating
+function such as $f(x) = \sum^n_{i=0} \left[ x^n \frac{a}{n!} \right]$ may be
+able to show a more direct relationship between the /PowerRank/ and /Power Walk/
+approaches.
+
+
+**** Modelling
+The pageRank method has been leveraged as a value to assist in building
+artificial networks in order to model real-world networks, such networks have
+been shown to have upper and lower bounds on there diamaters.
+cite:mehrabianItSmallWorld2016 this is a very interesting area of research and
+it would be interesting to see whether or not the use of the /Power Walk/ method
+in such an approach produces graphs that are more consistent with social
+networks.
+
+**** Pure Mathematics
+The PageRank method appears also
+
+** Search Engine Optimisation
+
 ** Skimming and summary
 *** From Paper
-**** TODO [#A] Stable Algorithms for Link Analysis cite:ngStableAlgorithmsLink2001 :modification:insight:eigenvalue:
+**** DONE [#A] Stable Algorithms for Link Analysis cite:ngStableAlgorithmsLink2001 :modification:insight:eigenvalue:
 Investigates under what situations the pagerank of a matrix is resistant to perturbations of a graph, finding essentially that distance of $\lambda_{2}$ from 1 is important.
 
 A new algorithm is suggested
-**** TODO [#A] The second EigenValue of the Google Matrix cite:haveliwalaSecondEigenvalueGoogle2003,zhaoOptimizingNodeDiscovery2019 :eigenvalue:
+**** DONE [#A] The second EigenValue of the Google Matrix cite:haveliwalaSecondEigenvalueGoogle2003,zhaoOptimizingNodeDiscovery2019 :eigenvalue:
 Determine analytically the modulus of the second EigenValue for the /PageRank/ method.
 
 provides that $\lambda_{2} \leq \alpha$ and if there are 2 or more irreducible subgraphs $\lambda_{2}=\alpha$.
 
 This important for the rate of convergence of the algorithm.
 
-**** TODO [#B] Community Based popularity cite:parkMiningWebMultiresolution :modification:
+**** DONE [#B] Community Based popularity cite:parkMiningWebMultiresolution  :modification:
 A more general form of page rank using popularity scores dependent on a
 community rating can be used to improve precision.
 This is similar to the statsrank method cite:nemaConsensusbasedRankingWikipedia2017a
-**** TODO [#B] Linear Algebra behind Google cite:bryan250000002006 :insight:
+**** WAITING [#B] Linear Algebra behind Google cite:bryan250000002006        :insight:
 A discussion on the algebra behind the pagerank method.
 *** TODO Wikipedia
-**** TODO [#A] Network analysis of user generated content quality in Wikipedia  cite:ingawaleNetworkAnalysisUser2013a
+**** DONE [#A] Network analysis of user generated content quality in Wikipedia  cite:ingawaleNetworkAnalysisUser2013a
 
 Is there a relationship between content quality and the structure of connections? Can high quality Wikipedia pages be used as a benchmark for the structure of connections.
 
@@ -514,23 +656,25 @@ The network structure of interactions between articles plays an important role i
 
 High quality articles clusture in hubs.
 
-**** TODO [#B] Using Wikipedia to alleviate data sparsity issues in Recommender Systems cite:loizouUsingWikipediaAlleviate2010a
+**** DONE [#B] Using Wikipedia to alleviate data sparsity issues in Recommender Systems cite:loizouUsingWikipediaAlleviate2010a
 For Recommender systems with limited access to data, Wikipedia can be used as an analogue with respect to connections to significantly improve performance.
 *** TODO Page Rank
-**** TODO [#A] A New Extrap method for PageRank computations cite:tanNewExtrapolationMethod2017a :performance:
+**** DONE General
+***** DONE [#C] Inside PageRank cite:bianchiniPageRank2005                  :general:
 
-A new algorithm can be used to improve the convergence rate of the power rank method, compared to the /power method/ when the smoothing constant $\alpha$ is near 0
+This is a discussion on the stability, complexity and critical role of parameters involved in the computation.
 
-**** TODO [#A] Page Rank Revisited cite:brinkmeierPageRankRevisited2006a :insight:
-The Page Rank method can be expressed as a power series and an algorithm for calculating the page rank can be derived, this corresponds to the /power method/ but offers insights into the mechanisms of the method.
+- The page rank method will always converge for the random surfer eqref:eq:random-surfer provided that $\alpha < 1$ [[cite:bianchiniPageRank2005][\textsection 2.2]]
 
-A slightly faster algorithm is suggested at \textsection 6.3.
+***** DONE [#C] survey of eigenvectors for web info cite:langvilleSurveyEigenvectorMethods2005 :general:
+Many methods for web information retrival involve eigen vectors.
 
-This is quite interesting because expressing the power walk method as a power series may offer insights with respect to the convergence and stability of the algorithm
-**** TODO [#A] Ranking Nodes in Networks cite:berkhoutRankingNodesGeneral2018a :modification:
+PageRank is impervious to spamming.
+**** DONE Modification
+***** DONE [#A] Ranking Nodes in Networks cite:berkhoutRankingNodesGeneral2018a :modification:
 The choice of damping factor of Googles page rank might have a large impact on the values given to vertices.
 
-This suggests an approach that uses structural network dynatims to provide an appropriate score distribution.
+This suggests an approach that uses structural network dynamics to provide an appropriate score distribution.
 
 The method implemented is not something I have come yet to understand, but it could be very interesting to see:
 
@@ -538,59 +682,70 @@ The method implemented is not something I have come yet to understand, but it co
 - whether or not it could offer insightts into the convergence and stability of the power walk method
 - Whether or not the method would be compatible with negatively weighted edges.
 
-**** TODO [#A] Reordering for the pagerank cite:langvilleReorderingPageRankProblem2006 :performance:
-Reordering the pagerank problem and taking advantage of the fact that it is sparse can allow for an improved algorithm that can potentially improve performance or at worst offer no compromise in performance.
-**** TODO [#A] Consensus based raking of Wikipedia cite:nemaConsensusbasedRankingWikipedia2017a :modification:
+***** DONE [#A] Consensus based raking of Wikipedia cite:nemaConsensusbasedRankingWikipedia2017a :modification:
 Google's page rank method can be improved by replacing the background probability of $\frac{1}{n}$ with statistics of usage, this is referred to as the StatsRank, this can be aggregated with user opinion to give the ConsensusRank
 
 A limitation of this approach is that usage stats are only really available, in a neutral fashion for wikis, so too bad.
 
-**** TODO [#A] Page rank as a function of the damping factor cite:boldiPageRankFunctionDamping2005 :insight:
+***** DONE [#B] Modified Page Rank Algorithm for Biology cite:zhangModifiedPageRankAlgorithm2018 :modification:
+
+The page rank method can be used for modelling gene expression.
+
+***** DONE [#B] Damping factor in Google Page Ranking cite:fuDampingFactorGoogle2006 :modification:
+The damping factor is critical in changing a website's ranking in a search, this
+modified algorithm, based on input-output ratio is proposed to substitute for
+the damping factor.
+
+It would be interesting to determine whether or not this type of a substitution
+could improve the performance of the /power walk/ method and what implications
+it would have on the method parameters and resulting convergence and stability.
+
+**** DONE Performance
+***** DONE [#A] A New Extrap method for PageRank computations cite:tanNewExtrapolationMethod2017a :performance:
+
+A new algorithm can be used to improve the convergence rate of the power rank
+method, compared to the /power method/ when the smoothing constant $\alpha$ is
+near 1, when using the trace of a matrix.
+
+***** DONE [#A] Reordering for the pagerank cite:langvilleReorderingPageRankProblem2006 :performance:
+Reordering the pagerank problem and taking advantage of the fact that it is
+sparse can allow for an improved algorithm that can potentially improve
+performance or at worst offer no compromise in performance.
+**** TODO Insight
+***** TODO [#A] Power Series
+****** DONE [#A] Page Rank Revisited cite:brinkmeierPageRankRevisited2006a :insight:
+The Page Rank method can be expressed as a power series and an algorithm for
+calculating the page rank can be derived, this corresponds to the /power method/
+but offers insights into the mechanisms of the method.
+
+A slightly faster algorithm is suggested at \textsection 6.3.
+
+This is quite interesting because expressing the power walk method as a power
+series may offer insights with respect to the convergence and stability of the
+algorithm
+****** DONE [#A] Page rank as a function of the damping factor cite:boldiPageRankFunctionDamping2005 :insight:
 
 Demonstrates the behaviour of page rank for varying values of \alpha.
 
 Values nearer to 1 do not give a more meaningful ranking.
 
-Using iteration i.e. (the power rankmethod) gives the same exact result as the power series at the same step, similar to what was shown by brinkmeier cite:brinkmeierPageRankRevisited2006a
+Relate it toMcLaurin series Using iteration i.e. (the power rankmethod) gives the same exact result as the power series at the same step, similar to what was shown by brinkmeier cite:brinkmeierPageRankRevisited2006a
 
 This could be useful in developing analytical methods to solve the pagerank problem.
-**** TODO [#B] Modified Page Rank Algorithm for Biology cite:zhangModifiedPageRankAlgorithm2018 :modification:
-
-The page rank method can be used for modelling gene expression.
-
-**** TODO [#B] Small World for Random Surfers cite:mehrabianItSmallWorld2016 :insight:
-Graphs can be generated in order to model real world networks, these models can use the degree or  page rank of a given vertex as a parameter to create the next vertex in generating the graph.
+***** DONE [#B] Small World for Random Surfers cite:mehrabianItSmallWorld2016 :insight:
+Graphs can be generated in order to model real world networks, these models can
+use the degree or page rank of a given vertex as a parameter to create the next
+vertex in generating the graph.
 
 This paper discusses upper and lower bounds for the diameter of a graph generated using random-surfer web-graph model.
-**** TODO [#B] Centrality ranking in Multiplex Networks cite:dingCentralityRankingMultiplex2018 :insight:
+***** TODO [#B] Centrality ranking in Multiplex Networks cite:dingCentralityRankingMultiplex2018 :insight:
 
 A technique to measure node centrality for a multi-dimensional graph.
 
-**** TODO [#B] Google's Page Rank :insight:
+***** TODO [#B] Google's Page Rank                                          :insight:
 A Discussion of the Math behind googles page rank
 
-**** TODO [#B] Damping factor in Google Page Ranking cite:fuDampingFactorGoogle2006 :modification:
-The damping factor is critical in changing a website's ranking in a search, this
-modified algorithm, based on input-output ratio is proposed to substitute for
-the damping factor.
-
-It would be interesting to determine whether or not this type of a substitution could improve the performance of the /power walk/ method and what implications it would have on the method parameters and resulting convergence and stability.
-
-**** TODO [#C] Tang Two-hop walks indicate PageRank order cite:tangTwohopWalksIndicate2019
-
-- I could not make out what the this one was about
-
-**** TODO [#C] Inside PageRank cite:bianchiniPageRank2005 :general:
-
-This is a discussion on the stability, complexity and critical role of parameters involved in the computation.
-
-- The page rank method will always converge for the random surfer eqref:eq:random-surfer provided that $\alpha < 1$ [[cite:bianchiniPageRank2005][\textsection 2.2]]
-
-**** TODO [#C] survey of eigenvectors for web info cite:langvilleSurveyEigenvectorMethods2005 :general:
-Many methods for web information retrival involve eigen vectors.
-
-PageRank is impervious to spamming.
-**** TODO [#C] PageRank of Integers :insight:
+***** TODO [#C] PageRank of Integers                                        :insight:
 Page rank can be used in pure mathematics.
 *** TODO SEO
 **** TODO [#A] Adaptive Methods for computation of page rank cite:kamvarAdaptiveMethodsComputation2004b :discoverability:
@@ -616,5 +771,9 @@ Page Rank is an important feature of Search Engine Optimisation
 Webpage visibility can be improved by increasing the frequency of keywords
 
 * Footnotes
+
+[fn:sprs] if an adjacency matrix and/or corresponding probability transition matrix were not sparse each vertex would be like an index, which is unlikely
+
+[fn:vers] The approach has even been used in conjuction with linear regression to map gene expresseions, see cite:zhangModifiedPageRankAlgorithm2018
 
 [fn:dom] Dominant in this case refers to the the largest $\mid \lambda_{k} \mid$
