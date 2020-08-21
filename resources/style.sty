@@ -78,8 +78,11 @@
 % \renewcommand{\thesection}{}
 % \renewcommand{\thesubsection}{}
 \renewcommand{\thesection}{\S~\arabic{section}~}
-\renewcommand{\thesubsection}{\P~\arabic{section}~}
-\renewcommand{\thesubsubsection}{~\arabic{section}.\arabic{section}~}
+\setcounter{subsection}{1}
+\renewcommand{\thesubsection}{\P~\arabic{section}.\arabic{subsection}~}
+\setcounter{subsubsection}{1}
+\renewcommand{\thesubsubsection}{~\arabic{section}.\arabic{subsection}.\arabic{subsubsection}~}
+
 
 % ** Font Style
 %Change the Font------------------------------
