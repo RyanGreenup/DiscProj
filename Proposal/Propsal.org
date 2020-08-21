@@ -24,26 +24,26 @@
 #+LATEX_HEADER: \addbibresource{../resources/references.bib}
 :END:
 * Introduction
-
-Much information is interconnected, be it an article, research paper, movie,
-books, personal notes, knowledge bases, peronal releationships etc., this
-interconnectivity creates a network which can naturally visualised as a graph.
+Much information is interconnected, consider for example written articles,
+research papers, citations, movies, books, personal notes, knowledge bases,
+personal releationships etc., this interconnectivity creates a network which can
+naturally visualised as a graph.
 
 Determining the most central vertex of such a graph is useful as it may assist
-in research, learning and collaborating. The /Page Rank/ method, which
-originally underpinned /Google/'s search-engine, essentially asserts that the
-centre most vertex of a graph could be considered the vertex that has the
-highest probability of being a destination following a random walk
-cite:larrypageAnatomyLargescaleHypertextual1998, although this method is
-popular, it does not however, easily adapt to negatively weighted edges (a
-negative weight in this case measuring dissaproval or an aversion to follow that
-link, like an advertisement, as opposed to endorsement). A limitation which is
-increasingly important as the area of /Sentiment Analysis/ within the field of
-/Text Mining/ is developed. cite:parkPowerWalkProceedings2013
+in research, learning and collaboration. The /PageRank/ method, which originally
+underpinned /Google/'s search-engine, essentially asserts, that the centre-most
+vertex of a graph could be considered the vertex that has the highest
+probability of being a destination following a random walk.
+cite:larrypageAnatomyLargescaleHypertextual1998 Although this method is popular,
+it does not, however, easily adapt to negatively weighted edges (a negative
+weight in this case measuring dissaproval or an aversion to follow that link as
+opposed to endorsement). A limitation which is increasingly relevant given
+recent developments in the area of /Sentiment Analysis/.
+cite:parkPowerWalkProceedings2013
 
 The /Power Walk/ Method is similar to the /Random Surfer/ model but takes a
 different approach in order to accomadate the potential for an edge to have any
-arbirary real weight. cite:parkPowerWalkProceedings2013
+arbitrary real weight. cite:parkPowerWalkProceedings2013
 
 This research project will be an investigation into the relationship between
 model parameters and the solution stability of the /Power Walk/ method.
@@ -55,7 +55,7 @@ can promote both a deeper and broader understading of a topic, an example of
 this is the concept of a /pathfinder/, which is a list of central sources for a
 topic that can help in early stages of literature searches,
 cite:harbesonTeachingReferenceBibliography1972
-Examples of such Pathfinders include:
+examples of such Pathfinders include:
 
 - Institution examples:
   + [[https://libraries.mit.edu/experts/][/M.I.T./]] cite:mitResearchGuidesExpert
@@ -65,35 +65,38 @@ Examples of such Pathfinders include:
     - The Library of Congress refers to a /PathFinder/ as a /Tracer Bullet/, which is both a very descriptive and very American name.
 - Wiki Examples:
   + [[http://mathonline.wikidot.com/][Math Online]]  cite:Mathonline
-  + [[https://brilliant.org/wiki/best/][Top /Brilliant/ Wiki Pages]] cite:Top100Wiki
+  + [[https://brilliant.org/wiki/best/][/Brilliant/ Wiki]] cite:Top100Wiki
   + [[https://www.mediawiki.org/wiki/Help:Categories][Category Pages within MediaWiki Sites]] cite:HelpCategoriesMediaWiki
-    + For example the [[https://en.wikipedia.org/wiki/Category:Mathematics][Mathematics Category Page]] cite:CategoryMathematics2019
+    + For example the [[https://en.wikipedia.org/wiki/Category:Mathematics][/Wikipedia/ Mathematics Category Page]] cite:CategoryMathematics2019
 
 Using /Wikipedia/ for example can make for a very effective subject guide by
 following the various hyperlinks across wikipedia and leveraging [[https://www.mediawiki.org/wiki/Help:Categories][Category Pages]]
 cite:HelpCategoriesMediaWiki in order to map out a topic while referring to
-references as necessary. Such a strategy even recommended by some [[https://mville.libguides.com/c.php?g=370066&p=2500344][Library Study
-Guides]] cite:moskowitzLibraryGuidesWikipedia, and has even been
-implemented in recommendation systems to overcome a lack of data
-cite:loizouUsingWikipediaAlleviate2010a (see section of litreview? [[#wiki-networks]]).
+references as necessary. Such a strategy is even recommended by some [[https://mville.libguides.com/c.php?g=370066&p=2500344][Library
+Study Guides]] cite:moskowitzLibraryGuidesWikipedia, and has even been implemented
+in recommendation systems to overcome limitations imposed by a lack of data
+cite:loizouUsingWikipediaAlleviate2010a (see section [[#wiki-networks]]).
 
-Similarly the [[https://en.wikipedia.org/wiki/Collective_Knowledge_(software)][/Zettelkasten/ method]] of note taking essentially involves a collection of
-small interlinked notes cite:OverviewZettelkastenMethod, much like a wiki,
-within the last two decades this method has peaked in popularity
+Similarly the [[https://en.wikipedia.org/wiki/Collective_Knowledge_(software)][/Zettelkasten/ method]] of note taking involves, in essence, a
+collection of small interlinked notes cite:OverviewZettelkastenMethod, much like
+a wiki, within the last two decades this method has peaked in popularity
 cite:GoogleBooksNgram, despite being a method dating back to atleast the 18th
-Century. cite:haarkoetterAllesWesentlicheFindet This is clearly driven in party
-by the development of the internet, /HTML/ and the increasing breadth and depth
-of human knowledge.
+Century. cite:haarkoetterAllesWesentlicheFindet This is likely driven, atleast
+in part, by the development of the internet, /HTML/ and the increasing breadth
+and depth of human knowledge.
 
 A comprehensive review of the pathfinder approach, however, reveals that many
-such subject guides are not consistent with the needs of those engaging in
-research on any given topic. cite:vilenoPaperElectronicEvolution2007 This
+such subject guides are often not consistent with the needs of those engaging in
+research. cite:vilenoPaperElectronicEvolution2007 This
 issue is somewhat analogous to the issue faced by Larry Page and Sergey Brin in
 that the centrality of an article of information corresponds very greatly to
 it's relevance. cite:larrypageAnatomyLargescaleHypertextual1998
 
+This issue of relevance in information retrieval can be addressed by using an
+algorithm to identify what is most central to a topic, ideally the /Power Walk/
+method will prove to be an effective tool to ahieve this.
+
 * Background and Rationale
-** Background of issue
 Given some graph $G(V,E)$ with $\mid V \mid = n$, a corresponding adjacency
 matrix $\mathbf{A}$ describes the number of edges between vertex $i$ and $j$,
 such that $\mathbf{A}_{i, j}$ represents the number of edges between the
@@ -101,29 +104,30 @@ vertices, with respect to a directed graph the entry may either denote:
 
 - $i \rightarrow j$
   - One such example of this implementation being the ~igraph~ library cite:gaborcsardiIgraphManualPages2019
-- $j \rightarrow i$ [[cite:nicholsonLinearAlgebraApplications2009][\textsection 2.3]]
+- $j \rightarrow i$ [[cite:nicholsonLinearAlgebraApplications2009][\textsection 2.3]], OR
 
 While both definitions appear in the literature, the latter definition is more
 common/convenient when working with /probability transition matrices/ and will
 hence be adopted here.
-
-*** Stationary Distribution
+** Stationary Distribution
 :PROPERTIES:
 :CUSTOM_ID: stationary-distribution
 :END:
-Given this adjacency matrix $\mathbf{A}$, in order to have each element
-$\mathrm{A}_{i, j}$ represent the probability of leaving $j$ and travelling to
-$i$ during a random walk (as opposed to the number of edges), each column will
-need to be scaled to one, this can be acheived with matrix multiplication as
-illustrated in eqref:eq:mat-mult-colsum:
+Given this adjacency matrix $\mathbf{A}$, a /probability transition matrix/
+$\mathbf{T}$ can be produced by scaling each column to 1, such that each element
+$\mathrm{T}_{i, j}$ would now represent the probability of leaving $j$ and
+travelling to $i$ during a random walk (as opposed to the number of edges as was
+the case with $\mathbf{T}$), each column will need to be scaled to one, this can
+be acheived with matrix multiplication as illustrated in
+eqref:eq:mat-mult-colsum:
 
 \begin{align}
 \mathbf{T} = \mathbf{A} \enspace \mathrm{diag}\left( \mathtt{colsums}\left(
 \mathbf{A} \right) \right) \label{eq:mat-mult-colsum} \end{align}
 
-The state distribution $\vec{p}_{k}$ describes the probability of visiting each
-vertex during a random walk for the $k^{\textrm{th}}$ step of the walk, given
-this, the stationary distribution $\vec{p}$ is given by
+The state distribution $\vec{p}_{k}$ describes the frequency (scaled to 1) of
+visiting each vertex during a random walk for the $k^{\textrm{th}}$ step of the
+walk, given this, the stationary distribution $\vec{p}$ is given by
 eqref:eq:stationary-distribution:
 
 
@@ -145,10 +149,10 @@ solving the eigenvalue problem for $\lambda=1$ as shown in eqref:eq:eigen-one:
 ** Random Surfer
 If however a graph is non-ergodic, this random walk will not traverse every
 vertex, to overcome this, the /Random Surfer/ model can be implemented
-cite:larrypageAnatomyLargescaleHypertextual1998, by essentially introducing,
-into the /probability transition matrix/ $(\mathbf{T})$, some probability
-$(\frac{1-\alpha}{n})$ of traversing to a disconnected vertex $(V)$, this is
-shown in eqref:eq:random-surfer:
+cite:larrypageAnatomyLargescaleHypertextual1998. This method involves,
+essentially, introducing into the /probability transition matrix/
+$(\mathbf{T})$, some probability $(\frac{1-\alpha}{n})$ of traversing to a
+disconnected vertex $(V)$, this is shown in eqref:eq:random-surfer:
 
 \begin{align}
 \mathbf{T}_{\textrm{RS}} = \mathbf{S} = \alpha \mathbf{T} + (1-\alpha) \mathbf{B}
@@ -260,14 +264,14 @@ The value used originally by Page and Brin was $\alpha = 0.85$ See
 [[cite:larrypageAnatomyLargescaleHypertextual1998][p. 109]] and this appears to
 have widely adopted.
 cite:kamvarAdaptiveMethodsComputation2004b,boldiPageRankFunctionDamping2005,
-however research suggests that modifying the value by be useful in detecting
-spam
+however research suggests that modifying the value may be useful in detecting
+spam.
 cite:zhangMakingEigenvectorBasedReputation2004,boldiPageRankFunctionDamping2005
 
 
 #+NAME: random-surf-r
 #+CAPTION: Implementing the random surfer model for the graph shown in figure [[my-graph]]
-#+begin_src R :session graph-two :results output :exports code
+#+begin_src R :session graph-two :results output :exports code :eval never-export
 library(igraph)
 library(tidyverse)
 
@@ -298,7 +302,7 @@ eigen(S, symmetric = FALSE)$values
 
 #+NAME: two-sub-graph-code
 #+CAPTION: Figure of a graph with two subgraphs, identical to graph published by Park and Simoff cite:parkPowerWalkProceedings2013
-#+begin_src R :session graph-two :results output graphics file :file two-sub-graph-fig2.png :exports results
+#+begin_src R :session graph-two :results output graphics file :file two-sub-graph-fig2.png :exports results :eval never-export
 plot(g1)
 #+end_src
 
@@ -335,7 +339,7 @@ of the literature is concerned with either:
 
 1. The original /PageRank/ method developed by Page and Brin,
 cite:larrypageAnatomyLargescaleHypertextual1998 OR
-2. Modifying the pagerank method to improve upon:
+2. Modifying the /PageRank/ method to improve upon:
   + Precision and accuracy see cite:ngStableAlgorithmsLink2001,berkhoutRankingNodesGeneral2018a,nemaConsensusbasedRankingWikipedia2017a,fuDampingFactorGoogle2006
   + Performance with respect to:
     - Rate of convergence in terms of iterations and time, see cite:tanNewExtrapolationMethod2017a,langvilleReorderingPageRankProblem2006
@@ -348,7 +352,7 @@ closer inspection.
 
 ** Building on Literature Referred to in Primary Resource
 This research is focused primarily on the /Power Walk/ method or approach to the
-PageRank algorithm proposed by Park and Simoff in a 2013 conference paper,
+/PageRank/ algorithm proposed by Park and Simoff in a 2013 conference paper,
 cite:parkPowerWalkProceedings2013 this paper contained some discussion of
 relevant research.
 *** Stability and Convergence
@@ -361,8 +365,8 @@ $\lambda_{2}$ (see eqref:eq:eigen-set) is bounded above by the smoothing
 constant $\alpha$ and in the case that the corresponding graph has more than 1
 closed subgraph is equal to $\alpha$. This is an important revelation because it
 has been shown that the further the second eigenvalue is from 1, the more
-resistant the stationary distriubtion of the pagerank is to perturbations in the
-corresponding graph, cite:ngStableAlgorithmsLink2001 and the faster the pagerank
+resistant the stationary distriubtion of the /PageRank/ is to perturbations in the
+corresponding graph, cite:ngStableAlgorithmsLink2001 and the faster the /PageRank/
 will converge cite:bryan250000002006.
 
 It has been shown that the /power method/ (see section [[#iterative-power-method]])
@@ -450,7 +454,7 @@ but has been shown to improve the rate of convergence in certain cases.
 cite:langvilleReorderingPageRankProblem2006.
 
 *** Insightful Miscellaneous Work
-**** PageRank as a Power Series
+**** /PageRank/ as a Power Series
 :PROPERTIES:
 :CUSTOM_ID: power-series
 :END:
@@ -467,9 +471,8 @@ function such as $f(x) = \sum^n_{i=0} \left[ x^n \frac{a}{n!} \right]$ may be
 able to show a more direct relationship between the /PowerRank/ and /Power Walk/
 approaches.
 
-
 **** Modelling
-The pageRank method has been leveraged as a value to assist in building
+The /PageRank/ method has been leveraged as a value to assist in building
 artificial networks in order to model real-world networks, such networks have
 been shown to have upper and lower bounds on there diamaters.
 cite:mehrabianItSmallWorld2016 this is a very interesting area of research and
@@ -478,8 +481,8 @@ in such an approach produces graphs that are more consistent with social
 networks.
 
 **** Pure Mathematics
-One very interesting application of the pagerank method in the literature was
-appying the /PageRank/ method to graph of integers (see figure [[pure-math-graph]])
+One very interesting piece of work in the in the literature was an application
+of the /PageRank/ method to a graph of integers (see figure [[pure-math-graph]])
 with edges based on divisors, as shown in listing [[pure-math-adj]].
 
 This is well outside the scope of this research, but if the precision of the
@@ -491,68 +494,21 @@ Another paper outside the scope of this paper is work by Ding & Li concerned
 with extending the /PageRank/ method to /multi-plex/ graphs[fn:mp], although
 very interesting and practical such research is beyond the scope of this work.
 
-
 #+NAME: pure-math-adj
 #+CAPTION: /PageRank/ Probability Transition Matrix of network based on divisibility of $\mathbb{Z}^+ \leq 30$
-#+begin_src R :session graph-two :results output graphics file :file pure-math-adj-graph.png :exports results
+#+begin_src R :session graph-two :results output graphics file :file pure-math-adj-graph.png :exports both :eval never-export
 library(igraph)
 library(tidyverse)
+g1 <- igraph::graph.formula(30-15, 30-5, 30-6, 30-3, 30-2, 29, 28-7, 28-4, 28-2,
+27, 26-13, 26-2, 25-5, 24-8, 24-4, 24-2, 24-6, 24-3, 23, 22-11, 22-2, 21-3,
+21-7, 20-5, 19, 18-2, 18-3, 18-9, 17, 16-4, 16-2, 16-8, 15-3, 15-5, 14-7, 14-2,
+13, 12-4, 12-3, 12-2, 11, 10-5, 10-2, 9-3, 8-2, 8-4, 7, 6-3, 6-2, 5, 4-2, 3, 2)
 
-g1 <- igraph::graph.formula(30-15, 30-5, 30-6, 30-3, 30-2, 29,
-                            28-7, 28-4, 28-2, 27, 26-13, 26-2,
-                            25-5, 24-8, 24-4, 24-2, 24-6, 24-3,
-                            23, 22-11, 22-2, 21-3, 21-7, 20-5,
-                            19, 18-2, 18-3, 18-9, 17, 16-4, 16-2,
-                            16-8, 15-3, 15-5, 14-7, 14-2, 13,
-                            12-4, 12-3, 12-2, 11, 10-5, 10-2,
-                            9-3, 8-2, 8-4, 7, 6-3, 6-2,
-                            5, 4-2, 3, 2)
 plot(g1)
-
-A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %>%
-  as.matrix()
-
-## Adjust the Order
-A <- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))]
-
-T <- A
-CS <- colSums(A)
-for (i in 1:length(CS)) {
-  if (CS[i]!=0) {
-    T[,i] <- T[,i]/CS[i]
-  }
-}
-
-
-B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
-ɑ <- 0.85
-
-S <- ɑ*T+(1-ɑ)*B
-
-eigen(S)$vectors[eigen(S)$values == max(abs(eigen(S)$values))]
-
-##  [1] -5.843491e-01+0.000000e+00i -6.601213e-01+0.000000e+00i
-##  [3]  3.202267e-01+0.000000e+00i  2.492578e-01+0.000000e+00i
-##  [5] -1.962477e-01+0.000000e+00i -4.329437e-02+0.000000e+00i
-##  [7] -6.322935e-16+0.000000e+00i -1.007660e-15+0.000000e+00i
-##  [9]  1.022704e-01+0.000000e+00i -1.994323e-01+0.000000e+00i
-## [11] -1.065640e-01+0.000000e+00i  4.603345e-01+0.000000e+00i
-## [13] -2.612568e-01+0.000000e+00i -1.221066e-01+0.000000e+00i
-## [15]  1.343894e-01+0.000000e+00i -2.620028e-01+0.000000e+00i
-## [17] -7.592911e-01+0.000000e+00i  7.331970e-01+0.000000e+00i
-## [19] -2.065287e-01+0.000000e+00i  2.075317e-02+0.000000e+00i
-## [21] -3.047677e-01+0.000000e+00i  2.937879e-01+0.000000e+00i
-## [23]  7.520500e-03+0.000000e+00i  1.169962e-17+1.517458e-16i
-## [25]  1.169962e-17-1.517458e-16i  7.182818e-17+0.000000e+00i
-## [27]  4.229494e-18+0.000000e+00i -7.094677e-17+0.000000e+00i
-## [29]  2.147605e-17+0.000000e+00i
 #+end_src
 
 #+NAME: pure-math-graph
-#+CAPTION: Graph of \mathbb{Z}^+ \leq 30$ with edges based on divisors
-#+RESULTS[584f27a74243425dd10da1ffa292cf7a4cd21e4a]: pure-math-adj
-[[file:pure-math-adj-graph.png]]
-
+#+CAPTION: Graph of $\mathbb{Z}^+ \leq 30$ with edges based on divisors
 
 ** Search Engine Optimisation
 There is a considerable amount of work in the literature concerning the
