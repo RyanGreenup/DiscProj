@@ -27,7 +27,11 @@
 \RequirePackage{lipsum}
 \RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
-\RequirePackage[margin=1in]{geometry}
+\RequirePackage[mono=false]{libertine} %% No UTF8 in mono,
+\setlength{\tabcolsep}{6pt}
+\RequirePackage[margin=0.75in]{geometry}
+\setlength{\columnsep}{0.75in} % Set column seperation
+\twocolumn
 \addtolength{\skip\footins}{2pc plus 5pt} %Add whitespace before footnotes`
 %\RequirePackage{tgadventor}
 % Titlesec is incompatible with org-mode
@@ -77,9 +81,9 @@
 % % Numbering
 % \renewcommand{\thesection}{}
 % \renewcommand{\thesubsection}{}
-\renewcommand{\thesection}{\S~\arabic{section}~}
+\renewcommand{\thesection}{~\arabic{section}~}
 \setcounter{subsection}{1}
-\renewcommand{\thesubsection}{\P~\arabic{section}.\arabic{subsection}~}
+\renewcommand{\thesubsection}{~\arabic{section}.\arabic{subsection}~}
 \setcounter{subsubsection}{1}
 \renewcommand{\thesubsubsection}{~\arabic{section}.\arabic{subsection}.\arabic{subsubsection}~}
 
@@ -87,7 +91,7 @@
 % ** Font Style
 %Change the Font------------------------------
 %\RequirePackage{PoiretOne}
-\renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+ % \renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
 % ** Rule AFter Sectioning
 % Add rule after sections ------------------------------
 \RequirePackage{titlesec}
@@ -207,4 +211,3 @@
 		 /tcb/left skip=0.5 cm %Indent the whole box
 		 ]}%
 	\AfterEndEnvironment{minted}{\end{tcolorbox}}%
-
