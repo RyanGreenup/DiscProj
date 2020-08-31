@@ -19,7 +19,6 @@ A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 g1 <- igraph::erdos.renyi.game(n = 50, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
 plot(g1)
-A <- as.matrix(A)
 
 ## * Inspect the Newly Created Matrix
 summary(A)
@@ -134,5 +133,29 @@ print(paste("The stationary point is"))
 print(p)
 
 ## ** Faster Approach from 3.2 of paper
+power_walk <- function(A, β) {
+
+  ## Define B, depending on input
+  if (!("dgCMatrix" %in% class(A))) {
+    B     <- A
+    B@x   <- β^(A@x) -1
+  } else if (!("matrix" %in% class(A))) {
+    B   <- β^A -1
+  } else {
+    stop("Require A to be a sparse matrix of class dgCMatrix or base matrix")
+  }
+
+
+  δB  <- 1/colSums(B)
+  DB  <- diag(δB)
+
+  T <- B %*% DB
+}
+power_walk(A, 0.3)
+
+
+A
+0.8^A
+class(A)
 
 ## * Sparse Matrix Approach
