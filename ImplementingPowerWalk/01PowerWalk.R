@@ -11,14 +11,21 @@ if (require("pacman")) {
 
 ## * Create Example Matrix
 n <- 20
-m <- 10^6
+m <- 10^2
 i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 90)
-(A <- sparseMatrix(i, j, x = x, dims = c(m, m)))
+A <- sparseMatrix(i, j, x = x, dims = c(m, m))
+A <- sparseMatrix(i, j, x = x, dims = c(m, m))
+
+g1 <- igraph::erdos.renyi.game(n = 50, 0.2)
+A <- igraph::get.adjacency(g1) # Row to column
+plot(g1)
+A <- as.matrix(A)
 
 ## * Inspect the Newly Created Matrix
 summary(A)
 str(A) # note that *internally* 0-based row indices are used
 
+## * Naive Approach to Stationary Point
 ## ** Create a Diagonalised Scaling Matrix
 ## Create a way to Diagonalise a sparse matrix
 sparse_diag <- function(mat) {
@@ -31,7 +38,7 @@ sparse_diag <- function(mat) {
   #' This should take the transpose of an adjacency matrix in and the output
   #' can be multiplied by the original matrix to scale it to 1.
   #' i
-  
+  # mat  <- A
   ## Get the Dimensions 
   n <- nrow(mat)
   
@@ -43,12 +50,15 @@ sparse_diag <- function(mat) {
   
   ## Inverse the Values
   D@x <- 1/D@x
-  
+
   ## Return the Diagonal Matrix
   return(D)
 }
 
-## * Weight the Adjacency Matrix
+
+
+
+## ** Weight the Adjacency Matrix
 
 weight_adjMat <- function(adjMat) {
   #' Weight Adjacency Matrix
@@ -58,9 +68,9 @@ weight_adjMat <- function(adjMat) {
   A@x*rnorm(length(A@x), 0, 0.1)
 }
 
-diag(A)
 
-## * Function to create Prob Trans Mat
+
+## ** Function to create Prob Trans Mat
 adj_to_probTrans <- function(wadjmat, beta) {
   #' Adjacency to Probability Transition Matrix
   #' 
@@ -74,57 +84,55 @@ adj_to_probTrans <- function(wadjmat, beta) {
   #' or atleast of the class matrix.
   #' @param beta The probability of following an edge
 
-  ## Matrix Exponentiation requires expm
+  wadjmat <- t(wadjmat)    # transpose Assuming row->column (like igraph)
+#  wadjmat  <- A; beta  <- 0.8
 
-  B  <- beta %^% wadjmat
+  if ("dgCMatrix" %in% class(wadjmat)) {
 
-  mat <- t(wadjmat)
-  if (class(wadjmat) == "dgCMatrix") {
-    B <- beta ^ wadjmat
+#    B     <- sparseMatrix(i = summary(wadjmat)$i, j = summary(wadjmat)$j, x = beta^wadjmat@x) # element wise exponentiation
+#    Don't do this ^^ because it comes out with clipped off dimensions
+    B     <- wadjmat
+    B@x   <- beta^wadjmat@x    # Element Wise exponentiation
+    D_in  <- sparse_diag(B)
+    T = B %*% D_in
     return(T)
-  } else if (class(wadjmat) == "matrix") {
+
+  } else if ("matrix" %in% class(wadjmat)) {
     print("WARNING: expected dgCMatrix but matrix detected")
     print("Attemptying to proceed anyway")
-    for (i in ncol(mat)) {
-      mat[, i] <- mat[, i] / sum(mat[, i])
+    for (i in ncol(wadjmat)) {
+      #  wadjmat[, i] <- wadjmat[, i] / sum(wadjmat[, i])
+    B     <- wadjmat
+    B   <- beta^wadjmat    # Element Wise exponentiation
+    D_in  <- sparse_diag(B)
+    T = B %*% D_in
+    return(as.matrix(T))
     }
-    return(mat)
+    return(wadjmat)
   } else {
-    print("ERROR: Require sparse matrix of class dgCMatrix to")
+    print("ERROR: Require sparse wadjmatrix of class dgCWadjmatrix to")
   }
 }
 
-(T <- adj_to_probTrans(A))
-summary(T)
+class(A)
+(T <- adj_to_probTrans(A, beta = 0.843234))  %>% summary()
+T
+## ** Power Method
+p    <- rep(0, nrow(T))
+p[1] <- 1
+p_new    <- rep(0, nrow(T))
+p_new[2]    <- 1
 
-## * State the Random Surfer (Can't be Implemented)
-N <- nrow(A)
-alpha <- 0.8
-  ## We can't though because this is too slow
-    # rep(1/N, nrow(A)^2) %>% matrix(nrow = nrow(A)) -> B
-    # S <- alpha*T+(1-alpha)*B
-
-## Instead, with a bit of algebra we can jump right into the power method 
-## by modifying the random surfer.
-
-## * Implement the Power Method to Solve Random Surfer (Modified Strategy)
-## ** Variables for Random Surfer (Alternative Algebra)
-## Find Stationary point of random surfer
-N     <- nrow(A)
-alpha <- 0.8
-F     <- rep((1-alpha)/N, nrow(A))  ## A nx1 vector of (1-alpha)/N
-
-## ** Implement the Power Method Loop
-## Solve using the power method
-p     <- rep(0, length.out = ncol(T)); p[1] <- 1
-p_new <- alpha*T %*% p + F
-
-## use a Counter to debug
-i <- 0
 while (sum(round(p, 9) != round(p_new, 9))) {
-    p     <- p_new
-    p_new <- alpha*T %*% p + F
-    (i <- i+1) %>% print()
+    (p     <- p_new)
+    (p_new <- T %*% p)
 }
 
-p %>% head() %>% print()
+
+
+print(paste("The stationary point is"))
+print(p)
+
+## ** Faster Approach from 3.2 of paper
+
+## * Sparse Matrix Approach
