@@ -18,7 +18,7 @@ A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 
 g1 <- igraph::erdos.renyi.game(n = 50, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
-plot(g1)
+# plot(g1)
 
 ## * Inspect the Newly Created Matrix
 summary(A)
@@ -131,9 +131,11 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 print(paste("The stationary point is"))
 print(p)
-
 ## ** Faster Approach from 3.2 of paper
+beta = 0.843234
+β = beta
 power_walk <- function(A, β) {
+  n <- nrow(A)
 
   ## Define B, depending on input
   if (!("dgCMatrix" %in% class(A))) {
@@ -145,13 +147,41 @@ power_walk <- function(A, β) {
     stop("Require A to be a sparse matrix of class dgCMatrix or base matrix")
   }
 
+  ## Create the Scaling Matrix to make row sums 1
+  δB   <- 1/colSums(B)
+  δBt  <- as.vector(δB)  #~=t(δB) must be a vector, outer prod of 1col matrix will be a 3d array
+  DB   <- diag(δB)
 
-  δB  <- 1/colSums(B)
-  DB  <- diag(δB)
-
+  ## Create the Trans Prob Mat using Power Walk
   T <- B %*% DB
+
+  ## Implement the Power Walk
+  p_new  <- rep(1/n, n)  # Uniform
+  p      <- rep(0, n)    # Zero
+  η      <- 10^(-6)
+  oneVec <- rep(1, n)
+
+
+
+ while (sum((p_new^2 - p^2)) > η) {
+    (p <- as.vector(p_new)) # P should remain a vector
+#    p_new  <- T %*% p + (δBt %o% p)  %*% oneVec
+     p_new  <- T %*% p + rep(sum(δB*p), n)
+    T %*% p
+    rep(sum(δB*p), n)
+
+  }
+
+## for (i in 1:100) {
+##     (p <- p_new)
+##     p_new  <- T %*% p + δBt %*% p
+## }
+  p
 }
-power_walk(A, 0.3)
+
+p
+g1 <- igraph::erdos.renyi.game(n = 50, 0.2)
+power_walk(A = A, β = 0.4)
 
 
 A
@@ -159,3 +189,4 @@ A
 class(A)
 
 ## * Sparse Matrix Approach
+t(c(1/2, 1/3, 1/5)) %o% matrix(c(1/7, 1/11, 1/13), ncol = 1)  %>% dim()
