@@ -16,6 +16,9 @@ i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 9
 A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 
+beta = 0.843234
+β = beta
+
 g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
 plot(g1)
@@ -114,7 +117,7 @@ adj_to_probTrans <- function(wadjmat, beta) {
 }
 
 class(A)
-(T <- adj_to_probTrans(A, beta = 0.843234))  %>% summary()
+(T <- adj_to_probTrans(A, beta = β))  %>% summary()
 T
 ## ** Power Method
 p    <- rep(0, nrow(T))
@@ -132,35 +135,36 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 print(paste("The stationary point is"))
 print(p)
 
-## ** Faster Sparse Approach from 3.2 of paper
-beta = 0.843234
-β = beta
-
+## * Faster Sparse Approach from 3.2 of paper
+## ** Define Constants
   n <- nrow(A)
-
-  ## Define B, depending on input
+## ** Find the B Matrix
+## Define B, depending on input
     B     <- A
     B@x   <- β^(A@x) -1
 
-  ## Create the Scaling Matrix to make row sums 1
+## ** Create the Scaling Matrix
+## Create the Scaling Matrix to make row sums 1
   δB   <- 1/colSums(B)
   δBt  <- t(δB) 
   DB   <- diag(δB)
 
-  ## Create the Trans Prob Mat using Power Walk
+## ** Create the Transition Probability Matrix
+## Create the Trans Prob Mat using Power Walk
   T <- B %*% DB
 
-  ## Implement the Power Walk
+## ** Implement the Power Walk
+## *** Set Initial Values
   p_new  <- rep(1/n, n)  # Uniform
   p      <- rep(0, n)    # Zero
   η      <- 10^(-6)
-
+## *** Implement the Loop
 
  while (sum(abs(p_new - p)) > η) {
     (p <- as.vector(p_new)) # P should remain a vector
     sum(p <- as.vector(p_new)) # P should remain a vector
      p_new  <- T %*% p + rep(δBt %*% p, n)
   }
-
+## ** Report the Values
 print(paste("The stationary point is"))
 print(p)
