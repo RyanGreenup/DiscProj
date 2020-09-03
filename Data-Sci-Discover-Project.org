@@ -757,6 +757,7 @@ If each vertex is connected the graph is said to be ergodic and there is a close
   - $\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}$
     - $\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]$
 
+
 For large matrices calculating the eigenvalues will be expensive and so instead the power method is used, which is essentially looping over until the vector converges to a solution.
 
 \begin{align}
@@ -772,7 +773,6 @@ where:
   - The transition matrix is intended to be such that for a given state distribution $\vec{p}$, the next iteration of a random walk will be $\mathrm{T}\vec{p}$
   - Observe also that $\mathrm{T} = \mathrm{T} \cdot \mathrm{diag}(\mathtt{colsums}(\mathrm{A^{\mathrm{T}}}))$
     - i.e. the transpose of the adjacency matrix with each column scaled to 1.
-
 
 *** Random Surfer
 
@@ -799,3 +799,139 @@ where:
 
 
 
+** Simplifying Power Walk to be solved with Sparse Matrices
+The Random Surfer model is:
+
+$$\begin{aligned}
+    \mathbf{S} &= \alpha \mathbf{T} +  \mathbf{F}  \label{eq:sparse-RS}\end{aligned}$$
+
+where:
+
+- $\mathbf{T}$
+
+  - is an $i \times j$ matrix that describes the probability of
+    travelling from vertex $j$ to $i$
+
+    - This is transpose from the way that =igraph= produces an adjacency
+      matrix.
+
+- $\mathbf{F} = \begin{bmatrix} \frac{1}{n} \\ \frac{1}{n} \\ \frac{1}{n} \vdots \end{bmatrix}$
+
+Interpreting the transition probability matrix in this way is such that
+$\mathbf{T}= \mathbf{A}\mathbf{D}^{- 1}_A$ under the following
+conditions:
+
+- No column of $\mathbf{A}$ sums to zero
+
+  - If this does happen the question arises how to deal with
+    $\mathbf{D_\mathbf{A}^{- 1}}$
+
+    - I've been doing
+      $D'_{\mathbf{A}, i, j} := \mathtt{diag} \left( {\frac{1}{\mathtt{colsums}\left( \mathbf{A} \right)}} \right)$
+      and then replacing any $0$ on the diagonal with 1.
+
+  - What is done in the paper is to make another matrix $\mathbf{Z}$
+    that is filled with 0, if a column sum of $\mathbf{A}$ adds to zero
+    then that column in $\mathbf{Z}$ becomes $\frac{1}{n}$
+
+    - This has the effect of making each row identical
+
+    - The probability of going from an orphaned vertex to any other
+      vertex would hence be $\frac{1}{n}$
+
+    - The idea with this method is then to use
+      $D_\mathbf{\left( A+Z \right)}^{- 1}$ this will be consistent with
+      the /Random Surfer/ the method using $\mathbf{F}$ in
+      [[#eq:sparse-RS][[eq:sparse-RS]]]
+
+    where each row is identical that is a 0
+
+The way to deal with the /Power Walk/ is more or less the same.
+
+observe that:
+
+$$\begin{aligned}
+    \mathbf{B} = \beta^{\mathbf{A}} \wedge \mathbf{A}_{i, j}\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}\end{aligned}$$
+
+Be mindful that the use of exponentiation in
+[[#eq:b-is-pos][[eq:b-is-pos]]] is not an element wise exponentiation
+and not an actual matrix exponential (which would be defined by using
+power series and logs but is defined)
+
+So if I have:
+
+- $\mathbf{O}_{i, j} := 0, \quad \forall i,j\leq n \in \mathbb{Z}^+$
+
+- $\vec{p_i}$ as the state distribution, being a vector of length $n$
+
+Then It can be shown (see eqref:eq:sparse-power-walk):
+
+$$\begin{aligned}
+    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} = \vec{\delta} ^{\mathbf{T}}\vec{p_i} \label{eq:pw-delta-simp}\end{aligned}$$
+
+where:
+
+- $\vec{\delta_i} = \frac{1}{\mathtt{colsums} \left( \mathbf{B} \right)}$
+
+This means we can do:
+
+$$\begin{aligned}
+     \vec{p_{i +  1}} &=  \mathbf{B} \mathbf{D}_{\mathbf{B}}^{- 1} \vec{p_{i}}  \\
+     &= \left( \mathbf{B} -  \mathbf{O} +  \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}\vec{p_i} \\
+     &= \left( \left( \mathbf{B} -  \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1} +  \mathbf{O}\mathbf{D}_{\mathbf{B}}^{- 1} \right) \vec{p_i} \\
+     &= \left( \mathbf{B}-  \mathbf{O}\right) \mathbf{D}_{\mathbf{B}}^{- 1} \vec{p_i} +  \mathbf{O} \mathbf{D}_{\mathbf{B}}^{- 1} \vec{p_i}  \\
+     &= \left( \mathbf{B}- \mathbf{O} \right)\mathbf{D}_{\mathbf{B}}^{- 1} \vec{p_i} +  \vec{\delta'}\vec{p_i} \vec{1}
+ \end{aligned}$$
+
+And so the the power method can be implemented using sparse matrices.
+
+*** Solving the Background Probability
+In this case a vertical single column matrix will represent a vector and $\otimes$ will represent the outer product (i.e. the /Kronecker Product/):
+
+
+\[\begin{aligned}
+     \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} & = \left(
+     \begin{array}{cccc}
+       1 & 1 & 1 & \\
+       1 & 1 & 1 & \ldots\\
+       1 & 1 & 1 & \\
+       & \vdots &  & \ddots
+     \end{array} \right) \left( \begin{array}{cccc}
+       \sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}] & 0 & 0 & \\
+       0 & \sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 2}] & 0 & \ldots\\
+       0 & 0 & \sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 3}] & \\
+       0 & \vdots & 0 & \ddots
+     \end{array} \right) \left( \begin{array}{c}
+       p_1\\
+       p_2\\
+       p_3\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     & = \left( \begin{array}{cccc}
+       \frac{p_1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}]} & \frac{p_2}{\sum^n_{i
+       = 1} [\ensuremath{\boldsymbol{A}}_{2, 1}]} & \frac{p_3}{\sum^n_{i = 1}
+       [\ensuremath{\boldsymbol{A}}_{3, 1}]} & \\
+       \frac{p_1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}]} & \frac{p_2}{\sum^n_{i
+       = 1} [\ensuremath{\boldsymbol{A}}_{2, 1}]} & \frac{p_3}{\sum^n_{i = 1}
+       [\ensuremath{\boldsymbol{A}}_{3, 1}]} & \ldots\\
+       \frac{p_1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}]} & \frac{p_2}{\sum^n_{i
+       = 1} [\ensuremath{\boldsymbol{A}}_{2, 1}]} & \frac{p_3}{\sum^n_{i = 1}
+       [\ensuremath{\boldsymbol{A}}_{3, 1}]} & \\
+       \vdots & \vdots & \vdots & \vdots
+     \end{array} \right) \nonumber\\
+     & = \left( \begin{array}{ccc}
+       \frac{1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}]} & \frac{1}{\sum^n_{i =
+       1} [\ensuremath{\boldsymbol{A}}_{i, 2}]} & \frac{1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i,
+       3}]}
+     \end{array} \right) \otimes \left( \begin{array}{c}
+       p_1\\
+       p_2\\
+       p_3
+     \end{array} \right) \left( \begin{array}{c}
+       1\\
+       1\\
+       1
+     \end{array} \right) \nonumber\\
+     & =\ensuremath{\boldsymbol{\delta}}^{\ensuremath{\boldsymbol{T}}}  \overrightarrow{p}
+     \label{eq:sparse-power-walk} \overrightarrow{1}
+   \end{aligned}\]

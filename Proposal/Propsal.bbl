@@ -19,7 +19,885 @@
 
 \refsection{0}
   \datalist[entry]{nty/global//global/global}
-    \entry{kamvarAdaptiveMethodsComputation2004}{article}{}
+    \entry{berkhoutRankingNodesGeneral2018a}{article}{}
+      \name{author}{2}{}{%
+        {{hash=1496e885b12c24effe018a9c6e242766}{%
+           family={Berkhout},
+           familyi={B\bibinitperiod},
+           given={Joost},
+           giveni={J\bibinitperiod}}}%
+        {{hash=e002fd84a8e9b4fb5cc10edc8a9a2899}{%
+           family={Heidergott},
+           familyi={H\bibinitperiod},
+           given={Bernd\bibnamedelima F.},
+           giveni={B\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \strng{namehash}{01c57e10dab987785c63d1e6090abf1f}
+      \strng{fullhash}{01c57e10dab987785c63d1e6090abf1f}
+      \strng{bibnamehash}{01c57e10dab987785c63d1e6090abf1f}
+      \strng{authorbibnamehash}{01c57e10dab987785c63d1e6090abf1f}
+      \strng{authornamehash}{01c57e10dab987785c63d1e6090abf1f}
+      \strng{authorfullhash}{01c57e10dab987785c63d1e6090abf1f}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{The basis of Google’s acclaimed PageRank is an artificial mixing of the Markov chain representing the connectivity structure of the network under study with a maximally connected network where every node is connected to every other node. The rate with which the original network is mixed with the strongly connected one is called damping factor. The choice of the damping factor can influence the ranking of the nodes. As we show in this paper, the ranks of transient nodes, i.e., nodes not belonging to a strongly connected component without outgoing links in the original network, tend to zero as the damping factor increases. In this paper we develop a new methodology for obtaining a meaningful ranking of nodes without having to resort to mixing the network with an artificial one. Our new ranking relies on an adjusted definition of the ergodic projector of the Markov chain representing the original network. We will show how the new ergodic projector leads to a more structural way of ranking (transient) nodes. Numerical examples are provided to illustrate the impact of this new ranking approach.}
+      \field{annotation}{The choice of damping factor of Googles page rank might have a large impact on the values given to vertices. \par This suggests an approach that uses structural network dynatims to provide an appropriate score distribution. \par The method implemented is not something I have come yet to understand, but it could be very interesting to see: \par - how it relates to the power walk method\\ - whether or not it could offer insightts into the convergence and stability of the power walk method\\ - Whether or not the method would be compatible with negatively weighted edges.}
+      \field{day}{1}
+      \field{issn}{1573-7594}
+      \field{journaltitle}{Discrete Event Dyn Syst}
+      \field{langid}{english}
+      \field{month}{3}
+      \field{number}{1}
+      \field{shorttitle}{Ranking Nodes in General Networks}
+      \field{title}{Ranking Nodes in General Networks: A {{Markov}} Multi-Chain Approach}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{28}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{3\bibrangedash 33}
+      \range{pages}{31}
+      \verb{doi}
+      \verb 10.1007/s10626-017-0248-7
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/DMEFX9X8/Berkhout and Heidergott - 2018 - Ranking nodes in general networks a Markov multi-.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s10626-017-0248-7
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s10626-017-0248-7
+      \endverb
+      \keyw{markov,pagerank}
+    \endentry
+    \entry{berkleyuniversityBusinessLibraryUC}{online}{}
+      \name{author}{1}{}{%
+        {{hash=824c920cf4253e7f289d47ba6166766b}{%
+           family={{Berkley University}},
+           familyi={B\bibinitperiod}}}%
+      }
+      \strng{namehash}{824c920cf4253e7f289d47ba6166766b}
+      \strng{fullhash}{824c920cf4253e7f289d47ba6166766b}
+      \strng{bibnamehash}{824c920cf4253e7f289d47ba6166766b}
+      \strng{authorbibnamehash}{824c920cf4253e7f289d47ba6166766b}
+      \strng{authornamehash}{824c920cf4253e7f289d47ba6166766b}
+      \strng{authorfullhash}{824c920cf4253e7f289d47ba6166766b}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Business {{Library}} | {{UC Berkeley Library}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/2PBVCX93/business-library.html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.lib.berkeley.edu/libraries/business-library
+      \endverb
+      \verb{url}
+      \verb https://www.lib.berkeley.edu/libraries/business-library
+      \endverb
+    \endentry
+    \entry{bianchiniPageRank2005}{article}{}
+      \name{author}{3}{}{%
+        {{hash=9a1f3ef8772d98271cb2ef37511a2ba4}{%
+           family={Bianchini},
+           familyi={B\bibinitperiod},
+           given={Monica},
+           giveni={M\bibinitperiod}}}%
+        {{hash=d25d4f83ae540b2b728a5423e9fbe85b}{%
+           family={Gori},
+           familyi={G\bibinitperiod},
+           given={Marco},
+           giveni={M\bibinitperiod}}}%
+        {{hash=447de7983619243dc5bf3af69d609b20}{%
+           family={Scarselli},
+           familyi={S\bibinitperiod},
+           given={Franco},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{26bd91484e5e78f57d44a6e8ed981d59}
+      \strng{fullhash}{26bd91484e5e78f57d44a6e8ed981d59}
+      \strng{bibnamehash}{26bd91484e5e78f57d44a6e8ed981d59}
+      \strng{authorbibnamehash}{26bd91484e5e78f57d44a6e8ed981d59}
+      \strng{authornamehash}{26bd91484e5e78f57d44a6e8ed981d59}
+      \strng{authorfullhash}{26bd91484e5e78f57d44a6e8ed981d59}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{annotation}{This is a discussion on the stability, complexity and critical role of parameters involved in the computation.}
+      \field{day}{1}
+      \field{issn}{15335399}
+      \field{journaltitle}{ACM Trans. Inter. Tech.}
+      \field{langid}{english}
+      \field{month}{2}
+      \field{number}{1}
+      \field{title}{Inside {{PageRank}}}
+      \field{urlday}{18}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{5}
+      \field{year}{2005}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{92\bibrangedash 128}
+      \range{pages}{37}
+      \verb{doi}
+      \verb 10.1145/1052934.1052938
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/WWSXB8L2/Bianchini et al. - 2005 - Inside PageRank.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://portal.acm.org/citation.cfm?doid=1052934.1052938
+      \endverb
+      \verb{url}
+      \verb http://portal.acm.org/citation.cfm?doid=1052934.1052938
+      \endverb
+    \endentry
+    \entry{boldiPageRankFunctionDamping2005}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=94daa93362557b56d0bd35012512b156}{%
+           family={Boldi},
+           familyi={B\bibinitperiod},
+           given={Paolo},
+           giveni={P\bibinitperiod}}}%
+        {{hash=47d6c6882ae35fa432ef72a93ad03cbb}{%
+           family={Santini},
+           familyi={S\bibinitperiod},
+           given={Massimo},
+           giveni={M\bibinitperiod}}}%
+        {{hash=fb3b77ad742e7c12096b67272f1cf7e5}{%
+           family={Vigna},
+           familyi={V\bibinitperiod},
+           given={Sebastiano},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{fullhash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{bibnamehash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{authorbibnamehash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{authornamehash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{authorfullhash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{PageRank is defined as the stationary state of a Markov chain. The chain is obtained by perturbing the transition matrix induced by a web graph with a damping factor α that spreads uniformly part of the rank. The choice of α is eminently empirical, and in most cases the original suggestion α = 0.85 by Brin and Page is still used. Recently, however, the behaviour of PageRank with respect to changes in α was discovered to be useful in link-spam detection[21]. Moreover, an analytical justification of the value chosen for α is still missing. In this paper, we give the first mathematical analysis of PageRank when α changes. In particular, we show that, contrarily to popular belief, for real-world graphs values of α close to 1 do not give a more meaningful ranking. Then, we give closed-form formulae for PageRank derivatives of any order, and an extension of the Power Method that approximates them with convergence O (tk αt) for the k-th derivative. Finally, we show a tight connection between iterated computation and analytical behaviour by proving that the k-th iteration of the Power Method gives exactly the PageRank value obtained using a Maclaurin polynomial of degree k. The latter result paves the way towards the application of analytical methods to the study of PageRank.}
+      \field{booktitle}{Proceedings of the 14th International Conference on {{World Wide Web}}}
+      \field{day}{10}
+      \field{isbn}{978-1-59593-046-0}
+      \field{month}{5}
+      \field{series}{{{WWW}} '05}
+      \field{title}{{{PageRank}} as a Function of the Damping Factor}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2005}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{557\bibrangedash 566}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/1060745.1060827
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/ZQQJJBXR/Boldi et al. - 2005 - PageRank as a function of the damping factor.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://doi.org/10.1145/1060745.1060827
+      \endverb
+      \verb{url}
+      \verb http://doi.org/10.1145/1060745.1060827
+      \endverb
+      \keyw{approximation,PageRank,Web graph}
+    \endentry
+    \entry{brinkmeierPageRankRevisited2006a}{article}{}
+      \name{author}{1}{}{%
+        {{hash=48c285fe931480d6d114703fea1df640}{%
+           family={Brinkmeier},
+           familyi={B\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{48c285fe931480d6d114703fea1df640}
+      \strng{fullhash}{48c285fe931480d6d114703fea1df640}
+      \strng{bibnamehash}{48c285fe931480d6d114703fea1df640}
+      \strng{authorbibnamehash}{48c285fe931480d6d114703fea1df640}
+      \strng{authornamehash}{48c285fe931480d6d114703fea1df640}
+      \strng{authorfullhash}{48c285fe931480d6d114703fea1df640}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{PageRank, one part of the search engine Google, is one of the most prominent link-based rankings of documents in the World Wide Web. Usually it is described as a Markov chain modeling a specific random surfer. In this article, an alternative representation as a power series is given. Nonetheless, it is possible to interpret the values as probabilities in a random surfer setting, differing from the usual one. Using the new description we restate and extend some results concerning the convergence of the standard iteration used for PageRank. Furthermore we take a closer look at sinks and sources, leading to some suggestions for faster implementations.}
+      \field{issn}{15335399}
+      \field{journaltitle}{ACM Transactions on Internet Technology}
+      \field{month}{8}
+      \field{number}{3}
+      \field{title}{{{PageRank Revisited}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{6}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{282\bibrangedash 301}
+      \range{pages}{20}
+      \verb{doi}
+      \verb 10.1145/1151087.1151090
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/V2WCGXRV/Brinkmeier - 2006 - PageRank Revisited.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://ezproxy.uws.edu.au/login?url=http://search.ebscohost.com/login.aspx?direct=true&db=iih&AN=22173011&site=ehost-live&scope=site
+      \endverb
+      \verb{url}
+      \verb http://ezproxy.uws.edu.au/login?url=http://search.ebscohost.com/login.aspx?direct=true&db=iih&AN=22173011&site=ehost-live&scope=site
+      \endverb
+      \keyw{Algorithms,Dynamical update,Google Inc.,Internet searching,link-analysis,Markov chain,Markov processes,Pagerank,personalization,random surfer,ranking algorithm,Stochastic processes,Theory,Web graph,Web page scoring,Web search,World Wide Web}
+    \endentry
+    \entry{bryan250000002006}{article}{}
+      \name{author}{2}{}{%
+        {{hash=c753ec51f1e7f3b2eeb7503dde773488}{%
+           family={Bryan},
+           familyi={B\bibinitperiod},
+           given={Kurt},
+           giveni={K\bibinitperiod}}}%
+        {{hash=f162df0c51ce7aae7a28d23b21d526ee}{%
+           family={Leise},
+           familyi={L\bibinitperiod},
+           given={Tanya},
+           giveni={T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Society for Industrial and Applied Mathematics}%
+      }
+      \strng{namehash}{b6fc285ffeca118d76eb196687207838}
+      \strng{fullhash}{b6fc285ffeca118d76eb196687207838}
+      \strng{bibnamehash}{b6fc285ffeca118d76eb196687207838}
+      \strng{authorbibnamehash}{b6fc285ffeca118d76eb196687207838}
+      \strng{authornamehash}{b6fc285ffeca118d76eb196687207838}
+      \strng{authorfullhash}{b6fc285ffeca118d76eb196687207838}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Google's success derives in large part from its PageRank algorithm, which ranks the importance of web pages according to an eigenvector of a weighted link matrix. Analysis of the PageRank formula provides a wonderful applied topic for a linear algebra course. Instructors may assign this article as a project to more advanced students or spend one or two lectures presenting the material with assigned homework from the exercises. This material also complements the discussion of Markov chains in matrix algebra. Maple and Mathematica files supporting this material can be found at www.rose-hulman.edu/∼bryan.}
+      \field{eprinttype}{jstor}
+      \field{issn}{0036-1445}
+      \field{journaltitle}{SIAM Review}
+      \field{number}{3}
+      \field{shorttitle}{The \$25,000,000,000 {{Eigenvector}}}
+      \field{title}{The \$25,000,000,000 {{Eigenvector}}: {{The Linear Algebra}} behind {{Google}}}
+      \field{volume}{48}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{pages}{569\bibrangedash 581}
+      \range{pages}{13}
+      \verb{eprint}
+      \verb 20453840
+      \endverb
+    \endentry
+    \entry{CategoryMathematics2019}{inreference}{}
+      \field{sortinit}{C}
+      \field{sortinithash}{4c244ceae61406cdc0cc2ce1cb1ff703}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Mathematics (colloquially, maths, or math), is the body of knowledge centered on concepts such as quantity, structure, space, and change, and also the academic discipline that studies them.}
+      \field{booktitle}{Wikipedia}
+      \field{day}{4}
+      \field{hour}{10}
+      \field{langid}{english}
+      \field{minute}{49}
+      \field{month}{12}
+      \field{note}{Page Version ID: 929215996}
+      \field{second}{52}
+      \field{shorttitle}{Category}
+      \field{timezone}{Z}
+      \field{title}{Category:{{Mathematics}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2019}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/9BLCNCBX/index.html
+      \endverb
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/w/index.php?title=Category:Mathematics&oldid=929215996
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/w/index.php?title=Category:Mathematics&oldid=929215996
+      \endverb
+    \endentry
+    \entry{dekerchoveMaximizingPageRankOutlinks2008}{article}{useprefix=true}
+      \name{author}{3}{}{%
+        {{hash=e63439a45e5c60d1148b1e7b13b80802}{%
+           family={Kerchove},
+           familyi={K\bibinitperiod},
+           given={Cristobald},
+           giveni={C\bibinitperiod},
+           prefix={de},
+           prefixi={d\bibinitperiod}}}%
+        {{hash=f6d65a8ad4815e60504089a9800b9f1d}{%
+           family={Ninove},
+           familyi={N\bibinitperiod},
+           given={Laure},
+           giveni={L\bibinitperiod}}}%
+        {{hash=628d4519812c89f3419c44dd9fd4713a}{%
+           family={Dooren},
+           familyi={D\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod},
+           prefix={van},
+           prefixi={v\bibinitperiod}}}%
+      }
+      \strng{namehash}{5899c7b947c58b5196e92181717c77fe}
+      \strng{fullhash}{5899c7b947c58b5196e92181717c77fe}
+      \strng{bibnamehash}{5899c7b947c58b5196e92181717c77fe}
+      \strng{authorbibnamehash}{5899c7b947c58b5196e92181717c77fe}
+      \strng{authornamehash}{5899c7b947c58b5196e92181717c77fe}
+      \strng{authorfullhash}{5899c7b947c58b5196e92181717c77fe}
+      \field{sortinit}{d}
+      \field{sortinithash}{c438b3d5d027251ba63f5ed538d98af5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{00243795}
+      \field{journaltitle}{Linear Algebra and its Applications}
+      \field{langid}{english}
+      \field{month}{9}
+      \field{number}{5-6}
+      \field{title}{Maximizing {{PageRank}} via Outlinks}
+      \field{urlday}{21}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{429}
+      \field{year}{2008}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{1254\bibrangedash 1276}
+      \range{pages}{23}
+      \verb{doi}
+      \verb 10.1016/j.laa.2008.01.023
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/GVKBG8IS/dekerchoveMaximizingPageRankOutlinks2008.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0024379508000529
+      \endverb
+      \verb{url}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0024379508000529
+      \endverb
+    \endentry
+    \entry{farahatAuthorityRankingsHITS2006}{article}{}
+      \name{author}{5}{}{%
+        {{hash=bd3484973e87b5622ccd2710651ca56b}{%
+           family={Farahat},
+           familyi={F\bibinitperiod},
+           given={Ayman},
+           giveni={A\bibinitperiod}}}%
+        {{hash=34d805c961016f0e6b4f92ccebcc9a8c}{%
+           family={LoFaro},
+           familyi={L\bibinitperiod},
+           given={Thomas},
+           giveni={T\bibinitperiod}}}%
+        {{hash=8a8723e95d583e7a120c3e4fe2849446}{%
+           family={Miller},
+           familyi={M\bibinitperiod},
+           given={Joel\bibnamedelima C.},
+           giveni={J\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+        {{hash=ec02e3daab3717e5d41496367b72d833}{%
+           family={Rae},
+           familyi={R\bibinitperiod},
+           given={Gregory},
+           giveni={G\bibinitperiod}}}%
+        {{hash=534a3a7e0e0bf3d5aa1a35d257cb747f}{%
+           family={Ward},
+           familyi={W\bibinitperiod},
+           given={Lesley\bibnamedelima A.},
+           giveni={L\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Philadelphia, United States, Philadelphia}%
+      }
+      \list{publisher}{1}{%
+        {Society for Industrial and Applied Mathematics}%
+      }
+      \strng{namehash}{1c29f994be294121faf284e0742aa554}
+      \strng{fullhash}{edf591f017a10eb3a418931a10fe9df7}
+      \strng{bibnamehash}{1c29f994be294121faf284e0742aa554}
+      \strng{authorbibnamehash}{1c29f994be294121faf284e0742aa554}
+      \strng{authornamehash}{1c29f994be294121faf284e0742aa554}
+      \strng{authorfullhash}{edf591f017a10eb3a418931a10fe9df7}
+      \field{sortinit}{F}
+      \field{sortinithash}{fb0c0faa89eb6abae8213bf60e6799ea}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Algorithms such as Kleinberg's HITS algorithm, the PageRank algorithm of Brin and Page, and the SALSA algorithm of Lempel and Moran use the link structure of a network of web pages to assign weights to each page in the network. The weights can then be used to rank the pages as authoritative sources. These algorithms share a common underpinning; they find a dominant eigenvector of a nonnegative matrix that describes the link structure of the given network and use the entries of this eigenvector as the page weights. We use this commonality to give a unified treatment, proving the existence of the required eigenvector for the PageRank, HITS, and SALSA algorithms, the uniqueness of the PageRank eigenvector, and the convergence of the algorithms to these eigenvectors. However, we show that the HITS and SALSA eigenvectors need not be unique. We examine how the initialization of the algorithms affects the final weightings produced. We give examples of networks that lead the HITS and SALSA algorithms to returnnonunique or nonintuitive rankings. We characterize all such networks in terms of the connectivity of the related HITS authority graph. We propose a modification, Exponentiated Input to HITS, to the adjacency matrix input to the HITS algorithm. We prove that Exponentiated Input to HITS returns a unique ranking, provided that the network is weakly connected. Our examples also show that SALSA can give inconsistent hub and authority weights, due to nonuniqueness. We also mention a small modification to the SALSA initialization which makes the hub and authority weights consistent.}
+      \field{issn}{10648275}
+      \field{journaltitle}{SIAM Journal on Scientific Computing; Philadelphia}
+      \field{langid}{english}
+      \field{number}{4}
+      \field{pagetotal}{21}
+      \field{shorttitle}{Authority {{Rankings}} from {{HITS}}, {{PageRank}}, and {{SALSA}}}
+      \field{title}{Authority {{Rankings}} from {{HITS}}, {{PageRank}}, and {{SALSA}}: {{Existence}}, {{Uniqueness}}, and {{Effect}} of {{Initialization}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{27}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{21}
+      \range{pages}{1}
+      \verb{doi}
+      \verb http://dx.doi.org.ezproxy.uws.edu.au/10.1137/S1064827502412875
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/3DR5ESLR/Farahat et al. - 2006 - Authority Rankings from HITS, PageRank, and SALSA.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://search.proquest.com/docview/921166362/abstract/9367723222824064PQ/1
+      \endverb
+      \verb{url}
+      \verb http://search.proquest.com/docview/921166362/abstract/9367723222824064PQ/1
+      \endverb
+      \keyw{Mathematics}
+    \endentry
+    \entry{frahmPageRankIntegers2012}{article}{}
+      \name{author}{3}{}{%
+        {{hash=3ca8b735d94faf50cd157f2d81fcd259}{%
+           family={Frahm},
+           familyi={F\bibinitperiod},
+           given={K\bibnamedelima M},
+           giveni={K\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=6b24b27d5da47bf2abafa5eb986ea02e}{%
+           family={Chepelianskii},
+           familyi={C\bibinitperiod},
+           given={A\bibnamedelima D},
+           giveni={A\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=a7287101c3ff2f1ede183c3c522083e3}{%
+           family={Shepelyansky},
+           familyi={S\bibinitperiod},
+           given={D\bibnamedelima L},
+           giveni={D\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{e5b307cfb883198e0754c48932562958}
+      \strng{fullhash}{e5b307cfb883198e0754c48932562958}
+      \strng{bibnamehash}{e5b307cfb883198e0754c48932562958}
+      \strng{authorbibnamehash}{e5b307cfb883198e0754c48932562958}
+      \strng{authornamehash}{e5b307cfb883198e0754c48932562958}
+      \strng{authorfullhash}{e5b307cfb883198e0754c48932562958}
+      \field{sortinit}{F}
+      \field{sortinithash}{fb0c0faa89eb6abae8213bf60e6799ea}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{12}
+      \field{issn}{1751-8113, 1751-8121}
+      \field{journaltitle}{J. Phys. A: Math. Theor.}
+      \field{month}{10}
+      \field{number}{40}
+      \field{title}{{{PageRank}} of Integers}
+      \field{urlday}{21}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{45}
+      \field{year}{2012}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{405101}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1088/1751-8113/45/40/405101
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/5MDB6CKC/PageRank of integers - IOPscience.pdf;/home/ryan/Zotero/storage/UQVYW3I5/frahmPageRankIntegers2012.pdf;/home/ryan/Zotero/storage/Z8AGYCIR/405101.html
+      \endverb
+      \verb{urlraw}
+      \verb https://iopscience.iop.org/article/10.1088/1751-8113/45/40/405101
+      \endverb
+      \verb{url}
+      \verb https://iopscience.iop.org/article/10.1088/1751-8113/45/40/405101
+      \endverb
+    \endentry
+    \entry{fuDampingFactorGoogle2006}{article}{}
+      \name{author}{3}{}{%
+        {{hash=4c801b1c25944ec90ffc0a59a8d77dc3}{%
+           family={Fu},
+           familyi={F\bibinitperiod},
+           given={Hwai-Hui},
+           giveni={H\bibinithyphendelim H\bibinitperiod}}}%
+        {{hash=4f1edec72d843c2347bbb853d6bb413c}{%
+           family={Lin},
+           familyi={L\bibinitperiod},
+           given={Dennis\bibnamedelimb K.\bibnamedelimi J.},
+           giveni={D\bibinitperiod\bibinitdelim K\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+        {{hash=019e63fd788bbd3b6b05cae27c597941}{%
+           family={Tsai},
+           familyi={T\bibinitperiod},
+           given={Hsien-Tang},
+           giveni={H\bibinithyphendelim T\bibinitperiod}}}%
+      }
+      \strng{namehash}{599ff179e17b7e7d157208e93f5d5f0e}
+      \strng{fullhash}{599ff179e17b7e7d157208e93f5d5f0e}
+      \strng{bibnamehash}{599ff179e17b7e7d157208e93f5d5f0e}
+      \strng{authorbibnamehash}{599ff179e17b7e7d157208e93f5d5f0e}
+      \strng{authornamehash}{599ff179e17b7e7d157208e93f5d5f0e}
+      \strng{authorfullhash}{599ff179e17b7e7d157208e93f5d5f0e}
+      \field{sortinit}{F}
+      \field{sortinithash}{fb0c0faa89eb6abae8213bf60e6799ea}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Google, the largest search engine worldwide, adopts PageRank technology to determine the rank of website listings. This paper describes how damping factor is a critical factor in changing a website's ranking in traditional Google PageRank technology. A modified algorithm based on input–output ratio concept is proposed to substitute for the damping factor. Besides there is no need to choose an optimal damping factor value, the modified algorithm has an equivalent effect on computation as the traditional Google's PageRank algorithm. Copyright © 2006 John Wiley \& Sons, Ltd.}
+      \field{issn}{1526-4025}
+      \field{journaltitle}{Applied Stochastic Models in Business and Industry}
+      \field{langid}{english}
+      \field{note}{\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/asmb.656}
+      \field{number}{5-6}
+      \field{title}{Damping Factor in {{Google}} Page Ranking}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{22}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{431\bibrangedash 444}
+      \range{pages}{14}
+      \verb{doi}
+      \verb 10.1002/asmb.656
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/A8K6MK8M/Fu et al. - 2006 - Damping factor in Google page ranking.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://onlinelibrary.wiley.com/doi/abs/10.1002/asmb.656
+      \endverb
+      \verb{url}
+      \verb http://onlinelibrary.wiley.com/doi/abs/10.1002/asmb.656
+      \endverb
+      \keyw{input–output ratio,search engine}
+    \endentry
+    \entry{gaborcsardiIgraphManualPages2019}{online}{}
+      \name{author}{4}{}{%
+        {{hash=137e3fe198042b9ff38f9fa94cdee9fb}{%
+           family={{Gabor Csardi}},
+           familyi={G\bibinitperiod}}}%
+        {{hash=e723adc3096ddf7b00a3aa26a6b7f9f2}{%
+           family={{Tamas Nepusz}},
+           familyi={T\bibinitperiod}}}%
+        {{hash=5b04d6cd936b5f81f9713e2d97c13ec7}{%
+           family={{Szabolcs Horvat}},
+           familyi={S\bibinitperiod}}}%
+        {{hash=67185e62849e4cf269244d172850d06e}{%
+           family={{Vincent Traag}},
+           familyi={V\bibinitperiod}}}%
+      }
+      \strng{namehash}{1a426d2cdef88bac36bfd7cb74cc3f98}
+      \strng{fullhash}{ffe49925fe901fa95e38172bf47aebd2}
+      \strng{bibnamehash}{1a426d2cdef88bac36bfd7cb74cc3f98}
+      \strng{authorbibnamehash}{1a426d2cdef88bac36bfd7cb74cc3f98}
+      \strng{authornamehash}{1a426d2cdef88bac36bfd7cb74cc3f98}
+      \strng{authorfullhash}{ffe49925fe901fa95e38172bf47aebd2}
+      \field{sortinit}{G}
+      \field{sortinithash}{62eb2aa29549e4fdbd3cb154ec5711cb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{9}
+      \field{month}{5}
+      \field{title}{Igraph {{R}} Manual Pages}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2019}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/U7Z3MDQU/as_adjacency_matrix.html
+      \endverb
+      \verb{urlraw}
+      \verb https://igraph.org/r/doc/as_adjacency_matrix.html
+      \endverb
+      \verb{url}
+      \verb https://igraph.org/r/doc/as_adjacency_matrix.html
+      \endverb
+    \endentry
+    \entry{GoogleBooksNgram}{online}{}
+      \field{sortinit}{G}
+      \field{sortinithash}{62eb2aa29549e4fdbd3cb154ec5711cb}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Google Books Ngram Viewer}
+      \field{langid}{english}
+      \field{title}{Google {{Books Ngram Viewer}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/MJJQWHHD/graph.html
+      \endverb
+      \verb{urlraw}
+      \verb https://books.google.com/ngrams/graph?content=Zettelkasten&corpus=26&year_end=2019&year_start=1800&smoothing=3&direct_url=t1%3B%2CZettelkasten%3B%2Cc0#t1%3B%2CZettelkasten%3B%2Cc0
+      \endverb
+      \verb{url}
+      \verb https://books.google.com/ngrams/graph?content=Zettelkasten&corpus=26&year_end=2019&year_start=1800&smoothing=3&direct_url=t1%3B%2CZettelkasten%3B%2Cc0#t1%3B%2CZettelkasten%3B%2Cc0
+      \endverb
+    \endentry
+    \entry{haarkoetterAllesWesentlicheFindet}{online}{}
+      \name{author}{1}{}{%
+        {{hash=36cff60ac8435e3923a133b0083ec361}{%
+           family={Haarkötter},
+           familyi={H\bibinitperiod},
+           given={Hektor},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{36cff60ac8435e3923a133b0083ec361}
+      \strng{fullhash}{36cff60ac8435e3923a133b0083ec361}
+      \strng{bibnamehash}{36cff60ac8435e3923a133b0083ec361}
+      \strng{authorbibnamehash}{36cff60ac8435e3923a133b0083ec361}
+      \strng{authornamehash}{36cff60ac8435e3923a133b0083ec361}
+      \strng{authorfullhash}{36cff60ac8435e3923a133b0083ec361}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Zur Geschichte einer ausgestorbenen Medientechnik}
+      \field{journaltitle}{heise online}
+      \field{langid}{german}
+      \field{title}{"Alles Wesentliche findet sich im Zettelkasten"}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/6URQFZ69/Alles-Wesentliche-findet-sich-im-Zettelkasten-3398418.html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.heise.de/tp/features/Alles-Wesentliche-findet-sich-im-Zettelkasten-3398418.html
+      \endverb
+      \verb{url}
+      \verb https://www.heise.de/tp/features/Alles-Wesentliche-findet-sich-im-Zettelkasten-3398418.html
+      \endverb
+    \endentry
+    \entry{harbesonTeachingReferenceBibliography1972}{article}{}
+      \name{author}{1}{}{%
+        {{hash=7e70d362f29e39f977f103ef39905417}{%
+           family={Harbeson},
+           familyi={H\bibinitperiod},
+           given={Eloise\bibnamedelima L.},
+           giveni={E\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{7e70d362f29e39f977f103ef39905417}
+      \strng{fullhash}{7e70d362f29e39f977f103ef39905417}
+      \strng{bibnamehash}{7e70d362f29e39f977f103ef39905417}
+      \strng{authorbibnamehash}{7e70d362f29e39f977f103ef39905417}
+      \strng{authornamehash}{7e70d362f29e39f977f103ef39905417}
+      \strng{authorfullhash}{7e70d362f29e39f977f103ef39905417}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{eprinttype}{jstor}
+      \field{issn}{00220604}
+      \field{journaltitle}{Journal of Education for Librarianship}
+      \field{langid}{english}
+      \field{number}{2}
+      \field{shorttitle}{Teaching {{Reference}} and {{Bibliography}}}
+      \field{title}{Teaching {{Reference}} and {{Bibliography}}: {{The Pathfinder Approach}}}
+      \field{volume}{13}
+      \field{year}{1972}
+      \field{dateera}{ce}
+      \field{pages}{111}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.2307/40322211
+      \endverb
+      \verb{eprint}
+      \verb 10.2307/40322211?origin=crossref
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/LM2R57VI/40322211.html
+      \endverb
+    \endentry
+    \entry{harvarduniversityResearchGuides}{online}{}
+      \name{author}{1}{}{%
+        {{hash=2018dc9017ff4522da542d27f6638522}{%
+           family={{Harvard University}},
+           familyi={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{2018dc9017ff4522da542d27f6638522}
+      \strng{fullhash}{2018dc9017ff4522da542d27f6638522}
+      \strng{bibnamehash}{2018dc9017ff4522da542d27f6638522}
+      \strng{authorbibnamehash}{2018dc9017ff4522da542d27f6638522}
+      \strng{authornamehash}{2018dc9017ff4522da542d27f6638522}
+      \strng{authorfullhash}{2018dc9017ff4522da542d27f6638522}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{langid}{english}
+      \field{title}{Research {{Guides}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/QAZ7AD7N/guides.library.harvard.edu.html
+      \endverb
+      \verb{urlraw}
+      \verb https://guides.library.harvard.edu/
+      \endverb
+      \verb{url}
+      \verb https://guides.library.harvard.edu/
+      \endverb
+    \endentry
+    \entry{haveliwalaSecondEigenvalueGoogle2003}{article}{}
+      \name{author}{2}{}{%
+        {{hash=7b7065e349af2a3505ccfbe205c56572}{%
+           family={Haveliwala},
+           familyi={H\bibinitperiod},
+           given={Taher},
+           giveni={T\bibinitperiod}}}%
+        {{hash=f0ee340803b143e6f928bb6f4548609d}{%
+           family={Kamvar},
+           familyi={K\bibinitperiod},
+           given={Sepander},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{fullhash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{bibnamehash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{authorbibnamehash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{authornamehash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{authorfullhash}{ca043c59361df28cc7b135bf516fbb3e}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We determine analytically the modulus of the second eigenvalue forthe web hyperlink matrix used by Google for computing PageRank. Specifically,we prove the following statement:“For any matrixA= [cP+ (1−c)E]T, wherePis ann×nrow-stochasticmatrix,Eis a nonnegativen×nrank-one row-stochastic matrix, and0≤c≤1,the second eigenvalue ofAhas modulus|λ2|≤c. Furthermore, ifPhas at leasttwo irreducible closed subsets, the second eigenvalueλ2=c.”This statement has implications for the convergence rate ofthe standard PageR-ank algorithm as the web scales, for the stability of PageRank to perturbations tothe link structure of the web, for the detection of Google spammers, and for thedesign of algorithms to speed up PageRan}
+      \field{journaltitle}{Stanford Technical Report}
+      \field{title}{The {{Second Eigenvalue}} of the {{Google Matrix}}}
+      \field{year}{2003}
+      \field{dateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/BEMZEB8M/Haveliwala and Kamvar - 2003 - The Second Eigenvalue of the Google Matrix.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi5x7iBhqnrAhVTfisKHQp8CrYQFjAAegQIBRAB&url=https%3A%2F%2Fnlp.stanford.edu%2Fpubs%2Fsecondeigenvalue.pdf&usg=AOvVaw3Em9lm2qOuWEN23PXhUS8J
+      \endverb
+      \verb{url}
+      \verb https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi5x7iBhqnrAhVTfisKHQp8CrYQFjAAegQIBRAB&url=https%3A%2F%2Fnlp.stanford.edu%2Fpubs%2Fsecondeigenvalue.pdf&usg=AOvVaw3Em9lm2qOuWEN23PXhUS8J
+      \endverb
+    \endentry
+    \entry{HelpCategoriesMediaWiki}{online}{}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{labeltitlesource}{title}
+      \field{title}{Help:{{Categories}} - {{MediaWiki}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/YGW8PA58/HelpCategories.html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.mediawiki.org/wiki/Help:Categories
+      \endverb
+      \verb{url}
+      \verb https://www.mediawiki.org/wiki/Help:Categories
+      \endverb
+    \endentry
+    \entry{ingawaleNetworkAnalysisUser2013a}{article}{}
+      \name{author}{4}{}{%
+        {{hash=0987a83781d8e3bc2a27335749d5eb46}{%
+           family={Ingawale},
+           familyi={I\bibinitperiod},
+           given={Myshkin},
+           giveni={M\bibinitperiod}}}%
+        {{hash=49f82fd9f7a03edf8b958c8945c3db33}{%
+           family={Dutta},
+           familyi={D\bibinitperiod},
+           given={Amitava},
+           giveni={A\bibinitperiod}}}%
+        {{hash=01a7eba923d6b3c7d7e5f1993bd1db78}{%
+           family={Roy},
+           familyi={R\bibinitperiod},
+           given={Rahul},
+           giveni={R\bibinitperiod}}}%
+        {{hash=128bed41d4a445c63466604634bce137}{%
+           family={Seetharaman},
+           familyi={S\bibinitperiod},
+           given={Priya},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Emerald Group Publishing Limited}%
+      }
+      \strng{namehash}{9da6fa4039f3f4068d174e914a47ddc6}
+      \strng{fullhash}{e85c5a218c9b8f3f8a51f3c37d3771b7}
+      \strng{bibnamehash}{9da6fa4039f3f4068d174e914a47ddc6}
+      \strng{authorbibnamehash}{9da6fa4039f3f4068d174e914a47ddc6}
+      \strng{authornamehash}{9da6fa4039f3f4068d174e914a47ddc6}
+      \strng{authorfullhash}{e85c5a218c9b8f3f8a51f3c37d3771b7}
+      \field{sortinit}{I}
+      \field{sortinithash}{9417e9a1288a9371e2691d999083ed39}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Purpose – Social media platforms allow near‐unfettered creation and exchange of user generated content (UGC). Drawing from network science, the purpose of this paper is to examine whether high and low quality UGC differ in their connectivity structures in Wikipedia (which consists of interconnected user generated articles). Design/methodology/approach – Using Featured Articles as a proxy for high quality, a network analysis was undertaken of the revision history of six different language Wikipedias, to offer a network‐centric explanation for the emergence of quality in UGC. Findings – The network structure of interactions between articles and contributors plays an important role in the emergence of quality. Specifically the analysis reveals that high‐quality articles cluster in hubs that span structural holes. Research limitations/implications – The analysis does not capture the strength of interactions between articles and contributors. The implication of this limitation is that quality is viewed as a binary variable. Extensions to this research will relate strength of interactions to different levels of quality in UGC. Practical implications – The findings help harness the “wisdom of the crowds” effectively. Organisations should nurture users and articles at the structural hubs from an early stage. This can be done through appropriate design of collaborative knowledge systems and development of organisational policies to empower hubs. Originality/value – The network centric perspective on quality in UGC and the use of a dynamic modelling tool are novel. The paper is of value to researchers in the area of social computing and to practitioners implementing and maintaining such platforms in organisations.}
+      \field{annotation}{Is there a relationship between content quality and the structure of connections? Can high quality Wikipedia pages be used as a benchmark for the structure of connections. \par The network structure of interactions between articles plays an important role in the emergence of quality. \par High quality articles clusture in hubs.}
+      \field{day}{1}
+      \field{issn}{1468-4527}
+      \field{journaltitle}{Online Information Review}
+      \field{month}{1}
+      \field{number}{4}
+      \field{title}{Network Analysis of User Generated Content Quality in {{Wikipedia}}}
+      \field{urlday}{17}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{37}
+      \field{year}{2013}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{602\bibrangedash 619}
+      \range{pages}{18}
+      \verb{doi}
+      \verb 10.1108/OIR-03-2011-0182
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/IZ5SPT9A/Ingawale et al. - 2013 - Network analysis of user generated content quality.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1108/OIR-03-2011-0182
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1108/OIR-03-2011-0182
+      \endverb
+      \keyw{Hubs,Network analysis,Quality,Social computing,Structural holes,Web sites; Wikis; Social media; Wikipedia}
+    \endentry
+    \entry{kamvarAdaptiveMethodsComputation2004b}{article}{}
       \name{author}{3}{}{%
         {{hash=73c55e74069152b3ac7680b13ebdd7b4}{%
            family={Kamvar},
@@ -55,8 +933,8 @@
       \field{month}{7}
       \field{series}{Special {{Issue}} on the {{Conference}} on the {{Numerical Solution}} of {{Markov Chains}} 2003}
       \field{title}{Adaptive Methods for the Computation of {{PageRank}}}
-      \field{urlday}{31}
-      \field{urlmonth}{7}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
       \field{urlyear}{2020}
       \field{volume}{386}
       \field{year}{2004}
@@ -67,6 +945,9 @@
       \verb{doi}
       \verb 10.1016/j.laa.2003.12.008
       \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/V36BVDEV/Kamvar et al. - 2004 - Adaptive methods for the computation of PageRank.pdf
+      \endverb
       \verb{urlraw}
       \verb http://www.sciencedirect.com/science/article/pii/S0024379504000023
       \endverb
@@ -75,39 +956,1145 @@
       \endverb
       \keyw{Eigenvalue problem,PageRank,Web matrix}
     \endentry
-    \entry{teamSparseMatrixOperations}{book}{}
-      \name{author}{1}{}{%
-        {{hash=5eeee04fde6de2fba69fe9ef50a6ad85}{%
-           family={Team},
-           familyi={T\bibinitperiod},
-           given={Stan\bibnamedelima Development},
-           giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+    \entry{koppelMeasuringDirectIndirect2014}{article}{}
+      \name{author}{2}{}{%
+        {{hash=e0e5f34facf1485d1829751269471217}{%
+           family={Koppel},
+           familyi={K\bibinitperiod},
+           given={Moshe},
+           giveni={M\bibinitperiod}}}%
+        {{hash=4aa426b7cb4ce6969084a9808b02b1d3}{%
+           family={Schweitzer},
+           familyi={S\bibinitperiod},
+           given={Nadav},
+           giveni={N\bibinitperiod}}}%
       }
-      \strng{namehash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{fullhash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{bibnamehash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{authorbibnamehash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{authornamehash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{authorfullhash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \field{sortinit}{T}
-      \field{sortinithash}{51f9faf24c60c62ca764a77f78cf5666}
+      \strng{namehash}{f91ad3a5f30bca58cb9cb103ba7b5d56}
+      \strng{fullhash}{f91ad3a5f30bca58cb9cb103ba7b5d56}
+      \strng{bibnamehash}{f91ad3a5f30bca58cb9cb103ba7b5d56}
+      \strng{authorbibnamehash}{f91ad3a5f30bca58cb9cb103ba7b5d56}
+      \strng{authornamehash}{f91ad3a5f30bca58cb9cb103ba7b5d56}
+      \strng{authorfullhash}{f91ad3a5f30bca58cb9cb103ba7b5d56}
+      \field{sortinit}{K}
+      \field{sortinithash}{d3edc18d54b9438a72c24c925bfb38f4}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{abstract}{Reference for the functions defined in the Stan math library and available in the Stan programming language.}
-      \field{title}{6 {{Sparse Matrix Operations}} | {{Stan Functions Reference}}}
-      \field{urlday}{7}
+      \field{abstract}{We show how automatically extracted citations in historical corpora can be used to measure the direct and indirect influence of authors on each other. These measures can in turn be used to determine an author's overall prominence in the corpus and to identify distinct schools of thought. We apply our methods to two major historical corpora. Using scholarly consensus as a gold standard, we demonstrate empirically the superiority of indirect influence over direct influence as a basis for various measures of authorial impact.}
+      \field{issn}{2330-1643}
+      \field{journaltitle}{Journal of the Association for Information Science and Technology}
+      \field{langid}{english}
+      \field{note}{\_eprint: https://asistdl.onlinelibrary.wiley.com/doi/pdf/10.1002/asi.23118}
+      \field{number}{10}
+      \field{title}{Measuring Direct and Indirect Authorial Influence in Historical Corpora}
+      \field{urlday}{21}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{65}
+      \field{year}{2014}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{2138\bibrangedash 2144}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1002/asi.23118
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/5FDG7RET/koppelMeasuringDirectIndirect2014.pdf;/home/ryan/Zotero/storage/YQ9JQYGF/asi.html
+      \endverb
+      \verb{urlraw}
+      \verb https://asistdl.onlinelibrary.wiley.com/doi/abs/10.1002/asi.23118
+      \endverb
+      \verb{url}
+      \verb https://asistdl.onlinelibrary.wiley.com/doi/abs/10.1002/asi.23118
+      \endverb
+      \keyw{knowledge}
+    \endentry
+    \entry{langvilleReorderingPageRankProblem2006}{article}{}
+      \name{author}{2}{}{%
+        {{hash=f579305f4490bb8fbb116886a015e519}{%
+           family={Langville},
+           familyi={L\bibinitperiod},
+           given={Amy\bibnamedelima N.},
+           giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=4c69e3607c3315a1262f92ab7e95985b}{%
+           family={Meyer},
+           familyi={M\bibinitperiod},
+           given={Carl\bibnamedelima D.},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Philadelphia, United States, Philadelphia}%
+      }
+      \list{publisher}{1}{%
+        {Society for Industrial and Applied Mathematics}%
+      }
+      \strng{namehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{fullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{bibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authorbibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authornamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authorfullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \field{extraname}{1}
+      \field{sortinit}{L}
+      \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We describe a reordering particularly suited to the PageRank problem, which reduces the computation of the PageRank vector to that of solving a much smaller system and then using forward substitution to get the full solution vector. We compare the theoretical rates of convergence of the original PageRank algorithm to that of the new reordered PageRank algorithm, showing that the new algorithm can do no worse than the original algorithm. We present results of an experimental comparison on five datasets, which demonstrate that the reordered PageRank algorithm can provide a speedup of as much as a factor of 6. We also note potential additional benefits that result from the proposed reordering.}
+      \field{issn}{10648275}
+      \field{journaltitle}{SIAM Journal on Scientific Computing; Philadelphia}
+      \field{langid}{english}
+      \field{number}{6}
+      \field{pagetotal}{9}
+      \field{title}{A {{Reordering}} for the {{PageRank Problem}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{27}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{9}
+      \range{pages}{1}
+      \verb{doi}
+      \verb http://dx.doi.org.ezproxy.uws.edu.au/10.1137/040607551
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/I5R5A6YY/Langville and Meyer - 2006 - A Reordering for the PageRank Problem.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1
+      \endverb
+      \verb{url}
+      \verb http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1
+      \endverb
+      \keyw{Mathematics}
+    \endentry
+    \entry{langvilleSurveyEigenvectorMethods2005}{article}{}
+      \name{author}{2}{}{%
+        {{hash=f579305f4490bb8fbb116886a015e519}{%
+           family={Langville},
+           familyi={L\bibinitperiod},
+           given={Amy\bibnamedelima N.},
+           giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=4c69e3607c3315a1262f92ab7e95985b}{%
+           family={Meyer},
+           familyi={M\bibinitperiod},
+           given={Carl\bibnamedelima D.},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Society for Industrial and Applied Mathematics}%
+      }
+      \strng{namehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{fullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{bibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authorbibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authornamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authorfullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \field{extraname}{2}
+      \field{sortinit}{L}
+      \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Web information retrieval is significantly more challenging than traditional well-controlled, small document collection information retrieval. One main difference between traditional information retrieval and Web information retrieval is the Web's hyperlink structure. This structure has been exploited by several of today's leading Web search engines, particularly Google and Teoma. In this survey paper, we focus on Web information retrieval methods that use eigenvector computations, presenting the three popular methods of HITS, PageRank, and SALSA.}
+      \field{eprinttype}{jstor}
+      \field{issn}{0036-1445}
+      \field{journaltitle}{SIAM Review}
+      \field{number}{1}
+      \field{title}{A {{Survey}} of {{Eigenvector Methods}} for {{Web Information Retrieval}}}
+      \field{volume}{47}
+      \field{year}{2005}
+      \field{dateera}{ce}
+      \field{pages}{135\bibrangedash 161}
+      \range{pages}{27}
+      \verb{eprint}
+      \verb 20453606
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/JS8CDS99/Langville and Meyer - 2005 - A Survey of Eigenvector Methods for Web Informatio.pdf;/home/ryan/Zotero/storage/3Z9TAP2J/Langville and Meyer - 2005 - A Survey of Eigenvector Methods for Web Informatio.pdf;/home/ryan/Zotero/storage/M69WPZUP/Langville and Meyer - 2005 - A Survey of Eigenvector Methods for Web Informatio.pdf
+      \endverb
+    \endentry
+    \entry{larrypageAnatomyLargescaleHypertextual1998}{article}{}
+      \name{author}{2}{}{%
+        {{hash=8297297af4b5be3b7843964f6bbfb214}{%
+           family={{Larry Page}},
+           familyi={L\bibinitperiod}}}%
+        {{hash=2e64b0801c0cb0dacca1fd76a098ad8c}{%
+           family={{Sergey Brin}},
+           familyi={S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{d5f280b002d30e4cc1ca23e23e966008}
+      \strng{fullhash}{d5f280b002d30e4cc1ca23e23e966008}
+      \strng{bibnamehash}{d5f280b002d30e4cc1ca23e23e966008}
+      \strng{authorbibnamehash}{d5f280b002d30e4cc1ca23e23e966008}
+      \strng{authornamehash}{d5f280b002d30e4cc1ca23e23e966008}
+      \strng{authorfullhash}{d5f280b002d30e4cc1ca23e23e966008}
+      \field{sortinit}{L}
+      \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{In this paper, we present Google, a prototype of a large-scale search engine which makes heavy use of the structure present in hypertext. Google is de…}
+      \field{day}{1}
+      \field{issn}{0169-7552}
+      \field{journaltitle}{Computer Networks and ISDN Systems}
+      \field{langid}{english}
+      \field{month}{4}
+      \field{number}{1-7}
+      \field{title}{The Anatomy of a Large-Scale Hypertextual {{Web}} Search Engine}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{30}
+      \field{year}{1998}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{107\bibrangedash 117}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1016/S0169-7552(98)00110-X
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/T6GP3JBH/1998 - The anatomy of a large-scale hypertextual Web sear.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://www.sciencedirect.com/science/article/pii/S016975529800110X
+      \endverb
+      \verb{url}
+      \verb http://www.sciencedirect.com/science/article/pii/S016975529800110X
+      \endverb
+    \endentry
+    \entry{loizouUsingWikipediaAlleviate2010a}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=c0137ef0aa0fb4c19dbf09da11a02bda}{%
+           family={Loizou},
+           familyi={L\bibinitperiod},
+           given={Antonis},
+           giveni={A\bibinitperiod}}}%
+        {{hash=e6e601ad04361538d97c0b913a789a15}{%
+           family={Dasmahapatra},
+           familyi={D\bibinitperiod},
+           given={Srinandan},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Limassol, Cyprus}%
+      }
+      \list{publisher}{1}{%
+        {IEEE}%
+      }
+      \strng{namehash}{3e3894fb4e790ab66f1379e014fe1312}
+      \strng{fullhash}{3e3894fb4e790ab66f1379e014fe1312}
+      \strng{bibnamehash}{3e3894fb4e790ab66f1379e014fe1312}
+      \strng{authorbibnamehash}{3e3894fb4e790ab66f1379e014fe1312}
+      \strng{authornamehash}{3e3894fb4e790ab66f1379e014fe1312}
+      \strng{authorfullhash}{3e3894fb4e790ab66f1379e014fe1312}
+      \field{sortinit}{L}
+      \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{annotation}{For Recommender systems with limited access to data, Wikipedia can be used as an analogue with respect to connections to significantly improve performance.}
+      \field{booktitle}{2010 {{Fifth International Workshop Semantic Media Adaptation}} and {{Personalization}}}
+      \field{eventtitle}{2010 5th {{International Workshop}} on {{Semantic Media Adaptation}} and {{Personalization}} ({{SMAP}})}
+      \field{isbn}{978-1-4244-8603-8}
+      \field{month}{12}
+      \field{title}{Using {{Wikipedia}} to Alleviate Data Sparsity Issues in {{Recommender Systems}}}
+      \field{urlday}{17}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2010}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{104\bibrangedash 111}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1109/SMAP.2010.5706870
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/AEQWVR4N/Loizou and Dasmahapatra - 2010 - Using Wikipedia to alleviate data sparsity issues .pdf;/home/ryan/Zotero/storage/JNCTAXMR/Using Wikipedia to alleviate data sparsity issues in Recommender Systems - IEEE Conference Publication (2020-08-17 8_00_17 PM).html
+      \endverb
+      \verb{urlraw}
+      \verb http://ieeexplore.ieee.org/document/5706870/
+      \endverb
+      \verb{url}
+      \verb http://ieeexplore.ieee.org/document/5706870/
+      \endverb
+    \endentry
+    \entry{Mathonline}{online}{}
+      \field{sortinit}{M}
+      \field{sortinithash}{2e5c2f51f7fa2d957f3206819bf86dc3}
+      \field{labeltitlesource}{title}
+      \field{title}{Mathonline}
+      \field{urlday}{19}
       \field{urlmonth}{8}
       \field{urlyear}{2020}
       \field{urldateera}{ce}
       \verb{file}
-      \verb /home/ryan/Zotero/storage/J7V6QUKX/sparse-matrices.html
+      \verb /home/ryan/Zotero/storage/TZRWVR6E/mathonline.wikidot.com.html
       \endverb
       \verb{urlraw}
-      \verb https://mc-stan.org/docs/2_22/functions-reference/sparse-matrices.html
+      \verb http://mathonline.wikidot.com/
       \endverb
       \verb{url}
-      \verb https://mc-stan.org/docs/2_22/functions-reference/sparse-matrices.html
+      \verb http://mathonline.wikidot.com/
       \endverb
+    \endentry
+    \entry{mehrabianItSmallWorld2016}{article}{}
+      \name{author}{2}{}{%
+        {{hash=de36c8881a044e33550ec18b5e8aa9fe}{%
+           family={Mehrabian},
+           familyi={M\bibinitperiod},
+           given={Abbas},
+           giveni={A\bibinitperiod}}}%
+        {{hash=6c5f934f33562943554a4c88c5436baa}{%
+           family={Wormald},
+           familyi={W\bibinitperiod},
+           given={Nick},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{f1da89187a65f8e0d2e631d93fafb241}
+      \strng{fullhash}{f1da89187a65f8e0d2e631d93fafb241}
+      \strng{bibnamehash}{f1da89187a65f8e0d2e631d93fafb241}
+      \strng{authorbibnamehash}{f1da89187a65f8e0d2e631d93fafb241}
+      \strng{authornamehash}{f1da89187a65f8e0d2e631d93fafb241}
+      \strng{authorfullhash}{f1da89187a65f8e0d2e631d93fafb241}
+      \field{sortinit}{M}
+      \field{sortinithash}{2e5c2f51f7fa2d957f3206819bf86dc3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We prove logarithmic upper bounds for the diameters of the random-surfer Webgraph model and the PageRank-based selection Webgraph model, confirming the small world phenomenon holds for them. In the special case when the generated graph is a tree, we provide close lower and upper bounds for the diameters of both models.}
+      \field{annotation}{Graphs can be generated in order to model real world networks, these models can use the degree or page rank of a given vertex as a parameter to create the next vertex in generating the graph. \par This paper discusses upper and lower bounds for the diameter of a graph generated using random-surfer web-graph model.}
+      \field{day}{1}
+      \field{issn}{1432-0541}
+      \field{journaltitle}{Algorithmica}
+      \field{langid}{english}
+      \field{month}{10}
+      \field{number}{2}
+      \field{title}{It’s a {{Small World}} for {{Random Surfers}}}
+      \field{urlday}{18}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{76}
+      \field{year}{2016}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{344\bibrangedash 380}
+      \range{pages}{37}
+      \verb{doi}
+      \verb 10.1007/s00453-015-0034-6
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/4JIE8SU3/Mehrabian and Wormald - 2016 - It’s a Small World for Random Surfers.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1007/s00453-015-0034-6
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1007/s00453-015-0034-6
+      \endverb
+    \endentry
+    \entry{mitResearchGuidesExpert}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7abc1a233092fc104c7af72a89c0829c}{%
+           family={{MIT}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{fullhash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{bibnamehash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{authorbibnamehash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{authornamehash}{7abc1a233092fc104c7af72a89c0829c}
+      \strng{authorfullhash}{7abc1a233092fc104c7af72a89c0829c}
+      \field{sortinit}{M}
+      \field{sortinithash}{2e5c2f51f7fa2d957f3206819bf86dc3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We have smart people who know how to find the best information. Use their guides or~contact them. See also: Class \& program guides. Topic guide Expert librarian Aeronautics \& astronautics Barbara Williams Anthropology \& archaeology Ece Turnator APIs for scholarly resources Katie Zimmerman Architectural design Kai Alexis Smith Architecture \& art Kai Alexis Smith Art […]}
+      \field{langid}{american}
+      \field{title}{Research Guides \& Expert Librarians | {{MIT Libraries}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/SE7IDK8X/experts.html
+      \endverb
+      \verb{urlraw}
+      \verb https://libraries.mit.edu/experts/
+      \endverb
+      \verb{url}
+      \verb https://libraries.mit.edu/experts/
+      \endverb
+    \endentry
+    \entry{moskowitzLibraryGuidesWikipedia}{online}{}
+      \name{author}{1}{}{%
+        {{hash=7e7d97153ad34b288b2e2a40a0deae89}{%
+           family={Moskowitz},
+           familyi={M\bibinitperiod},
+           given={Paula},
+           giveni={P\bibinitperiod}}}%
+      }
+      \strng{namehash}{7e7d97153ad34b288b2e2a40a0deae89}
+      \strng{fullhash}{7e7d97153ad34b288b2e2a40a0deae89}
+      \strng{bibnamehash}{7e7d97153ad34b288b2e2a40a0deae89}
+      \strng{authorbibnamehash}{7e7d97153ad34b288b2e2a40a0deae89}
+      \strng{authornamehash}{7e7d97153ad34b288b2e2a40a0deae89}
+      \strng{authorfullhash}{7e7d97153ad34b288b2e2a40a0deae89}
+      \field{sortinit}{M}
+      \field{sortinithash}{2e5c2f51f7fa2d957f3206819bf86dc3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{This guide will discuss to use or to not use Wikipedia in research.}
+      \field{langid}{english}
+      \field{shorttitle}{Library {{Guides}}}
+      \field{title}{Library {{Guides}}: {{Wikipedia}}: {{Should You Use Wikipedia}}?}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/U7TBWA3U/c.html
+      \endverb
+      \verb{urlraw}
+      \verb https://mville.libguides.com/c.php?g=370066&p=2500344
+      \endverb
+      \verb{url}
+      \verb https://mville.libguides.com/c.php?g=370066&p=2500344
+      \endverb
+    \endentry
+    \entry{nemaConsensusbasedRankingWikipedia2017a}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=2b52551f18d0c6159a7612bc88590da1}{%
+           family={Nema},
+           familyi={N\bibinitperiod},
+           given={Waleed},
+           giveni={W\bibinitperiod}}}%
+        {{hash=4097f6093f2556799e76bc8f9b953c6c}{%
+           family={Tang},
+           familyi={T\bibinitperiod},
+           given={Yinshan},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{e2bfe611084c03233ba5b10f5f770090}
+      \strng{fullhash}{e2bfe611084c03233ba5b10f5f770090}
+      \strng{bibnamehash}{e2bfe611084c03233ba5b10f5f770090}
+      \strng{authorbibnamehash}{e2bfe611084c03233ba5b10f5f770090}
+      \strng{authornamehash}{e2bfe611084c03233ba5b10f5f770090}
+      \strng{authorfullhash}{e2bfe611084c03233ba5b10f5f770090}
+      \field{sortinit}{N}
+      \field{sortinithash}{98cf339a479c0454fe09153a08675a15}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{To improve the effectiveness of users' information seeking experience in interactive web search we hypothesize how people might be influenced when making relevance judgment decisions by introducing the {$<$}u{$>$}C{$<$}/u{$>$}onsensus {$<$}u{$>$}T{$<$}/u{$>$}heory {$<$}u{$>\&<$}/u{$>$} Relevance Judgment {$<$}u{$>$}M{$<$}/u{$>$}odel (CT\&M). This is combined with a practical path to assess the extent of difference between suggestions of current search engines versus user expectations. A user-centered, evidence-based, phenomenology approach is used to improve on Google PageRank (GPR) in two ways. The first by biasing GPR's equal navigation probability assumption using (f)actual usage stats as implicit user consensus which leads to the StatsRank (SR) algorithm. Secondly, we aggregate users' explicit ranking to derive Consensus Rank (CR) which is shown to predict individual user ranking significantly better than GPR and meta-search of modern search engines Google and Yahoo/Bing real-time. CT\&M contextualizes CR, SR, and a live open online web experiment, called {$<$}u{$>$}The Ranking Game{$<$}/u{$>$}, which is based on the August-2016 English Wikipedia corpus (12.7 million pages) and Page View Statistics for May to July 2016. Limiting this work to Wikipedia makes GPR topic-based since any Wikipedia page is focused on one topic. TREC's pooling is used to merge top 20 results from major search engines and present an alphabetized list for users' explicit ranking via drag and drop. The same platform captures implicit data for future research and can be used for controlled experiments. Our contributions are: CT\&M, SR, CR, and the open online user feedback web experiment research platform.}
+      \field{booktitle}{Proceedings of the {{International Conference}} on {{Web Intelligence}}}
+      \field{day}{23}
+      \field{isbn}{978-1-4503-4951-2}
+      \field{month}{8}
+      \field{series}{{{WI}} '17}
+      \field{title}{Consensus-Based Ranking of Wikipedia Topics}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{114\bibrangedash 124}
+      \range{pages}{11}
+      \verb{doi}
+      \verb 10.1145/3106426.3106529
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/Y9V4N3PF/Nema and Tang - 2017 - Consensus-based ranking of wikipedia topics.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://doi.org/10.1145/3106426.3106529
+      \endverb
+      \verb{url}
+      \verb http://doi.org/10.1145/3106426.3106529
+      \endverb
+      \keyw{consensus ranking,explicit relevance feedback,google pagerank,implicit feedback,information retrieval,information seeking,interactive web search,wikipedia}
+    \endentry
+    \entry{ngStableAlgorithmsLink2001}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=49e889356ff39df159461bc2895c7e16}{%
+           family={Ng},
+           familyi={N\bibinitperiod},
+           given={Andrew\bibnamedelima Y.},
+           giveni={A\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=7db7e2699fdef7f3893c06da82760343}{%
+           family={Zheng},
+           familyi={Z\bibinitperiod},
+           given={Alice\bibnamedelima X.},
+           giveni={A\bibinitperiod\bibinitdelim X\bibinitperiod}}}%
+        {{hash=8a36116840c7ee55901618c95fd08a58}{%
+           family={Jordan},
+           familyi={J\bibinitperiod},
+           given={Michael\bibnamedelima I.},
+           giveni={M\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{fullhash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{bibnamehash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{authorbibnamehash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{authornamehash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{authorfullhash}{4aedde36ca9272241426413cf79a0d10}
+      \field{sortinit}{N}
+      \field{sortinithash}{98cf339a479c0454fe09153a08675a15}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The Kleinberg HITS and the Google PageRank algorithms are eigenvector methods for identifying ``authoritative'' or ``influential'' articles, given hyperlink or citation information. That such algorithms should give reliable or consistent answers is surely a desideratum, and in\textasciitilde\textbackslash cite\{ijcaiPaper\}, we analyzed when they can be expected to give stable rankings under small perturbations to the linkage patterns. In this paper, we extend the analysis and show how it gives insight into ways of designing stable link analysis methods. This in turn motivates two new algorithms, whose performance we study empirically using citation data and web hyperlink data.}
+      \field{booktitle}{Proceedings of the 24th Annual International {{ACM SIGIR}} Conference on {{Research}} and Development in Information Retrieval}
+      \field{day}{1}
+      \field{isbn}{978-1-58113-331-8}
+      \field{month}{9}
+      \field{series}{{{SIGIR}} '01}
+      \field{title}{Stable Algorithms for Link Analysis}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2001}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{258\bibrangedash 266}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1145/383952.384003
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/B3KE4TRH/Ng et al. - 2001 - Stable algorithms for link analysis.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://doi.org/10.1145/383952.384003
+      \endverb
+      \verb{url}
+      \verb http://doi.org/10.1145/383952.384003
+      \endverb
+    \endentry
+    \entry{nicholsonLinearAlgebraApplications2009}{book}{}
+      \name{author}{1}{}{%
+        {{hash=3907783a49ae1ed36e5109d15e2f3a63}{%
+           family={Nicholson},
+           familyi={N\bibinitperiod},
+           given={W.\bibnamedelimi Keith},
+           giveni={W\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Toronto}%
+      }
+      \list{publisher}{1}{%
+        {McGraw-Hill Ryerson}%
+      }
+      \strng{namehash}{3907783a49ae1ed36e5109d15e2f3a63}
+      \strng{fullhash}{3907783a49ae1ed36e5109d15e2f3a63}
+      \strng{bibnamehash}{3907783a49ae1ed36e5109d15e2f3a63}
+      \strng{authorbibnamehash}{3907783a49ae1ed36e5109d15e2f3a63}
+      \strng{authornamehash}{3907783a49ae1ed36e5109d15e2f3a63}
+      \strng{authorfullhash}{3907783a49ae1ed36e5109d15e2f3a63}
+      \field{sortinit}{N}
+      \field{sortinithash}{98cf339a479c0454fe09153a08675a15}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-0-07-098510-0}
+      \field{langid}{english}
+      \field{note}{OCLC: 863604118}
+      \field{title}{Linear Algebra with Applications}
+      \field{year}{2009}
+      \field{dateera}{ce}
+    \endentry
+    \entry{OverviewZettelkastenMethod}{online}{}
+      \field{sortinit}{O}
+      \field{sortinithash}{ff8d4eeb5101e3cf3809959b3592d942}
+      \field{labeltitlesource}{title}
+      \field{title}{Overview • {{Zettelkasten Method}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/PCQJBUHH/overview.html
+      \endverb
+      \verb{urlraw}
+      \verb https://zettelkasten.de/posts/overview/
+      \endverb
+      \verb{url}
+      \verb https://zettelkasten.de/posts/overview/
+      \endverb
+    \endentry
+    \entry{parkPowerWalkProceedings2013}{online}{}
+      \name{author}{2}{}{%
+        {{hash=6823b9640fa10efcd6c35a51586382fa}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={laurence},
+           giveni={l\bibinitperiod}}}%
+        {{hash=96654bcd1175d60cd5c42be759fc1603}{%
+           family={Simoff},
+           familyi={S\bibinitperiod},
+           given={Simeon},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{9cacc896b2a96c175be5b37b06624885}
+      \strng{fullhash}{9cacc896b2a96c175be5b37b06624885}
+      \strng{bibnamehash}{9cacc896b2a96c175be5b37b06624885}
+      \strng{authorbibnamehash}{9cacc896b2a96c175be5b37b06624885}
+      \strng{authornamehash}{9cacc896b2a96c175be5b37b06624885}
+      \strng{authorfullhash}{9cacc896b2a96c175be5b37b06624885}
+      \field{extraname}{1}
+      \field{sortinit}{P}
+      \field{sortinithash}{bb5b15f2db90f7aef79bb9e83defefcb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{day}{5}
+      \field{month}{12}
+      \field{title}{Power Walk | {{Proceedings}} of the 18th {{Australasian Document Computing Symposium}}}
+      \field{urlday}{1}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2013}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/FH5YZ2YM/2537734.html
+      \endverb
+      \verb{urlraw}
+      \verb https://dl-acm-org.ezproxy.uws.edu.au/doi/10.1145/2537734.2537749
+      \endverb
+      \verb{url}
+      \verb https://dl-acm-org.ezproxy.uws.edu.au/doi/10.1145/2537734.2537749
+      \endverb
+    \endentry
+    \entry{parkMiningWebMultiresolution2007}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=86084ac8caf5f18b13cd932bd6aa8dff}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Laurence\bibnamedelimb A.\bibnamedelimi F.},
+           giveni={L\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=b6fb14c7c121144249fdc97049b51169}{%
+           family={Ramamohanarao},
+           familyi={R\bibinitperiod},
+           given={Kotagiri},
+           giveni={K\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Lisbon, Portugal}%
+      }
+      \list{publisher}{1}{%
+        {ACM Press}%
+      }
+      \strng{namehash}{d74eb3405bfe28bf7b15b5168faf6cc2}
+      \strng{fullhash}{d74eb3405bfe28bf7b15b5168faf6cc2}
+      \strng{bibnamehash}{d74eb3405bfe28bf7b15b5168faf6cc2}
+      \strng{authorbibnamehash}{d74eb3405bfe28bf7b15b5168faf6cc2}
+      \strng{authornamehash}{d74eb3405bfe28bf7b15b5168faf6cc2}
+      \strng{authorfullhash}{d74eb3405bfe28bf7b15b5168faf6cc2}
+      \field{sortinit}{P}
+      \field{sortinithash}{bb5b15f2db90f7aef79bb9e83defefcb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of the Sixteenth {{ACM}} Conference on {{Conference}} on Information and Knowledge Management - {{CIKM}} '07}
+      \field{eventtitle}{The Sixteenth {{ACM}} Conference}
+      \field{isbn}{978-1-59593-803-9}
+      \field{langid}{english}
+      \field{title}{Mining Web Multi-Resolution Community-Based Popularity for Information Retrieval}
+      \field{urlday}{21}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2007}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{545}
+      \range{pages}{1}
+      \verb{doi}
+      \verb 10.1145/1321440.1321517
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/GG74HGIH/Mining web multi-resolution community-based popula.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://portal.acm.org/citation.cfm?doid=1321440.1321517
+      \endverb
+      \verb{url}
+      \verb http://portal.acm.org/citation.cfm?doid=1321440.1321517
+      \endverb
+    \endentry
+    \entry{parkPowerWalkRevisiting2013}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=86084ac8caf5f18b13cd932bd6aa8dff}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Laurence\bibnamedelimb A.\bibnamedelimi F.},
+           giveni={L\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=96654bcd1175d60cd5c42be759fc1603}{%
+           family={Simoff},
+           familyi={S\bibinitperiod},
+           given={Simeon},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Brisbane, Queensland, Australia}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{fullhash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{bibnamehash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{authorbibnamehash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{authornamehash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{authorfullhash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \field{extraname}{2}
+      \field{sortinit}{P}
+      \field{sortinithash}{bb5b15f2db90f7aef79bb9e83defefcb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Measurement of graph centrality provides us with an indication of the importance or popularity of each vertex in a graph. When dealing with graphs that are not centrally controlled (such as the Web, social networks and academic citation graphs), centrality measure must 1) correlate with vertex importance/popularity, 2) scale well in terms of computation, and 3) be difficult to manipulate by individuals. The Random Surfer probability transition model, combined with Eigenvalue Centrality produced PageRank, which has shown to satisfy the required properties. Existing centrality measures (including PageRank) make the assumption that all directed edges are positive, implying an endorsement. Recent work on sentiment analysis has shown that this assumption is not valid. In this article, we introduce a new method of transitioning a graph, called Power Walk, that can successfully compute centrality scores for graphs with real weighted edges. We show that it satisfies the desired properties, and that its computation time and centrality ranking is similar to when using the Random Surfer model for non-negative matrices. Finally, stability and convergence analysis shows us that both stability and convergence when using the power method, are dependent on the Power Walk parameter β.}
+      \field{booktitle}{Proceedings of the 18th {{Australasian Document Computing Symposium}}}
+      \field{day}{5}
+      \field{isbn}{978-1-4503-2524-0}
+      \field{month}{12}
+      \field{series}{{{ADCS}} '13}
+      \field{shorttitle}{Power Walk}
+      \field{title}{Power Walk: Revisiting the Random Surfer}
+      \field{urlday}{31}
+      \field{urlmonth}{7}
+      \field{urlyear}{2020}
+      \field{year}{2013}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{50\bibrangedash 57}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1145/2537734.2537749
+      \endverb
+      \verb{urlraw}
+      \verb http://doi.org/10.1145/2537734.2537749
+      \endverb
+      \verb{url}
+      \verb http://doi.org/10.1145/2537734.2537749
+      \endverb
+      \keyw{graph centrality,PageRank,random surfer,sentiment}
+    \endentry
+    \entry{pringleWhatTallPoppy1998}{article}{}
+      \name{author}{3}{}{%
+        {{hash=f5af5a07884508e215fc1c55b0f4bacb}{%
+           family={Pringle},
+           familyi={P\bibinitperiod},
+           given={Glen},
+           giveni={G\bibinitperiod}}}%
+        {{hash=8bac65c2191531ab6666a5609341dbea}{%
+           family={Allison},
+           familyi={A\bibinitperiod},
+           given={Lloyd},
+           giveni={L\bibinitperiod}}}%
+        {{hash=0f3107d0a50c8bd1fdbf332158e484ea}{%
+           family={Dowe},
+           familyi={D\bibinitperiod},
+           given={David\bibnamedelima L.},
+           giveni={D\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{1f265986cb8f8d9879a52b0658df4a9d}
+      \strng{fullhash}{1f265986cb8f8d9879a52b0658df4a9d}
+      \strng{bibnamehash}{1f265986cb8f8d9879a52b0658df4a9d}
+      \strng{authorbibnamehash}{1f265986cb8f8d9879a52b0658df4a9d}
+      \strng{authornamehash}{1f265986cb8f8d9879a52b0658df4a9d}
+      \strng{authorfullhash}{1f265986cb8f8d9879a52b0658df4a9d}
+      \field{sortinit}{P}
+      \field{sortinithash}{bb5b15f2db90f7aef79bb9e83defefcb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{01697552}
+      \field{journaltitle}{Computer Networks and ISDN Systems}
+      \field{langid}{english}
+      \field{month}{4}
+      \field{number}{1-7}
+      \field{title}{What Is a Tall Poppy among {{Web}} Pages?}
+      \field{urlday}{21}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{30}
+      \field{year}{1998}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{369\bibrangedash 377}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1016/S0169-7552(98)00061-0
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/WXCTDRFZ/1998 - What is a tall poppy among Web pages.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0169755298000610
+      \endverb
+      \verb{url}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0169755298000610
+      \endverb
+    \endentry
+    \entry{ScienceTracerBullets}{online}{}
+      \field{sortinit}{S}
+      \field{sortinithash}{c319cff79d99c853d775f88277d4e45f}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The Library of Congress SCIENCE TRACER BULLET SERIES contains research guides that help you locate information on science and technology subjects. With brief introductions to the topics, lists of resources and strategies for finding more, they help you to stay"on target." International Standard Serial Number (ISSN) 0090-5232. The series ceased in 2013. The content in these research guides is no longer being updated and links may not function; however, the resources listed in these guides may be useful as background documents to supplement current information or to provide a historical perspective on a topic. Research Finding Aids from the Library of Congress, Science Reference Services.}
+      \field{langid}{english}
+      \field{title}{Science {{Tracer Bullets}} ({{Science Reference Services}}, {{Science}}, {{Technology}}, and {{Business Division}}, {{Library}} of {{Congress}})}
+      \field{type}{webpage}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/62W5HN9W/tracer-bullets.html
+      \endverb
+      \verb{urlraw}
+      \verb https://www.loc.gov/rr/scitech/tracer-bullets/
+      \endverb
+      \verb{url}
+      \verb https://www.loc.gov/rr/scitech/tracer-bullets/
+      \endverb
+    \endentry
+    \entry{tanNewExtrapolationMethod2017a}{article}{}
+      \name{author}{1}{}{%
+        {{hash=6bd5139b8965513ad00a6796d5c60ba6}{%
+           family={Tan},
+           familyi={T\bibinitperiod},
+           given={Xueyuan},
+           giveni={X\bibinitperiod}}}%
+      }
+      \strng{namehash}{6bd5139b8965513ad00a6796d5c60ba6}
+      \strng{fullhash}{6bd5139b8965513ad00a6796d5c60ba6}
+      \strng{bibnamehash}{6bd5139b8965513ad00a6796d5c60ba6}
+      \strng{authorbibnamehash}{6bd5139b8965513ad00a6796d5c60ba6}
+      \strng{authornamehash}{6bd5139b8965513ad00a6796d5c60ba6}
+      \strng{authorfullhash}{6bd5139b8965513ad00a6796d5c60ba6}
+      \field{sortinit}{T}
+      \field{sortinithash}{51f9faf24c60c62ca764a77f78cf5666}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The PageRank algorithm is widely considered these years because of its great significance in search engine technology and other scientific domains. Though the power method is the initial measure to settle the PageRank problem, it gives poor convergence when the damping factor is sufficiently close to 1. This difficulty encourages researchers to present improved iterative methods for accelerating PageRank computations. In this paper, a cheap and practical extrapolation approach which is determined by the trace of the Google matrix is proposed, and it is more attractive when combined with the well-known Arnoldi-type algorithm. Convergence analysis of our algorithms is given. Numerical examples illustrate the efficiency of these accelerated schemes.}
+      \field{annotation}{This is exactly what laurence was saying and also what Bryan and Leise said.}
+      \field{day}{15}
+      \field{issn}{0377-0427}
+      \field{journaltitle}{Journal of Computational and Applied Mathematics}
+      \field{langid}{english}
+      \field{month}{3}
+      \field{title}{A New Extrapolation Method for {{PageRank}} Computations}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{313}
+      \field{year}{2017}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{383\bibrangedash 392}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1016/j.cam.2016.08.034
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/RDHABQZD/Tan - 2017 - A new extrapolation method for PageRank computatio.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://www.sciencedirect.com/science/article/pii/S0377042716304034
+      \endverb
+      \verb{url}
+      \verb http://www.sciencedirect.com/science/article/pii/S0377042716304034
+      \endverb
+      \keyw{Arnoldi-type algorithm,Extrapolation method,PageRank,Power method,Trace}
+    \endentry
+    \entry{Top100Wiki}{online}{}
+      \field{sortinit}{T}
+      \field{sortinithash}{51f9faf24c60c62ca764a77f78cf5666}
+      \field{labeltitlesource}{title}
+      \field{abstract}{On Brilliant, you can explore math, science, and engineering at any level. Whether you\&\#39;re looking to read about basic equations or quantum computing, we have wikis here for you! Vieta\&\#39;s Formula Induction Componendo and Dividendo Arithmetic Mean - Geometric Mean Inequality Cauchy-Schwarz Inequality Newton\&\#39;s Identities Eigenvalues and Eigenvectors Group Theory Introduction Equilateral Triangles Circumcenter Alternate Segment Theorem Bearing Problems Euler Line Möbius Strips Knots Guarding A Museum Even and Odd Numbers Divisiblity Rules Cryptogram Benford\&\#39;s …}
+      \field{langid}{american}
+      \field{title}{Top 100 {{Wiki Pages}} on {{Brilliant}} | {{Brilliant Math}} \& {{Science Wiki}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/ECEI82CQ/best.html
+      \endverb
+      \verb{urlraw}
+      \verb https://brilliant.org/wiki/best/
+      \endverb
+      \verb{url}
+      \verb https://brilliant.org/wiki/best/
+      \endverb
+    \endentry
+    \entry{vilenoPaperElectronicEvolution2007}{article}{}
+      \name{author}{1}{}{%
+        {{hash=8a5697fa35ca35290c7ee9d69e7066e7}{%
+           family={Vileno},
+           familyi={V\bibinitperiod},
+           given={Luigina},
+           giveni={L\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Emerald Group Publishing Limited}%
+      }
+      \strng{namehash}{8a5697fa35ca35290c7ee9d69e7066e7}
+      \strng{fullhash}{8a5697fa35ca35290c7ee9d69e7066e7}
+      \strng{bibnamehash}{8a5697fa35ca35290c7ee9d69e7066e7}
+      \strng{authorbibnamehash}{8a5697fa35ca35290c7ee9d69e7066e7}
+      \strng{authornamehash}{8a5697fa35ca35290c7ee9d69e7066e7}
+      \strng{authorfullhash}{8a5697fa35ca35290c7ee9d69e7066e7}
+      \field{sortinit}{V}
+      \field{sortinithash}{02432525618c08e2b03cac47c19764af}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Purpose – The purpose of this paper is to provide a review of the literature on pathfinders, from the 1970s to the present. Design/methodology/approach – The paper reviews a range of publications which describe the methodology of pathfinders, provide practical advice and information, present research results, to aid librarians and library administrators in how to best manage the production and marketing of pathfinders. Findings – It was found that not much has been written on pathfinders. A few articles on traditional pathfinders were published between 1972 and 1995. In 1996, the electronic format took over. Most of the articles are of a practical nature although some describe empirical research. One void in the literature that has been found is librarians' lack of knowledge of users' needs and preferences. This results in much time and effort being dedicated to the production of pathfinders but without any consideration of users, thus discouraging them from using the available resources. Practical implications – This paper will be a useful source of information for librarians. It provides an overview of guidelines and best practices currently reported in the literature as well as the latest technical and educational trends. Originality/value – Such an extensive review of the literature on pathfinders has not been done before. It provides practical information for librarians wanting to embark on the production of pathfinders. It also identifies possible areas of future study.}
+      \field{day}{1}
+      \field{issn}{0090-7324}
+      \field{journaltitle}{Reference Services Review}
+      \field{month}{1}
+      \field{number}{3}
+      \field{shorttitle}{From Paper to Electronic, the Evolution of Pathfinders}
+      \field{title}{From Paper to Electronic, the Evolution of Pathfinders: A Review of the Literature}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{35}
+      \field{year}{2007}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{434\bibrangedash 451}
+      \range{pages}{18}
+      \verb{doi}
+      \verb 10.1108/00907320710774300
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/FWYGVLWV/Vileno - 2007 - From paper to electronic, the evolution of pathfin.pdf;/home/ryan/Zotero/storage/2JZHWIVJ/html.html
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1108/00907320710774300
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1108/00907320710774300
+      \endverb
+      \keyw{Internet,Libraries,Reference services}
+    \endentry
+    \entry{WikipediaSizeWikipedia2020}{inreference}{}
+      \field{sortinit}{W}
+      \field{sortinithash}{1af34bd8c148ffb32de1494636b49713}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{The size of the English Wikipedia can be measured in terms of the number of articles, number of words, and the size of the database, among other ways. As of 20 August 2020, there are 6,144,070 articles in the English Wikipedia containing over 3.6 billion words. Wikipedia continues to grow, and the number of articles in Wikipedia is increasing by over 17,000 a month. The number of articles added to Wikipedia every month reached its maximum in 2006, at over 50,000 new articles a month, and has been slowly but steadily declining since then. While this might seem to show that Wikipedia's growth is slowing or stopping, it should be noted that the amount of text added to Wikipedia articles every year has been constant since 2006, at roughly 1 gigabyte of (compressed) text added per year. This implies that as time progresses, proportionally more content is added to existing articles rather than new articles, and that Wikipedia has maintained the same persistent rate of growth throughout the past decade. In other words, over time, the average article size is growing faster than the number of articles. Most of the earlier entries were extracted from Wikipedia:Milestones. Later entries are taken from observations of the new software's built-in article count features. For information on what Wikipedia's software counts as an article, see Wikipedia:What is an article\#Lists of articles and statistics. The article count of bot-generated Wikipedias such as the Cebuano-language edition of Wikipedia, as well as the Swedish-, Dutch- and the Waray-language editions, grow much faster than those that are primarily written by humans such as the English Wikipedia. Swedish Wikipedian Sverker Johansson's Lsjbot is the primary author of those four primarily bot-generated Wikipedias. However, individual articles in bot-generated Wikipedias are on average much shorter than those in primarily human-written Wikipedias. Thus, article count alone is a poor indicator of the scale and scope of all Wikipedia editions.}
+      \field{booktitle}{Wikipedia}
+      \field{day}{1}
+      \field{hour}{3}
+      \field{langid}{english}
+      \field{minute}{23}
+      \field{month}{8}
+      \field{note}{Page Version ID: 970572970}
+      \field{second}{8}
+      \field{shorttitle}{Wikipedia}
+      \field{timezone}{Z}
+      \field{title}{Wikipedia:{{Size}} of {{Wikipedia}}}
+      \field{urlday}{20}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2020}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/2HRFQTZM/index.html
+      \endverb
+      \verb{urlraw}
+      \verb https://en.wikipedia.org/w/index.php?title=Wikipedia:Size_of_Wikipedia&oldid=970572970
+      \endverb
+      \verb{url}
+      \verb https://en.wikipedia.org/w/index.php?title=Wikipedia:Size_of_Wikipedia&oldid=970572970
+      \endverb
+    \endentry
+    \entry{zhangMakingEigenvectorBasedReputation2004}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=0f5b8b674eea6432492c32e093925682}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Hui},
+           giveni={H\bibinitperiod}}}%
+        {{hash=b9f86630475050f998c1380d54906d21}{%
+           family={Goel},
+           familyi={G\bibinitperiod},
+           given={Ashish},
+           giveni={A\bibinitperiod}}}%
+        {{hash=9de30571000234dcf364444191100a99}{%
+           family={Govindan},
+           familyi={G\bibinitperiod},
+           given={Ramesh},
+           giveni={R\bibinitperiod}}}%
+        {{hash=bddd5d1a9d85e744924ec72efab20452}{%
+           family={Mason},
+           familyi={M\bibinitperiod},
+           given={Kahn},
+           giveni={K\bibinitperiod}}}%
+        {{hash=912e5e2d55c83bd48c04351b24e99269}{%
+           family={Van\bibnamedelima Roy},
+           familyi={V\bibinitperiod\bibinitdelim R\bibinitperiod},
+           given={Benjamin},
+           giveni={B\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=c60b9ca2c20f403ed661846be625a8d8}{%
+           family={Leonardi},
+           familyi={L\bibinitperiod},
+           given={Stefano},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Berlin, Heidelberg}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{7dcb6fb220abeaa87c2593669ba6a46f}
+      \strng{fullhash}{079e9ee29d6f9c138cc98bfcc348b8e4}
+      \strng{bibnamehash}{7dcb6fb220abeaa87c2593669ba6a46f}
+      \strng{authorbibnamehash}{7dcb6fb220abeaa87c2593669ba6a46f}
+      \strng{authornamehash}{7dcb6fb220abeaa87c2593669ba6a46f}
+      \strng{authorfullhash}{079e9ee29d6f9c138cc98bfcc348b8e4}
+      \strng{editorbibnamehash}{c60b9ca2c20f403ed661846be625a8d8}
+      \strng{editornamehash}{c60b9ca2c20f403ed661846be625a8d8}
+      \strng{editorfullhash}{c60b9ca2c20f403ed661846be625a8d8}
+      \field{sortinit}{Z}
+      \field{sortinithash}{8f7b480688e809b50b6f6577b16f3db5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Eigenvector based methods in general, and Google’s PageRank algorithm for rating web pages in particular, have become an important component of information retrieval on the Web. In this paper, we study the efficacy of, and countermeasures for, collusions designed to improve user rating in such systems.We define a metric, called the amplification factor, which captures the amount of PageRank-inflation obtained by a group due to collusions. We prove that the amplification factor can be at most 1/ε, where ε is the reset probability of the PageRank random walk. We show that colluding nodes (e.g., web-pages) can achieve this amplification and increase their rank significantly in realistic settings; further, several natural schemes to address this problem are demonstrably inadequate.We propose a relatively simple modification to PageRank which renders the algorithm insensitive to such collusion attempts. Our scheme is based on the observation that nodes which cheat do so by “stalling” the random walk in a small portion of the web graph and, hence, their PageRank must be especially sensitive to the reset probability ε. We perform exhaustive simulations on the Web graph to demonstrate that our scheme successfully prevents colluding nodes from improving their rank, yielding an algorithm that is robust to gaming.}
+      \field{booktitle}{Algorithms and {{Models}} for the {{Web}}-{{Graph}}}
+      \field{isbn}{978-3-540-30216-2}
+      \field{langid}{english}
+      \field{series}{Lecture {{Notes}} in {{Computer Science}}}
+      \field{title}{Making {{Eigenvector}}-{{Based Reputation Systems Robust}} to {{Collusion}}}
+      \field{year}{2004}
+      \field{dateera}{ce}
+      \field{pages}{92\bibrangedash 104}
+      \range{pages}{13}
+      \verb{doi}
+      \verb 10.1007/978-3-540-30216-2_8
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/SF2BHL3C/Zhang et al. - 2004 - Making Eigenvector-Based Reputation Systems Robust.pdf
+      \endverb
+    \endentry
+    \entry{zhangImpactWebpageContent2005}{article}{}
+      \name{author}{2}{}{%
+        {{hash=eb96d0b531eeac5c6b8b186634522d92}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Jin},
+           giveni={J\bibinitperiod}}}%
+        {{hash=0399951dc403a28aed0f6a18ed6f6db4}{%
+           family={Dimitroff},
+           familyi={D\bibinitperiod},
+           given={Alexandra},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a009fa0399823530a6632e450450f26}
+      \strng{fullhash}{9a009fa0399823530a6632e450450f26}
+      \strng{bibnamehash}{9a009fa0399823530a6632e450450f26}
+      \strng{authorbibnamehash}{9a009fa0399823530a6632e450450f26}
+      \strng{authornamehash}{9a009fa0399823530a6632e450450f26}
+      \strng{authorfullhash}{9a009fa0399823530a6632e450450f26}
+      \field{sortinit}{Z}
+      \field{sortinithash}{8f7b480688e809b50b6f6577b16f3db5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Content characteristics of a webpage include factors such as keyword position in a webpage, keyword duplication, layout, and their combination. These factors may impact webpage visibility in a search engine. Four hypotheses are presented relating to the impact of selected content characteristics on webpage visibility in search engine results lists. Webpage visibility can be improved by increasing the frequency of keywords in the title, in the full-text and in both the title and full-text.}
+      \field{day}{1}
+      \field{issn}{0306-4573}
+      \field{journaltitle}{Information Processing \& Management}
+      \field{langid}{english}
+      \field{month}{5}
+      \field{number}{3}
+      \field{series}{Cross-{{Language Information Retrieval}}}
+      \field{title}{The Impact of Webpage Content Characteristics on Webpage Visibility in Search Engine Results ({{Part I}})}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{41}
+      \field{year}{2005}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{665\bibrangedash 690}
+      \range{pages}{26}
+      \verb{doi}
+      \verb 10.1016/j.ipm.2003.12.001
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/DPW2PK6G/Zhang and Dimitroff - 2005 - The impact of webpage content characteristics on w.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://www.sciencedirect.com/science/article/pii/S0306457303001122
+      \endverb
+      \verb{url}
+      \verb http://www.sciencedirect.com/science/article/pii/S0306457303001122
+      \endverb
+      \keyw{Search engine optimization,Webpage placement,Webpage visibility}
+    \endentry
+    \entry{zhangModifiedPageRankAlgorithm2018}{article}{}
+      \name{author}{1}{}{%
+        {{hash=854d20acb68094bf1dd24006be0b8ced}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Qingyang},
+           giveni={Q\bibinitperiod}}}%
+      }
+      \strng{namehash}{854d20acb68094bf1dd24006be0b8ced}
+      \strng{fullhash}{854d20acb68094bf1dd24006be0b8ced}
+      \strng{bibnamehash}{854d20acb68094bf1dd24006be0b8ced}
+      \strng{authorbibnamehash}{854d20acb68094bf1dd24006be0b8ced}
+      \strng{authornamehash}{854d20acb68094bf1dd24006be0b8ced}
+      \strng{authorfullhash}{854d20acb68094bf1dd24006be0b8ced}
+      \field{sortinit}{Z}
+      \field{sortinithash}{8f7b480688e809b50b6f6577b16f3db5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Pathways are the functional building blocks of complex diseases such as cancer. Identifying disease-associated pathways is of great importance to the development of novel therapeutics, as it provides functional insights into the pathogenesis of a disease. Existing methods for pathway ranking, however, are mostly based on an enrichment score assigned to each pathway independently, which could be biased by overlooking the interactions between pathways. In this paper, we consider a modification of Google's PageRank algorithm in order to fully incorporate the pathway dependencies into the pathway ranking. The proposed measurement is a trade-off between two important aspects, namely, the phenotype–pathway association and pathway coexpression. We propose to use a projection correlation to quantify pathway coexpression, and a generalized R2 for phenotype–pathway association. Our simulation study on real pathways shows the competitive performance of the new measure compared with enrichment-based analyses in pathway ranking.}
+      \field{annotation}{e204 sta4.204 \par The page rank method can be used for modelling gene expression.}
+      \field{issn}{2049-1573}
+      \field{journaltitle}{Stat}
+      \field{langid}{english}
+      \field{note}{\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/sta4.204}
+      \field{number}{1}
+      \field{title}{A Modified {{PageRank}} Algorithm for Biological Pathway Ranking}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{7}
+      \field{year}{2018}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{e204}
+      \range{pages}{-1}
+      \verb{doi}
+      \verb 10.1002/sta4.204
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/6RPT9C6R/Zhang - 2018 - A modified PageRank algorithm for biological pathw.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.204
+      \endverb
+      \verb{url}
+      \verb http://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.204
+      \endverb
+      \keyw{Google's PageRank algorithm,multinomial logit model,pathway coexpression,pathway ranking,projection correlation}
     \endentry
   \enddatalist
 \endrefsection

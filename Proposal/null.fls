@@ -1,0 +1,5 @@
+PWD /home/ryan/Dropbox/Studies/2020Spring/DiscProj/Proposal
+INPUT /usr/share/texmf-dist/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/xetex/xelatex.fmt
+INPUT /dev/null
+OUTPUT null.log

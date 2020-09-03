@@ -1,0 +1,13 @@
+# Fdb version 3
+["xdvipdfmx"] 0 "null.xdv" "null.pdf" "null" 0
+  "null.xdv" 0 -1 0 "xelatex"
+  (generated)
+  "null.pdf"
+["xelatex"] 1597897781 "/dev/null" "null.xdv" "null" 1597897781
+  "/dev/null" 1597379291 0 d41d8cd98f00b204e9800998ecf8427e ""
+  "/usr/share/texmf-dist/web2c/texmf.cnf" 1591545468 33301 a3134070eacafb10b1f371612ce2650d ""
+  "/var/lib/texmf/web2c/xetex/xelatex.fmt" 1593955789 5164753 dd63bedd4caa59842be2d8040bfdda7d ""
+  "null.aux" 1597882108 8 a94a2480d3289e625eea47cd1b285758 ""
+  (generated)
+  "null.log"
+  "null.xdv"

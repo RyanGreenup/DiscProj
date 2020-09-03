@@ -27,7 +27,7 @@
 Much information is interconnected, consider for example written articles,
 research papers, citations, movies, books, personal notes, knowledge bases,
 personal releationships etc., this interconnectivity creates a network which can
-naturally visualised as a graph.
+naturally be visualised as a graph.
 
 Determining the most central vertex of such a graph is useful as it may assist
 in research, learning and collaboration. The /PageRank/ method, which originally
@@ -37,12 +37,12 @@ probability of being a destination following a random walk.
 cite:larrypageAnatomyLargescaleHypertextual1998 Although this method is popular,
 it does not, however, easily adapt to negatively weighted edges (a negative
 weight in this case measuring dissaproval or an aversion to follow that link as
-opposed to endorsement). A limitation which is increasingly relevant given
+opposed to endorsement). This limitation is increasingly relevant given
 recent developments in the area of /Sentiment Analysis/.
 cite:parkPowerWalkProceedings2013
 
 The /Power Walk/ Method is similar to the /Random Surfer/ model but takes a
-different approach in order to accomadate the potential for an edge to have any
+different approach in order to accommodate the potential for an edge to have any
 arbitrary real weight. cite:parkPowerWalkProceedings2013
 
 This research project will be an investigation into the relationship between
@@ -87,20 +87,22 @@ and depth of human knowledge.
 
 A comprehensive review of the pathfinder approach, however, reveals that many
 such subject guides are often not consistent with the needs of those engaging in
-research. cite:vilenoPaperElectronicEvolution2007 This
-issue is somewhat analogous to the issue faced by Larry Page and Sergey Brin in
-that the centrality of an article of information corresponds very greatly to
-it's relevance. cite:larrypageAnatomyLargescaleHypertextual1998
+research. cite:vilenoPaperElectronicEvolution2007 This issue is somewhat
+analogous to the work of Larry Page and Sergey Brin when developing
+/Google/ in that the centrality of an article of information corresponds very
+greatly to it's relevance. cite:larrypageAnatomyLargescaleHypertextual1998
 
 This issue of relevance in information retrieval can be addressed by using an
 algorithm to identify what is most central to a topic, ideally the /Power Walk/
-method will prove to be an effective tool to ahieve this.
+method will prove to be an effective tool to achieve this.
 
 * Background and Rationale
 Given some graph $G(V,E)$ with $\mid V \mid = n$, a corresponding adjacency
 matrix $\mathbf{A}$ describes the number of edges between vertex $i$ and $j$,
 such that $\mathbf{A}_{i, j}$ represents the number of edges between the
-vertices, with respect to a directed graph the entry may either denote:
+vertices.
+
+With respect to a directed graph the element $\mathbf{A}_{i, j}$ may either denote the edge:
 
 - $i \rightarrow j$
   - One such example of this implementation being the ~igraph~ library cite:gaborcsardiIgraphManualPages2019
@@ -115,9 +117,9 @@ hence be adopted here.
 :END:
 Given this adjacency matrix $\mathbf{A}$, a /probability transition matrix/
 $\mathbf{T}$ can be produced by scaling each column to 1, such that each element
-$\mathrm{T}_{i, j}$ would now represent the probability of leaving $j$ and
+$\mathrm{T}_{i, j}$ would represent the probability of leaving $j$ and
 travelling to $i$ during a random walk (as opposed to the number of edges as was
-the case with $\mathbf{T}$), each column will need to be scaled to one, this can
+the case with $\mathbf{A}$), this can
 be acheived with matrix multiplication as illustrated in
 eqref:eq:mat-mult-colsum:
 
@@ -160,7 +162,7 @@ disconnected vertex $(V)$, this is shown in eqref:eq:random-surfer:
 
 where:
 
-- $\mathbf{B}$ :: Is matrix of size $n \times n$ such that $\mathbf{B}_{i, j} = \frac{1}{n}, \enspace \forall i,j \in \left[1, n\right]\cap \mathbb{N}$
+- $\mathbf{B}$ is matrix of size $n \times n$ such that $\mathbf{B}_{i, j} = \frac{1}{n}, \enspace \forall i,j \in \left[1, n\right]\cap \mathbb{N}$
 - In the literature $\alpha$ is often referred to as a damping factor see
   cite:berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005
   or a smoothing constant cite:koppelMeasuringDirectIndirect2014 .
@@ -206,16 +208,23 @@ better suited approach, with respect to performance, because:
 
 
 #+NAME: eigen-julia
-#+CAPTION: Time to Solve Eigen Value for matrix of size n
-#+begin_src julia :results output
-using LinearAlgebra using TimerOutputs
+#+CAPTION: Time to Solve Eigen Value for matrix of size $n$
+#+begin_src julia :results output :exports code
+using LinearAlgebra
+using TimerOutputs
 
 function time_eigenvec(n)
     T = [ x-n+n*y for x in rand(n), y in rand(n) ]
     t = @elapsed eigvecs(T) return t end
 
-time_eigenvec(10^2) time_eigenvec(10^3)
+time_eigenvec(10^2)
+time_eigenvec(10^3)
 # time_eigenvec(10^4) # times out
+
+
+## : time_eigenvec (generic function with 1 method)
+## : 0.072302487
+## : 0.814937083
 #+end_src
 
 #+RESULTS: eigen-julia
@@ -233,22 +242,41 @@ $\mathbf{T}$ eqref:eq:stationary-distribution:
 \end{align}
 
 ** Dominant EigenVector
-It has been shown that $\lambda_{k} \leq 1, \enspace \forall k \leq n$ and that
-the dominant [fn:dom] $\lambda$ can be computed by the /power method/,
-cite:farahatAuthorityRankingsHITS2006 and that this solution can be reached in a limited number of steps ($\approx 50$) for graphs on the order of a million vertices [[cite:bianchiniPageRank2005][p. 123]] (assuming that $\alpha \in \left[0, 1\right]$ is not too close to 1, in which case convergence can become quite slow cite:tanNewExtrapolationMethod2017a)
+It has been shown that $\lambda_{k} \leq 1, \enspace \forall k \leq n$ and that the dominant[fn:dom] $\lambda$ can be computed by the /power method/. cite:farahatAuthorityRankingsHITS2006
+
 
 ** Stability and Convergence
 :PROPERTIES:
 :CUSTOM_ID: stability-convergence
 :END:
-How quickly the /Power Method/ converges depends on the magnitude of $\mid \lambda_{2} \mid$. cite:bryan250000002006
+It has also been shown that the stationary distribution $\vec{p}$ (see
+eqref:eq:stationary-distribution ) can be reached in a limited number of steps
+($\approx 50$) for graphs on the order of a million vertices
+[[cite:bianchiniPageRank2005][p. 123]], under the assumption that the
+smoothing constant $\alpha \in \left[0, 1\right]$ is not too close to 1 (in
+which case convergence can become quite slow)
+cite:tanNewExtrapolationMethod2017a
 
-With respect to the random surfer model eqref:eq:random-surfer, It has been shown
-that $\mid \lambda_{2} \mid \leq \alpha$ and if the corresponding graph contains
-two or more irreducible closed subgraphs that the $\mid \lambda_{2} \mid = \alpha$, this is demonstrated in listing [[random-surf-r]]
-and figure [[two-sub-graph]].
+How quickly the /Power Method/ converges generally depends on the magnitude of $\mid \lambda_{2} \mid$ cite:bryan250000002006
+and with respect to the random surfer model eqref:eq:random-surfer, It has been shown
+that: cite:kamvarAdaptiveMethodsComputation2004b
 
-It has also been shown that an $\alpha$ value near 1 will imply an unstable stationary distribution cite:ngStableAlgorithmsLink2001 that converges slowly cite:tanNewExtrapolationMethod2017a, this is because a small change to the corresponding graph could lead to $\lambda_{1} \leftrightarrow \lambda_{2}$ and hence different eigenvectors will correspond to the solution as shown in eqref:eq:eigen-one
+- $\mid \lambda_{2} \mid \leq \alpha$, and
+- if the corresponding graph contains two or more irreducible closed subgraphs
+  then $\mid \lambda_{2} \mid = \alpha$
+
+This is demonstrated in listing [[random-surf-r]] and figure [[two-sub-graph]].
+
+It has also been shown that an $\alpha$ value near 1 will imply an unstable
+stationary distribution cite:ngStableAlgorithmsLink2001 that converges slowly
+cite:tanNewExtrapolationMethod2017a, this is because $\lambda_{2}$ is bound above by
+$\alpha$ and a small change to the corresponding graph could lead to
+$\lambda_{1} \leftrightarrow \lambda_{2}$ and hence different eigenvectors will
+correspond to the solution as shown in eqref:eq:eigen-one .
+
+# This research aims to investigate the relationship between the parameters and the convergence and stability with respect to the /Power Walk/ method
+
+It is not clear how similar properties are exhibited with respect to the /Power Walk/ method. cite:parkPowerWalkRevisiting2013
 
 ** Choosing $\alpha$
 :PROPERTIES:
@@ -261,10 +289,10 @@ more uniform because $\frac{1-\alpha}{n} \rightarrow \frac{1}{n}$ as $\alpha
 \rightarrow 0$. cite:parkPowerWalkRevisiting2013
 
 The value used originally by Page and Brin was $\alpha = 0.85$ See
-[[cite:larrypageAnatomyLargescaleHypertextual1998][p. 109]] and this appears to
-have widely adopted.
-cite:kamvarAdaptiveMethodsComputation2004b,boldiPageRankFunctionDamping2005,
-however research suggests that modifying the value may be useful in detecting
+[[cite:larrypageAnatomyLargescaleHypertextual1998][p. 109]] and this appears to have been
+widely adopted, see
+cite:kamvarAdaptiveMethodsComputation2004b,boldiPageRankFunctionDamping2005.
+Research suggests, however, that modifying the value may be useful in detecting
 spam.
 cite:zhangMakingEigenvectorBasedReputation2004,boldiPageRankFunctionDamping2005
 
@@ -324,8 +352,8 @@ This research will involve investigating the relationship between the second eig
 In particular, open questions are whether or not the value of the second eigenvalue can:
 
 - be predicted from the parameters of the model and/or features of the graph
-  + e.g. some function of $\alpha$
-- indicate the stability of the stationary distribution of a
+  + e.g. some function of $\alpha$ / $\beta$
+- indicate the stability of the stationary distribution of a graph
 - indicate how quickly the /Power Method/ will converge to a solution
 
 * Literature Review
@@ -337,8 +365,7 @@ The proposed research (see section [[#research-question]]) relates broadly to th
 analysis and graph centrality, for which material is quite abundant, although much
 of the literature is concerned with either:
 
-1. The original /PageRank/ method developed by Page and Brin,
-cite:larrypageAnatomyLargescaleHypertextual1998 OR
+1. The original /PageRank/ method developed by Page and Brin cite:larrypageAnatomyLargescaleHypertextual1998
 2. Modifying the /PageRank/ method to improve upon:
   + Precision and accuracy see cite:ngStableAlgorithmsLink2001,berkhoutRankingNodesGeneral2018a,nemaConsensusbasedRankingWikipedia2017a,fuDampingFactorGoogle2006
   + Performance with respect to:
@@ -346,13 +373,13 @@ cite:larrypageAnatomyLargescaleHypertextual1998 OR
     - Stability of any given solution, see cite:ngStableAlgorithmsLink2001
 
 Although neither of these points are a direct analogue for the proposed
-research, which relates in itself to a modified /PageRank/ algorithm, much of
+research, which relates in itself to an alternative /PageRank/ algorithm, much of
 the work will be very similar in approach and hopefully offer much insight upon
 closer inspection.
 
 ** Building on Literature Referred to in Primary Resource
-This research is focused primarily on the /Power Walk/ method or approach to the
-/PageRank/ algorithm proposed by Park and Simoff in a 2013 conference paper,
+This research is focused primarily on the /Power Walk/ method
+proposed by Park and Simoff in a 2013 conference paper,
 cite:parkPowerWalkProceedings2013 this paper contained some discussion of
 relevant research.
 *** Stability and Convergence
@@ -383,11 +410,14 @@ $\lambda_{2}$ with respect to the convergence and stability of the /Power Walk/
 method.
 
 *** Building on the Random Surfer
+:PROPERTIES:
+:CUSTOM_ID: wiki-networks
+:END:
 
 Related work referred to in the paper has involved using community ratings of
 web pages to improve upon the /PageRank/ method
-cite:parkMiningWebMultiresolution2007, similar work has also been researched
-more recently that found a combination of usage statistics and content quality
+cite:parkMiningWebMultiresolution2007, similar work has also been undertaken
+more recently that found replacing the background probability $\frac{1}{n}$ with a combination of usage statistics and content quality
 scores can significantly improve the precision and accuracy of the page rank
 method. cite:nemaConsensusbasedRankingWikipedia2017a
 
@@ -398,10 +428,6 @@ An extension to this research could involve an investigation into the precision
 of the /Power Walk/ method in conjuction with usage statistics compared with the
 /Power Walk/ method.
 
-**** Wikis
-:PROPERTIES:
-:CUSTOM_ID: wiki-networks
-:END:
 
 There is literature suggesting that the network structure of wiki articles can
 be an important feature in the emergence of quality
@@ -419,7 +445,7 @@ information retrieval, cite:langvilleSurveyEigenvectorMethods2005 perhaps for
 this reason there is much literature on modifying the /PageRank/ method to
 improve upon it as discussed generally in section [[#summary-lit-review]].
 
-Choosing a smoothing constant, however, is somewhat difficult task because it can have an
+Choosing a smoothing constant, however, is a somewhat difficult task because it can have an
 impact on the behaviour of the model (see cite:fuDampingFactorGoogle2006 and  section
 [[#stability-convergence-lit-review]]) but also because without empirical guidance
 it can feel somewhat arbitrary, there is an approach in the literature that
@@ -434,13 +460,13 @@ more careful inspection may reveal helpful perspectives.
 Improving the rate of convergence of the /PowerRank/ is obviously desirable and
 there has been considerable mathematical resarch to develop better algorithms.
 
-As previously mentioned in, the stability and convergence of the /Power Rank/
-method is poor when the smoothing constant $\alpha$ is close to 1, a 2016 paper
-published in the /Journal of Computational and Applied Mathematics/
-cite:tanNewExtrapolationMethod2017a found that the trace of a matrix can be used
-to produce a considerably more efficient approach to solve the /PageRank/ for
-values of $\alpha$ near 1. It is not clear how relevant this is given that
-$\alpha$ values near 1 offer no improvement in precision
+As previously mentioned in [[#stability-convergence]], the stability and convergence
+of the /Power Rank/ method is poor when the smoothing constant $\alpha$ is close
+to 1, a 2016 paper published in the /Journal of Computational and Applied
+Mathematics/ cite:tanNewExtrapolationMethod2017a found that the trace of a
+matrix can be used to produce a considerably more efficient approach to solve
+the /PageRank/ for values of $\alpha$ near 1. It is not clear how relevant this
+is given that $\alpha$ values near 1 offer no improvement in precision
 cite:boldiPageRankFunctionDamping2005 and that the solution is unstable
 cite:ngStableAlgorithmsLink2001 (see sections [[#choosing-alpha]] and
 [[#stability-convergence]]), but, it is yet to be shown if these characteristics
@@ -475,15 +501,15 @@ approaches.
 The /PageRank/ method has been leveraged as a value to assist in building
 artificial networks in order to model real-world networks, such networks have
 been shown to have upper and lower bounds on there diamaters.
-cite:mehrabianItSmallWorld2016 this is a very interesting area of research and
+cite:mehrabianItSmallWorld2016 This is a very interesting area of research and
 it would be interesting to see whether or not the use of the /Power Walk/ method
 in such an approach produces graphs that are more consistent with social
 networks.
 
 **** Pure Mathematics
-One very interesting piece of work in the in the literature was an application
-of the /PageRank/ method to a graph of integers (see figure [[pure-math-graph]])
-with edges based on divisors, as shown in listing [[pure-math-adj]].
+One very interesting piece of work in the literature was an application
+of the /PageRank/ method to a graph of integers
+with edges based on divisors, as shown in figure [[pure-math-graph]] and listing [[pure-math-adj]]. cite:frahmPageRankIntegers2012
 
 This is well outside the scope of this research, but if the precision of the
 power walk method is found to be reasonably good, it would make for a very
@@ -492,7 +518,7 @@ attempting to find relationships between the two.
 
 Another paper outside the scope of this paper is work by Ding & Li concerned
 with extending the /PageRank/ method to /multi-plex/ graphs[fn:mp], although
-very interesting and practical such research is beyond the scope of this work.
+very interesting and quite practical, such research is beyond the scope of this work.
 
 #+NAME: pure-math-adj
 #+CAPTION: /PageRank/ Probability Transition Matrix of network based on divisibility of $\mathbb{Z}^+ \leq 30$
@@ -509,13 +535,16 @@ plot(g1)
 
 #+NAME: pure-math-graph
 #+CAPTION: Graph of $\mathbb{Z}^+ \leq 30$ with edges based on divisors
+#+RESULTS[4990af105111add0931f9893ba471a986d5f834c]: pure-math-adj
+[[file:pure-math-adj-graph.png]]
+
 
 ** Search Engine Optimisation
 There is a considerable amount of work in the literature concerning the
 relationship between the /PageRank/ method and Search Engine optimisation, such
 as:
 
-- Using machine learning to inductively model search engines cite:pringleWhatTallPoppy1998
+- Using decision trees with machine learning to inductively model search engines cite:pringleWhatTallPoppy1998
 - Methods to solve the optimisation problem involved in centring a vertex by
   creating a limited number of edges
   cite:kamvarAdaptiveMethodsComputation2004b,dekerchoveMaximizingPageRankOutlinks2008
@@ -536,3 +565,6 @@ be 3 different types of edges between two vertecies and so would be multi-plex.
 [fn:vers] The approach has even been used in conjuction with linear regression to map gene expresseions, see cite:zhangModifiedPageRankAlgorithm2018
 
 [fn:dom] Dominant in this case refers to the the largest $\mid \lambda_{k} \mid$
+
+
+
