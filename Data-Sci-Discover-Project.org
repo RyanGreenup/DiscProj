@@ -867,7 +867,9 @@ So if I have:
 Then It can be shown (see eqref:eq:sparse-power-walk):
 
 $$\begin{aligned}
-    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} = \vec{\delta} ^{\mathbf{T}}\vec{p_i} \label{eq:pw-delta-simp}\end{aligned}$$
+    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}\end{aligned})$$
+
+
 
 where:
 
@@ -886,10 +888,19 @@ $$\begin{aligned}
 And so the the power method can be implemented using sparse matrices.
 
 *** Solving the Background Probability
-In this case a vertical single column matrix will represent a vector and $\otimes$ will represent the outer product (i.e. the /Kronecker Product/):
 
 
+
+   Define \(\vec{\delta}\) as the column sums of
 \[\begin{aligned}
+     \vec{\delta} & = \mathtt{colsum} (\text{{\bfseries{B}}})^{- 1}\\
+     & = \frac{1}{\overrightarrow{1^{{\scriptsize \ensuremath{\boldsymbol{T}}}}}
+     \ensuremath{\boldsymbol{B}}}
+   \end{aligned}\]
+
+
+
+\begin{align}
      \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} & = \left(
      \begin{array}{cccc}
        1 & 1 & 1 & \\
@@ -897,41 +908,36 @@ In this case a vertical single column matrix will represent a vector and $\otime
        1 & 1 & 1 & \\
        & \vdots &  & \ddots
      \end{array} \right) \left( \begin{array}{cccc}
-       \sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}] & 0 & 0 & \\
-       0 & \sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 2}] & 0 & \ldots\\
-       0 & 0 & \sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 3}] & \\
+       \delta_1 & 0 & 0 & \\
+       0 & \delta_2 & 0 & \ldots\\
+       0 & 0 & \delta_3 & \\
        0 & \vdots & 0 & \ddots
      \end{array} \right) \left( \begin{array}{c}
        p_1\\
        p_2\\
        p_3\\
        \vdots
-     \end{array} \right) \nonumber\\
-     & = \left( \begin{array}{cccc}
-       \frac{p_1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}]} & \frac{p_2}{\sum^n_{i
-       = 1} [\ensuremath{\boldsymbol{A}}_{2, 1}]} & \frac{p_3}{\sum^n_{i = 1}
-       [\ensuremath{\boldsymbol{A}}_{3, 1}]} & \\
-       \frac{p_1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}]} & \frac{p_2}{\sum^n_{i
-       = 1} [\ensuremath{\boldsymbol{A}}_{2, 1}]} & \frac{p_3}{\sum^n_{i = 1}
-       [\ensuremath{\boldsymbol{A}}_{3, 1}]} & \ldots\\
-       \frac{p_1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}]} & \frac{p_2}{\sum^n_{i
-       = 1} [\ensuremath{\boldsymbol{A}}_{2, 1}]} & \frac{p_3}{\sum^n_{i = 1}
-       [\ensuremath{\boldsymbol{A}}_{3, 1}]} & \\
-       \vdots & \vdots & \vdots & \vdots
-     \end{array} \right) \nonumber\\
-     & = \left( \begin{array}{ccc}
-       \frac{1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i, 1}]} & \frac{1}{\sum^n_{i =
-       1} [\ensuremath{\boldsymbol{A}}_{i, 2}]} & \frac{1}{\sum^n_{i = 1} [\ensuremath{\boldsymbol{A}}_{i,
-       3}]}
-     \end{array} \right) \otimes \left( \begin{array}{c}
-       p_1\\
-       p_2\\
-       p_3
-     \end{array} \right) \left( \begin{array}{c}
-       1\\
-       1\\
-       1
-     \end{array} \right) \nonumber\\
-     & =\ensuremath{\boldsymbol{\delta}}^{\ensuremath{\boldsymbol{T}}}  \overrightarrow{p}
-     \label{eq:sparse-power-walk} \overrightarrow{1}
-   \end{aligned}\]
+     \end{array} \right) \nonumber \nonumber \\
+     & = \left( \begin{array}{cccccc}
+       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
+       \frac{p_3}{\delta_3} & \\
+       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
+       \frac{p_3}{\delta_3} & \ldots\\
+       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
+       \frac{p_3}{\delta_3} & \\
+       &  & \vdots &  &  & \ddots
+     \end{array} \right) \nonumber \nonumber \\
+     & = \left(\begin{array}{c}
+       \sum^n_{i = 1} [p_{_i} \delta_i]\\
+       \sum^n_{i = 1} [p_{_i} \delta_i]\\
+       \sum^n_{i = 1} [p_{_i} \delta_i]\\
+       \vdots
+     \end{array}\right) \nonumber \\
+     & = \left( \begin{array}{c}
+       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
+       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
+       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
+       \vdots
+     \end{array} \right) \nonumber \\
+     & = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}) \label{eq:sparse-power-walk}
+   \end{align}
