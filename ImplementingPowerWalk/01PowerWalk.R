@@ -16,9 +16,9 @@ i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 9
 A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 
-g1 <- igraph::erdos.renyi.game(n = 50, 0.2)
+g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
-# plot(g1)
+plot(g1)
 
 ## * Inspect the Newly Created Matrix
 summary(A)
@@ -131,7 +131,8 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 print(paste("The stationary point is"))
 print(p)
-## ** Faster Approach from 3.2 of paper
+
+## ** Faster Sparse Approach from 3.2 of paper
 beta = 0.843234
 β = beta
 
@@ -153,10 +154,7 @@ beta = 0.843234
   p_new  <- rep(1/n, n)  # Uniform
   p      <- rep(0, n)    # Zero
   η      <- 10^(-6)
-  oneVec <- rep(1, n)
 
-rep(sum(δB*p), n)
-sum(δB*p)
 
  while (sum(abs(p_new - p)) > η) {
     (p <- as.vector(p_new)) # P should remain a vector
@@ -164,23 +162,5 @@ sum(δB*p)
      p_new  <- T %*% p + rep(δBt %*% p, n)
   }
 
-
-
-
-## for (i in 1:100) {
-##     (p <- p_new)
-##     p_new  <- T %*% p + δBt %*% p
-## }
-  p
-
-p
-g1 <- igraph::erdos.renyi.game(n = 50, 0.2)
-power_walk(A = A, β = 0.4)
-
-
-A
-0.8^A
-class(A)
-
-## * Sparse Matrix Approach
-t(c(1/2, 1/3, 1/5)) %o% matrix(c(1/7, 1/11, 1/13), ncol = 1)  %>% dim()
+print(paste("The stationary point is"))
+print(p)
