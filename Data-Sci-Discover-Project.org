@@ -875,15 +875,45 @@ where:
 
 This means we can do:
 
-$$\begin{aligned}
-     \vec{p_{i +  1}} &=  \mathbf{B} \mathbf{D}_{\mathbf{B}}^{- 1} \vec{p_{i}}  \\
-     &= \left( \mathbf{B} -  \mathbf{O} +  \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}\vec{p_i} \\
-     &= \left( \left( \mathbf{B} -  \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1} +  \mathbf{O}\mathbf{D}_{\mathbf{B}}^{- 1} \right) \vec{p_i} \\
-     &= \left( \mathbf{B}-  \mathbf{O}\right) \mathbf{D}_{\mathbf{B}}^{- 1} \vec{p_i} +  \mathbf{O} \mathbf{D}_{\mathbf{B}}^{- 1} \vec{p_i}  \\
-     &= \left( \mathbf{B}- \mathbf{O} \right)\mathbf{D}_{\mathbf{B}}^{- 1} \vec{p_i} +  \vec{\delta'}\vec{p_i} \vec{1}
- \end{aligned}$$
+\[ \begin{aligned}
+     \overrightarrow{p_{i + 1}} & = \mathbf{BD}_{\mathbf{B}}^{- 1}
+     \overrightarrow{p_i}\\
+     & = \left( \mathbf{B} - \mathbf{O} + \mathbf{O} \right)
+     \mathbf{D}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
+     & = \left( \left( \mathbf{B} - \mathbf{O} \right)
+     \mathbf{D}_{\mathbf{B}}^{- 1} + \mathbf{OD}_{\mathbf{B}}^{- 1} \right)
+     \overrightarrow{p_i}\\
+     & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+     \overrightarrow{p_i} + \mathbf{OD}_{\mathbf{B}}^{- 1}
+     \overrightarrow{p_i}\\
+     & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+     \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta'}
+     \overrightarrow{p_i})
+   \end{aligned} \]
+  
+Let $(\tmmathbf{B}-\tmmathbf{O}) = \Xi$
+
+\begin{eqnarray*}
+  \overrightarrow{p_{i + 1}} & = \Xi \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta'}
+  \overrightarrow{p_i}) &
+\end{eqnarray*}
+
+Now solve $\tmmathbf{D}_B^{- 1}$ \ in terms of $\Xi$ :
+
+\begin{eqnarray*}
+  \Xi & = & (\tmmathbf{B}-\tmmathbf{O})\\
+  \tmmathbf{\Beta}& = & \Xi +\tmmathbf{O}\\
+   \implies \delta^{- 1}_B &= & \vec{1} \tmmathbf{B}\\
+  & = & \vec{1} (\Xi +\tmmathbf{\Omicron})\\
+  & = & \vec{1} \Xi + \vec{1} \tmmathbf{\Omicron}\\
+  & = & \vec{1} \Xi + \langle n, n, n \ldots n \rangle\\
+ \implies   \tmmathbf{D}_B^{- 1} &=& \mathrm{diag} \left( \delta^{-1}_{\mathbf{B}} \right)\\
+&=& \mathtt{diag} \left( \mathtt{ColSums} \left( \mathtt{\Xi} \right) + \mathtt{n} \right) ^{\mathtt{-1}}
+\end{eqnarray*}
 
 And so the the power method can be implemented using sparse matrices.
+
 
 *** Solving the Background Probability
 In this case a vertical single column matrix will represent a vector and $\otimes$ will represent the outer product (i.e. the /Kronecker Product/):
