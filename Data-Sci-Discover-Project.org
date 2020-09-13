@@ -872,47 +872,96 @@ $$\begin{aligned}
 where:
 
 - $\vec{\delta_i} = \frac{1}{\mathtt{colsums} \left( \mathbf{B} \right)}$
+  + A vector...($n\times 1$ matrix)
+- $\vec{1}$  :: is a vector containing all 1's
+  + A vector...($n\times 1$ matrix)
+- $\vec{\delta^{\mathrm{T}}}$ :: refers to the transpoxe of $\vec{\detla}$ ($1\times n$ matrix)
+- $\vec{\delta^{\mathrm{T}}} \vec{p_{i}}$ :: is some number (because it's a dot product)
 
 This means we can do:
 
-\[ \begin{aligned}
-     \overrightarrow{p_{i + 1}} & = \mathbf{BD}_{\mathbf{B}}^{- 1}
-     \overrightarrow{p_i}\\
-     & = \left( \mathbf{B} - \mathbf{O} + \mathbf{O} \right)
-     \mathbf{D}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
-     & = \left( \left( \mathbf{B} - \mathbf{O} \right)
-     \mathbf{D}_{\mathbf{B}}^{- 1} + \mathbf{OD}_{\mathbf{B}}^{- 1} \right)
-     \overrightarrow{p_i}\\
-     & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
-     \overrightarrow{p_i} + \mathbf{OD}_{\mathbf{B}}^{- 1}
-     \overrightarrow{p_i}\\
-     & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
-     \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta'}
-     \overrightarrow{p_i})
-   \end{aligned} \]
-  
-Let $(\tmmathbf{B}-\tmmathbf{O}) = \Xi$
+\begin{align}
+  \overrightarrow{p_{i + 1}} & = \mathbf{T}_{\mathrm{pw}}
+  \overrightarrow{p_i}\\
+& = \mathbf{BD}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i}\\
+  & = \left( \mathbf{B} - \mathbf{O} + \mathbf{O} \right)
+  \mathbf{D}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
+  & = \left( \left( \mathbf{B} - \mathbf{O} \right)
+  \mathbf{D}_{\mathbf{B}}^{- 1} + \mathbf{OD}_{\mathbf{B}}^{- 1} \right)
+  \overrightarrow{p_i}\\
+  & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
+  & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \vec{1} (\overrightarrow{\delta^{\mathrm{T}}}
+  \overrightarrow{p_i}) \\
+  & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta^{\mathrm{T}}}
+  \overrightarrow{p_i})
+\end{align}
+
+where:
+
+
+Let $(\mathbf{B}-\mathbf{O}) = \mathbf{B_{\mathbf{O}}}$:
 
 \begin{eqnarray*}
-  \overrightarrow{p_{i + 1}} & = \Xi \mathbf{D}_{\mathbf{B}}^{- 1}
-  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta'}
+  \overrightarrow{p_{i + 1}} & = \mathbf{B_{\mathbf{O}}} \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta^{\mathrm{T}}}
   \overrightarrow{p_i}) &
 \end{eqnarray*}
 
-Now solve $\tmmathbf{D}_B^{- 1}$ \ in terms of $\Xi$ :
+Now solve $\tmmathbf{D}_B^{- 1}$ in terms of $\mathbf{B_{O}}$ :
 
-\begin{eqnarray*}
-  \Xi & = & (\tmmathbf{B}-\tmmathbf{O})\\
-  \tmmathbf{\Beta}& = & \Xi +\tmmathbf{O}\\
-   \implies \delta^{- 1}_B &= & \vec{1} \tmmathbf{B}\\
-  & = & \vec{1} (\Xi +\tmmathbf{\Omicron})\\
-  & = & \vec{1} \Xi + \vec{1} \tmmathbf{\Omicron}\\
-  & = & \vec{1} \Xi + \langle n, n, n \ldots n \rangle\\
- \implies   \tmmathbf{D}_B^{- 1} &=& \mathrm{diag} \left( \delta^{-1}_{\mathbf{B}} \right)\\
-&=& \mathtt{diag} \left( \mathtt{ColSums} \left( \mathtt{\Xi} \right) + \mathtt{n} \right) ^{\mathtt{-1}}
-\end{eqnarray*}
+\begin{align}
+  \mathbf{B}_{\mathbf{\mathbf{O}}} = & (\mathbf{B}-\mathbf{O})\\
+  \mathbf{B} = & \mathbf{B}_{\mathbf{\mathbf{O}}}
+  +\mathbf{O}
+\end{align}
 
-And so the the power method can be implemented using sparse matrices.
+If we have $\delta_{\mathbf{B}}$ as the column sums of$\tmmathbf{\Beta}$ $\mathbf{B}$:
+
+\begin{align}
+\delta^{-1}_{\mathbf{B}} &= \vec{1}\mathbf{B} \\
+&= \vec{1} \left( \mathbf{B_{O}} + \mathbf{O}\right) \\
+&= \vec{1}  \mathbf{B_{O}} + \vec{1}\mathbf{O} \\
+&= \vec{1} \mathbf{B_{\mathbf{O}}} + \langle n, n, n, ... n \rangle \\
+&= \vec{1} \mathbf{B_{\mathbf{O}}} + \vec{1} n \\
+\delta_{\mathbf{B}}&=\mathtt{1/(colSums(\mathbf{B_{O}}) + n )}
+\end{align}
+
+Then if we have $\mathit{{\tmstrong{{\tmem{D}}}}}_{\mathit{{\tmem{{\tmstrong{B}}}}}} =
+\mathtt{diag} (\delta_{\tmmathbf{B}}) \mathtt{}$:
+
+
+\[ \begin{array}{lll}
+     \mathit{{\tmstrong{{\tmem{D}}}}}_{\mathit{{\tmem{{\tmstrong{B}}}}}}^{- 1}
+     & = & \mathrm{diag} \left( \delta^{- 1}_{\mathbf{B}} \right)\\
+     & = & \mathtt{diag} \left( \mathtt{ColSums}
+     (\mathtt{\tmmathbf{B}_{\tmmathbf{O}}}) + \mathtt{n}
+     \right)^{\mathtt{- 1}}
+   \end{array} \]
+
+And so the the power method can be implemented using sparse matrices:
+
+\begin{align}
+\vec{p_{i+1}} = \mathrm{B_{O}} \enspace \mathrm{diag}\left( \vec{1} \mathbf{B_{O}} + \vec{1}n \right) \vec{p_{i}} + \vec{1} \vec{\delta^{\mathrm{T}}\vec{p_{i}}}
+\end{align}
+
+in terms of */R/*:
+
+#+begin_src R
+p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
+
+# It would also be possible to sum the element-wise product
+(t(δ) %*% p) == sum(δ * p)
+
+# Because R treats vectors the same as a nX1 matrix we could also
+# perform the dot product of the two vectors, meaning the following
+# would be true in R but not generally
+
+(t(δ) %*% p) == (δ %*% p)
+#+end_src
 
 
 *** Solving the Background Probability
@@ -928,8 +977,10 @@ In this case a vertical single column matrix will represent a vector and $\otime
    \end{aligned}\]
 
 
+Then we have:
 
-\begin{align}
+
+\[ \begin{aligned}
      \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} & = \left(
      \begin{array}{cccc}
        1 & 1 & 1 & \\
@@ -937,39 +988,58 @@ In this case a vertical single column matrix will represent a vector and $\otime
        1 & 1 & 1 & \\
        & \vdots &  & \ddots
      \end{array} \right) \left( \begin{array}{cccc}
-       \delta_1 & 0 & 0 & \\
-       0 & \delta_2 & 0 & \ldots\\
-       0 & 0 & \delta_3 & \\
-       0 & \vdots & 0 & \ddots
+       \frac{1}{\delta_1} & 0 & 0 & \\
+       0 & \frac{1}{\delta_2} & 0 & \ldots\\
+       0 & 0 & \frac{1}{\delta_{13}} & \\
+       & \vdots &  & \ddots
      \end{array} \right) \left( \begin{array}{c}
-       p_1\\
-       p_2\\
-       p_3\\
+       p_{i, 1}\\
+       p_{i, 2}\\
+       p_{i, 3}\\
        \vdots
-     \end{array} \right) \nonumber \nonumber \\
+     \end{array} \right) \nonumber \nonumber\\
      & = \left( \begin{array}{cccccc}
-       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
-       \frac{p_3}{\delta_3} & \\
-       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
-       \frac{p_3}{\delta_3} & \ldots\\
-       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
-       \frac{p_3}{\delta_3} & \\
+       \frac{p_{i, 1}}{\delta 1} & + & \frac{p_{i, 2}}{\delta_2} & + &
+       \frac{p_{i, 3}}{\delta_3} & \\
+       \frac{p_{i, 1}}{\delta 1} & + & \frac{p_{i, 2}}{\delta_2} & + &
+       \frac{p_{i, 3}}{\delta_3} & \ldots\\
+       \frac{p_{i, 1}}{\delta 1} & + & \frac{p_{i, 2}}{\delta_2} & + &
+       \frac{p_{i, 3}}{\delta_3} & \\
        &  & \vdots &  &  & \ddots
-     \end{array} \right) \nonumber \nonumber \\
-     & = \left(\begin{array}{c}
-       \sum^n_{i = 1} [p_{_i} \delta_i]\\
-       \sum^n_{i = 1} [p_{_i} \delta_i]\\
-       \sum^n_{i = 1} [p_{_i} \delta_i]\\
-       \vdots
-     \end{array}\right) \nonumber \\
+     \end{array} \right) \nonumber \nonumber\\
      & = \left( \begin{array}{c}
-       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
-       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
-       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
        \vdots
-     \end{array} \right) \nonumber \\
-     & = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}) \label{eq:sparse-power-walk}
-   \end{align}
+     \end{array} \right) \nonumber\\
+     & = \left( \begin{array}{c}
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+       \overrightarrow{p_i}\\
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}} \vec{p}_i\\
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}} \vec{p}_i\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     & = \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+     \overrightarrow{p_i} \left( \begin{array}{c}
+       1\\
+       1\\
+       1\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     & = (\overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+     \overrightarrow{p_i})  \vec{1}\\
+     & = \mathtt{repeat} (\overrightarrow{\delta} \overrightarrow{p_i}
+     \mathtt{, n}) \label{eq:sparse-power-walk}
+   \end{aligned} \]
+Observe also that If we let $\vec{\delta}$ and $p_i$ be 1 dimensional
+vectors, this can also be expressed as a dot product:
+
+   | Matrices                                | Vectors                    |
+   | $\vec{\delta^{\mathrm{T}}} \vec{p_{i}}$ | $\vec{\delta} \vec{p_{i}}$ |
+
+
+
 ** Implementing the Power Walk
 Load necessary packages etc:
 
@@ -1327,3 +1397,293 @@ p %>% head()
 
 #+RESULTS[b1fb56095a0ab86cebedf13b24c5b687e0428120]:
 : [1] -Inf -Inf -Inf -Inf -Inf -Inf
+** Debugging the Power Walk
+2020-sep-13@22:39
+These were the notes I took when trying to explain to Laurence the mistake I made
+*** Setup
+**** Load Packages
+#+begin_src R :session example
+if (require("pacman")) {
+    library(pacman)
+  }else{
+    install.packages("pacman")
+    library(pacman)
+  }
+  pacman::p_load(Matrix, igraph, plotly, mise, docstring, expm)
+  mise()
+#+end_src
+
+#+RESULTS[b1fd4f7af2cadbc1374b0f8d78f62a6ad9342541]:
+: Loading required package: pacman
+
+**** Define function to create DiagonalsSparse Diagonal Function
+This doesn't matter for the power walk, real exponents will always give non-zero values anyway
+#+begin_src R :session example
+sparse_diag <- function(mat) {
+  #' Diagonal Factors of Sparse Matrix
+  #'
+  #' Return a Diagonal Matrix containing either 1 / colsum() or 0 such that
+  #' matrix multiplication with this matrix would have all columns
+  #' sum to 1
+  #'
+  #' This should take the transpose of an adjacency matrix in and the output
+  #' can be multiplied by the original matrix to scale it to 1.
+  #' i
+  # mat  <- A
+  ## Get the Dimensions
+  n <- nrow(mat)
+
+  ## Make a Diagonal Matrix of Column Sums
+      ## If a column sums to zero the diag can be zero iff the adjacency_matrix>=0
+  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
+
+  ## Throw away explicit Zeroes
+  D <- drop0(D)
+
+  ## Inverse the Values
+  D@x <- 1/D@x
+
+  ## Return the Diagonal Matrix
+  return(D)
+}
+#+end_src
+
+#+RESULTS[b8327916d90bdc5810e057f7de6f3e0808ea7b88]:
+
+**** Make an Example Graph
+#+begin_src R :session example
+g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
+A <- igraph::get.adjacency(g1) # Row to column
+
+beta = 0.843234
+β = beta
+#+end_src
+
+#+RESULTS[dba014546b0e3bc8761fe9ba673327a8846568b6]:
+
+**** Plot
+
+#+BEGIN_SRC R :exports both :session example :results output graphics file :file ./Media/Example-graph-plot-debug-power-walk.png
+plot(g1)
+#+END_SRC
+
+#+RESULTS[5eec355fc3d55ed8cd2dd42e0f68ab07c9ca67fa]:
+[[file:./Media/Example-graph-plot-debug-power-walk.png]]
+
+
+
+*** Power Walk
+**** Define B
+#+begin_src R :session example
+B      <- A
+B@x    <- β^(A@x)
+B      <- A
+B       <- β^A
+
+Bo     <- A
+
+# These two approaches are equivalent
+Bo@x   <- β^(A@x) -1   # This in theory would be faster
+# Bo     <- β^(A) -1
+# Bo     <- drop0(Bo)
+
+
+  n <- nrow(A)
+#+end_src
+
+#+RESULTS[bc515375922834cfac37ab066bfcd2261fe752a0]:
+
+#+begin_src R :session example :results output
+print(B)
+#+end_src
+
+#+RESULTS[a32b596a74cff397c7bf190d87be4f0fa650f331]:
+#+begin_example
+20 x 20 Matrix of class "dgeMatrix"
+          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]
+ [1,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [2,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+ [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [5,] 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [6,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [8,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+ [9,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+[10,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[11,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
+[13,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[14,] 1.000000 0.843234 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+[15,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[16,] 0.843234 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[17,] 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 0.843234 0.843234
+[18,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+[19,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234
+[20,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+          [,9]    [,10]    [,11]    [,12]    [,13]    [,14]    [,15]    [,16]
+ [1,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234 0.843234
+ [2,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [5,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [6,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+ [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [8,] 1.000000 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000
+ [9,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[10,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000
+[11,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000
+[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[13,] 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[14,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[15,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[16,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+[17,] 1.000000 1.000000 0.843234 0.843234 0.843234 1.000000 1.000000 1.000000
+[18,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[19,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+[20,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
+         [,17]    [,18]    [,19]    [,20]
+ [1,] 1.000000 1.000000 1.000000 0.843234
+ [2,] 1.000000 1.000000 0.843234 1.000000
+ [3,] 0.843234 1.000000 0.843234 1.000000
+ [4,] 0.843234 1.000000 1.000000 1.000000
+ [5,] 1.000000 0.843234 1.000000 1.000000
+ [6,] 1.000000 1.000000 1.000000 1.000000
+ [7,] 0.843234 1.000000 1.000000 1.000000
+ [8,] 0.843234 1.000000 0.843234 1.000000
+ [9,] 1.000000 1.000000 1.000000 1.000000
+[10,] 1.000000 1.000000 1.000000 1.000000
+[11,] 0.843234 1.000000 1.000000 1.000000
+[12,] 0.843234 1.000000 1.000000 1.000000
+[13,] 0.843234 1.000000 1.000000 1.000000
+[14,] 1.000000 1.000000 0.843234 0.843234
+[15,] 1.000000 1.000000 1.000000 1.000000
+[16,] 1.000000 1.000000 1.000000 0.843234
+[17,] 1.000000 0.843234 0.843234 1.000000
+[18,] 0.843234 1.000000 0.843234 1.000000
+[19,] 0.843234 0.843234 1.000000 1.000000
+[20,] 1.000000 1.000000 1.000000 1.000000
+#+end_example
+
+
+#+begin_src R :session example :results output
+print(Bo)
+#+end_src
+
+#+RESULTS[bad3b48f1882200a41147309b6b523c317c6e071]:
+#+begin_example
+20 x 20 sparse Matrix of class "dgCMatrix"
+
+ [1,]  .        -0.156766  .         .         .        -0.156766  .
+ [2,] -0.156766  .         .         .        -0.156766  .         .
+ [3,]  .         .         .         .         .         .         .
+ [4,]  .         .         .         .         .         .         .
+ [5,]  .        -0.156766  .         .         .         .         .
+ [6,] -0.156766  .         .         .         .         .         .
+ [7,]  .         .         .         .         .         .         .
+ [8,]  .         .         .        -0.156766  .        -0.156766  .
+ [9,] -0.156766  .         .         .        -0.156766  .         .
+[10,] -0.156766 -0.156766  .         .         .         .         .
+[11,]  .         .         .         .         .         .         .
+[12,]  .         .         .         .         .        -0.156766  .
+[13,]  .         .         .         .         .         .         .
+[14,]  .        -0.156766  .        -0.156766  .        -0.156766  .
+[15,] -0.156766  .         .         .         .         .         .
+[16,] -0.156766  .        -0.156766  .         .         .         .
+[17,]  .         .        -0.156766 -0.156766  .         .        -0.156766
+[18,]  .         .         .         .        -0.156766  .         .
+[19,]  .        -0.156766 -0.156766  .         .         .         .
+[20,] -0.156766  .         .         .         .         .         .
+
+ [1,]  .        -0.156766 -0.156766  .         .         .         .
+ [2,]  .         .        -0.156766  .         .         .        -0.156766
+ [3,]  .         .         .         .         .         .         .
+ [4,] -0.156766  .         .         .         .         .        -0.156766
+ [5,]  .        -0.156766  .         .         .         .         .
+ [6,] -0.156766  .         .         .        -0.156766  .        -0.156766
+ [7,]  .         .         .         .         .         .         .
+ [8,]  .         .         .         .        -0.156766 -0.156766  .
+ [9,]  .         .         .         .         .         .         .
+[10,]  .         .         .         .         .         .         .
+[11,]  .         .         .         .         .        -0.156766  .
+[12,] -0.156766  .         .         .         .         .         .
+[13,] -0.156766  .         .        -0.156766  .         .         .
+[14,]  .         .         .         .         .         .         .
+[15,]  .         .        -0.156766 -0.156766  .         .         .
+[16,]  .         .         .         .        -0.156766  .        -0.156766
+[17,] -0.156766  .         .        -0.156766 -0.156766 -0.156766  .
+[18,]  .         .         .         .         .         .         .
+[19,] -0.156766  .         .         .         .         .        -0.156766
+[20,]  .         .         .         .         .         .        -0.156766
+
+ [1,] -0.156766 -0.156766  .         .         .        -0.156766
+ [2,]  .         .         .         .        -0.156766  .
+ [3,]  .        -0.156766 -0.156766  .        -0.156766  .
+ [4,]  .         .        -0.156766  .         .         .
+ [5,]  .         .         .        -0.156766  .         .
+ [6,]  .         .         .         .         .         .
+ [7,]  .         .        -0.156766  .         .         .
+ [8,]  .         .        -0.156766  .        -0.156766  .
+ [9,]  .         .         .         .         .         .
+[10,] -0.156766  .         .         .         .         .
+[11,] -0.156766  .        -0.156766  .         .         .
+[12,]  .        -0.156766 -0.156766  .         .         .
+[13,]  .         .        -0.156766  .         .         .
+[14,]  .        -0.156766  .         .        -0.156766 -0.156766
+[15,]  .         .         .         .         .         .
+[16,]  .         .         .         .         .        -0.156766
+[17,]  .         .         .        -0.156766 -0.156766  .
+[18,]  .         .        -0.156766  .        -0.156766  .
+[19,]  .         .        -0.156766 -0.156766  .         .
+[20,]  .        -0.156766  .         .         .         .
+#+end_example
+
+#+begin_src R :session example
+(δB   <- 1/(colSums(Bo)+n))
+#+end_src
+
+#+RESULTS[4e9078e02cac88e2b390d1de64aa94cfe1ea0faa]:
+:  [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
+:  [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
+: [13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
+: [19] 0.05246754 0.05120406
+
+#+begin_src R :session example
+(δB   <- 1/(colSums(B)))
+#+end_src
+
+#+RESULTS[dad08f4612601febd1e915b158e85aad0430943b]:
+:  [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
+:  [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
+: [13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
+: [19] 0.05246754 0.05120406
+
+#+begin_src R :session example
+  DB   <- diag(δB)
+## ** Create the Transition Probability Matrix
+## Create the Trans Prob Mat using Power Walk
+  T <- Bo %*% DB
+
+## ** Implement the Power Walk
+## *** Set Initial Values
+  p_new  <- rep(1/n, n)  # Uniform
+  p      <- rep(0, n)    # Zero
+  η      <- 10^(-6)
+## *** Implement the Loop
+
+ while (sum(abs(p_new - p)) > η) {
+    (p <- as.vector(p_new)) # P should remain a vector
+    sum(p <- as.vector(p_new)) # P should remain a vector
+     p_new  <- T %*% p + rep(t(δB) %*% p, n)
+  }
+## ** Report the Values
+print(paste("The stationary point is"))
+print(p)
+#+end_src
+
+#+RESULTS[95b35a53d822393ea1522a4e5bc714a0cd0834e2]:
+: [1] "The stationary point is"
+:  [1] 0.04882572 0.04963556 0.05044542 0.05044541 0.05044543 0.05004049
+:  [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
+: [13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
+: [19] 0.04923063 0.05044542
