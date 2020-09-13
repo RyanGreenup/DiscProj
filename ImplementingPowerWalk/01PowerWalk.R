@@ -10,7 +10,7 @@ if (require("pacman")) {
   mise()
 
 ## * Create Example Matrix
-n <- 20
+n <- 7
 m <- 10^2
 i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 90)
 A <- sparseMatrix(i, j, x = x, dims = c(m, m))
@@ -19,7 +19,7 @@ A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 beta = 0.843234
 β = beta
 
-g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
+g1 <- igraph::erdos.renyi.game(n = 7, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
 plot(g1)
 
@@ -30,6 +30,7 @@ str(A) # note that *internally* 0-based row indices are used
 ## * Naive Approach to Stationary Point
 ## ** Create a Diagonalised Scaling Matrix
 ## Create a way to Diagonalise a sparse matrix
+## mat <- B
 sparse_diag <- function(mat) {
   #' Diagonal Factors of Sparse Matrix
   #' 
@@ -45,6 +46,7 @@ sparse_diag <- function(mat) {
   n <- nrow(mat)
   
   ## Make a Diagonal Matrix of Column Sums
+      ## If a column sums to zero the diag can be zero iff the adjacency_matrix>=0
   D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
   
   ## Throw away explicit Zeroes
@@ -94,7 +96,7 @@ adj_to_probTrans <- function(wadjmat, beta) {
 #    B     <- sparseMatrix(i = summary(wadjmat)$i, j = summary(wadjmat)$j, x = beta^wadjmat@x) # element wise exponentiation
 #    Don't do this ^^ because it comes out with clipped off dimensions
     B     <- wadjmat
-    B@x   <- beta^wadjmat@x    # Element Wise exponentiation
+    B     <- beta^wadjmat    # Element Wise exponentiation
     D_in  <- sparse_diag(B)
     T = B %*% D_in
     return(T)
@@ -132,7 +134,7 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 
 
-print(paste("The stationary point is"))
+print(paste("The stationary point is, using the naive method"))
 print(p)
 
 ## * Faster Sparse Approach from 3.2 of paper
@@ -140,18 +142,32 @@ print(p)
   n <- nrow(A)
 ## ** Find the B Matrix
 ## Define B, depending on input
-    B     <- A
-    B@x   <- β^(A@x) -1
+    B      <- A
+    B      <- β^A   # Element Wise exponentiation
+    B@x    <- β^(A@x)
+
+    Bo     <- A
+    # These two approaches are equivalent
+    Bo@x   <- β^(A@x) -1   # This in theory would be faster
+    # Bo     <- β^(A) -1
+    # Bo     <- drop0(Bo)
 
 ## ** Create the Scaling Matrix
 ## Create the Scaling Matrix to make row sums 1
-  δB   <- 1/colSums(B)
-  δBt  <- t(δB) 
-  DB   <- diag(δB)
+## 
+## TODO So the issue is that 1/(colSums(Bo)+n) != 1/(colSums(B))
+##      Investigate why this is occuring, what's wrong with the math
+##      Write up notes on the mistake, make a PDF, submit the code
+##
+  δB   <- 1/(colSums(Bo)+n) # = 1/(colSums(B))
+  δBt  <- t(δB)
+  DB   <- diag(δB)       
+    (T = B %*% DB)
+
 
 ## ** Create the Transition Probability Matrix
 ## Create the Trans Prob Mat using Power Walk
-  T <- B %*% DB
+  T <- Bo %*% DB
 
 ## ** Implement the Power Walk
 ## *** Set Initial Values
@@ -163,7 +179,7 @@ print(p)
  while (sum(abs(p_new - p)) > η) {
     (p <- as.vector(p_new)) # P should remain a vector
     sum(p <- as.vector(p_new)) # P should remain a vector
-     p_new  <- T %*% p + rep(δBt %*% p, n)
+     p_new  <- T %*% p + rep(t(δB) %*% p, n)
   }
 ## ** Report the Values
 print(paste("The stationary point is"))
