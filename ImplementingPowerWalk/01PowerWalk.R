@@ -144,7 +144,6 @@ print(p)
 ## Define B, depending on input
     B      <- A
     B      <- β^A   # Element Wise exponentiation
-    B@x    <- β^(A@x)
 
     Bo     <- A
     # These two approaches are equivalent
