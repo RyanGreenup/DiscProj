@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Ryan Greenup" />
+  <title>Data Sci Discover Project</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" type="text/javascript"></script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Data Sci Discover Project</h1>
+<p class="author">Ryan Greenup</p>
+</header>
+<h1 id="sec:org67043e1">Links</h1>
+<ul>
+<li><p><a href="Proposal/Propsal.org">Research Proposal</a></p></li>
+<li><p><a href="laparkPowerWalk2013.pdf">Paper</a></p></li>
+<li><p><a href="ImplementingPageRank/01PageRank.Rmd">Preliminary Implementation</a></p></li>
+<li><p><a href="ImplementingPageRank/01PageRank.R">Implement Random Surfer on Sparse Matrix</a></p></li>
+<li><p><a href="ImplementingPowerWalk/01PowerWalk.R">Implement Power Walk on Sparse Matrix</a></p></li>
+</ul>
+<h1 id="sec:org5c57467">Proposal</h1>
+<h2 id="sec:org00ced32">Question</h2>
+<p><em>Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter <span class="math inline">\(\alpha\)</span></em></p>
+<blockquote>
+<p>Yes. An open question for the Power Walk method is, can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter <span class="math inline">\(\alpha\)</span>. The second eigenvalue determines how long the algorithm takes to converge and how stable the solution is. To begin, implement the method for computing PageRank and then the Power Walk. It can all be done using sparse matrices, so it only requires a fraction of the memory and is each iteration is quick.</p>
+</blockquote>
+<h2 id="sec:orga6d26c0">Working</h2>
+<p>Take the exemplar Graph from Figure 1:</p>
+<p><img src="./Media/Example.png" alt="image" /></p>
+<p><span class="math display">\[\begin{aligned}
+    \Gamma =  I - n D^{- 1}_B \\\end{aligned}\]</span></p>
+<p>Where we have the following:</p>
+<p><span class="math display">\[\begin{aligned}
+    \beta &amp;= 10 \\
+    B &amp;= \beta^A \\
+    A &amp;=
+    \begin{bmatrix}
+0&amp; 1&amp; 0&amp; 0 \\
+1&amp; 0&amp; 0&amp; 0 \\
+0&amp; 0&amp; 0&amp; 1 \\
+0&amp; 0&amp; 1&amp; 0
+    \end{bmatrix} \\
+     \implies
+    B &amp;= \begin{bmatrix}
+     10 &amp; 1 &amp; 1 &amp; 1 \\
+     1 &amp; 10 &amp; 1 &amp; 1 \\
+     1 &amp; 1 &amp; 10 &amp; 1 \\
+     1 &amp; 1 &amp; 1 &amp; 10 \\
+     \end{bmatrix}  \\
+     \text{$D_B$ is a diagonal matrix of the column sums:}\\
+     D &amp;= \begin{bmatrix}
+     13 &amp; 0 &amp; 0 &amp; 0 \\
+     0 &amp; 13 &amp; 0 &amp; 0 \\
+     0 &amp; 0 &amp; 13 &amp; 0 \\
+     0 &amp; 0 &amp; 0 &amp; 13
+     \end{bmatrix}  \\
+     \text{Hence the Inverse is:}\\
+     D_B^{-1}&amp;= \frac{I}{13}\\
+     \text{Putting it all together:}\\
+     \Gamma &amp;=  I - n D^{- 1}_B \\
+     &amp;= I - \frac{4 \cdot I}{13} \\
+     &amp;= \frac{9}{13} \cdot  I \\
+     &amp;= \begin{bmatrix}
+         \frac{9}{13} &amp; 0 &amp; 0 &amp; 0 \\
+         0 &amp; \frac{9}{13} &amp; 0 &amp; 0 \\
+         0 &amp; 0 &amp; \frac{9}{13} &amp; 0 \\
+         0 &amp; 0 &amp; 0 &amp;  \frac{9}{13}
+     \end{bmatrix}  \\
+     &amp; \approx \begin{bmatrix}
+         0.6923 &amp; 0 &amp; 0 &amp; 0 \\
+         0 &amp; 0.6923 &amp; 0 &amp; 0 \\
+         0 &amp; 0 &amp; 0.6923 &amp; 0 \\
+         0 &amp; 0 &amp; 0 &amp; 0.6923
+     \end{bmatrix}\end{aligned}\]</span></p>
+<h1 id="sec:orgfe0eea9">Page Rank Methods</h1>
+<h2 id="sec:org7ab24bb">Introduction</h2>
+<p>These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.</p>
+<p>Usually Page Rank refers to the random surfer but I’m using it in this document to refer to any process that attributes a probability of landing on a vertex during a random walk to a graph that is not ergodic.</p>
+<p>If each vertex is connected the graph is said to be ergodic and there is a closed solution for the limit values of the frequencies given this random walk:</p>
+<ul>
+<li><p>The eigenvalue equal to 1</p></li>
+<li><p>If the graph is not directed <span class="math inline">\(\vec{p}\)</span> is a vector of length <span class="math inline">\(n\)</span>:</p>
+<ul>
+<li><p><span class="math inline">\(n\)</span> is the number of nodes in the graph <span class="math inline">\(G\)</span></p></li>
+<li><p><span class="math inline">\(\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}\)</span></p>
+<ul>
+<li><p><span class="math inline">\(\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]\)</span></p></li>
+</ul></li>
+</ul></li>
+</ul>
+<p>For large matrices calculating the eigenvalues will be expensive and so instead the power method is used, which is essentially looping over until the vector converges to a solution.</p>
+<p><span class="math display">\[\begin{aligned}
+\vec{p} = \mathrm{T}\vec{p} \label{eq:pageRank-Method}\end{aligned}\]</span> where:</p>
+<dl>
+<dt><span><span class="math inline">\(\mathrm{A}\)</span></span></dt>
+<dd><p>Is the adjacency Matrix, an element is 1 if movement from the row vertex to the column vertex is permitted.</p>
+<ul>
+<li><p>The matrix may be weighted in some way, for example 5 edges between vertices may be such that a 5 is used in the matrix not a 1</p></li>
+<li><p>An undirected graph will be such that <span class="math inline">\(\mathbf{A} = \mathbf{A}^{\mathrm{\mathbf{T}}}\)</span></p></li>
+</ul>
+</dd>
+<dt><span><span class="math inline">\(\mathrm{T}\)</span></span></dt>
+<dd><p>Is the transition probability matrix, an element in the matrix describes the probability of moving from the column-vertex to the row-vertex</p>
+<ul>
+<li><p>The transition matrix is intended to be such that for a given state distribution <span class="math inline">\(\vec{p}\)</span>, the next iteration of a random walk will be <span class="math inline">\(\mathrm{T}\vec{p}\)</span></p></li>
+<li><p>Observe also that <span class="math inline">\(\mathrm{T} = \mathrm{T} \cdot \mathrm{diag}(\mathtt{colsums}(\mathrm{A^{\mathrm{T}}}))\)</span></p>
+<ul>
+<li><p>i.e. the transpose of the adjacency matrix with each column scaled to 1.</p></li>
+</ul></li>
+</ul>
+</dd>
+</dl>
+<h2 id="sec:org46e2db1">Random Surfer</h2>
+<h3 id="sec:orgb663bbb">Introduction</h3>
+<p>For con If a graph is non-ergodic, then a random walk isn’t as easy to implement because in escence there are multiple disconnected graphs, to address this, some value <span class="math inline">\(\lambda\)</span> is introduces which represents the probability of moving from one vertex to any other vertex. Essentially the difference here is</p>
+<pre><code>  if (require(&quot;pacman&quot;)) {
+      library(pacman)
+    }else{
+      install.packages(&quot;pacman&quot;)
+      library(pacman)
+    }</code></pre>
+<pre><code>    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)</code></pre>
+<h3 id="implementing-page-rank-methods">Small Graph, Ordinary Matrices</h3>
+<ol>
+<li><p>Example Graph <span id="example-graph" label="example-graph">[example-graph]</span> Consider the following Graph taken from the paper:</p>
+<pre><code>  g1 &lt;- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
+  plot(g1)</code></pre>
+<p><img src="ImplementingPageRank/01PageRank_files/figure-html/unnamed-chunk-2-1.png" alt="image" /></p>
+<ol>
+<li><p>Adjacency Matrix <span id="adjacency-matrix" label="adjacency-matrix">[adjacency-matrix]</span> The adjacency Matrix is given by:</p>
+<pre><code>  A &lt;- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %&gt;%
+    as.matrix()
+
+  ## Adjust the Order
+  (A &lt;- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))])</code></pre>
+<pre><code>  ##    1 2 3 4 5 6 7 8 9 10
+  ## 1  0 1 0 0 0 0 0 0 0  0
+  ## 2  1 0 0 0 0 0 0 0 0  0
+  ## 3  0 0 0 1 0 0 0 0 0  0
+  ## 4  0 0 1 0 0 0 0 0 0  0
+  ## 5  1 1 1 1 0 0 0 0 0  0
+  ## 6  0 1 1 0 0 0 0 0 0  0
+  ## 7  0 1 0 0 0 0 0 0 0  0
+  ## 8  1 1 0 0 1 1 1 0 0  0
+  ## 9  0 1 1 1 0 0 0 0 0  0
+  ## 10 0 0 1 1 0 0 0 0 0  0</code></pre></li>
+<li><p>State Distribution <span id="state-distribution" label="state-distribution">[state-distribution]</span> The state distribution is the transpose of the adjacency matrix:</p>
+<pre><code>  (p0 &lt;- t(A))</code></pre>
+<pre><code>  ##    1 2 3 4 5 6 7 8 9 10
+  ## 1  0 1 0 0 1 0 0 1 0  0
+  ## 2  1 0 0 0 1 1 1 1 1  0
+  ## 3  0 0 0 1 1 1 0 0 1  1
+  ## 4  0 0 1 0 1 0 0 0 1  1
+  ## 5  0 0 0 0 0 0 0 1 0  0
+  ## 6  0 0 0 0 0 0 0 1 0  0
+  ## 7  0 0 0 0 0 0 0 1 0  0
+  ## 8  0 0 0 0 0 0 0 0 0  0
+  ## 9  0 0 0 0 0 0 0 0 0  0
+  ## 10 0 0 0 0 0 0 0 0 0  0</code></pre></li>
+<li><p>Probability Transition Matrix <span id="probability-transition-matrix" label="probability-transition-matrix">[probability-transition-matrix]</span> The probability transition matrix is such that each column of the initial state distribution (i.e. the transposed adjacency matrix) is scaled to 1.</p>
+<pre><code>  p0 %*% diag(1/colSums(p0))</code></pre>
+<pre><code>  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]      [,9] [,10]
+  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.0000000   0.0
+  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.3333333   0.0
+  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.3333333   0.5
+  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.3333333   0.5
+  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0</code></pre>
+<ol>
+<li><p>Create a Function <span id="create-a-function" label="create-a-function">[create-a-function]</span></p>
+<pre><code>  adj_to_probTrans &lt;- function(adjMat) {
+    t(adjMat) %*% diag(1/colSums(t(adjMat)))
+  }
+
+  (T &lt;- adj_to_probTrans(A)) %&gt;% round(2)</code></pre>
+<pre><code>  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.00   0.0
+  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.33   0.0
+  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.33   0.5
+  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.33   0.5
+  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.00   0.0</code></pre></li>
+</ol></li>
+</ol></li>
+<li><p>Page Rank Random Surfer <span id="page-rank-random-surfer" label="page-rank-random-surfer">[page-rank-random-surfer]</span> The random surfer page rank method modifies the probability transition matrix <span class="math inline">\(T\)</span> so that the method works also for non-ergodic graphs by introducing the possibility of a random jump, we’ll call the surfer transition matrix <span class="math inline">\(S\)</span>:</p>
+<p><span class="math display">\[\begin{aligned}
+    S &amp;= \lambda T +  \left( 1- \lambda \right)B :\\
+\ \\
+    B&amp;= \begin{bmatrix}
+    \frac{1}{N} &amp; \frac{1}{N} &amp; \ldots &amp; \frac{1}{N} \\
+    \frac{1}{N} &amp; \frac{1}{N} &amp; \ldots &amp; \frac{1}{N} \\
+        \vdots      &amp; \vdots      &amp; \ddots &amp; \vdots \\
+    \frac{1}{N} &amp; \frac{1}{N} &amp; \ldots &amp; \frac{1}{N} \\
+    \end{bmatrix}  \\
+    N&amp;= \left| \left| V \right| \right| \\
+    \lambda &amp;\in [0,1]\end{aligned}\]</span></p>
+<pre><code>  B &lt;- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
+  l &lt;- 0.8123456789
+
+  S &lt;- l*T+(1-l)*B</code></pre>
+<ol>
+<li><p>Eigen Value Method <span id="eigen-value-method" label="eigen-value-method">[eigen-value-method]</span> The eigenvector corresponding to the the eigenvalue of 1 will be the stationary point:</p>
+<pre><code>  eigen(S, symmetric = FALSE)</code></pre>
+<pre><code>eigen() decomposition
+$values
+ [1]  1.000000e+00 -8.123457e-01 -8.123457e-01  8.123457e-01 -3.407464e-09  3.407464e-09
+ [7]  6.878591e-17 -4.393838e-17 -1.126771e-18 -1.292735e-32
+
+$vectors
+            [,1]          [,2]          [,3]          [,4]          [,5]          [,6]
+ [1,] 0.48726141 -7.071005e-01  1.590774e-03  5.000000e-01  6.735753e-01 -6.735753e-01
+ [2,] 0.52676629  7.071005e-01 -1.590774e-03  5.000000e-01  9.622504e-02 -9.622505e-02
+ [3,] 0.49149620 -2.975837e-03  7.071050e-01 -5.000000e-01  9.622504e-02 -9.622505e-02
+ [4,] 0.48044122  2.975837e-03 -7.071050e-01 -5.000000e-01  2.886751e-01 -2.886751e-01
+ [5,] 0.04932738  1.463673e-18 -5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [6,] 0.04932738  1.463673e-18  5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [7,] 0.04932738  1.463673e-18 -2.077937e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [8,] 0.04243328 -6.484884e-18 -1.103904e-17  6.319692e-17  8.072508e-09  8.072508e-09
+ [9,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
+[10,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
+               [,7]          [,8]          [,9]         [,10]
+ [1,] -3.963430e-01  3.962600e-01  1.828019e-01 -1.752367e-01
+ [2,] -1.291621e-01  2.027302e-01  2.199538e-01 -2.197680e-01
+ [3,] -3.955284e-01  3.894308e-02  2.223048e-01 -2.248876e-01
+ [4,] -4.215353e-01  1.043870e-01  2.747562e-01 -2.777266e-01
+ [5,]  5.166485e-01 -8.109210e-01 -8.798152e-01  8.790721e-01
+ [6,]  5.201366e-02 -1.308878e-01 -1.049028e-01  1.056778e-01
+ [7,]  1.346275e-01 -1.936007e-01  9.054366e-02 -9.554811e-02
+ [8,]  2.547528e-16 -1.352936e-16 -1.025353e-16  1.072771e-16
+ [9,]  3.196396e-01  1.965446e-01 -2.821213e-03 -5.466313e-03
+[10,]  3.196396e-01  1.965446e-01 -2.821213e-03  1.388344e-02
+</code></pre>
+<p>So in this case the stationary point is</p>
+<p><span class="math inline">\(\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle\)</span></p>
+<p>which can be verified:</p>
+<p><span class="math display">\[1 \vec{p} = S\vec{p}\]</span></p>
+<pre><code>  (p     &lt;- eigen(S)$values[1] * eigen(S)$vectors[,1])</code></pre>
+<pre><code>  ##  [1] -0.48531271 -0.52732002 -0.49152601 -0.47977477 -0.05288058 -0.05288058
+  ##  [7] -0.05288058 -0.04558671 -0.04558671 -0.04558671</code></pre>
+<pre><code>  (p_new &lt;- S %*% p)</code></pre>
+<pre><code>  ##           [,1]
+  ## 1  -0.48531271
+  ## 2  -0.52732002
+  ## 3  -0.49152601
+  ## 4  -0.47977477
+  ## 5  -0.05288058
+  ## 6  -0.05288058
+  ## 7  -0.05288058
+  ## 8  -0.04558671
+  ## 9  -0.04558671
+  ## 10 -0.04558671</code></pre>
+<p>However this vector does not sum to 1 so the scale should be adjusted (for probabilities the vector should sum to 1):</p>
+<pre><code>  (p_new &lt;- p_new/sum(p_new))</code></pre>
+<pre><code>  ##         [,1]
+  ## 1  0.2129185
+  ## 2  0.2313481
+  ## 3  0.2156444
+  ## 4  0.2104889
+  ## 5  0.0232000
+  ## 6  0.0232000
+  ## 7  0.0232000
+  ## 8  0.0200000
+  ## 9  0.0200000
+  ## 10 0.0200000</code></pre></li>
+<li><p>Power Value Method <span id="power-value-method" label="power-value-method">[power-value-method]</span> Using the power method should give the same result, which it indeed does, but for the scale:</p>
+<pre><code>  p_new &lt;- p_new *123456789
+
+  while (sum(round(p, 9) != round(p_new, 9))) {
+      (p     &lt;- p_new)
+      (p_new &lt;- S %*% p)
+  }
+
+  p_new</code></pre>
+<pre><code>  ##        [,1]
+  ## 1  26286237
+  ## 2  28561500
+  ## 3  26622771
+  ## 4  25986282
+  ## 5   2864198
+  ## 6   2864198
+  ## 7   2864198
+  ## 8   2469136
+  ## 9   2469136
+  ## 10  2469136</code></pre>
+<pre><code>  p</code></pre>
+<pre><code>  ##        [,1]
+  ## 1  26286237
+  ## 2  28561500
+  ## 3  26622771
+  ## 4  25986282
+  ## 5   2864198
+  ## 6   2864198
+  ## 7   2864198
+  ## 8   2469136
+  ## 9   2469136
+  ## 10  2469136</code></pre>
+<p>This answer is however identical in direction, if it scaled to 1 the same value will be returned:</p>
+<pre><code>  (p_new &lt;- p_new/sum(p_new))</code></pre>
+<pre><code>  ##         [,1]
+  ## 1  0.2129185
+  ## 2  0.2313481
+  ## 3  0.2156444
+  ## 4  0.2104889
+  ## 5  0.0232000
+  ## 6  0.0232000
+  ## 7  0.0232000
+  ## 8  0.0200000
+  ## 9  0.0200000
+  ## 10 0.0200000</code></pre></li>
+<li><p>Scaling <span id="scaling" label="scaling">[scaling]</span> However if the initial state sums to 1, then the scale of the stationary vector will also sum to 1.</p>
+<pre><code>  p     &lt;- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+  p_new &lt;- S %*% p
+
+  while (sum(round(p, 9) != round(p_new, 9))) {
+      (p     &lt;- p_new)
+      (p_new &lt;- S %*% p)
+  }
+
+  cbind(p_new, p)</code></pre>
+<pre><code>  ##         [,1]      [,2]
+  ## 1  0.2129185 0.2129185
+  ## 2  0.2313481 0.2313481
+  ## 3  0.2156444 0.2156444
+  ## 4  0.2104889 0.2104889
+  ## 5  0.0232000 0.0232000
+  ## 6  0.0232000 0.0232000
+  ## 7  0.0232000 0.0232000
+  ## 8  0.0200000 0.0200000
+  ## 9  0.0200000 0.0200000
+  ## 10 0.0200000 0.0200000</code></pre></li>
+</ol></li>
+</ol>
+<h3 id="sec:org409d7b9">Large Graph, Sparse Matrices using CRS</h3>
+<ol>
+<li><p>Creating the Probability Transition Matrix <span id="sec:org3775f81" label="sec:org3775f81">[sec:org3775f81]</span> Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.</p>
+<p>An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.</p>
+<p>A matrix exhibiting this property is known as a sparse matrix CITE</p>
+<p>The properties of a sparse matrix can be implemented in order to improve performance, one such method to acheive this is <em>Compressed Sparse Row</em> (CSR) storage, which involves creating a seperate array of values and corresponding indices. CITE</p>
+<p>This is implemented by the Matrix package in <strong><em>R</em></strong>. CITE</p>
+<p>An sparse matrix can be created using the following syntax, which will return a matrix of the class <code>dgCMatrix</code>:</p>
+<pre><code>library(Matrix)
+## Create Example Matrix
+n &lt;- 20
+m &lt;- 10^6
+i &lt;- sample(1:m, size = n); j &lt;- sample(1:m, size = n); x &lt;- rpois(n, lambda = 90)
+A &lt;- sparseMatrix(i, j, x = x, dims = c(m, m))
+
+summary(A)</code></pre>
+<pre><code>
+1000000 x 1000000 sparse Matrix of class &quot;dgCMatrix&quot;, with 20 entries
+        i      j   x
+1  803589  66922 118
+2   61426  83355  97
+3  401058 103999  71
+4  610432 206922  84
+5  542888 217196  69
+6  821769 291405  79
+7  187782 364814  74
+8  152229 451810 104
+9  614645 462031  82
+10 776459 566334  91
+11 288279 630438  97
+12 233553 631441  84
+13 139900 649740  83
+14 381442 681415  87
+15 578270 755635  99
+16 175521 775788  98
+17  57981 809115  89
+18 821120 809688 103
+19 541818 976802  78
+20 595348 993420  85</code></pre>
+<p>As before in section <a href="#probability-transition-matrix" data-reference-type="ref" data-reference="probability-transition-matrix">[probability-transition-matrix]</a>, the probability transition matrix can be found by:</p>
+<ol>
+<li><p>Transposing the adjacency matrix, then</p></li>
+<li><p>Scaling the columns to one</p></li>
+</ol>
+<p>To implement this for a sparseMatrix of the class <code>dgCMatrix</code>, the same technique of multiplying by a diagonalised matrix may be implemented, however to create this new matrix, a new <code>sparseMatrix</code> will need to be created using the properties of the original matrix, this can be done like so:</p>
+<pre><code> sparse_diag &lt;- function(mat) {
+  #&#39; Diagonal Factors of Sparse Matrix
+  #&#39;
+  #&#39; Return a Diagonal Matrix of the 1 / colsum() such that
+  #&#39; matrix multiplication with this matrix would have all column sums
+  #&#39; sum to 1
+  #&#39;
+  #&#39; This should take the transpose of an adjacency matrix in and the output
+  #&#39; can be multiplied by the original matrix to scale it to 1.
+  #&#39; i
+
+  ## Get the Dimensions
+  n &lt;- nrow(mat)
+
+  ## Make a Diagonal Matrix of Column Sums
+  D &lt;- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
+
+  ## Throw away explicit Zeroes
+  D &lt;- drop0(D)
+
+  ## Inverse the Values
+  D@x &lt;- 1/D@x
+
+  ## Return the Diagonal Matrix
+  return(D)
+}
+D &lt;- sparse_diag(t(A))
+summary(D)</code></pre>
+<pre><code>
+1000000 x 1000000 sparse Matrix of class &quot;dgCMatrix&quot;, with 20 entries
+        i      j           x
+1   57981  57981 0.011235955
+2   61426  61426 0.010309278
+3  139900 139900 0.012048193
+4  152229 152229 0.009615385
+5  175521 175521 0.010204082
+6  187782 187782 0.013513514
+7  233553 233553 0.011904762
+8  288279 288279 0.010309278
+9  381442 381442 0.011494253
+10 401058 401058 0.014084507
+11 541818 541818 0.012820513
+12 542888 542888 0.014492754
+13 578270 578270 0.010101010
+14 595348 595348 0.011764706
+15 610432 610432 0.011904762
+16 614645 614645 0.012195122
+17 776459 776459 0.010989011
+18 803589 803589 0.008474576
+19 821120 821120 0.009708738
+20 821769 821769 0.012658228</code></pre>
+<p>and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:</p>
+<pre><code>summary(t(A) %*% D)</code></pre>
+<pre><code>1000000 x 1000000 sparse Matrix of class &quot;dgCMatrix&quot;, with 20 entries
+        i      j x
+1  809115  57981 1
+2   83355  61426 1
+3  649740 139900 1
+4  451810 152229 1
+5  775788 175521 1
+6  364814 187782 1
+7  631441 233553 1
+8  630438 288279 1
+9  681415 381442 1
+10 103999 401058 1
+11 976802 541818 1
+12 217196 542888 1
+13 755635 578270 1
+14 993420 595348 1
+15 206922 610432 1
+16 462031 614645 1
+17 566334 776459 1
+18  66922 803589 1
+19 809688 821120 1
+20 291405 821769 1</code></pre></li>
+<li><p>Solving the Random Surfer via the Power Method <span id="sec:org0fa8856" label="sec:org0fa8856">[sec:org0fa8856]</span> Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.</p>
+<p>However, creating a matrix of background probabilites (denoted by <code>B</code> is section <a href="#page-rank-random-surfer" data-reference-type="ref" data-reference="page-rank-random-surfer">[page-rank-random-surfer]</a>) will not be feasible, it would simply be too large, instead some algebra can be used to reduce <span class="math inline">\(B\)</span> from a matrix into a vector containing only <span class="math inline">\(\frac{1-\alpha}{N}\)</span>.</p>
+<p>The power method is given by:</p>
+<p><span class="math display">\[\begin{aligned}
+\vec{p}= \mathbf{S} \vec{p}\end{aligned}\]</span></p>
+<p>where:</p>
+<p><span class="math display">\[\begin{aligned}
+S &amp;= \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \\
+\vec{p} &amp;= \left( \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \right) \vec{p}\\
+&amp;= \alpha \mathbf{T}\vec{p} +  \left( 1-\alpha \right) \mathbf{B} \vec{p}\end{aligned}\]</span></p>
+<p>Let <span class="math inline">\(\mathbf{F}= \mathbf{B}\vec{p}\)</span>, consider the value of <span class="math inline">\(\mathbf{F}\)</span> :</p>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{F} &amp;=
+\begin{bmatrix}
+\frac{1}{N} &amp; \frac{1}{N} &amp; \ldots &amp; \frac{1}{N} \\
+\frac{1}{N} &amp; \frac{1}{N} &amp; \ldots &amp; \frac{1}{N} \\
+\vdots      &amp; \vdots      &amp; \ddots &amp; \vdots \\
+\frac{1}{N} &amp; \frac{1}{N} &amp; \ldots &amp; \frac{1}{N} \\
+\end{bmatrix}
+\begin{bmatrix}
+\vec{p_1} \\ \vec{p_2} \\ \vdots \\ \vec{p_m}
+\end{bmatrix}  \\
+&amp;= \begin{bmatrix}
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\vdots  \\
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\end{bmatrix}  \\
+&amp; \text{Probabilities sum to 1 and hence:} \\
+&amp;= \begin{bmatrix}
+\frac{1}{N} \\
+\frac{1}{N} \\
+\frac{1}{N} \\
+\vdots  \\
+\frac{1}{N} \\
+\end{bmatrix}\end{aligned}\]</span> So instead the power method can be implemented by performing an algorithm to the effect of:</p>
+<pre><code>## Find Stationary point of random surfer
+N     &lt;- nrow(A)
+alpha &lt;- 0.8
+F     &lt;- rep((1-alpha)/N, nrow(A))  ## A nx1 vector of (1-alpha)/N
+
+## Solve using the power method
+p     &lt;- rep(0, length.out = ncol(T)); p[1] &lt;- 1
+p_new &lt;- alpha*T %*% p + F
+
+## use a Counter to debug
+i &lt;- 0
+while (sum(round(p, 9) != round(p_new, 9))) {
+    p     &lt;- p_new
+    p_new &lt;- alpha*T %*% p + F
+    (i &lt;- i+1) %&gt;% print()
+}
+
+p %&gt;% head() %&gt;% print()</code></pre></li>
+</ol>
+<h2 id="sec:org4df60ce">Power Walk Method</h2>
+<h3 id="sec:org9ec10c9">Introduction</h3>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{T} &amp;= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}\end{aligned}\]</span></p>
+<p>where:</p>
+<ul>
+<li><p><span class="math inline">\(\mathbf{B}= \beta^{\mathbf{A}}\)</span></p>
+<dl>
+<dt><span><span class="math inline">\(x\beta^{1}\)</span> </span></dt>
+<dd><p>probability of following an edge of weight 1</p>
+</dd>
+<dt><span><span class="math inline">\(x\beta^{0}\)</span> </span></dt>
+<dd><p>probability of following an edge of weight 0</p>
+</dd>
+<dt><span><span class="math inline">\(x\beta^{-1}\)</span></span></dt>
+<dd><p>probability of following an edge of weight -</p>
+</dd>
+</dl></li>
+<li><p><span class="math inline">\(D_{B} = \mathtt{colsums}(\mathbf{B})\)</span></p></li>
+<li><p>The Adjacency Matrix</p></li>
+</ul>
+<h3 id="sec:org50777de">Ordinary Matrices</h3>
+<p>Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.</p>
+<h3 id="sec:orge7ec6a0">Sparse Matrices</h3>
+<ol>
+<li><p>Theory; Simplifying Power Walk to be solved with Sparse Matrices <span id="sec:orge94527f" label="sec:orge94527f">[sec:orge94527f]</span> The Random Surfer model is:</p>
+<p><span class="math display">\[\begin{aligned}
+    \mathbf{S} &amp;= \alpha \mathbf{T} +  \mathbf{F}  \label{eq:sparse-RS}\end{aligned}\]</span></p>
+<p>where:</p>
+<ul>
+<li><p><span class="math inline">\(\mathbf{T}\)</span></p>
+<ul>
+<li><p>is an <span class="math inline">\(i \times j\)</span> matrix that describes the probability of travelling from vertex <span class="math inline">\(j\)</span> to <span class="math inline">\(i\)</span></p>
+<ul>
+<li><p>This is transpose from the way that <code>igraph</code> produces an adjacency matrix.</p></li>
+</ul></li>
+</ul></li>
+<li><p><span class="math inline">\(\mathbf{F} = \begin{bmatrix} \frac{1}{n} \\ \frac{1}{n} \\ \frac{1}{n} \vdots \end{bmatrix}\)</span></p></li>
+</ul>
+<p>Interpreting the transition probability matrix in this way is such that <span class="math inline">\(\mathbf{T}= \mathbf{A}\mathbf{D}^{- 1}_A\)</span> under the following conditions:</p>
+<ul>
+<li><p>No column of <span class="math inline">\(\mathbf{A}\)</span> sums to zero</p>
+<ul>
+<li><p>If this does happen the question arises how to deal with <span class="math inline">\(\mathbf{D_\mathbf{A}^{- 1}}\)</span></p>
+<ul>
+<li><p>I’ve been doing <span class="math inline">\(\mathbf{D}^{\mathrm{T}}_{\mathbf{A}, i, j} := \mathtt{diag} \left( {\frac{1}{\mathtt{colsums}\left( \mathbf{A} \right)}} \right)\)</span> and then replacing any <span class="math inline">\(0\)</span> on the diagonal with 1.</p></li>
+</ul></li>
+<li><p>What is done in the paper is to make another matrix <span class="math inline">\(\mathbf{Z}\)</span> that is filled with 0, if a column sum of <span class="math inline">\(\mathbf{A}\)</span> adds to zero then that column in <span class="math inline">\(\mathbf{Z}\)</span> becomes <span class="math inline">\(\frac{1}{n}\)</span></p>
+<ul>
+<li><p>This has the effect of making each row identical</p></li>
+<li><p>The probability of going from an orphaned vertex to any other vertex would hence be <span class="math inline">\(\frac{1}{n}\)</span></p></li>
+<li><p>The idea with this method is then to use <span class="math inline">\(D_\mathbf{\left( A+Z \right)}^{- 1}\)</span> this will be consistent with the <em>Random Surfer</em> the method using <span class="math inline">\(\mathbf{F}\)</span> in [[#eq:sparse-RS][]] <a href="#eq:sparse-RS" data-reference-type="eqref" data-reference="eq:sparse-RS">[eq:sparse-RS]</a></p></li>
+</ul>
+<p>where each row is identical that is a 0</p></li>
+</ul></li>
+</ul>
+<p>The way to deal with the <em>Power Walk</em> is more or less the same.</p>
+<p>observe that:</p>
+<p><span class="math display">\[\begin{aligned}
+   \left( \mathbf{B} = \beta^{\mathbf{A}} \right)\wedge \left( \mathbf{A}_{i, j}\right)\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert &gt; 0 \quad \forall i,j&gt;n\in \mathbb{Z}^+ \label{eq:b-is-pos}\end{aligned}\]</span></p>
+<p>Be mindful that the use of exponentiation in ] is not an element wise exponentiation and not an actual matrix exponential (which would be defined by using power series and logs but is defined)</p>
+<p>So if I have:</p>
+<ul>
+<li><p><span class="math inline">\(\mathbf{O}_{i, j} := 0, \quad \forall i,j\leq n \in \mathbb{Z}^+\)</span></p></li>
+<li><p><span class="math inline">\(\vec{p_i}\)</span> as the state distribution, being a vector of length <span class="math inline">\(n\)</span></p></li>
+</ul>
+<p>Then It can be shown (see <a href="#eq:sparse-power-walk" data-reference-type="eqref" data-reference="eq:sparse-power-walk">[eq:sparse-power-walk]</a>):</p>
+<p><span class="math display">\[\begin{aligned}
+    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}\end{aligned})\]</span></p>
+<p>where:</p>
+<ul>
+<li><p><span class="math inline">\(\vec{\delta_i} = \frac{1}{\mathtt{colsums} \left( \mathbf{B} \right)}\)</span></p>
+<ul>
+<li><p>A vector…(<span class="math inline">\(n\times 1\)</span> matrix)</p></li>
+</ul></li>
+<li><p>is a vector containing all 1’s</p>
+<ul>
+<li><p>A vector…(<span class="math inline">\(n\times 1\)</span> matrix)</p></li>
+</ul></li>
+<li><p>refers to the transpoxe of <span class="math inline">\(\vec{\detla}\)</span> (<span class="math inline">\(1\times n\)</span> matrix)</p></li>
+<li><p>is some number (because it’s a dot product)</p></li>
+</ul>
+<p>This means we can do:</p>
+<p><span class="math display">\[\begin{aligned}
+  \overrightarrow{p_{i + 1}} &amp; = \mathbf{T}_{\mathrm{pw}}
+  \overrightarrow{p_i}\\
+&amp; = \mathbf{BD}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i}\\
+  &amp; = \left( \mathbf{B} - \mathbf{O} + \mathbf{O} \right)
+  \mathbf{D}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
+  &amp; = \left( \left( \mathbf{B} - \mathbf{O} \right)
+  \mathbf{D}_{\mathbf{B}}^{- 1} + \mathbf{OD}_{\mathbf{B}}^{- 1} \right)
+  \overrightarrow{p_i}\\
+  &amp; = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
+  &amp; = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \vec{1} (\overrightarrow{\delta^{\mathrm{T}}}
+  \overrightarrow{p_i}) \\
+  &amp; = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta^{\mathrm{T}}}
+  \overrightarrow{p_i})\end{aligned}\]</span></p>
+<p>where:</p>
+<p>Let <span class="math inline">\((\mathbf{B}-\mathbf{O}) = \mathbf{B_{\mathbf{O}}}\)</span>:</p>
+<p><span class="math display">\[\begin{aligned}
+  \overrightarrow{p_{i + 1}} &amp; = \mathbf{B_{\mathbf{O}}} \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta^{\mathrm{T}}}
+  \overrightarrow{p_i}) &amp;\end{aligned}\]</span></p>
+<p>Now solve <span class="math inline">\(\tmmathbf{D}_B^{- 1}\)</span> in terms of <span class="math inline">\(\mathbf{B_{O}}\)</span> :</p>
+<p><span class="math display">\[\begin{aligned}
+  \mathbf{B}_{\mathbf{\mathbf{O}}} = &amp; (\mathbf{B}-\mathbf{O})\\
+  \mathbf{B} = &amp; \mathbf{B}_{\mathbf{\mathbf{O}}}
+  +\mathbf{O}\end{aligned}\]</span></p>
+<p>If we have <span class="math inline">\(\delta_{\mathbf{B}}\)</span> as the column sums of<span class="math inline">\(\tmmathbf{\Beta}\)</span> <span class="math inline">\(\mathbf{B}\)</span>:</p>
+<p><span class="math display">\[\begin{aligned}
+\delta^{-1}_{\mathbf{B}} &amp;= \vec{1}\mathbf{B} \\
+&amp;= \vec{1} \left( \mathbf{B_{O}} + \mathbf{O}\right) \\
+&amp;= \vec{1}  \mathbf{B_{O}} + \vec{1}\mathbf{O} \\
+&amp;= \vec{1} \mathbf{B_{\mathbf{O}}} + \langle n, n, n, ... n \rangle \\
+&amp;= \vec{1} \mathbf{B_{\mathbf{O}}} + \vec{1} n \\
+\delta_{\mathbf{B}}&amp;=\mathtt{1/(colSums(\mathbf{B_{O}}) + n )}\end{aligned}\]</span></p>
+<p>Then if we have <span class="math inline">\(\mathit{{\tmstrong{{\tmem{D}}}}}_{\mathit{{\tmem{{\tmstrong{B}}}}}} =
+\mathtt{diag} (\delta_{\tmmathbf{B}}) \mathtt{}\)</span>:</p>
+<p><span class="math display">\[\begin{array}{lll}
+     \mathit{{\tmstrong{{\tmem{D}}}}}_{\mathit{{\tmem{{\tmstrong{B}}}}}}^{- 1}
+     &amp; = &amp; \mathrm{diag} \left( \delta^{- 1}_{\mathbf{B}} \right)\\
+     &amp; = &amp; \mathtt{diag} \left( \mathtt{ColSums}
+     (\mathtt{\tmmathbf{B}_{\tmmathbf{O}}}) + \mathtt{n}
+     \right)^{\mathtt{- 1}}
+   \end{array}\]</span></p>
+<p>And so the the power method can be implemented using sparse matrices:</p>
+<p><span class="math display">\[\begin{aligned}
+\vec{p_{i+1}} = \mathrm{B_{O}} \enspace \mathrm{diag}\left( \vec{1} \mathbf{B_{O}} + \vec{1}n \right) \vec{p_{i}} + \vec{1} \vec{\delta^{\mathrm{T}}\vec{p_{i}}}\end{aligned}\]</span></p>
+<p>in terms of <strong><em>R</em></strong>:</p>
+<pre><code>p_new &lt;- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
+
+# It would also be possible to sum the element-wise product
+(t(δ) %*% p) == sum(δ * p)
+
+# Because R treats vectors the same as a nX1 matrix we could also
+# perform the dot product of the two vectors, meaning the following
+# would be true in R but not generally
+
+(t(δ) %*% p) == (δ %*% p)</code></pre>
+<ol>
+<li><p>Solving the Background Probability <span id="sec:orgc882834" label="sec:orgc882834">[sec:orgc882834]</span> In this case a vertical single column matrix will represent a vector and <span class="math inline">\(\otimes\)</span> will represent the outer product (i.e. the <em>Kronecker Product</em>):</p>
+<p>Define <span class="math inline">\(\vec{\delta}\)</span> as the column sums of <span class="math display">\[\begin{aligned}
+     \vec{\delta} &amp; = \mathtt{colsum} (\text{{\bfseries{B}}})^{- 1}\\
+     &amp; = \frac{1}{\overrightarrow{1^{{\scriptsize \ensuremath{\boldsymbol{T}}}}}
+     \ensuremath{\boldsymbol{B}}}
+   \end{aligned}\]</span></p>
+<p>Then we have:</p>
+<p><span class="math display">\[\begin{aligned}
+     \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} &amp; = \left(
+     \begin{array}{cccc}
+       1 &amp; 1 &amp; 1 &amp; \\
+       1 &amp; 1 &amp; 1 &amp; \ldots\\
+       1 &amp; 1 &amp; 1 &amp; \\
+       &amp; \vdots &amp;  &amp; \ddots
+     \end{array} \right) \left( \begin{array}{cccc}
+       \frac{1}{\delta_1} &amp; 0 &amp; 0 &amp; \\
+       0 &amp; \frac{1}{\delta_2} &amp; 0 &amp; \ldots\\
+       0 &amp; 0 &amp; \frac{1}{\delta_{13}} &amp; \\
+       &amp; \vdots &amp;  &amp; \ddots
+     \end{array} \right) \left( \begin{array}{c}
+       p_{i, 1}\\
+       p_{i, 2}\\
+       p_{i, 3}\\
+       \vdots
+     \end{array} \right) \nonumber \nonumber\\
+     &amp; = \left( \begin{array}{cccccc}
+       \frac{p_{i, 1}}{\delta 1} &amp; + &amp; \frac{p_{i, 2}}{\delta_2} &amp; + &amp;
+       \frac{p_{i, 3}}{\delta_3} &amp; \\
+       \frac{p_{i, 1}}{\delta 1} &amp; + &amp; \frac{p_{i, 2}}{\delta_2} &amp; + &amp;
+       \frac{p_{i, 3}}{\delta_3} &amp; \ldots\\
+       \frac{p_{i, 1}}{\delta 1} &amp; + &amp; \frac{p_{i, 2}}{\delta_2} &amp; + &amp;
+       \frac{p_{i, 3}}{\delta_3} &amp; \\
+       &amp;  &amp; \vdots &amp;  &amp;  &amp; \ddots
+     \end{array} \right) \nonumber \nonumber\\
+     &amp; = \left( \begin{array}{c}
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     &amp; = \left( \begin{array}{c}
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+       \overrightarrow{p_i}\\
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}} \vec{p}_i\\
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}} \vec{p}_i\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     &amp; = \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+     \overrightarrow{p_i} \left( \begin{array}{c}
+       1\\
+       1\\
+       1\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     &amp; = (\overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+     \overrightarrow{p_i})  \vec{1}\\
+     &amp; = \mathtt{repeat} (\overrightarrow{\delta} \overrightarrow{p_i}
+     \mathtt{, n}) \label{eq:sparse-power-walk}
+   \end{aligned}\]</span> Observe also that If we let <span class="math inline">\(\vec{\delta}\)</span> and <span class="math inline">\(p_i\)</span> be 1 dimensional vectors, this can also be expressed as a dot product:</p>
+<table>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Matrices</td>
+<td style="text-align: left;">Vectors</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><span class="math inline">\(\vec{\delta^{\mathrm{T}}} \vec{p_{i}}\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\vec{\delta} \vec{p_{i}}\)</span></td>
+</tr>
+</tbody>
+</table></li>
+</ol></li>
+<li><p>Practical; Implementing the Power Walk on Sparse Matrices <span id="sec:org91cf875" label="sec:org91cf875">[sec:org91cf875]</span></p>
+<ol>
+<li><p>Inspect the newly created matrix and create constants <span id="sec:org22d9c80" label="sec:org22d9c80">[sec:org22d9c80]</span></p></li>
+<li><p>Setup <span id="sec:orgd7ad28a" label="sec:orgd7ad28a">[sec:orgd7ad28a]</span></p>
+<ol>
+<li><p>Load Packages <span id="sec:org192c02f" label="sec:org192c02f">[sec:org192c02f]</span></p>
+<pre><code>if (require(&quot;pacman&quot;)) {
+    library(pacman)
+  }else{
+    install.packages(&quot;pacman&quot;)
+    library(pacman)
+  }
+  pacman::p_load(Matrix, igraph, plotly, mise, docstring, expm)
+  mise()</code></pre>
+<pre><code>Loading required package: pacman</code></pre></li>
+<li><p>Define function to create DiagonalsSparse Diagonal Function <span id="sec:org9ec0913" label="sec:org9ec0913">[sec:org9ec0913]</span> This doesn’t matter for the power walk, real exponents will always give non-zero values anyway</p>
+<pre><code>sparse_diag &lt;- function(mat) {
+  #&#39; Diagonal Factors of Sparse Matrix
+  #&#39;
+  #&#39; Return a Diagonal Matrix containing either 1 / colsum() or 0 such that
+  #&#39; matrix multiplication with this matrix would have all columns
+  #&#39; sum to 1
+  #&#39;
+  #&#39; This should take the transpose of an adjacency matrix in and the output
+  #&#39; can be multiplied by the original matrix to scale it to 1.
+  #&#39; i
+  # mat  &lt;- A
+  ## Get the Dimensions
+  n &lt;- nrow(mat)
+
+  ## Make a Diagonal Matrix of Column Sums
+      ## If a column sums to zero the diag can be zero iff the adjacency_matrix&gt;=0
+  D &lt;- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
+
+  ## Throw away explicit Zeroes
+  D &lt;- drop0(D)
+
+  ## Inverse the Values
+  D@x &lt;- 1/D@x
+
+  ## Return the Diagonal Matrix
+  return(D)
+}</code></pre></li>
+<li><p>Make an Example Graph <span id="sec:orgfe53f65" label="sec:orgfe53f65">[sec:orgfe53f65]</span></p>
+<pre><code>g1 &lt;- igraph::erdos.renyi.game(n = 20, 0.2)
+A &lt;- igraph::get.adjacency(g1) # Row to column
+
+
+beta = 0.843234
+β = beta</code></pre></li>
+<li><p>Plot <span id="sec:org4ae830b" label="sec:org4ae830b">[sec:org4ae830b]</span></p>
+<pre><code>plot(g1)</code></pre>
+<p><img src="./Media/Example-graph-plot-debug-power-walk.png" alt="image" /></p></li>
+</ol></li>
+<li><p>Power Walk <span id="sec:org2ce08b0" label="sec:org2ce08b0">[sec:org2ce08b0]</span></p>
+<ol>
+<li><p>Define B <span id="sec:org16b0a85" label="sec:org16b0a85">[sec:org16b0a85]</span></p>
+<pre><code>B      &lt;- A
+B@x    &lt;- β^(A@x)
+B      &lt;- A
+B       &lt;- β^A
+
+Bo     &lt;- A
+
+# These two approaches are equivalent
+Bo@x   &lt;- β^(A@x) -1   # This in theory would be faster
+# Bo     &lt;- β^(A) -1
+# Bo     &lt;- drop0(Bo)
+
+
+  n &lt;- nrow(A)</code></pre>
+<pre><code>print(B)</code></pre>
+<pre><code>20 x 20 Matrix of class &quot;dgeMatrix&quot;
+          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]
+ [1,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [2,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+ [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [5,] 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [6,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [8,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+ [9,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+[10,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[11,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
+[13,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[14,] 1.000000 0.843234 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+[15,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[16,] 0.843234 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[17,] 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 0.843234 0.843234
+[18,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+[19,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234
+[20,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+          [,9]    [,10]    [,11]    [,12]    [,13]    [,14]    [,15]    [,16]
+ [1,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234 0.843234
+ [2,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [5,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [6,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+ [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [8,] 1.000000 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000
+ [9,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[10,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000
+[11,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000
+[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[13,] 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[14,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[15,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[16,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+[17,] 1.000000 1.000000 0.843234 0.843234 0.843234 1.000000 1.000000 1.000000
+[18,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[19,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+[20,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
+         [,17]    [,18]    [,19]    [,20]
+ [1,] 1.000000 1.000000 1.000000 0.843234
+ [2,] 1.000000 1.000000 0.843234 1.000000
+ [3,] 0.843234 1.000000 0.843234 1.000000
+ [4,] 0.843234 1.000000 1.000000 1.000000
+ [5,] 1.000000 0.843234 1.000000 1.000000
+ [6,] 1.000000 1.000000 1.000000 1.000000
+ [7,] 0.843234 1.000000 1.000000 1.000000
+ [8,] 0.843234 1.000000 0.843234 1.000000
+ [9,] 1.000000 1.000000 1.000000 1.000000
+[10,] 1.000000 1.000000 1.000000 1.000000
+[11,] 0.843234 1.000000 1.000000 1.000000
+[12,] 0.843234 1.000000 1.000000 1.000000
+[13,] 0.843234 1.000000 1.000000 1.000000
+[14,] 1.000000 1.000000 0.843234 0.843234
+[15,] 1.000000 1.000000 1.000000 1.000000
+[16,] 1.000000 1.000000 1.000000 0.843234
+[17,] 1.000000 0.843234 0.843234 1.000000
+[18,] 0.843234 1.000000 0.843234 1.000000
+[19,] 0.843234 0.843234 1.000000 1.000000
+[20,] 1.000000 1.000000 1.000000 1.000000</code></pre>
+<pre><code>print(Bo)</code></pre>
+<pre><code>20 x 20 sparse Matrix of class &quot;dgCMatrix&quot;
+
+ [1,]  .        -0.156766  .         .         .        -0.156766  .
+ [2,] -0.156766  .         .         .        -0.156766  .         .
+ [3,]  .         .         .         .         .         .         .
+ [4,]  .         .         .         .         .         .         .
+ [5,]  .        -0.156766  .         .         .         .         .
+ [6,] -0.156766  .         .         .         .         .         .
+ [7,]  .         .         .         .         .         .         .
+ [8,]  .         .         .        -0.156766  .        -0.156766  .
+ [9,] -0.156766  .         .         .        -0.156766  .         .
+[10,] -0.156766 -0.156766  .         .         .         .         .
+[11,]  .         .         .         .         .         .         .
+[12,]  .         .         .         .         .        -0.156766  .
+[13,]  .         .         .         .         .         .         .
+[14,]  .        -0.156766  .        -0.156766  .        -0.156766  .
+[15,] -0.156766  .         .         .         .         .         .
+[16,] -0.156766  .        -0.156766  .         .         .         .
+[17,]  .         .        -0.156766 -0.156766  .         .        -0.156766
+[18,]  .         .         .         .        -0.156766  .         .
+[19,]  .        -0.156766 -0.156766  .         .         .         .
+[20,] -0.156766  .         .         .         .         .         .
+
+ [1,]  .        -0.156766 -0.156766  .         .         .         .
+ [2,]  .         .        -0.156766  .         .         .        -0.156766
+ [3,]  .         .         .         .         .         .         .
+ [4,] -0.156766  .         .         .         .         .        -0.156766
+ [5,]  .        -0.156766  .         .         .         .         .
+ [6,] -0.156766  .         .         .        -0.156766  .        -0.156766
+ [7,]  .         .         .         .         .         .         .
+ [8,]  .         .         .         .        -0.156766 -0.156766  .
+ [9,]  .         .         .         .         .         .         .
+[10,]  .         .         .         .         .         .         .
+[11,]  .         .         .         .         .        -0.156766  .
+[12,] -0.156766  .         .         .         .         .         .
+[13,] -0.156766  .         .        -0.156766  .         .         .
+[14,]  .         .         .         .         .         .         .
+[15,]  .         .        -0.156766 -0.156766  .         .         .
+[16,]  .         .         .         .        -0.156766  .        -0.156766
+[17,] -0.156766  .         .        -0.156766 -0.156766 -0.156766  .
+[18,]  .         .         .         .         .         .         .
+[19,] -0.156766  .         .         .         .         .        -0.156766
+[20,]  .         .         .         .         .         .        -0.156766
+
+ [1,] -0.156766 -0.156766  .         .         .        -0.156766
+ [2,]  .         .         .         .        -0.156766  .
+ [3,]  .        -0.156766 -0.156766  .        -0.156766  .
+ [4,]  .         .        -0.156766  .         .         .
+ [5,]  .         .         .        -0.156766  .         .
+ [6,]  .         .         .         .         .         .
+ [7,]  .         .        -0.156766  .         .         .
+ [8,]  .         .        -0.156766  .        -0.156766  .
+ [9,]  .         .         .         .         .         .
+[10,] -0.156766  .         .         .         .         .
+[11,] -0.156766  .        -0.156766  .         .         .
+[12,]  .        -0.156766 -0.156766  .         .         .
+[13,]  .         .        -0.156766  .         .         .
+[14,]  .        -0.156766  .         .        -0.156766 -0.156766
+[15,]  .         .         .         .         .         .
+[16,]  .         .         .         .         .        -0.156766
+[17,]  .         .         .        -0.156766 -0.156766  .
+[18,]  .         .        -0.156766  .        -0.156766  .
+[19,]  .         .        -0.156766 -0.156766  .         .
+[20,]  .        -0.156766  .         .         .         .</code></pre></li>
+<li><p>Solve the Scaling Matrix <span id="sec:org6e8fe0c" label="sec:org6e8fe0c">[sec:org6e8fe0c]</span> We don’t need to worry about any terms of <span class="math inline">\(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\)</span> being 0:</p>
+<pre><code>(δB   &lt;- 1/(colSums(Bo)+n))</code></pre>
+<pre><code> [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
+ [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
+[13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
+[19] 0.05246754 0.05120406</code></pre>
+<pre><code>(δB   &lt;- 1/(colSums(B)))</code></pre>
+<pre><code> [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
+ [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
+[13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
+[19] 0.05246754 0.05120406</code></pre></li>
+<li><p>Find the Transition Probability Matrix <span id="sec:org32e403f" label="sec:org32e403f">[sec:org32e403f]</span></p>
+<pre><code>  DB   &lt;- diag(δB)
+## ** Create the Transition Probability Matrix
+## Create the Trans Prob Mat using Power Walk
+  T &lt;- Bo %*% DB</code></pre></li>
+<li><p>Implement the Loop <span id="sec:org4976c09" label="sec:org4976c09">[sec:org4976c09]</span></p>
+<pre><code>## ** Implement the Power Walk
+## *** Set Initial Values
+  p_new  &lt;- rep(1/n, n)  # Uniform
+  p      &lt;- rep(0, n)    # Zero
+  η      &lt;- 10^(-6)
+## *** Implement the Loop
+
+ while (sum(abs(p_new - p)) &gt; η) {
+    (p &lt;- as.vector(p_new)) # P should remain a vector
+    sum(p &lt;- as.vector(p_new)) # P should remain a vector
+     p_new  &lt;- T %*% p + rep(t(δB) %*% p, n)
+  }
+## ** Report the Values
+print(paste(&quot;The stationary point is&quot;))
+print(p)</code></pre>
+<pre><code>[1] &quot;The stationary point is&quot;
+ [1] 0.04882572 0.04963556 0.05044542 0.05044541 0.05044543 0.05004049
+ [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
+[13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
+[19] 0.04923063 0.05044542</code></pre></li>
+</ol></li>
+</ol></li>
+</ol>
+<h1 id="sec:org266620c">Appendix</h1>
+<h2 id="sec:orgd1569fc">Glossary</h2>
+<dl>
+<dt><span>Eigenvector Centrality</span></dt>
+<dd><p>PageRank</p>
+<ul>
+<li><p>The probability of landing on a vertex in a random walk by adding a small random probability to each vertex.</p></li>
+</ul>
+</dd>
+<dt><span>Irreducible</span></dt>
+<dd><p>Ergodic</p>
+<ul>
+<li><p>All Vertices can be reached from any other vertex</p></li>
+</ul>
+</dd>
+</dl>
+</body>
+</html>

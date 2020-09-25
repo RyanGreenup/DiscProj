@@ -1,7 +1,7 @@
-#+TITLE: Data Sci Discover Project
+  #+TITLE: Data Sci Discover Project
 :PREAMBLE:
 #+OPTIONS: broken-links:auto
-#+STARTUP: overview
+#+STARTUP: overview noinlineimages
 #+INFOJS_OPT: view:showall toc:3
 #+PLOT: title:"Citas" ind:1 deps:(3) type:2d with:histograms set:"yrange [0:]"
 #+OPTIONS: tex:t
@@ -10,8 +10,9 @@
 :END:
 :HTML:
 #+INFOJS_OPT: view:info toc:3
-#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="resources/style.css">
+#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="resources/bigblow.css">
 #+CSL_STYLE: /home/ryan/Templates/CSL/nature.csl
+./resources/
 :END:
 :R:
 #+PROPERTY: header-args:R :session DiscProj :dir ./ :cache yes :eval never-export :exports both :results output
@@ -29,9 +30,7 @@
 - [[file:ImplementingPageRank/01PageRank.Rmd::---][Preliminary Implementation]]
 - [[file:ImplementingPageRank/01PageRank.R][Implement Random Surfer on Sparse Matrix]]
 - [[file:ImplementingPowerWalk/01PowerWalk.R][Implement Power Walk on Sparse Matrix]]
-
 * Proposal
-
 ** Question
 
 /Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \alpha/
@@ -82,6 +81,8 @@ D -> C
 @enddot
 #+end_src
 
+#+attr_html: :width 400px
+#+attr_latex: :width 7cm
 #+RESULTS: DotLib
 [[file:./Media/Example.png]]
 
@@ -137,7 +138,43 @@ Where we have the following:
      \end{bmatrix}
 \end{align}
 
-* Working
+* Page Rank Methods
+** Introduction
+These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.
+
+Usually Page Rank refers to the random surfer but I'm using it in this document to refer to any process that attributes a probability of landing on a vertex during a random walk to a graph that is not ergodic.
+
+If each vertex is connected the graph is said to be ergodic and there is a closed solution for the limit values of the frequencies given this random walk:
+
+- The eigenvalue equal to 1
+- If the graph is not directed $\vec{p}$ is a vector of length $n$:
+  - $n$ is the number of nodes in the graph $G$
+  - $\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}$
+    - $\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]$
+
+
+For large matrices calculating the eigenvalues will be expensive and so instead the power method is used, which is essentially looping over until the vector converges to a solution.
+
+\begin{align}
+\vec{p} = \mathrm{T}\vec{p} \label{eq:pageRank-Method}
+\end{align}
+where:
+
++ $\mathrm{A}$ :: Is the adjacency Matrix, an element is 1 if movement from the row vertex to the column vertex is permitted.
+  + The matrix may be weighted in some way, for example 5 edges between vertices may be such that a 5 is used in the matrix not a 1
+  + An undirected graph will be such that $\mathbf{A} = \mathbf{A}^{\mathrm{\mathbf{T}}}$
++ $\mathrm{T}$ :: Is the transition probability matrix, an element in the matrix describes the probability of moving from the column-vertex to the row-vertex
+  + The transition matrix is intended to be such that for a given state distribution $\vec{p}$, the next iteration of a random walk will be $\mathrm{T}\vec{p}$
+  + Observe also that $\mathrm{T} = \mathrm{T} \cdot \mathrm{diag}(\mathtt{colsums}(\mathrm{A^{\mathrm{T}}}))$
+    - i.e. the transpose of the adjacency matrix with each column scaled to 1.
+
+** Random Surfer
+*** Introduction
+For con If a graph is non-ergodic, then a random walk isn't as easy to implement
+because in escence there are multiple disconnected graphs, to address this, some
+value $\lambda$ is introduces which represents the probability of moving from
+one vertex to any other vertex. Essentially the difference here is
+
 #+BEGIN_SRC R
   if (require("pacman")) {
       library(pacman)
@@ -151,12 +188,11 @@ Where we have the following:
     pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)
 #+END_SRC
 
-** Implementing Page Rank Method on a small graph
+*** Small Graph, Ordinary Matrices
   :PROPERTIES:
   :CUSTOM_ID: implementing-page-rank-methods
   :END:
-
-*** Example Graph
+**** Example Graph
    :PROPERTIES:
    :CUSTOM_ID: example-graph
    :END:
@@ -170,7 +206,7 @@ Consider the following Graph taken from the paper:
 
 [[file:ImplementingPageRank/01PageRank_files/figure-html/unnamed-chunk-2-1.png]]
 
-**** Adjacency Matrix
+***** Adjacency Matrix
     :PROPERTIES:
     :CUSTOM_ID: adjacency-matrix
     :END:
@@ -199,7 +235,7 @@ The adjacency Matrix is given by:
   ## 10 0 0 1 1 0 0 0 0 0  0
 #+END_EXAMPLE
 
-**** State Distribution
+***** State Distribution
     :PROPERTIES:
     :CUSTOM_ID: state-distribution
     :END:
@@ -224,7 +260,7 @@ The state distribution is the transpose of the adjacency matrix:
   ## 10 0 0 0 0 0 0 0 0 0  0
 #+END_EXAMPLE
 
-**** Probability Transition Matrix
+***** Probability Transition Matrix
     :PROPERTIES:
     :CUSTOM_ID: probability-transition-matrix
     :END:
@@ -251,7 +287,7 @@ scaled to 1.
   ## 10    0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
 #+END_EXAMPLE
 
-***** Create a Function
+****** Create a Function
      :PROPERTIES:
      :CUSTOM_ID: create-a-function
      :END:
@@ -278,7 +314,7 @@ scaled to 1.
   ## 10    0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
 #+END_EXAMPLE
 
-*** Page Rank Random Surfer
+**** Page Rank Random Surfer
    :PROPERTIES:
    :CUSTOM_ID: page-rank-random-surfer
    :END:
@@ -308,7 +344,7 @@ transition matrix $S$:
   S <- l*T+(1-l)*B
 #+END_SRC
 
-**** Eigen Value Method
+***** Eigen Value Method
     :PROPERTIES:
     :CUSTOM_ID: eigen-value-method
     :END:
@@ -352,7 +388,8 @@ $vectors
 
 #+end_example
 
-So in this case +the+ a stationary point is
+So in this case the stationary point is
+
 $\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle$
 
 which can be verified:
@@ -409,7 +446,7 @@ However this vector does not sum to 1 so the scale should be adjusted
   ## 10 0.0200000
 #+END_EXAMPLE
 
-**** Power Value Method
+***** Power Value Method
     :PROPERTIES:
     :CUSTOM_ID: power-value-method
     :END:
@@ -481,7 +518,7 @@ same value will be returned:
   ## 10 0.0200000
 #+END_EXAMPLE
 
-**** Scaling
+***** Scaling
     :PROPERTIES:
     :CUSTOM_ID: scaling
     :END:
@@ -514,8 +551,8 @@ vector will also sum to 1.
   ## 9  0.0200000 0.0200000
   ## 10 0.0200000 0.0200000
 #+END_EXAMPLE
-** Implementing Page Rank on a much Larger Graph
-*** Creating the Probability Transition Matrix
+*** Large Graph, Sparse Matrices using CRS
+**** Creating the Probability Transition Matrix
 Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
 
 An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
@@ -664,7 +701,7 @@ summary(t(A) %*% D)
 20 291405 821769 1
 #+end_example
 
-*** Solving the Random Surfer via the Power Method
+**** Solving the Random Surfer via the Power Method
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
 However, creating a matrix of background probabilites (denoted by ~B~ is section [[#page-rank-random-surfer]]) will not be feasible, it would simply be too large, instead some algebra can be used to reduce $B$ from a matrix into a vector containing only $\frac{1-\alpha}{N}$.
@@ -733,50 +770,8 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 p %>% head() %>% print()
 #+end_src
-* Notes
-
-- Eigenvector Centrality :: PageRank
-
-  - The probability of landing on a vertex in a random walk by adding a small random probability to each vertex.
-
-- Irreducible :: Ergodic
-  - All Vertices can be reached from any other vertex
-
-** Page Rank Methods
-
-These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.
-
-If each vertex is connected the graph is said to be ergodic and there is a closed solution for the limit values of the frequencies given this random walk:
-
-- The eigenvalue equal to 1
-- If the graph is not directed $\vec{p}$ is a vector of length $n$:
-  - $n$ is the number of nodes in the graph $G$
-  - $\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}$
-    - $\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]$
-
-
-For large matrices calculating the eigenvalues will be expensive and so instead the power method is used, which is essentially looping over until the vector converges to a solution.
-
-\begin{align}
-\vec{p} = \mathrm{T}\vec{p} \label{eq:pageRank-Method}
-\end{align}
-
-where:
-
-- $\mathrm{A}$ :: Is the adjacency Matrix, an element is 1 if movement from the row vertex to the column vertex is permitted.
-  - The matrix may be weighted in some way, for example 5 edges between vertices may be such that a 5 is used in the matrix not a 1
-  - An undirected graph will be such that $\mathbf{A} = \mathbf{A}^{\mathrm{\mathbf{T}}}$
-- $\mathrm{T}$ :: Is the transition probability matrix, an element in the matrix describes the probability of moving from the column-vertex to the row-vertex
-  - The transition matrix is intended to be such that for a given state distribution $\vec{p}$, the next iteration of a random walk will be $\mathrm{T}\vec{p}$
-  - Observe also that $\mathrm{T} = \mathrm{T} \cdot \mathrm{diag}(\mathtt{colsums}(\mathrm{A^{\mathrm{T}}}))$
-    - i.e. the transpose of the adjacency matrix with each column scaled to 1.
-
-*** Random Surfer
-
-If a graph is non-ergodic, then a random walk isn't as easy to implement because in escence there are multiple graphs, to address this, some value $\lambda$ is introduces which represents the probability of moving from one vertex to any other vertex.
-Essentially the difference here is
-
-*** Power Walk Method
+** Power Walk Method
+*** Introduction
 
 \begin{align}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
@@ -793,9 +788,10 @@ where:
 - $D_{B} = \mathtt{colsums}(\mathbf{B})$
 - $\mathbf{A}$ :: The Adjacency Matrix
 
-
-
-** Simplifying Power Walk to be solved with Sparse Matrices
+*** Ordinary Matrices
+Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
+*** Sparse Matrices
+**** Theory; Simplifying Power Walk to be solved with Sparse Matrices
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -817,13 +813,13 @@ Interpreting the transition probability matrix in this way is such that
 $\mathbf{T}= \mathbf{A}\mathbf{D}^{- 1}_A$ under the following
 conditions:
 
+
 - No column of $\mathbf{A}$ sums to zero
 
   - If this does happen the question arises how to deal with
     $\mathbf{D_\mathbf{A}^{- 1}}$
 
-    - I've been doing
-      $D'_{\mathbf{A}, i, j} := \mathtt{diag} \left( {\frac{1}{\mathtt{colsums}\left( \mathbf{A} \right)}} \right)$
+    - I've been doing $\mathbf{D}^{\mathrm{T}}_{\mathbf{A}, i, j} := \mathtt{diag} \left( {\frac{1}{\mathtt{colsums}\left( \mathbf{A} \right)}} \right)$
       and then replacing any $0$ on the diagonal with 1.
 
   - What is done in the paper is to make another matrix $\mathbf{Z}$
@@ -838,7 +834,7 @@ conditions:
     - The idea with this method is then to use
       $D_\mathbf{\left( A+Z \right)}^{- 1}$ this will be consistent with
       the /Random Surfer/ the method using $\mathbf{F}$ in
-      [[#eq:sparse-RS][[eq:sparse-RS]]]
+      [[#eq:sparse-RS][]] eqref:eq:sparse-RS
 
     where each row is identical that is a 0
 
@@ -847,7 +843,9 @@ The way to deal with the /Power Walk/ is more or less the same.
 observe that:
 
 $$\begin{aligned}
-    \mathbf{B} = \beta^{\mathbf{A}} \wedge \mathbf{A}_{i, j}\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}\end{aligned}$$
+   \left( \mathbf{B} = \beta^{\mathbf{A}} \right)\wedge \left( \mathbf{A}_{i, j}\right)\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}\end{aligned}$$
+
+
 
 Be mindful that the use of exponentiation in
 [[#eq:b-is-pos][[eq:b-is-pos]]] is not an element wise exponentiation
@@ -962,7 +960,7 @@ p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 #+end_src
 
 
-*** Solving the Background Probability
+***** Solving the Background Probability
 In this case a vertical single column matrix will represent a vector and $\otimes$ will represent the outer product (i.e. the /Kronecker Product/):
 
 
@@ -1036,370 +1034,10 @@ vectors, this can also be expressed as a dot product:
    | Matrices                                | Vectors                    |
    | $\vec{\delta^{\mathrm{T}}} \vec{p_{i}}$ | $\vec{\delta} \vec{p_{i}}$ |
 
-
-
-** Implementing the Power Walk
-Load necessary packages etc:
-
-#+begin_src R :session pwalk
-if (require("pacman")) {
-    library(pacman)
-  }else{
-    install.packages("pacman")
-    library(pacman)
-  }
-  pacman::p_load(Matrix, igraph, plotly, mise, docstring, expm)
-#+end_src
-
-#+RESULTS[0e4ab9a6532ac1c59900ec51cdb38e87ec85d3c1]:
-| TRUE |
-| TRUE |
-| TRUE |
-| TRUE |
-| TRUE |
-| TRUE |
-
-Create an example Matrix:
-#+BEGIN_SRC R :exports both :results output graphics file :file power-walk-example-graph.png :session pwalk
-g1 <- igraph::erdos.renyi.game(n = 50, 0.2)
-A <- igraph::get.adjacency(g1) # Row to column
-plot(g1)
-#+end_src
-
-#+RESULTS[f8f9a3004db7436882a644608f9a96953e0830d3]:
-[[file:power-walk-example-graph.png]]
-
-*** Using the Power Walk
-**** Inspect the newly created matrix and create constants
-
-#+begin_src R :session pwalk :results output
-beta <- 0.843234
-β    <- beta
-n    <- nrow(A)
-
-str(A)
-#+end_src
-
-#+RESULTS[8265cfae9eb810682ba867eeab6c4bcd46ab98fe]:
-: Formal class 'dgCMatrix' [package "Matrix"] with 6 slots
-:   ..@ i       : int [1:504] 11 15 20 29 31 32 38 41 47 2 ...
-:   ..@ p       : int [1:51] 0 9 17 25 31 44 55 66 73 81 ...
-:   ..@ Dim     : int [1:2] 50 50
-:   ..@ Dimnames:List of 2
-:   .. ..$ : NULL
-:   .. ..$ : NULL
-:   ..@ x       : num [1:504] 1 1 1 1 1 1 1 1 1 1 ...
-:   ..@ factors : list()
-
-**** Create a Diagonalised Scaling Matrix
-#+begin_src R :session pwalk :results output
-sparse_diag <- function(mat) {
-  #' Diagonal Factors of Sparse Matrix
-  #'
-  #' Return a Diagonal Matrix containing either 1 / colsum() or 0 such that
-  #' matrix multiplication with this matrix would have all columns
-  #' sum to 1
-  #'
-  #' This should take the transpose of an adjacency matrix in and the output
-  #' can be multiplied by the original matrix to scale it to 1.
-  #' i
-  # mat  <- A
-  ## Get the Dimensions
-  n <- nrow(mat)
-
-  ## Make a Diagonal Matrix of Column Sums
-  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
-
-  ## Throw away explicit Zeroes
-  D <- drop0(D)
-
-  ## Inverse the Values
-  D@x <- 1/D@x
-
-  ## Return the Diagonal Matrix
-  return(D)
-}
-#+end_src
-
-#+RESULTS[1673482aa8f8e0972fe7d8212a4b809b099347d7]:
-
-**** Weight the Edges
-Make the edges weighted with some real value
-
-#+begin_src R :session pwalk
-weight_adjMat <- function(adjMat) {
-  #' Weight Adjacency Matrix
-  #'
-  #' Randomly weights an adjacency matrix so that terms
-  #' are Real (as opposed to natural) values.
-  A@x*rnorm(length(A@x), 0, 0.1)
-}
-#+end_src
-
-#+RESULTS[a9991715e827a8ee1ab17c27f7a55fe8f485b78e]:
-
-**** Create a Probability Transition Matrix
-#+begin_src R :session pwalk :results output
-adj_to_probTrans <- function(wadjmat, beta) {
-  #' Adjacency to Probability Transition Matrix
-  #'
-  #' Returns a probability transition matrix from an input adjacency matrix
-  #'
-  #' Transposes an input matrix and then scales each column to sum to 1.
-  #' Implemented with the Matrix dgCMatrix class in mind however also
-  #' has logic to deal with a base matrix.
-  #
-  #' @param wadjmat A weighted adjacency matrix, ideally of the class dgCMatrix
-  #' or atleast of the class matrix.
-  #' @param beta The probability of following an edge
-
-  wadjmat <- t(wadjmat)    # transpose Assuming row->column (like igraph)
-#  wadjmat  <- A; beta  <- 0.8
-
-  if ("dgCMatrix" %in% class(wadjmat)) {
-
-#    B     <- sparseMatrix(i = summary(wadjmat)$i, j = summary(wadjmat)$j, x = beta^wadjmat@x) # element wise exponentiation
-#    Don't do this ^^ because it comes out with clipped off dimensions
-    B     <- wadjmat
-    B@x   <- beta^wadjmat@x    # Element Wise exponentiation
-    D_in  <- sparse_diag(B)
-    T = B %*% D_in
-    return(T)
-
-  } else if ("matrix" %in% class(wadjmat)) {
-    print("WARNING: expected dgCMatrix but matrix detected")
-    print("Attemptying to proceed anyway")
-    for (i in ncol(wadjmat)) {
-      #  wadjmat[, i] <- wadjmat[, i] / sum(wadjmat[, i])
-    B     <- wadjmat
-    B   <- beta^wadjmat    # Element Wise exponentiation
-    D_in  <- sparse_diag(B)
-    T = B %*% D_in
-    return(as.matrix(T))
-    }
-    return(wadjmat)
-  } else {
-    print("ERROR: Require sparse wadjmatrix of class dgCWadjmatrix to")
-  }
-}
-
-class(A)
-(T <- adj_to_probTrans(A, beta = 0.843234))  %>% summary %>% head()
-#+end_src
-
-#+RESULTS[a74654461f3cbd93458721d97da337a49539839c]:
-#+begin_example
-[1] "dgCMatrix"
-attr(,"package")
-[1] "Matrix"
-50 x 50 sparse Matrix of class "dgCMatrix", with 504 entries
-   i j         x
-1 12 1 0.1111111
-2 16 1 0.1111111
-3 21 1 0.1111111
-4 30 1 0.1111111
-5 32 1 0.1111111
-6 33 1 0.1111111
-#+end_example
-**** Implement the Power Method to find the Stationary Point
-#+begin_src R :session pwalk
-## ** Power Method
-p    <- rep(0, nrow(T))
-p[1] <- 1
-p_new    <- rep(0, nrow(T))
-p_new[2]    <- 1
-
-while (sum(round(p, 9) != round(p_new, 9))) {
-    p     <- p_new
-    p_new <- T %*% p
-}
-
-
-
-print(paste("The stationary point is"))
-p %>% head()
-#+end_src
-
-#+RESULTS[1a7889290db61934e195e389528b189694cd761d]:
-: [1] "The stationary point is"
-: 6 x 1 Matrix of class "dgeMatrix"
-:            [,1]
-: [1,] 0.01785714
-: [2,] 0.01587302
-: [3,] 0.01587302
-: [4,] 0.01190476
-: [5,] 0.02579365
-: [6,] 0.02182540
-*** Using Sparse Matrices
-**** Theory
-if I have:
-
-- $\mathbf{O}_{i, j} := 0, \quad \forall i,j\leq n \in \mathbb{Z}^+$
-
-- $\vec{p_i}$ as the state distribution, being a vector of length $n$
-
-Then it can be shown (see eqref:eq:sparse-power-walk):
-
-$$\begin{aligned}
-    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}\end{aligned})$$
-where:
-
-- $\vec{\delta_i} = \frac{1}{\mathtt{colsums} \left( \mathbf{B} \right)}$
-
-This means we can do:
-
-\[ \begin{aligned}
-     \overrightarrow{p_{i + 1}} & = \mathbf{BD}_{\mathbf{B}}^{- 1}
-     \overrightarrow{p_i}\\
-     & = \left( \mathbf{B} - \mathbf{O} + \mathbf{O} \right)
-     \mathbf{D}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
-     & = \left( \left( \mathbf{B} - \mathbf{O} \right)
-     \mathbf{D}_{\mathbf{B}}^{- 1} + \mathbf{OD}_{\mathbf{B}}^{- 1} \right)
-     \overrightarrow{p_i}\\
-     & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
-     \overrightarrow{p_i} + \mathbf{OD}_{\mathbf{B}}^{- 1}
-     \overrightarrow{p_i}\\
-     & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
-     \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta'}
-     \overrightarrow{p_i})
-   \end{aligned} \]
-Let $(\tmmathbf{B}-\tmmathbf{O}) = \Xi$, then:
-\begin{eqnarray*}
-  \overrightarrow{p_{i + 1}} & = \Xi \mathbf{D}_{\mathbf{B}}^{- 1}
-  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta'}
-  \overrightarrow{p_i}) &
-\end{eqnarray*}
-Now solve $\tmmathbf{D}_B^{- 1}$ in terms of $\Xi$ :
-\begin{eqnarray*}
-  & \Xi = & (\tmmathbf{B}-\tmmathbf{O})\\
-  & \tmmathbf{\Beta}= & \Xi +\tmmathbf{O}\\
-  & \Rightarrow \delta^{- 1}_B = & \vec{1} \tmmathbf{B}\\
-  & = & \vec{1} (\Xi +\tmmathbf{\Omicron})\\
-  & = & \vec{1} \Xi + \vec{1} \tmmathbf{\Omicron}\\
-  & = & \vec{1} \Xi + \langle n, n, n \ldots n \rangle\\
-  & \tmmathbf{D}_B^{- 1} = & \frac{1}{\delta^{- 1}_{\tmmathbf{\Beta}} +
-  \langle n, n, n, \ldots, n \rangle}\\
-  & = & \mathtt{colSum($δ_B$) + n}
-\end{eqnarray*}
-
-And so the the power method can be implemented using sparse matrices.
-
-***** Solving the Background Probability
-   Define \(\vec{\delta}\) as the column sums of
-\[\begin{aligned}
-     \vec{\delta} & = \mathtt{colsum} (\text{{\bfseries{B}}})^{- 1}\\
-     & = \frac{1}{\overrightarrow{1^{{\scriptsize \ensuremath{\boldsymbol{T}}}}}
-     \ensuremath{\boldsymbol{B}}}
-   \end{aligned}\]
-
-
-
-\begin{align}
-     \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} & = \left(
-     \begin{array}{cccc}
-       1 & 1 & 1 & \\
-       1 & 1 & 1 & \ldots\\
-       1 & 1 & 1 & \\
-       & \vdots &  & \ddots
-     \end{array} \right) \left( \begin{array}{cccc}
-       \delta_1 & 0 & 0 & \\
-       0 & \delta_2 & 0 & \ldots\\
-       0 & 0 & \delta_3 & \\
-       0 & \vdots & 0 & \ddots
-     \end{array} \right) \left( \begin{array}{c}
-       p_1\\
-       p_2\\
-       p_3\\
-       \vdots
-     \end{array} \right) \nonumber \nonumber \\
-     & = \left( \begin{array}{cccccc}
-       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
-       \frac{p_3}{\delta_3} & \\
-       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
-       \frac{p_3}{\delta_3} & \ldots\\
-       \frac{p_1}{\delta 1} & + & \frac{p_2}{\delta_2} & + &
-       \frac{p_3}{\delta_3} & \\
-       &  & \vdots &  &  & \ddots
-     \end{array} \right) \nonumber \nonumber \\
-     & = \left(\begin{array}{c}
-       \sum^n_{i = 1} [p_{_i} \delta_i]\\
-       \sum^n_{i = 1} [p_{_i} \delta_i]\\
-       \sum^n_{i = 1} [p_{_i} \delta_i]\\
-       \vdots
-     \end{array}\right) \nonumber \\
-     & = \left( \begin{array}{c}
-       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
-       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
-       \overrightarrow{\delta^{\tiny{\ensuremath{\boldsymbol{T}}}}} \bullet \vec{p}\\
-       \vdots
-     \end{array} \right) \nonumber \\
-     & = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}) \label{eq:sparse-power-walk}
-   \end{align}
-**** Set the value for B
-#+begin_src R :session pwalk
-B     <- A
-B@x   <- β^(A@x) -1
-#+end_src
-
-#+RESULTS[27e87383431f1fcd199adf22a58d4c5276b49580]:
-
-**** Create the Scaling Matrix
-The Transition probability matrix must sum to 1 so use the scaling matrix reduce
-the column sums.
-
-#+begin_src R :session pwalk
-δB   <- 1/colSums(B)
-δBt  <- t(δB)
-DB   <- diag(δB)
-#+end_src
-
-#+RESULTS[57074a92496a6f65725cb860da0cb12fd379c948]:
-
-**** Create the Trans Prob Mat
-#+begin_src R :session pwalk
-T <- B %*% DB
-#+end_src
-
-#+RESULTS[aaef265325837f0153d52e4d352c899a1d3e1123]:
-
-**** Implement the Power Walk
-***** Set the Starting Values
-#+begin_src R :session pwalk
-p_new  <- rep(1/n, n)  # Uniform
-p      <- rep(0, n)    # Zero
-η      <- 10^(-6)
-#+end_src
-
-#+RESULTS[2078ee82af132c529c976f9de64e09d5c30f731a]:
-
-***** Implement the loop
-#+begin_src R :session pwalk
-while (sum(abs(p_new - p)) > η) {
-(p <- as.vector(p_new)) # P should remain a vector
-sum(p <- as.vector(p_new)) # P should remain a vector
-    p_new  <- T %*% p + rep(δBt %*% p, n)
-}
-#+end_src
-
-#+RESULTS[6aae1968669561c91973ed5bbecf09e77d26d368]:
-: Error in while (sum(abs(p_new - p))
-: η) { :
-:   missing value where TRUE/FALSE needed
-
-This error results because the $\vec{p_{i}} \rightarrow \infty$
-
-***** Print the Stationary value
-#+begin_src R :session pwalk
-p %>% head()
-#+end_src
-
-#+RESULTS[b1fb56095a0ab86cebedf13b24c5b687e0428120]:
-: [1] -Inf -Inf -Inf -Inf -Inf -Inf
-** Debugging the Power Walk
-2020-sep-13@22:39
-These were the notes I took when trying to explain to Laurence the mistake I made
-*** Setup
-**** Load Packages
+**** Practical; Implementing the Power Walk on Sparse Matrices
+***** Inspect the newly created matrix and create constants
+***** Setup
+****** Load Packages
 #+begin_src R :session example
 if (require("pacman")) {
     library(pacman)
@@ -1414,7 +1052,7 @@ if (require("pacman")) {
 #+RESULTS[b1fd4f7af2cadbc1374b0f8d78f62a6ad9342541]:
 : Loading required package: pacman
 
-**** Define function to create DiagonalsSparse Diagonal Function
+****** Define function to create DiagonalsSparse Diagonal Function
 This doesn't matter for the power walk, real exponents will always give non-zero values anyway
 #+begin_src R :session example
 sparse_diag <- function(mat) {
@@ -1448,18 +1086,16 @@ sparse_diag <- function(mat) {
 
 #+RESULTS[b8327916d90bdc5810e057f7de6f3e0808ea7b88]:
 
-**** Make an Example Graph
+****** Make an Example Graph
 #+begin_src R :session example
 g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
 
+
 beta = 0.843234
 β = beta
 #+end_src
-
-#+RESULTS[dba014546b0e3bc8761fe9ba673327a8846568b6]:
-
-**** Plot
+****** Plot
 
 #+BEGIN_SRC R :exports both :session example :results output graphics file :file ./Media/Example-graph-plot-debug-power-walk.png
 plot(g1)
@@ -1468,10 +1104,8 @@ plot(g1)
 #+RESULTS[5eec355fc3d55ed8cd2dd42e0f68ab07c9ca67fa]:
 [[file:./Media/Example-graph-plot-debug-power-walk.png]]
 
-
-
-*** Power Walk
-**** Define B
+***** Power Walk
+****** Define B
 #+begin_src R :session example
 B      <- A
 B@x    <- β^(A@x)
@@ -1636,6 +1270,9 @@ print(Bo)
 [20,]  .        -0.156766  .         .         .         .
 #+end_example
 
+****** Solve the Scaling Matrix
+We don't need to worry about any terms of $\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}$ being 0:
+
 #+begin_src R :session example
 (δB   <- 1/(colSums(Bo)+n))
 #+end_src
@@ -1656,12 +1293,17 @@ print(Bo)
 : [13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
 : [19] 0.05246754 0.05120406
 
+
+****** Find the Transition Probability Matrix
 #+begin_src R :session example
   DB   <- diag(δB)
 ## ** Create the Transition Probability Matrix
 ## Create the Trans Prob Mat using Power Walk
   T <- Bo %*% DB
+#+END_SRC
 
+****** Implement the Loop
+#+begin_src R :session example
 ## ** Implement the Power Walk
 ## *** Set Initial Values
   p_new  <- rep(1/n, n)  # Uniform
@@ -1685,10 +1327,15 @@ print(p)
 :  [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
 : [13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
 : [19] 0.04923063 0.05044542
-** Page Rank Methods
-*** Power Walk
-**** Ordinary
-**** Sparse Matrices
-*** Random Surfer
-**** Ordinary
-**** Sparse Matrices
+* Report Notes
+- I could wrap ~listings~ in a ~tcolorbox~ environment just like I did for minted
+  + I could also use shadowbox with ~listings~ for a similar aesthetics, but
+    then I'd have to use ~sed~ to make them floats after ~org~ export.
+- The ~tcolorbox~ may work as a float without effort?
+- I know that ~listings~ has an option to float over two columns, maybe that's what I should do, or just avoid two columns all toghether.
+* Appendix
+** Glossary
+- Eigenvector Centrality :: PageRank
+  - The probability of landing on a vertex in a random walk by adding a small random probability to each vertex.
+- Irreducible :: Ergodic
+  - All Vertices can be reached from any other vertex
