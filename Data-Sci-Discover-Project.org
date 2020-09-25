@@ -1,6 +1,7 @@
 #+TITLE: Data Sci Discover Project
 :PREAMBLE:
 #+OPTIONS: broken-links:auto
+#+STARTUP: overview
 #+INFOJS_OPT: view:showall toc:3
 #+PLOT: title:"Citas" ind:1 deps:(3) type:2d with:histograms set:"yrange [0:]"
 #+OPTIONS: tex:t
@@ -28,8 +29,6 @@
 - [[file:ImplementingPageRank/01PageRank.Rmd::---][Preliminary Implementation]]
 - [[file:ImplementingPageRank/01PageRank.R][Implement Random Surfer on Sparse Matrix]]
 - [[file:ImplementingPowerWalk/01PowerWalk.R][Implement Power Walk on Sparse Matrix]]
-
-
 
 * Proposal
 
@@ -138,8 +137,6 @@ Where we have the following:
      \end{bmatrix}
 \end{align}
 
-
-
 * Working
 #+BEGIN_SRC R
   if (require("pacman")) {
@@ -149,6 +146,7 @@ Where we have the following:
       library(pacman)
     }
 #+END_SRC
+
 #+BEGIN_SRC R
     pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)
 #+END_SRC
@@ -1687,3 +1685,10 @@ print(p)
 :  [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
 : [13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
 : [19] 0.04923063 0.05044542
+** Page Rank Methods
+*** Power Walk
+**** Ordinary
+**** Sparse Matrices
+*** Random Surfer
+**** Ordinary
+**** Sparse Matrices
