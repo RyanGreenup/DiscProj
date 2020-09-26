@@ -1374,7 +1374,7 @@ Observe that for all $\forall i,j\in \mathbb{Z}^+$:
 \mathbf{A}_{i, j} \in \left\{0, 1\right\} \\
 \implies  \mathbf{B}^{\mathbf{A}_{i, j}} &\in \left\{\beta^0, \beta^1\right\} \\
                      &= \left\{1, \beta \right\}  \\
-                      \implies  \beta \mathbf{A} = \left\{0, \beta \right\}
+                      \implies  \beta \mathbf{A} = \left\{1, \beta \right\}
 \end{align*}
 
 
@@ -1454,7 +1454,7 @@ where the following definitions hold ($\forall i, j \in \mathbb{Z}^+$):
 - $\mathbf{E}_{i, j} = \frac{1}{n}$
 - $\mathbf{D_B}^{-1}_{k, k} = \frac{1}{\delta_k}$
 - The value of $\delta$ is value that each term in a column must be
-  divided by to become zero, in the case of the poewr walk that is just
+  divided by to become zero, in the case of the power walk that is just
   $\frac{1}{\mathtt{colSums}\left( \mathbf{B} \right)} = \vec{1}\mathbf{B}$,
   but if there were zeros in a column, it would be necessary to swap out
   the $0$s for $1$s and then sum in order to prevent a division by zero
