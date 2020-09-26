@@ -28,6 +28,6 @@ pandoc "${FILEOUT}" -f html+tex_math_dollars+tex_math_single_backslash \
 #
 #But there is a reason this didn't work
 xelatex -interaction=nonstopmode "${FILE}.tex"
-biber "${FILE}.tex"
+biber "${FILE}.bcf"
 xelatex -interaction=nonstopmode "${FILE}.tex"
 latexmk -c

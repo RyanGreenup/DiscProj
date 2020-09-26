@@ -1333,9 +1333,167 @@ print(p)
     then I'd have to use ~sed~ to make them floats after ~org~ export.
 - The ~tcolorbox~ may work as a float without effort?
 - I know that ~listings~ has an option to float over two columns, maybe that's what I should do, or just avoid two columns all toghether.
+* Relating the Power Walk to the Random Surfer
+These are notes relating to [[cite:parkPowerWalkRevisiting2013][\textsection 3.3]]
+
+# #+LATEX_HEADER: \twocolumn
+** Relating terms in Power Walk to Random Surfer
+  :PROPERTIES:
+  :CUSTOM_ID: relating-terms-in-power-walk-to-random-surfer
+  :END:
+
+So if a term in the Power Walk can be related to $\alpha$ in the random
+surfer, which is in turn $\xi_2$, I'll be able to understand it better. [fn:: Although I'm not quite sure why $\alpha$ is $\xi_{2}$ either]
+
+Consider the equation:
+
+
+\begin{align*}
+\mathbf{T}&= \mathbf{B}\mathbf{D}_{\mathbf{B}}^{- 1} \\
+&= \left( \mathbf{B}+  \mathbf{O} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1} \\
+\end{align*}
+
+
+Break this into to terms so that we can simplify it a bit:
+
+
+\begin{align*}
+    \mathbf{T} &= \Bigg[ \left( \mathbf{B}- \mathbf{O} \right)\mathbf{D}_{\mathbf{B}}^{- 1} \Bigg] + \Bigg\{  \mathbf{O}\mathbf{D}_{\mathbf{B}}^{- 1} \Bigg\}
+\end{align*}
+
+
+*** Value of [1st Term]
+   :PROPERTIES:
+   :CUSTOM_ID: value-of-1st-term
+   :END:
+
+Observe that for all $\forall i,j\in \mathbb{Z}^+$:
+
+
+\begin{align*}
+\mathbf{A}_{i, j} \in \left\{0, 1\right\} \\
+\implies  \mathbf{B}^{\mathbf{A}_{i, j}} &\in \left\{\beta^0, \beta^1\right\} \\
+                     &= \left\{1, \beta \right\}  \\
+                      \implies  \beta \mathbf{A} = \left\{0, \beta \right\}
+\end{align*}
+
+
+Using this property we get the following
+
+
+\begin{align*}
+\mathbf{B}_{i,j}- \mathbf{O}_{i,j} = \left( \beta^{\mathbf{A}_{i,j}} -1 \right) &=
+\begin{cases}
+    0      , &\enspace \mathbf{A}_{i,j}=0  \\
+    \beta-1, &\enspace \mathbf{A}_{i,j}=1  \\
+\end{cases} \\
+\left( \beta- 1 \right) \mathbf{A}_{i,j} &=
+\begin{cases}
+    0      , &\enspace \mathbf{A}_{i,j}=0  \\
+    \beta-1, &\enspace \mathbf{A}_{i,j}=1  \\
+\end{cases} \\
+\end{align*}
+
+
+This means we have
+
+
+\begin{align*}
+\mathbf{A} \in \left\{0, 1\right\} \forall i,j  \implies   \mathbf{B}_{i,j}- \mathbf{O}_{i,j} &= \left( \beta-1 \right) \mathbf{A}
+\end{align*}
+
+
+
+\begin{align*}
+\mathbf{B}&= \left( \mathbf{B}+  \mathbf{O}- \mathbf{O} \right) \\
+&= \left( \mathbf{B}- 1 \right)
+\end{align*}
+
+
+** Value of {2nd Term}
+  :PROPERTIES:
+  :CUSTOM_ID: value-of-2nd-term
+  :END:
+
+
+\begin{align*}
+\mathbf{O} \mathbf{D_B^{- 1}} &=
+\begin{pmatrix}
+    1 & 1      & 1 &        \\
+    1 & 1      & 1 &\cdots  \\
+    1 & 1      & 1 &        \\
+      & \vdots &   &\ddots
+\end{pmatrix}
+\begin{pmatrix}
+    \frac{1}{\delta_1} & 1                    & 1                   & \\
+    1                  & \frac{1}{\delta_{2}} & 1 \cdots            & \\
+    1                  & 1                    &  \frac{1}{\delta_3} & \\
+               & \vdots &             &                     \ddots
+\end{pmatrix}
+\\
+&= n
+\begin{pmatrix}
+    \frac{1}{n} & \frac{1}{n}      & \frac{1}{n} &        \\
+    \frac{1}{n} & \frac{1}{n}      & \frac{1}{n} &\cdots  \\
+    \frac{1}{n} & \frac{1}{n}      & \frac{1}{n} &        \\
+      & \vdots &   &\ddots
+\end{pmatrix}
+\begin{pmatrix}
+    \frac{1}{\delta_1} & 1                    & 1                   &        \\
+    1                  & \frac{1}{\delta_2}    & 1                   & \cdots \\
+    1                  & 1                    &  \frac{1}{\delta_3} &        \\
+                       & \vdots               &                     & \ddots
+\end{pmatrix}
+\\
+&= n \mathbf{E}\mathbf{D_B}^{-1}
+\end{align*}
+
+
+where the following definitions hold ($\forall i, j \in \mathbb{Z}^+$):
+
+- $\mathbf{E}_{i, j} = \frac{1}{n}$
+- $\mathbf{D_B}^{-1}_{k, k} = \frac{1}{\delta_k}$
+- The value of $\delta$ is value that each term in a column must be
+  divided by to become zero, in the case of the poewr walk that is just
+  $\frac{1}{\mathtt{colSums}\left( \mathbf{B} \right)} = \vec{1}\mathbf{B}$,
+  but if there were zeros in a column, it would be necessary to swap out
+  the $0$s for $1$s and then sum in order to prevent a division by zero
+  issue and because the 0s should be left.
+- $\mathbf{A}\in \left\{0, 1\right\} \forall i,j$ is the unweighted
+  adjacency matrix of the relevant graph.
+
+putting this all together we can do the following:
+
+
+\begin{align*}
+\mathbf{T}&= \mathbf{B}\mathbf{D}^{- 1}_{\mathbf{B}} \\
+&= \left( \mathbf{B}+  \mathbf{O} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1} \\
+&= \left( \mathbf{B}- \mathbf{O} \right)\mathbf{D}_{B}^{- 1}  +  \mathbf{O} {\mathbf{D}_{\mathbf{B}}^{- 1}} \\
+ \intertext{From above:} \\
+&= \left( \beta- 1 \right) \mathbf{A}_{i,j} +  n \mathbf{E} \mathbf{D}_{\mathbf{B}}^{- 1}\\
+&= \mathbf{A}_{i,j}\left( \beta- 1 \right)  +  n \mathbf{E} \mathbf{D}_{\mathbf{B}}^{- 1}\\
+ \intertext{because $\mathbf{D} \mathbf{D}^{- 1} = \mathbf{I}$ we can multiply one side through:} \\
+&= \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{A}}^{- 1}\mathbf{A}_{i,j}\left( \beta- 1 \right)  +  n \mathbf{E} \mathbf{D}_{\mathbf{B}}^{- 1}\\
+\end{align*}
+
+
+But the next step requires showing that:
+
+
+\begin{align*}
+\left( \beta-1 \right)\mathbf{D}_\mathbf{A} \mathbf{D}_{\mathbf{B}}^{- 1} &= \mathbf{I} - n \mathbf{D}_{B}^{- 1}
+\end{align*}
+
+
+it seems to right because if $\mathbf{A}$ is totally disconnected we get $\left[ 0 \right]_{n\times n} = \mathbf{I}-n \left[ \frac{1}{n} \right]_{n\times n}$, not sure how to show it though.
+
 * Appendix
 ** Glossary
 - Eigenvector Centrality :: PageRank
   - The probability of landing on a vertex in a random walk by adding a small random probability to each vertex.
 - Irreducible :: Ergodic
   - All Vertices can be reached from any other vertex
+
+* Footnotes
+
+[fn:un]

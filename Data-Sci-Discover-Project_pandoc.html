@@ -24,7 +24,8 @@
 <h1 class="title">Data Sci Discover Project</h1>
 <p class="author">Ryan Greenup</p>
 </header>
-<h1 id="sec:org67043e1">Links</h1>
+<p>./resources/</p>
+<h1 id="sec:orga2bf03b">Links</h1>
 <ul>
 <li><p><a href="Proposal/Propsal.org">Research Proposal</a></p></li>
 <li><p><a href="laparkPowerWalk2013.pdf">Paper</a></p></li>
@@ -32,15 +33,15 @@
 <li><p><a href="ImplementingPageRank/01PageRank.R">Implement Random Surfer on Sparse Matrix</a></p></li>
 <li><p><a href="ImplementingPowerWalk/01PowerWalk.R">Implement Power Walk on Sparse Matrix</a></p></li>
 </ul>
-<h1 id="sec:org5c57467">Proposal</h1>
-<h2 id="sec:org00ced32">Question</h2>
+<h1 id="sec:orga41f155">Proposal</h1>
+<h2 id="sec:orge1d6b0c">Question</h2>
 <p><em>Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter <span class="math inline">\(\alpha\)</span></em></p>
 <blockquote>
 <p>Yes. An open question for the Power Walk method is, can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter <span class="math inline">\(\alpha\)</span>. The second eigenvalue determines how long the algorithm takes to converge and how stable the solution is. To begin, implement the method for computing PageRank and then the Power Walk. It can all be done using sparse matrices, so it only requires a fraction of the memory and is each iteration is quick.</p>
 </blockquote>
-<h2 id="sec:orga6d26c0">Working</h2>
+<h2 id="sec:org7baf51d">Working</h2>
 <p>Take the exemplar Graph from Figure 1:</p>
-<p><img src="./Media/Example.png" alt="image" /></p>
+<p><img src="./Media/Example.png" style="width:7cm" alt="image" /></p>
 <p><span class="math display">\[\begin{aligned}
     \Gamma =  I - n D^{- 1}_B \\\end{aligned}\]</span></p>
 <p>Where we have the following:</p>
@@ -86,8 +87,8 @@
          0 &amp; 0 &amp; 0.6923 &amp; 0 \\
          0 &amp; 0 &amp; 0 &amp; 0.6923
      \end{bmatrix}\end{aligned}\]</span></p>
-<h1 id="sec:orgfe0eea9">Page Rank Methods</h1>
-<h2 id="sec:org7ab24bb">Introduction</h2>
+<h1 id="sec:org29a3422">Page Rank Methods</h1>
+<h2 id="sec:org9e231cb">Introduction</h2>
 <p>These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.</p>
 <p>Usually Page Rank refers to the random surfer but I’m using it in this document to refer to any process that attributes a probability of landing on a vertex during a random walk to a graph that is not ergodic.</p>
 <p>If each vertex is connected the graph is said to be ergodic and there is a closed solution for the limit values of the frequencies given this random walk:</p>
@@ -124,8 +125,8 @@
 </ul>
 </dd>
 </dl>
-<h2 id="sec:org46e2db1">Random Surfer</h2>
-<h3 id="sec:orgb663bbb">Introduction</h3>
+<h2 id="sec:orgf4a36f9">Random Surfer</h2>
+<h3 id="sec:org6bcd98d">Introduction</h3>
 <p>For con If a graph is non-ergodic, then a random walk isn’t as easy to implement because in escence there are multiple disconnected graphs, to address this, some value <span class="math inline">\(\lambda\)</span> is introduces which represents the probability of moving from one vertex to any other vertex. Essentially the difference here is</p>
 <pre><code>  if (require(&quot;pacman&quot;)) {
       library(pacman)
@@ -352,9 +353,9 @@ $vectors
   ## 10 0.0200000 0.0200000</code></pre></li>
 </ol></li>
 </ol>
-<h3 id="sec:org409d7b9">Large Graph, Sparse Matrices using CRS</h3>
+<h3 id="sec:orgfc70344">Large Graph, Sparse Matrices using CRS</h3>
 <ol>
-<li><p>Creating the Probability Transition Matrix <span id="sec:org3775f81" label="sec:org3775f81">[sec:org3775f81]</span> Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.</p>
+<li><p>Creating the Probability Transition Matrix <span id="sec:org57c554c" label="sec:org57c554c">[sec:org57c554c]</span> Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.</p>
 <p>An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.</p>
 <p>A matrix exhibiting this property is known as a sparse matrix CITE</p>
 <p>The properties of a sparse matrix can be implemented in order to improve performance, one such method to acheive this is <em>Compressed Sparse Row</em> (CSR) storage, which involves creating a seperate array of values and corresponding indices. CITE</p>
@@ -472,7 +473,7 @@ summary(D)</code></pre>
 18  66922 803589 1
 19 809688 821120 1
 20 291405 821769 1</code></pre></li>
-<li><p>Solving the Random Surfer via the Power Method <span id="sec:org0fa8856" label="sec:org0fa8856">[sec:org0fa8856]</span> Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.</p>
+<li><p>Solving the Random Surfer via the Power Method <span id="sec:org556b5e3" label="sec:org556b5e3">[sec:org556b5e3]</span> Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.</p>
 <p>However, creating a matrix of background probabilites (denoted by <code>B</code> is section <a href="#page-rank-random-surfer" data-reference-type="ref" data-reference="page-rank-random-surfer">[page-rank-random-surfer]</a>) will not be feasible, it would simply be too large, instead some algebra can be used to reduce <span class="math inline">\(B\)</span> from a matrix into a vector containing only <span class="math inline">\(\frac{1-\alpha}{N}\)</span>.</p>
 <p>The power method is given by:</p>
 <p><span class="math display">\[\begin{aligned}
@@ -527,8 +528,8 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 p %&gt;% head() %&gt;% print()</code></pre></li>
 </ol>
-<h2 id="sec:org4df60ce">Power Walk Method</h2>
-<h3 id="sec:org9ec10c9">Introduction</h3>
+<h2 id="sec:org7c6efcd">Power Walk Method</h2>
+<h3 id="sec:orgcc3e449">Introduction</h3>
 <p><span class="math display">\[\begin{aligned}
 \mathbf{T} &amp;= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}\end{aligned}\]</span></p>
 <p>where:</p>
@@ -548,11 +549,11 @@ p %&gt;% head() %&gt;% print()</code></pre></li>
 <li><p><span class="math inline">\(D_{B} = \mathtt{colsums}(\mathbf{B})\)</span></p></li>
 <li><p>The Adjacency Matrix</p></li>
 </ul>
-<h3 id="sec:org50777de">Ordinary Matrices</h3>
+<h3 id="sec:org7bced63">Ordinary Matrices</h3>
 <p>Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.</p>
-<h3 id="sec:orge7ec6a0">Sparse Matrices</h3>
+<h3 id="sec:org4d6f8f3">Sparse Matrices</h3>
 <ol>
-<li><p>Theory; Simplifying Power Walk to be solved with Sparse Matrices <span id="sec:orge94527f" label="sec:orge94527f">[sec:orge94527f]</span> The Random Surfer model is:</p>
+<li><p>Theory; Simplifying Power Walk to be solved with Sparse Matrices <span id="sec:orgbc03743" label="sec:orgbc03743">[sec:orgbc03743]</span> The Random Surfer model is:</p>
 <p><span class="math display">\[\begin{aligned}
     \mathbf{S} &amp;= \alpha \mathbf{T} +  \mathbf{F}  \label{eq:sparse-RS}\end{aligned}\]</span></p>
 <p>where:</p>
@@ -671,7 +672,7 @@ p %&gt;% head() %&gt;% print()</code></pre></li>
 
 (t(δ) %*% p) == (δ %*% p)</code></pre>
 <ol>
-<li><p>Solving the Background Probability <span id="sec:orgc882834" label="sec:orgc882834">[sec:orgc882834]</span> In this case a vertical single column matrix will represent a vector and <span class="math inline">\(\otimes\)</span> will represent the outer product (i.e. the <em>Kronecker Product</em>):</p>
+<li><p>Solving the Background Probability <span id="sec:org9e7ea5c" label="sec:org9e7ea5c">[sec:org9e7ea5c]</span> In this case a vertical single column matrix will represent a vector and <span class="math inline">\(\otimes\)</span> will represent the outer product (i.e. the <em>Kronecker Product</em>):</p>
 <p>Define <span class="math inline">\(\vec{\delta}\)</span> as the column sums of <span class="math display">\[\begin{aligned}
      \vec{\delta} &amp; = \mathtt{colsum} (\text{{\bfseries{B}}})^{- 1}\\
      &amp; = \frac{1}{\overrightarrow{1^{{\scriptsize \ensuremath{\boldsymbol{T}}}}}
@@ -743,12 +744,12 @@ p %&gt;% head() %&gt;% print()</code></pre></li>
 </tbody>
 </table></li>
 </ol></li>
-<li><p>Practical; Implementing the Power Walk on Sparse Matrices <span id="sec:org91cf875" label="sec:org91cf875">[sec:org91cf875]</span></p>
+<li><p>Practical; Implementing the Power Walk on Sparse Matrices <span id="sec:orgc9697d3" label="sec:orgc9697d3">[sec:orgc9697d3]</span></p>
 <ol>
-<li><p>Inspect the newly created matrix and create constants <span id="sec:org22d9c80" label="sec:org22d9c80">[sec:org22d9c80]</span></p></li>
-<li><p>Setup <span id="sec:orgd7ad28a" label="sec:orgd7ad28a">[sec:orgd7ad28a]</span></p>
+<li><p>Inspect the newly created matrix and create constants <span id="sec:org1e60979" label="sec:org1e60979">[sec:org1e60979]</span></p></li>
+<li><p>Setup <span id="sec:org0340111" label="sec:org0340111">[sec:org0340111]</span></p>
 <ol>
-<li><p>Load Packages <span id="sec:org192c02f" label="sec:org192c02f">[sec:org192c02f]</span></p>
+<li><p>Load Packages <span id="sec:org1da1698" label="sec:org1da1698">[sec:org1da1698]</span></p>
 <pre><code>if (require(&quot;pacman&quot;)) {
     library(pacman)
   }else{
@@ -758,7 +759,7 @@ p %&gt;% head() %&gt;% print()</code></pre></li>
   pacman::p_load(Matrix, igraph, plotly, mise, docstring, expm)
   mise()</code></pre>
 <pre><code>Loading required package: pacman</code></pre></li>
-<li><p>Define function to create DiagonalsSparse Diagonal Function <span id="sec:org9ec0913" label="sec:org9ec0913">[sec:org9ec0913]</span> This doesn’t matter for the power walk, real exponents will always give non-zero values anyway</p>
+<li><p>Define function to create DiagonalsSparse Diagonal Function <span id="sec:orgab9818f" label="sec:orgab9818f">[sec:orgab9818f]</span> This doesn’t matter for the power walk, real exponents will always give non-zero values anyway</p>
 <pre><code>sparse_diag &lt;- function(mat) {
   #&#39; Diagonal Factors of Sparse Matrix
   #&#39;
@@ -786,20 +787,20 @@ p %&gt;% head() %&gt;% print()</code></pre></li>
   ## Return the Diagonal Matrix
   return(D)
 }</code></pre></li>
-<li><p>Make an Example Graph <span id="sec:orgfe53f65" label="sec:orgfe53f65">[sec:orgfe53f65]</span></p>
+<li><p>Make an Example Graph <span id="sec:org393a2c2" label="sec:org393a2c2">[sec:org393a2c2]</span></p>
 <pre><code>g1 &lt;- igraph::erdos.renyi.game(n = 20, 0.2)
 A &lt;- igraph::get.adjacency(g1) # Row to column
 
 
 beta = 0.843234
 β = beta</code></pre></li>
-<li><p>Plot <span id="sec:org4ae830b" label="sec:org4ae830b">[sec:org4ae830b]</span></p>
+<li><p>Plot <span id="sec:orgb235456" label="sec:orgb235456">[sec:orgb235456]</span></p>
 <pre><code>plot(g1)</code></pre>
 <p><img src="./Media/Example-graph-plot-debug-power-walk.png" alt="image" /></p></li>
 </ol></li>
-<li><p>Power Walk <span id="sec:org2ce08b0" label="sec:org2ce08b0">[sec:org2ce08b0]</span></p>
+<li><p>Power Walk <span id="sec:orgd3454ed" label="sec:orgd3454ed">[sec:orgd3454ed]</span></p>
 <ol>
-<li><p>Define B <span id="sec:org16b0a85" label="sec:org16b0a85">[sec:org16b0a85]</span></p>
+<li><p>Define B <span id="sec:org14d221e" label="sec:org14d221e">[sec:org14d221e]</span></p>
 <pre><code>B      &lt;- A
 B@x    &lt;- β^(A@x)
 B      &lt;- A
@@ -944,7 +945,7 @@ Bo@x   &lt;- β^(A@x) -1   # This in theory would be faster
 [18,]  .         .        -0.156766  .        -0.156766  .
 [19,]  .         .        -0.156766 -0.156766  .         .
 [20,]  .        -0.156766  .         .         .         .</code></pre></li>
-<li><p>Solve the Scaling Matrix <span id="sec:org6e8fe0c" label="sec:org6e8fe0c">[sec:org6e8fe0c]</span> We don’t need to worry about any terms of <span class="math inline">\(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\)</span> being 0:</p>
+<li><p>Solve the Scaling Matrix <span id="sec:orgd2e701c" label="sec:orgd2e701c">[sec:orgd2e701c]</span> We don’t need to worry about any terms of <span class="math inline">\(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\)</span> being 0:</p>
 <pre><code>(δB   &lt;- 1/(colSums(Bo)+n))</code></pre>
 <pre><code> [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
  [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
@@ -955,12 +956,12 @@ Bo@x   &lt;- β^(A@x) -1   # This in theory would be faster
  [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
 [13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
 [19] 0.05246754 0.05120406</code></pre></li>
-<li><p>Find the Transition Probability Matrix <span id="sec:org32e403f" label="sec:org32e403f">[sec:org32e403f]</span></p>
+<li><p>Find the Transition Probability Matrix <span id="sec:org4dcaddc" label="sec:org4dcaddc">[sec:org4dcaddc]</span></p>
 <pre><code>  DB   &lt;- diag(δB)
 ## ** Create the Transition Probability Matrix
 ## Create the Trans Prob Mat using Power Walk
   T &lt;- Bo %*% DB</code></pre></li>
-<li><p>Implement the Loop <span id="sec:org4976c09" label="sec:org4976c09">[sec:org4976c09]</span></p>
+<li><p>Implement the Loop <span id="sec:org54b468e" label="sec:org54b468e">[sec:org54b468e]</span></p>
 <pre><code>## ** Implement the Power Walk
 ## *** Set Initial Values
   p_new  &lt;- rep(1/n, n)  # Uniform
@@ -984,8 +985,105 @@ print(p)</code></pre>
 </ol></li>
 </ol></li>
 </ol>
-<h1 id="sec:org266620c">Appendix</h1>
-<h2 id="sec:orgd1569fc">Glossary</h2>
+<h1 id="sec:org3240ef2">Report Notes</h1>
+<ul>
+<li><p>I could wrap <code>listings</code> in a <code>tcolorbox</code> environment just like I did for minted</p>
+<ul>
+<li><p>I could also use shadowbox with <code>listings</code> for a similar aesthetics, but then I’d have to use <code>sed</code> to make them floats after <code>org</code> export.</p></li>
+</ul></li>
+<li><p>The <code>tcolorbox</code> may work as a float without effort?</p></li>
+<li><p>I know that <code>listings</code> has an option to float over two columns, maybe that’s what I should do, or just avoid two columns all toghether.</p></li>
+</ul>
+<h1 id="sec:org4393556">Relating the Power Walk to the Random Surfer</h1>
+<p>These are notes relating to<span class="citation" data-cites="parkPowerWalkRevisiting2013"><sup>1</sup></span></p>
+<h2 id="relating-terms-in-power-walk-to-random-surfer">Relating terms in Power Walk to Random Surfer</h2>
+<p>So if a term in the Power Walk can be related to <span class="math inline">\(\alpha\)</span> in the random surfer, which is in turn <span class="math inline">\(\xi_2\)</span>, I’ll be able to understand it better.<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Consider the equation:</p>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{T}&amp;= \mathbf{B}\mathbf{D}_{\mathbf{B}}^{- 1} \\
+&amp;= \left( \mathbf{B}+  \mathbf{O} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1} \\\end{aligned}\]</span></p>
+<p>Break this into to terms so that we can simplify it a bit:</p>
+<p><span class="math display">\[\begin{aligned}
+    \mathbf{T} &amp;= \Bigg[ \left( \mathbf{B}- \mathbf{O} \right)\mathbf{D}_{\mathbf{B}}^{- 1} \Bigg] + \Bigg\{  \mathbf{O}\mathbf{D}_{\mathbf{B}}^{- 1} \Bigg\}\end{aligned}\]</span></p>
+<h3 id="value-of-1st-term">Value of [1st Term]</h3>
+<p>Observe that for all <span class="math inline">\(\forall i,j\in \mathbb{Z}^+\)</span>:</p>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{A}_{i, j} \in \left\{0, 1\right\} \\
+\implies  \mathbf{B}^{\mathbf{A}_{i, j}} &amp;\in \left\{\beta^0, \beta^1\right\} \\
+                     &amp;= \left\{1, \beta \right\}  \\
+                      \implies  \beta \mathbf{A} = \left\{0, \beta \right\}\end{aligned}\]</span></p>
+<p>Using this property we get the following</p>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{B}_{i,j}- \mathbf{O}_{i,j} = \left( \beta^{\mathbf{A}_{i,j}} -1 \right) &amp;=
+\begin{cases}
+    0      , &amp;\enspace \mathbf{A}_{i,j}=0  \\
+    \beta-1, &amp;\enspace \mathbf{A}_{i,j}=1  \\
+\end{cases} \\
+\left( \beta- 1 \right) \mathbf{A}_{i,j} &amp;=
+\begin{cases}
+    0      , &amp;\enspace \mathbf{A}_{i,j}=0  \\
+    \beta-1, &amp;\enspace \mathbf{A}_{i,j}=1  \\
+\end{cases} \\\end{aligned}\]</span></p>
+<p>This means we have</p>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{A} \in \left\{0, 1\right\} \forall i,j  \implies   \mathbf{B}_{i,j}- \mathbf{O}_{i,j} &amp;= \left( \beta-1 \right) \mathbf{A}\end{aligned}\]</span></p>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{B}&amp;= \left( \mathbf{B}+  \mathbf{O}- \mathbf{O} \right) \\
+&amp;= \left( \mathbf{B}- 1 \right)\end{aligned}\]</span></p>
+<h2 id="value-of-2nd-term">Value of {2nd Term}</h2>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{O} \mathbf{D_B^{- 1}} &amp;=
+\begin{pmatrix}
+    1 &amp; 1      &amp; 1 &amp;        \\
+    1 &amp; 1      &amp; 1 &amp;\cdots  \\
+    1 &amp; 1      &amp; 1 &amp;        \\
+      &amp; \vdots &amp;   &amp;\ddots
+\end{pmatrix}
+\begin{pmatrix}
+    \frac{1}{\delta_1} &amp; 1                    &amp; 1                   &amp; \\
+    1                  &amp; \frac{1}{\delta_{2}} &amp; 1 \cdots            &amp; \\
+    1                  &amp; 1                    &amp;  \frac{1}{\delta_3} &amp; \\
+               &amp; \vdots &amp;             &amp;                     \ddots
+\end{pmatrix}
+\\
+&amp;= n
+\begin{pmatrix}
+    \frac{1}{n} &amp; \frac{1}{n}      &amp; \frac{1}{n} &amp;        \\
+    \frac{1}{n} &amp; \frac{1}{n}      &amp; \frac{1}{n} &amp;\cdots  \\
+    \frac{1}{n} &amp; \frac{1}{n}      &amp; \frac{1}{n} &amp;        \\
+      &amp; \vdots &amp;   &amp;\ddots
+\end{pmatrix}
+\begin{pmatrix}
+    \frac{1}{\delta_1} &amp; 1                    &amp; 1                   &amp;        \\
+    1                  &amp; \frac{1}{\delta_2}    &amp; 1                   &amp; \cdots \\
+    1                  &amp; 1                    &amp;  \frac{1}{\delta_3} &amp;        \\
+                       &amp; \vdots               &amp;                     &amp; \ddots
+\end{pmatrix}
+\\
+&amp;= n \mathbf{E}\mathbf{D_B}^{-1}\end{aligned}\]</span></p>
+<p>where the following definitions hold (<span class="math inline">\(\forall i, j \in \mathbb{Z}^+\)</span>):</p>
+<ul>
+<li><p><span class="math inline">\(\mathbf{E}_{i, j} = \frac{1}{n}\)</span></p></li>
+<li><p><span class="math inline">\(\mathbf{D_B}^{-1}_{k, k} = \frac{1}{\delta_k}\)</span></p></li>
+<li><p>The value of <span class="math inline">\(\delta\)</span> is value that each term in a column must be divided by to become zero, in the case of the poewr walk that is just <span class="math inline">\(\frac{1}{\mathtt{colSums}\left( \mathbf{B} \right)} = \vec{1}\mathbf{B}\)</span>, but if there were zeros in a column, it would be necessary to swap out the $0$s for $1$s and then sum in order to prevent a division by zero issue and because the 0s should be left.</p></li>
+<li><p><span class="math inline">\(\mathbf{A}\in \left\{0, 1\right\} \forall i,j\)</span> is the unweighted adjacency matrix of the relevant graph.</p></li>
+</ul>
+<p>putting this all together we can do the following:</p>
+<p><span class="math display">\[\begin{aligned}
+\mathbf{T}&amp;= \mathbf{B}\mathbf{D}^{- 1}_{\mathbf{B}} \\
+&amp;= \left( \mathbf{B}+  \mathbf{O} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1} \\
+&amp;= \left( \mathbf{B}- \mathbf{O} \right)\mathbf{D}_{B}^{- 1}  +  \mathbf{O} {\mathbf{D}_{\mathbf{B}}^{- 1}} \\
+ \intertext{From above:} \\
+&amp;= \left( \beta- 1 \right) \mathbf{A}_{i,j} +  n \mathbf{E} \mathbf{D}_{\mathbf{B}}^{- 1}\\
+&amp;= \mathbf{A}_{i,j}\left( \beta- 1 \right)  +  n \mathbf{E} \mathbf{D}_{\mathbf{B}}^{- 1}\\
+ \intertext{because $\mathbf{D} \mathbf{D}^{- 1} = \mathbf{I}$ we can multiply one side through:} \\
+&amp;= \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{A}}^{- 1}\mathbf{A}_{i,j}\left( \beta- 1 \right)  +  n \mathbf{E} \mathbf{D}_{\mathbf{B}}^{- 1}\\\end{aligned}\]</span></p>
+<p>But the next step requires showing that:</p>
+<p><span class="math display">\[\begin{aligned}
+\left( \beta-1 \right)\mathbf{D}_\mathbf{A} \mathbf{D}_{\mathbf{B}}^{- 1} &amp;= \mathbf{I} - n \mathbf{D}_{B}^{- 1}\end{aligned}\]</span></p>
+<p>it seems to right because if <span class="math inline">\(\mathbf{A}\)</span> is totally disconnected we get <span class="math inline">\(\left[ 0 \right]_{n\times n} = \mathbf{I}-n \left[ \frac{1}{n} \right]_{n\times n}\)</span>, not sure how to show it though.</p>
+<h1 id="sec:org8abcfb3">Appendix</h1>
+<h2 id="sec:org4a35813">Glossary</h2>
 <dl>
 <dt><span>Eigenvector Centrality</span></dt>
 <dd><p>PageRank</p>
@@ -1000,5 +1098,16 @@ print(p)</code></pre>
 </ul>
 </dd>
 </dl>
+<div id="refs" class="references" role="doc-bibliography">
+<div id="ref-parkPowerWalkRevisiting2013">
+<p>1. Park, L. A. F. &amp; Simoff, S. Power walk: Revisiting the random surfer. in <em>Proceedings of the 18th Australasian Document Computing Symposium</em> 50–57 (Association for Computing Machinery, 2013). doi:<a href="https://doi.org/10.1145/2537734.2537749">10.1145/2537734.2537749</a>.</p>
+</div>
+</div>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Although I’m not quite sure why <span class="math inline">\(\alpha\)</span> is <span class="math inline">\(\xi_{2}\)</span> either<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
 </body>
 </html>
