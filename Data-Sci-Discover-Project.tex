@@ -1,4 +1,4 @@
-% Created 2020-09-26 Sat 14:14
+% Created 2020-09-26 Sat 21:18
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -17,6 +17,7 @@
 \usepackage{listings}
 \twocolumn
 \IfFileExists{./resources/style.sty}{\usepackage{resources/style}}{}
+\IfFileExists{./resources/style.sty}{\usepackage{resources/widetext}}{}
 \IfFileExists{./resources/referencing.sty}{\usepackage{resources/referencing}}{}
 \addbibresource{resources/references.bib}
 \author{Ryan Greenup}
@@ -37,7 +38,7 @@
 ./resources/
 
 \section{Links}
-\label{sec:org914bf09}
+\label{sec:org536b943}
 \begin{itemize}
 \item \href{Proposal/Propsal.org}{Research Proposal}
 \item \href{laparkPowerWalk2013.pdf}{Paper}
@@ -46,9 +47,9 @@
 \item \href{ImplementingPowerWalk/01PowerWalk.R}{Implement Power Walk on Sparse Matrix}
 \end{itemize}
 \section{Proposal}
-\label{sec:orgfaee5e2}
+\label{sec:orgfe4687f}
 \subsection{Question}
-\label{sec:org55d78b0}
+\label{sec:orgd3bba80}
 
 \emph{Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \(\alpha\)}
 
@@ -62,7 +63,7 @@ Now the question is ``how does the structure of the matrix effect the second eig
 \end{quote}
 
 \subsection{Working}
-\label{sec:org9f09520}
+\label{sec:orgd357672}
 
 Take the exemplar Graph from Figure 1:
 
@@ -124,9 +125,9 @@ Where we have the following:
 \end{align}
 
 \section{Page Rank Methods}
-\label{sec:orgb798dfe}
+\label{sec:org1a4e1fd}
 \subsection{Introduction}
-\label{sec:orga30f6cd}
+\label{sec:org5b5b739}
 These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.
 
 Usually Page Rank refers to the random surfer but I'm using it in this document to refer to any process that attributes a probability of landing on a vertex during a random walk to a graph that is not ergodic.
@@ -170,9 +171,9 @@ where:
 \end{description}
 
 \subsection{Random Surfer}
-\label{sec:org3494873}
+\label{sec:orgfb1b500}
 \subsubsection{Introduction}
-\label{sec:org0e1bdc2}
+\label{sec:orge30aeb3}
 For con If a graph is non-ergodic, then a random walk isn't as easy to implement
 because in escence there are multiple disconnected graphs, to address this, some
 value \(\lambda\) is introduces which represents the probability of moving from
@@ -552,10 +553,10 @@ vector will also sum to 1.
 \end{enumerate}
 \end{enumerate}
 \subsubsection{Large Graph, Sparse Matrices using CRS}
-\label{sec:org5aec372}
+\label{sec:org28333b7}
 \begin{enumerate}
 \item Creating the Probability Transition Matrix
-\label{sec:orga7e34ec}
+\label{sec:orgcddb490}
 Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
 
 An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
@@ -707,7 +708,7 @@ summary(t(A) %*% D)
 \end{lstlisting}
 
 \item Solving the Random Surfer via the Power Method
-\label{sec:org3dc1988}
+\label{sec:org9757682}
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
 However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
@@ -779,9 +780,9 @@ p %>% head() %>% print()
 \end{lstlisting}
 \end{enumerate}
 \subsection{Power Walk Method}
-\label{sec:org0486d96}
+\label{sec:orgae944f5}
 \subsubsection{Introduction}
-\label{sec:org2586123}
+\label{sec:org773d206}
 
 \begin{align}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
@@ -803,13 +804,13 @@ where:
 \end{itemize}
 
 \subsubsection{Ordinary Matrices}
-\label{sec:org64792ca}
+\label{sec:orga6c7f08}
 Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 \subsubsection{Sparse Matrices}
-\label{sec:org89adec8}
+\label{sec:org40360d2}
 \begin{enumerate}
 \item Theory; Simplifying Power Walk to be solved with Sparse Matrices
-\label{sec:orgc5fdc45}
+\label{sec:org29b151d}
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -1003,7 +1004,7 @@ p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 \begin{enumerate}
 \item Solving the Background Probability
-\label{sec:org652f674}
+\label{sec:org8e94919}
 In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the \emph{Kronecker Product}):
 
 
@@ -1019,7 +1020,9 @@ Define \(\vec{\delta}\) as the column sums of
 Then we have:
 
 
-\[ \begin{aligned}
+
+\begin{widetext}
+\begin{align*}
      \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} & = \left(
      \begin{array}{cccc}
        1 & 1 & 1 & \\
@@ -1070,7 +1073,9 @@ Then we have:
      \overrightarrow{p_i})  \vec{1}\\
      & = \mathtt{repeat} (\overrightarrow{\delta} \overrightarrow{p_i}
      \mathtt{, n}) \label{eq:sparse-power-walk}
-   \end{aligned} \]
+   \end{align*}
+\end{widetext}
+
 Observe also that If we let \(\vec{\delta}\) and \(p_i\) be 1 dimensional
 vectors, this can also be expressed as a dot product:
 
@@ -1083,15 +1088,15 @@ Matrices & Vectors\\
 \end{enumerate}
 
 \item Practical; Implementing the Power Walk on Sparse Matrices
-\label{sec:orgdc66807}
+\label{sec:org65a3383}
 \begin{enumerate}
 \item Inspect the newly created matrix and create constants
-\label{sec:org9a950d8}
+\label{sec:org074225c}
 \item Setup
-\label{sec:org8b8f9ce}
+\label{sec:org88728c2}
 \begin{enumerate}
 \item Load Packages
-\label{sec:org6eb5e3e}
+\label{sec:org360a68f}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}[float=*tbph]
 if (require("pacman")) {
@@ -1109,7 +1114,7 @@ Loading required package: pacman
 \end{lstlisting}
 
 \item Define function to create DiagonalsSparse Diagonal Function
-\label{sec:org71f3d61}
+\label{sec:orgb37491c}
 This doesn't matter for the power walk, real exponents will always give non-zero values anyway
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}[float=*tbph]
@@ -1143,7 +1148,7 @@ sparse_diag <- function(mat) {
 \end{lstlisting}
 
 \item Make an Example Graph
-\label{sec:org13db14c}
+\label{sec:org7d1f98d}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}[float=*tbph]
 g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
@@ -1154,7 +1159,7 @@ beta = 0.843234
 β = beta
 \end{lstlisting}
 \item Plot
-\label{sec:org3373aab}
+\label{sec:orgf902981}
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}[float=*tbph]
@@ -1167,10 +1172,10 @@ plot(g1)
 \end{enumerate}
 
 \item Power Walk
-\label{sec:org08a676e}
+\label{sec:org05844ec}
 \begin{enumerate}
 \item Define B
-\label{sec:org62697c1}
+\label{sec:orgef34bc0}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}[float=*tbph]
 B      <- A
@@ -1335,7 +1340,7 @@ print(Bo)
 \end{lstlisting}
 
 \item Solve the Scaling Matrix
-\label{sec:org5df8884}
+\label{sec:org0e9a2a9}
 We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
@@ -1365,7 +1370,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 
 
 \item Find the Transition Probability Matrix
-\label{sec:orgcfcd5fc}
+\label{sec:orgfe06de7}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}[float=*tbph]
   DB   <- diag(δB)
@@ -1375,7 +1380,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 \end{lstlisting}
 
 \item Implement the Loop
-\label{sec:org812b8f0}
+\label{sec:org88777cf}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}[float=*tbph]
 ## ** Implement the Power Walk
@@ -1406,7 +1411,7 @@ print(p)
 \end{enumerate}
 \end{enumerate}
 \section{TypeSetting Notes}
-\label{sec:orge5c1e25}
+\label{sec:org8c17de3}
 \begin{itemize}
 \item I could wrap \texttt{listings} in a \texttt{tcolorbox} environment just like I did for minted
 \begin{itemize}
@@ -1418,7 +1423,7 @@ then I'd have to use \texttt{sed} to make them floats after \texttt{org} export.
 \end{itemize}
 emacs \textbf{*/}.org --batch -f org-html-export-as-html --kill* Appendix
 \subsection{Verbatim, listings and minted}
-\label{sec:orgb3fa44b}
+\label{sec:org8bdf171}
 \begin{itemize}
 \item Minted supports more languages and uses python, lstlistings doesn't require -shell-escapte, otherwise they're both about the same.
 \item Both can be used with \texttt{tcolorbox}
@@ -1487,7 +1492,7 @@ increases the complexity of it all.
 \end{itemize}
 
 \subsection{Glossary}
-\label{sec:org50db60a}
+\label{sec:org48444df}
 \begin{description}
 \item[{Eigenvector Centrality}] PageRank
 \begin{itemize}

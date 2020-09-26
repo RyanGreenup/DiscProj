@@ -20,6 +20,7 @@
 :LATEX:
 #+LATEX_HEADER: \twocolumn
 #+LATEX_HEADER: \IfFileExists{./resources/style.sty}{\usepackage{resources/style}}{}
+#+LATEX_HEADER: \IfFileExists{./resources/style.sty}{\usepackage{resources/widetext}}{}
 #+LATEX_HEADER: \IfFileExists{./resources/referencing.sty}{\usepackage{resources/referencing}}{}
 #+LATEX_HEADER: \addbibresource{resources/references.bib}
 :END:
@@ -980,7 +981,9 @@ In this case a vertical single column matrix will represent a vector and $\otime
 Then we have:
 
 
-\[ \begin{aligned}
+
+#+LATEX: \begin{widetext}
+\begin{align*}
      \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} & = \left(
      \begin{array}{cccc}
        1 & 1 & 1 & \\
@@ -1031,7 +1034,9 @@ Then we have:
      \overrightarrow{p_i})  \vec{1}\\
      & = \mathtt{repeat} (\overrightarrow{\delta} \overrightarrow{p_i}
      \mathtt{, n}) \label{eq:sparse-power-walk}
-   \end{aligned} \]
+   \end{align*}
+#+LATEX: \end{widetext}
+
 Observe also that If we let $\vec{\delta}$ and $p_i$ be 1 dimensional
 vectors, this can also be expressed as a dot product:
 
