@@ -165,7 +165,8 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 \lstset{
 %  frame=tb,
-  frame=leftline,
+  %frame=leftline,
+  frame=shadowbox,
   framesep=15pt,
   language=Java,
   aboveskip=15pt,
@@ -211,3 +212,29 @@
 		 /tcb/left skip=0.5 cm %Indent the whole box
 		 ]}%
 	\AfterEndEnvironment{minted}{\end{tcolorbox}}%
+
+
+% \BeforeBeginEnvironment{verbatim}{\begin{tcolorbox}[
+% 		colback=blue!1!white,colframe=blue!75!black,colbacktitle=red!20!blue!8,
+% 		coltitle=blue,
+% %		title=\textbf{\textit{R}}\ ,fonttitle=\it,
+% 		left=0.6cm, %Indent for the line numbers, % use line numbers because line-breaks
+% 		 /tcb/left skip=0.5 cm %Indent the whole box
+% 		 ]}%
+% 	\AfterEndEnvironment{verbatim}{\end{tcolorbox}}%
+
+
+% \BeforeBeginEnvironment{lstlisting}{\begin{tcolorbox}[
+% 		colback=blue!1!white,colframe=blue!75!black,colbacktitle=red!20!blue!8,
+% 		coltitle=blue,
+% %		title=\textbf{\textit{R}}\ ,fonttitle=\it,
+% 		left=0.6cm, %Indent for the line numbers, % use line numbers because line-breaks
+% 		 /tcb/left skip=0.5 cm %Indent the whole box
+% 		 ]}%
+% 	\AfterEndEnvironment{lstlisting}{\end{tcolorbox}}%
+
+
+%  \BeforeBeginEnvironment{verbatim}{\begin{figure}[*h]
+% \AfterEndEnvironment{verbatim}{\end{figure}}
+
+

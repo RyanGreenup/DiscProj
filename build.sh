@@ -26,6 +26,13 @@ pandoc "${FILEOUT}" -f html+tex_math_dollars+tex_math_single_backslash \
 #
 #emacs **/*.org --batch -f org-html-export-as-html --kill
 #
+# Make lstlistings float becuase didn't do it for me:
+# Would a better alternative be tcolourbox?
+   sed -i "s/begin{verbatim}.*/begin{lstlisting}[language={}]/" "${FILE}".tex # * Have no misbehaved verbatims
+   sed -i "s/end{verbatim}.*/end{lstlisting}/" "${FILE}".tex # * Have no misbehaved verbatims
+# make lstlisting float over double column
+ sed -i "s/begin{lstlisting}.*/begin{lstlisting}[float=*tbph]/" "${FILE}".tex # * means to go over twocolumn
+# 
 #But there is a reason this didn't work
 xelatex -interaction=nonstopmode "${FILE}.tex"
 biber "${FILE}.tex"

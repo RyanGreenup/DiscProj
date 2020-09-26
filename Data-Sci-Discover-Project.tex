@@ -1,4 +1,4 @@
-% Created 2020-09-25 Fri 22:59
+% Created 2020-09-26 Sat 14:14
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -15,6 +15,7 @@
 \usepackage{capt-of}
 \usepackage{hyperref}
 \usepackage{listings}
+\twocolumn
 \IfFileExists{./resources/style.sty}{\usepackage{resources/style}}{}
 \IfFileExists{./resources/referencing.sty}{\usepackage{resources/referencing}}{}
 \addbibresource{resources/references.bib}
@@ -33,9 +34,10 @@
 \maketitle
 \tableofcontents
 
+./resources/
 
 \section{Links}
-\label{sec:org67043e1}
+\label{sec:org914bf09}
 \begin{itemize}
 \item \href{Proposal/Propsal.org}{Research Proposal}
 \item \href{laparkPowerWalk2013.pdf}{Paper}
@@ -44,9 +46,9 @@
 \item \href{ImplementingPowerWalk/01PowerWalk.R}{Implement Power Walk on Sparse Matrix}
 \end{itemize}
 \section{Proposal}
-\label{sec:org5c57467}
+\label{sec:orgfaee5e2}
 \subsection{Question}
-\label{sec:org00ced32}
+\label{sec:org55d78b0}
 
 \emph{Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \(\alpha\)}
 
@@ -55,14 +57,18 @@ Yes. An open question for the Power Walk method is, can we determine the second 
 To begin, implement the method for computing PageRank and then the Power Walk. It can all be done using sparse matrices, so it only requires a fraction of the memory and is each iteration is quick.
 \end{quote}
 
+\begin{quote}
+Now the question is ``how does the structure of the matrix effect the second eigenvalue of the transition matrix?''
+\end{quote}
+
 \subsection{Working}
-\label{sec:orga6d26c0}
+\label{sec:org9f09520}
 
 Take the exemplar Graph from Figure 1:
 
 
 \begin{center}
-\includegraphics[width=.9\linewidth]{./Media/Example.png}
+\includegraphics[width=4cm]{./Media/Example.png}
 \end{center}
 
 
@@ -90,7 +96,7 @@ Where we have the following:
      1 & 1 & 10 & 1 \\
      1 & 1 & 1 & 10 \\
      \end{bmatrix}  \\
-     \text{$D_B$ is a diagonal matrix of the column sums:}\\
+     \intertext{$D_B$ is a diagonal matrix of the column sums:}\\
      D &= \begin{bmatrix}
      13 & 0 & 0 & 0 \\
      0 & 13 & 0 & 0 \\
@@ -118,9 +124,9 @@ Where we have the following:
 \end{align}
 
 \section{Page Rank Methods}
-\label{sec:orgfe0eea9}
+\label{sec:orgb798dfe}
 \subsection{Introduction}
-\label{sec:org7ab24bb}
+\label{sec:orga30f6cd}
 These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.
 
 Usually Page Rank refers to the random surfer but I'm using it in this document to refer to any process that attributes a probability of landing on a vertex during a random walk to a graph that is not ergodic.
@@ -164,16 +170,16 @@ where:
 \end{description}
 
 \subsection{Random Surfer}
-\label{sec:org46e2db1}
+\label{sec:org3494873}
 \subsubsection{Introduction}
-\label{sec:orgb663bbb}
+\label{sec:org0e1bdc2}
 For con If a graph is non-ergodic, then a random walk isn't as easy to implement
 because in escence there are multiple disconnected graphs, to address this, some
 value \(\lambda\) is introduces which represents the probability of moving from
 one vertex to any other vertex. Essentially the difference here is
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   if (require("pacman")) {
       library(pacman)
     }else{
@@ -183,7 +189,7 @@ one vertex to any other vertex. Essentially the difference here is
 \end{lstlisting}
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
     pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)
 \end{lstlisting}
 
@@ -195,7 +201,7 @@ one vertex to any other vertex. Essentially the difference here is
 Consider the following Graph taken from the paper:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
   plot(g1)
 \end{lstlisting}
@@ -210,7 +216,7 @@ Consider the following Graph taken from the paper:
 The adjacency Matrix is given by:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %>%
     as.matrix()
 
@@ -218,7 +224,7 @@ The adjacency Matrix is given by:
   (A <- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))])
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##    1 2 3 4 5 6 7 8 9 10
   ## 1  0 1 0 0 0 0 0 0 0  0
   ## 2  1 0 0 0 0 0 0 0 0  0
@@ -230,18 +236,18 @@ The adjacency Matrix is given by:
   ## 8  1 1 0 0 1 1 1 0 0  0
   ## 9  0 1 1 1 0 0 0 0 0  0
   ## 10 0 0 1 1 0 0 0 0 0  0
-\end{verbatim}
+\end{lstlisting}
 
 \item State Distribution
 \label{state-distribution}
 The state distribution is the transpose of the adjacency matrix:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   (p0 <- t(A))
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##    1 2 3 4 5 6 7 8 9 10
   ## 1  0 1 0 0 1 0 0 1 0  0
   ## 2  1 0 0 0 1 1 1 1 1  0
@@ -253,7 +259,7 @@ The state distribution is the transpose of the adjacency matrix:
   ## 8  0 0 0 0 0 0 0 0 0  0
   ## 9  0 0 0 0 0 0 0 0 0  0
   ## 10 0 0 0 0 0 0 0 0 0  0
-\end{verbatim}
+\end{lstlisting}
 
 \item Probability Transition Matrix
 \label{probability-transition-matrix}
@@ -262,11 +268,11 @@ initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   p0 %*% diag(1/colSums(p0))
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]      [,9] [,10]
   ## 1     0    1    0    0 0.25  0.0    0  0.2 0.0000000   0.0
   ## 2     1    0    0    0 0.25  0.5    1  0.2 0.3333333   0.0
@@ -278,13 +284,13 @@ scaled to 1.
   ## 8     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
   ## 9     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
   ## 10    0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
-\end{verbatim}
+\end{lstlisting}
 
 \begin{enumerate}
 \item Create a Function
 \label{create-a-function}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   adj_to_probTrans <- function(adjMat) {
     t(adjMat) %*% diag(1/colSums(t(adjMat)))
   }
@@ -292,7 +298,7 @@ scaled to 1.
   (T <- adj_to_probTrans(A)) %>% round(2)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
   ## 1     0    1    0    0 0.25  0.0    0  0.2 0.00   0.0
   ## 2     1    0    0    0 0.25  0.5    1  0.2 0.33   0.0
@@ -304,7 +310,7 @@ scaled to 1.
   ## 8     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
   ## 9     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
   ## 10    0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
-\end{verbatim}
+\end{lstlisting}
 \end{enumerate}
 \end{enumerate}
 
@@ -329,7 +335,7 @@ transition matrix \(S\):
 \end{align}
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
   l <- 0.8123456789
 
@@ -343,11 +349,11 @@ The eigenvector corresponding to the the eigenvalue of 1 will be the
 stationary point:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   eigen(S, symmetric = FALSE)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
 eigen() decomposition
 $values
  [1]  1.000000e+00 -8.123457e-01 -8.123457e-01  8.123457e-01 -3.407464e-09  3.407464e-09
@@ -377,7 +383,7 @@ $vectors
  [9,]  3.196396e-01  1.965446e-01 -2.821213e-03 -5.466313e-03
 [10,]  3.196396e-01  1.965446e-01 -2.821213e-03  1.388344e-02
 
-\end{verbatim}
+\end{lstlisting}
 
 So in this case the stationary point is
 
@@ -390,21 +396,21 @@ $$
 $$
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1])
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##  [1] -0.48531271 -0.52732002 -0.49152601 -0.47977477 -0.05288058 -0.05288058
   ##  [7] -0.05288058 -0.04558671 -0.04558671 -0.04558671
-\end{verbatim}
+\end{lstlisting}
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   (p_new <- S %*% p)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##           [,1]
   ## 1  -0.48531271
   ## 2  -0.52732002
@@ -416,17 +422,17 @@ $$
   ## 8  -0.04558671
   ## 9  -0.04558671
   ## 10 -0.04558671
-\end{verbatim}
+\end{lstlisting}
 
 However this vector does not sum to 1 so the scale should be adjusted
 (for probabilities the vector should sum to 1):
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   (p_new <- p_new/sum(p_new))
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##         [,1]
   ## 1  0.2129185
   ## 2  0.2313481
@@ -438,7 +444,7 @@ However this vector does not sum to 1 so the scale should be adjusted
   ## 8  0.0200000
   ## 9  0.0200000
   ## 10 0.0200000
-\end{verbatim}
+\end{lstlisting}
 
 \item Power Value Method
 \label{power-value-method}
@@ -446,7 +452,7 @@ Using the power method should give the same result, which it indeed
 does, but for the scale:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   p_new <- p_new *123456789
 
   while (sum(round(p, 9) != round(p_new, 9))) {
@@ -457,7 +463,7 @@ does, but for the scale:
   p_new
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##        [,1]
   ## 1  26286237
   ## 2  28561500
@@ -469,14 +475,14 @@ does, but for the scale:
   ## 8   2469136
   ## 9   2469136
   ## 10  2469136
-\end{verbatim}
+\end{lstlisting}
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   p
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##        [,1]
   ## 1  26286237
   ## 2  28561500
@@ -488,17 +494,17 @@ does, but for the scale:
   ## 8   2469136
   ## 9   2469136
   ## 10  2469136
-\end{verbatim}
+\end{lstlisting}
 
 This answer is however identical in direction, if it scaled to 1 the
 same value will be returned:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   (p_new <- p_new/sum(p_new))
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##         [,1]
   ## 1  0.2129185
   ## 2  0.2313481
@@ -510,7 +516,7 @@ same value will be returned:
   ## 8  0.0200000
   ## 9  0.0200000
   ## 10 0.0200000
-\end{verbatim}
+\end{lstlisting}
 
 \item Scaling
 \label{scaling}
@@ -518,7 +524,7 @@ However if the initial state sums to 1, then the scale of the stationary
 vector will also sum to 1.
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
   p_new <- S %*% p
 
@@ -530,7 +536,7 @@ vector will also sum to 1.
   cbind(p_new, p)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
   ##         [,1]      [,2]
   ## 1  0.2129185 0.2129185
   ## 2  0.2313481 0.2313481
@@ -542,14 +548,14 @@ vector will also sum to 1.
   ## 8  0.0200000 0.0200000
   ## 9  0.0200000 0.0200000
   ## 10 0.0200000 0.0200000
-\end{verbatim}
+\end{lstlisting}
 \end{enumerate}
 \end{enumerate}
 \subsubsection{Large Graph, Sparse Matrices using CRS}
-\label{sec:org409d7b9}
+\label{sec:org5aec372}
 \begin{enumerate}
 \item Creating the Probability Transition Matrix
-\label{sec:org3775f81}
+\label{sec:orga7e34ec}
 Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
 
 An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
@@ -563,7 +569,7 @@ This is implemented by the Matrix package in \textbf{\emph{R}}. CITE
 An sparse matrix can be created using the following syntax, which will return a matrix of the class \texttt{dgCMatrix}:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 library(Matrix)
 ## Create Example Matrix
 n <- 20
@@ -574,7 +580,7 @@ A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 summary(A)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
 
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j   x
@@ -598,7 +604,7 @@ summary(A)
 18 821120 809688 103
 19 541818 976802  78
 20 595348 993420  85
-\end{verbatim}
+\end{lstlisting}
 
 As before in section \ref{probability-transition-matrix}, the probability transition matrix can be found by:
 
@@ -611,7 +617,7 @@ To implement this for a sparseMatrix of the class \texttt{dgCMatrix}, the same t
 
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
  sparse_diag <- function(mat) {
   #' Diagonal Factors of Sparse Matrix
   #'
@@ -642,7 +648,7 @@ D <- sparse_diag(t(A))
 summary(D)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
 
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j           x
@@ -666,16 +672,16 @@ summary(D)
 18 803589 803589 0.008474576
 19 821120 821120 0.009708738
 20 821769 821769 0.012658228
-\end{verbatim}
+\end{lstlisting}
 
 and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 summary(t(A) %*% D)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j x
 1  809115  57981 1
@@ -698,10 +704,10 @@ summary(t(A) %*% D)
 18  66922 803589 1
 19 809688 821120 1
 20 291405 821769 1
-\end{verbatim}
+\end{lstlisting}
 
 \item Solving the Random Surfer via the Power Method
-\label{sec:org0fa8856}
+\label{sec:org3dc1988}
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
 However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
@@ -751,7 +757,7 @@ Let \(\mathbf{F}= \mathbf{B}\vec{p}\), consider the value of \(\mathbf{F}\) :
 So instead the power method can be implemented by performing an algorithm to the effect of:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 ## Find Stationary point of random surfer
 N     <- nrow(A)
 alpha <- 0.8
@@ -773,9 +779,9 @@ p %>% head() %>% print()
 \end{lstlisting}
 \end{enumerate}
 \subsection{Power Walk Method}
-\label{sec:org4df60ce}
+\label{sec:org0486d96}
 \subsubsection{Introduction}
-\label{sec:org9ec10c9}
+\label{sec:org2586123}
 
 \begin{align}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
@@ -797,13 +803,13 @@ where:
 \end{itemize}
 
 \subsubsection{Ordinary Matrices}
-\label{sec:org50777de}
+\label{sec:org64792ca}
 Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 \subsubsection{Sparse Matrices}
-\label{sec:orge7ec6a0}
+\label{sec:org89adec8}
 \begin{enumerate}
 \item Theory; Simplifying Power Walk to be solved with Sparse Matrices
-\label{sec:orge94527f}
+\label{sec:orgc5fdc45}
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -981,7 +987,7 @@ And so the the power method can be implemented using sparse matrices:
 in terms of \textbf{\emph{R}}:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 # It would also be possible to sum the element-wise product
@@ -997,7 +1003,7 @@ p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 \begin{enumerate}
 \item Solving the Background Probability
-\label{sec:orgc882834}
+\label{sec:org652f674}
 In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the \emph{Kronecker Product}):
 
 
@@ -1077,17 +1083,17 @@ Matrices & Vectors\\
 \end{enumerate}
 
 \item Practical; Implementing the Power Walk on Sparse Matrices
-\label{sec:org91cf875}
+\label{sec:orgdc66807}
 \begin{enumerate}
 \item Inspect the newly created matrix and create constants
-\label{sec:org22d9c80}
+\label{sec:org9a950d8}
 \item Setup
-\label{sec:orgd7ad28a}
+\label{sec:org8b8f9ce}
 \begin{enumerate}
 \item Load Packages
-\label{sec:org192c02f}
+\label{sec:org6eb5e3e}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 if (require("pacman")) {
     library(pacman)
   }else{
@@ -1098,15 +1104,15 @@ if (require("pacman")) {
   mise()
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
 Loading required package: pacman
-\end{verbatim}
+\end{lstlisting}
 
 \item Define function to create DiagonalsSparse Diagonal Function
-\label{sec:org9ec0913}
+\label{sec:org71f3d61}
 This doesn't matter for the power walk, real exponents will always give non-zero values anyway
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 sparse_diag <- function(mat) {
   #' Diagonal Factors of Sparse Matrix
   #'
@@ -1137,9 +1143,9 @@ sparse_diag <- function(mat) {
 \end{lstlisting}
 
 \item Make an Example Graph
-\label{sec:orgfe53f65}
+\label{sec:org13db14c}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
 
@@ -1148,10 +1154,10 @@ beta = 0.843234
 β = beta
 \end{lstlisting}
 \item Plot
-\label{sec:org4ae830b}
+\label{sec:org3373aab}
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 plot(g1)
 \end{lstlisting}
 
@@ -1161,12 +1167,12 @@ plot(g1)
 \end{enumerate}
 
 \item Power Walk
-\label{sec:org2ce08b0}
+\label{sec:org08a676e}
 \begin{enumerate}
 \item Define B
-\label{sec:org16b0a85}
+\label{sec:org62697c1}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 B      <- A
 B@x    <- β^(A@x)
 B      <- A
@@ -1184,11 +1190,11 @@ Bo@x   <- β^(A@x) -1   # This in theory would be faster
 \end{lstlisting}
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 print(B)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
 20 x 20 Matrix of class "dgeMatrix"
           [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]
  [1,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
@@ -1253,15 +1259,15 @@ print(B)
 [18,] 0.843234 1.000000 0.843234 1.000000
 [19,] 0.843234 0.843234 1.000000 1.000000
 [20,] 1.000000 1.000000 1.000000 1.000000
-\end{verbatim}
+\end{lstlisting}
 
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 print(Bo)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
 20 x 20 sparse Matrix of class "dgCMatrix"
 
  [1,]  .        -0.156766  .         .         .        -0.156766  .
@@ -1326,42 +1332,42 @@ print(Bo)
 [18,]  .         .        -0.156766  .        -0.156766  .
 [19,]  .         .        -0.156766 -0.156766  .         .
 [20,]  .        -0.156766  .         .         .         .
-\end{verbatim}
+\end{lstlisting}
 
 \item Solve the Scaling Matrix
-\label{sec:org6e8fe0c}
+\label{sec:org5df8884}
 We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 (δB   <- 1/(colSums(Bo)+n))
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
  [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
  [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
 [13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
 [19] 0.05246754 0.05120406
-\end{verbatim}
+\end{lstlisting}
 
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 (δB   <- 1/(colSums(B)))
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
  [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
  [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
 [13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
 [19] 0.05246754 0.05120406
-\end{verbatim}
+\end{lstlisting}
 
 
 \item Find the Transition Probability Matrix
-\label{sec:org32e403f}
+\label{sec:orgcfcd5fc}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
   DB   <- diag(δB)
 ## ** Create the Transition Probability Matrix
 ## Create the Trans Prob Mat using Power Walk
@@ -1369,9 +1375,9 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 \end{lstlisting}
 
 \item Implement the Loop
-\label{sec:org4976c09}
+\label{sec:org812b8f0}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{lstlisting}[float=*tbph]
 ## ** Implement the Power Walk
 ## *** Set Initial Values
   p_new  <- rep(1/n, n)  # Uniform
@@ -1389,20 +1395,99 @@ print(paste("The stationary point is"))
 print(p)
 \end{lstlisting}
 
-\begin{verbatim}
+\begin{lstlisting}[float=*tbph]
 [1] "The stationary point is"
  [1] 0.04882572 0.04963556 0.05044542 0.05044541 0.05044543 0.05004049
  [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
 [13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
 [19] 0.04923063 0.05044542
-\end{verbatim}
+\end{lstlisting}
 \end{enumerate}
 \end{enumerate}
 \end{enumerate}
-\section{Appendix}
-\label{sec:org266620c}
+\section{TypeSetting Notes}
+\label{sec:orge5c1e25}
+\begin{itemize}
+\item I could wrap \texttt{listings} in a \texttt{tcolorbox} environment just like I did for minted
+\begin{itemize}
+\item I could also use shadowbox with \texttt{listings} for a similar aesthetics, but
+then I'd have to use \texttt{sed} to make them floats after \texttt{org} export.
+\end{itemize}
+\item The \texttt{tcolorbox} may work as a float without effort?
+\item I know that \texttt{listings} has an option to float over two columns, maybe that's what I should do, or just avoid two columns all toghether.
+\end{itemize}
+emacs \textbf{*/}.org --batch -f org-html-export-as-html --kill* Appendix
+\subsection{Verbatim, listings and minted}
+\label{sec:orgb3fa44b}
+\begin{itemize}
+\item Minted supports more languages and uses python, lstlistings doesn't require -shell-escapte, otherwise they're both about the same.
+\item Both can be used with \texttt{tcolorbox}
+\item To export \texttt{\#+begin\_src} with either use the following syntax in the \texttt{.emacs}
+\item All \texttt{org-babel} results go in \texttt{verbatim}, this means no floating or tcolourbox or any reasonable behaviour in a twocolumn environment.
+\begin{itemize}
+\item \texttt{\#+begin\_example} blocks are nice because they will only be verbatim with no lstlistings magic.
+\item So the easiest solution here might be to embed the results as comments in the source block
+\item Another option is to just use a \texttt{build.sh} or \texttt{makefile} and use sed:
+\lstset{language=elisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}[float=*tbph]
+    ;; Change verbatim to lstlistings
+    (defun my-latex-export-example-blocks (text backend info)
+    "Export example blocks as listings env."
+    (when (org-export-derived-backend-p backend 'latex)
+        (with-temp-buffer
+        (insert text)
+        ;; replace verbatim env by listings
+        (goto-char (point-min))
+        (replace-string "\\begin{lstlisting}[float=*tbph]
+        (replace-string "\\end{lstlisting}
+        (buffer-substring-no-properties (point-min) (point-max)))))
+
+    (add-to-list 'org-export-filter-example-block-functions
+            'my-latex-export-example-blocks)
+
+
+
+
+\end{lstlisting}
+\begin{itemize}
+\item If it was also necessary to make the \texttt{lstlisting} environments all float you could use something like this:
+\lstset{language=elisp,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}[float=*tbph]
+    ;; Change verbatim but also change lstlistings to a float and
+    (defun my-latex-export-example-blocks (text backend info)
+    "Export example blocks as listings env."
+    (when (org-export-derived-backend-p backend 'latex)
+        (with-temp-buffer
+        (insert text)
+        ;; replace verbatim env by listings
+        (goto-char (point-min))
+        (replace-string "\\begin{lstlisting}[float=*tbph]
+        (replace-string "\\end{lstlisting}
+        (replace-string "\\begin{lstlistings}" "\\begin[float=*t]{lstlisting}")
+        (buffer-substring-no-properties (point-min) (point-max)))))
+
+    (add-to-list 'org-export-filter-example-block-functions
+            'my-latex-export-example-blocks)
+\end{lstlisting}
+\item Another option (IMO Simpler) is to just use a \texttt{build.sh} or \texttt{makefile} and use sed:
+\lstset{language=bash,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}[float=*tbph]
+        sed -i "s/begin{lstlisting}[float=*tbph]
+        sed -i "s/end{lstlisting}
+        sed -i "s/begin{lstlisting}[float=*tbph]
+\end{lstlisting}
+\end{itemize}
+\end{itemize}
+\item One issue with including results and output is that they're constantly
+disconnected, you could wrap them in a minpage or tcolorbox but ofcourse this
+increases the complexity of it all.
+\begin{itemize}
+\item While using \texttt{\textbackslash{}begin\{verbatim\}[float=*h!]} will keep them connected, the document will not be very well balanced so that isn't a great option either.
+\end{itemize}
+\end{itemize}
+
 \subsection{Glossary}
-\label{sec:orgd1569fc}
+\label{sec:org50db60a}
 \begin{description}
 \item[{Eigenvector Centrality}] PageRank
 \begin{itemize}

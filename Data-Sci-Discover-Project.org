@@ -18,10 +18,10 @@
 #+PROPERTY: header-args:R :session DiscProj :dir ./ :cache yes :eval never-export :exports both :results output
 :END:
 :LATEX:
+#+LATEX_HEADER: \twocolumn
 #+LATEX_HEADER: \IfFileExists{./resources/style.sty}{\usepackage{resources/style}}{}
 #+LATEX_HEADER: \IfFileExists{./resources/referencing.sty}{\usepackage{resources/referencing}}{}
 #+LATEX_HEADER: \addbibresource{resources/references.bib}
-# #+LATEX_HEADER: \twocolumn
 :END:
 
 * Links
@@ -38,6 +38,10 @@
 #+begin_quote
 Yes. An open question for the Power Walk method is, can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \alpha. The second eigenvalue determines how long the algorithm takes to converge and how stable the solution is.
 To begin, implement the method for computing PageRank and then the Power Walk. It can all be done using sparse matrices, so it only requires a fraction of the memory and is each iteration is quick.
+#+end_quote
+
+#+begin_quote
+Now the question is "how does the structure of the matrix effect the second eigenvalue of the transition matrix?"
 #+end_quote
 
 ** Working
@@ -81,8 +85,8 @@ D -> C
 @enddot
 #+end_src
 
-#+attr_html: :width 400px
-#+attr_latex: :width 7cm
+#+attr_html: :width 200px
+#+attr_latex: :width 4cm
 #+RESULTS: DotLib
 [[file:./Media/Example.png]]
 
@@ -111,7 +115,7 @@ Where we have the following:
      1 & 1 & 10 & 1 \\
      1 & 1 & 1 & 10 \\
      \end{bmatrix}  \\
-     \text{$D_B$ is a diagonal matrix of the column sums:}\\
+     \intertext{$D_B$ is a diagonal matrix of the column sums:}\\
      D &= \begin{bmatrix}
      13 & 0 & 0 & 0 \\
      0 & 13 & 0 & 0 \\
@@ -1327,13 +1331,70 @@ print(p)
 :  [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
 : [13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
 : [19] 0.04923063 0.05044542
-* Report Notes
+* TypeSetting Notes
 - I could wrap ~listings~ in a ~tcolorbox~ environment just like I did for minted
   + I could also use shadowbox with ~listings~ for a similar aesthetics, but
     then I'd have to use ~sed~ to make them floats after ~org~ export.
 - The ~tcolorbox~ may work as a float without effort?
 - I know that ~listings~ has an option to float over two columns, maybe that's what I should do, or just avoid two columns all toghether.
-* Appendix
+emacs **/*.org --batch -f org-html-export-as-html --kill* Appendix
+** Verbatim, listings and minted
+- Minted supports more languages and uses python, lstlistings doesn't require -shell-escapte, otherwise they're both about the same.
+- Both can be used with ~tcolorbox~
+- To export ~#+begin_src~ with either use the following syntax in the ~.emacs~
+- All ~org-babel~ results go in ~verbatim~, this means no floating or tcolourbox or any reasonable behaviour in a twocolumn environment.
+  + ~#+begin_example~ blocks are nice because they will only be verbatim with no lstlistings magic.
+  + So the easiest solution here might be to embed the results as comments in the source block
+  + Another option is to just use a ~build.sh~ or ~makefile~ and use sed:
+    #+begin_src elisp :eval never-export
+    ;; Change verbatim to lstlistings
+    (defun my-latex-export-example-blocks (text backend info)
+    "Export example blocks as listings env."
+    (when (org-export-derived-backend-p backend 'latex)
+        (with-temp-buffer
+        (insert text)
+        ;; replace verbatim env by listings
+        (goto-char (point-min))
+        (replace-string "\\begin{verbatim}" "\\begin{lstlisting}")
+        (replace-string "\\end{verbatim}" "\\end{lstlisting}")
+        (buffer-substring-no-properties (point-min) (point-max)))))
+
+    (add-to-list 'org-export-filter-example-block-functions
+            'my-latex-export-example-blocks)
+
+
+
+
+    #+end_src
+    + If it was also necessary to make the ~lstlisting~ environments all float you could use something like this:
+        #+begin_src elisp
+    ;; Change verbatim but also change lstlistings to a float and
+    (defun my-latex-export-example-blocks (text backend info)
+    "Export example blocks as listings env."
+    (when (org-export-derived-backend-p backend 'latex)
+        (with-temp-buffer
+        (insert text)
+        ;; replace verbatim env by listings
+        (goto-char (point-min))
+        (replace-string "\\begin{verbatim}" "\\begin{lstlisting}")
+        (replace-string "\\end{verbatim}" "\\end{lstlisting}")
+        (replace-string "\\begin{lstlistings}" "\\begin[float=*t]{lstlisting}")
+        (buffer-substring-no-properties (point-min) (point-max)))))
+
+    (add-to-list 'org-export-filter-example-block-functions
+            'my-latex-export-example-blocks)
+         #+end_src
+    + Another option (IMO Simpler) is to just use a ~build.sh~ or ~makefile~ and use sed:
+        #+begin_src bash
+        sed -i "s/begin{verbatim}.*/begin{lstlisting}/" "${FILE}".tex # * Have no misbehaved verbatims
+        sed -i "s/end{verbatim}.*/end{lstlisting}/" "${FILE}".tex # * Have no misbehaved verbatims
+        sed -i "s/begin{lstlisting}.*/begin{lstlisting}[float=*t]/" "${FILE}".tex # * means to go over twocolumn
+        #+end_src
+- One issue with including results and output is that they're constantly
+  disconnected, you could wrap them in a minpage or tcolorbox but ofcourse this
+  increases the complexity of it all.
+  + While using ~\begin{verbatim}[float=*h!]~ will keep them connected, the document will not be very well balanced so that isn't a great option either.
+
 ** Glossary
 - Eigenvector Centrality :: PageRank
   - The probability of landing on a vertex in a random walk by adding a small random probability to each vertex.
