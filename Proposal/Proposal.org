@@ -19,7 +19,7 @@
 #+PROPERTY: header-args :eval never-export
 :END:
 :LATEX:
-#+LATEX_HEADER:\twocolumn
+# #+LATEX_HEADER:\twocolumn
 #+LATEX_HEADER: \IfFileExists{../resources/style.sty}{\usepackage{../resources/style}}{}
 #+LATEX_HEADER: \IfFileExists{../resources/referencing.sty}{\usepackage{../resources/referencing}}{}
 #+LATEX_HEADER: \addbibresource{../resources/references.bib}

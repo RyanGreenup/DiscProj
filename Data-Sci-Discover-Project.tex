@@ -1,4 +1,4 @@
-% Created 2020-09-27 Sun 00:15
+% Created 2020-09-27 Sun 23:43
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -36,7 +36,7 @@
 ./resources/
 
 \section{Links}
-\label{sec:orga2bf03b}
+\label{sec:orgfca7010}
 \begin{itemize}
 \item \href{Proposal/Propsal.org}{Research Proposal}
 \item \href{laparkPowerWalk2013.pdf}{Paper}
@@ -45,9 +45,9 @@
 \item \href{ImplementingPowerWalk/01PowerWalk.R}{Implement Power Walk on Sparse Matrix}
 \end{itemize}
 \section{Proposal}
-\label{sec:orga41f155}
+\label{sec:org430efae}
 \subsection{Question}
-\label{sec:orge1d6b0c}
+\label{sec:orgefadf05}
 
 \emph{Can we determine the second eigenvalue from the method parameters? For PageRank, the second eigenvalue is equal to the smoothing parameter \(\alpha\)}
 
@@ -57,7 +57,7 @@ To begin, implement the method for computing PageRank and then the Power Walk. I
 \end{quote}
 
 \subsection{Working}
-\label{sec:org7baf51d}
+\label{sec:org48e8a05}
 
 Take the exemplar Graph from Figure 1:
 
@@ -119,9 +119,9 @@ Where we have the following:
 \end{align}
 
 \section{Page Rank Methods}
-\label{sec:org29a3422}
+\label{sec:org2749d7d}
 \subsection{Introduction}
-\label{sec:org9e231cb}
+\label{sec:orga42e2ec}
 These asses node centrality by performing a random walk across the graph and recording the frequencies of landing on a given vertex.
 
 Usually Page Rank refers to the random surfer but I'm using it in this document to refer to any process that attributes a probability of landing on a vertex during a random walk to a graph that is not ergodic.
@@ -165,9 +165,9 @@ where:
 \end{description}
 
 \subsection{Random Surfer}
-\label{sec:orgf4a36f9}
+\label{sec:org44140b4}
 \subsubsection{Introduction}
-\label{sec:org6bcd98d}
+\label{sec:org086b628}
 For con If a graph is non-ergodic, then a random walk isn't as easy to implement
 because in escence there are multiple disconnected graphs, to address this, some
 value \(\lambda\) is introduces which represents the probability of moving from
@@ -547,10 +547,10 @@ vector will also sum to 1.
 \end{enumerate}
 \end{enumerate}
 \subsubsection{Large Graph, Sparse Matrices using CRS}
-\label{sec:orgfc70344}
+\label{sec:orgec500cf}
 \begin{enumerate}
 \item Creating the Probability Transition Matrix
-\label{sec:org57c554c}
+\label{sec:orgd400eb8}
 Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
 
 An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
@@ -702,7 +702,7 @@ summary(t(A) %*% D)
 \end{verbatim}
 
 \item Solving the Random Surfer via the Power Method
-\label{sec:org556b5e3}
+\label{sec:org2f4941e}
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
 However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
@@ -774,9 +774,9 @@ p %>% head() %>% print()
 \end{lstlisting}
 \end{enumerate}
 \subsection{Power Walk Method}
-\label{sec:org7c6efcd}
+\label{sec:orged61a4f}
 \subsubsection{Introduction}
-\label{sec:orgcc3e449}
+\label{sec:org17870fc}
 
 \begin{align}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
@@ -798,13 +798,13 @@ where:
 \end{itemize}
 
 \subsubsection{Ordinary Matrices}
-\label{sec:org7bced63}
+\label{sec:org9832666}
 Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 \subsubsection{Sparse Matrices}
-\label{sec:org4d6f8f3}
+\label{sec:orgb275848}
 \begin{enumerate}
 \item Theory; Simplifying Power Walk to be solved with Sparse Matrices
-\label{sec:orgbc03743}
+\label{sec:orgf7fae3a}
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -998,7 +998,7 @@ p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 \begin{enumerate}
 \item Solving the Background Probability
-\label{sec:org9e7ea5c}
+\label{sec:org906da38}
 In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the \emph{Kronecker Product}):
 
 
@@ -1078,15 +1078,15 @@ Matrices & Vectors\\
 \end{enumerate}
 
 \item Practical; Implementing the Power Walk on Sparse Matrices
-\label{sec:orgc9697d3}
+\label{sec:orgba43c4d}
 \begin{enumerate}
 \item Inspect the newly created matrix and create constants
-\label{sec:org1e60979}
+\label{sec:org2d58e71}
 \item Setup
-\label{sec:org0340111}
+\label{sec:orgf944d62}
 \begin{enumerate}
 \item Load Packages
-\label{sec:org1da1698}
+\label{sec:org1799574}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 if (require("pacman")) {
@@ -1104,7 +1104,7 @@ Loading required package: pacman
 \end{verbatim}
 
 \item Define function to create DiagonalsSparse Diagonal Function
-\label{sec:orgab9818f}
+\label{sec:org889f35c}
 This doesn't matter for the power walk, real exponents will always give non-zero values anyway
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
@@ -1138,7 +1138,7 @@ sparse_diag <- function(mat) {
 \end{lstlisting}
 
 \item Make an Example Graph
-\label{sec:org393a2c2}
+\label{sec:orgc5b3486}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
@@ -1149,7 +1149,7 @@ beta = 0.843234
 β = beta
 \end{lstlisting}
 \item Plot
-\label{sec:orgb235456}
+\label{sec:org5f66d8b}
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
@@ -1162,10 +1162,10 @@ plot(g1)
 \end{enumerate}
 
 \item Power Walk
-\label{sec:orgd3454ed}
+\label{sec:org3c8b4f0}
 \begin{enumerate}
 \item Define B
-\label{sec:org14d221e}
+\label{sec:orgaf9ded9}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 B      <- A
@@ -1330,7 +1330,7 @@ print(Bo)
 \end{verbatim}
 
 \item Solve the Scaling Matrix
-\label{sec:orgd2e701c}
+\label{sec:orga5c7721}
 We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
@@ -1360,7 +1360,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 
 
 \item Find the Transition Probability Matrix
-\label{sec:org4dcaddc}
+\label{sec:org429c3ae}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
   DB   <- diag(δB)
@@ -1370,7 +1370,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 \end{lstlisting}
 
 \item Implement the Loop
-\label{sec:org54b468e}
+\label{sec:org7e0b8b4}
 \lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
 \begin{lstlisting}
 ## ** Implement the Power Walk
@@ -1401,7 +1401,7 @@ print(p)
 \end{enumerate}
 \end{enumerate}
 \section{Report Notes}
-\label{sec:org3240ef2}
+\label{sec:org82b350f}
 \begin{itemize}
 \item I could wrap \texttt{listings} in a \texttt{tcolorbox} environment just like I did for minted
 \begin{itemize}
@@ -1412,10 +1412,11 @@ then I'd have to use \texttt{sed} to make them floats after \texttt{org} export.
 \item I know that \texttt{listings} has an option to float over two columns, maybe that's what I should do, or just avoid two columns all toghether.
 \end{itemize}
 \section{Relating the Power Walk to the Random Surfer}
-\label{sec:org4393556}
-These are notes relating to \cite[\textsection 3.3]{parkPowerWalkRevisiting2013}
-\subsection{Relating terms in Power Walk to Random Surfer}
 \label{relating-terms-in-power-walk-to-random-surfer}
+\subsection{Introduction}
+\label{sec:org4509f09}
+These are notes relating to \cite[\textsection 3.3]{parkPowerWalkRevisiting2013}
+
 So if a term in the Power Walk can be related to \(\alpha\) in the random
 surfer, which is in turn \(\xi_2\), I'll be able to understand it better. \footnote{Although I'm not quite sure why \(\alpha\) is \(\xi_{2}\) either}
 
@@ -1434,9 +1435,7 @@ Break this into to terms so that we can simplify it a bit:
 \begin{align*}
     \mathbf{T} &= \Bigg[ \left( \mathbf{B}- \mathbf{O} \right)\mathbf{D}_{\mathbf{B}}^{- 1} \Bigg] + \Bigg\{  \mathbf{O}\mathbf{D}_{\mathbf{B}}^{- 1} \Bigg\}
 \end{align*}
-
-
-\subsubsection{Value of [1st Term]}
+\subsection{Value of [1st Term]}
 \label{value-of-1st-term}
 Observe that for all \(\forall i,j\in \mathbb{Z}^+\):
 
@@ -1445,7 +1444,7 @@ Observe that for all \(\forall i,j\in \mathbb{Z}^+\):
 \mathbf{A}_{i, j} \in \left\{0, 1\right\} \\
 \implies  \mathbf{B}^{\mathbf{A}_{i, j}} &\in \left\{\beta^0, \beta^1\right\} \\
                      &= \left\{1, \beta \right\}  \\
-                      \implies  \beta \mathbf{A} = \left\{0, \beta \right\}
+                      \implies  \beta \mathbf{A} = \left\{1, \beta \right\}
 \end{align*}
 
 
@@ -1470,7 +1469,7 @@ This means we have
 
 
 \begin{align*}
-\mathbf{A} \in \left\{0, 1\right\} \forall i,j  \implies   \mathbf{B}_{i,j}- \mathbf{O}_{i,j} &= \left( \beta-1 \right) \mathbf{A}
+\mathbf{A} \in \left\{0, 1\right\} \forall i,j  \implies   \mathbf{B}_{i,j}- \mathbf{O}_{i,j} &= \left( \beta-1 \right) \mathbf{A}_{i,j}
 \end{align*}
 
 
@@ -1479,7 +1478,6 @@ This means we have
 \mathbf{B}&= \left( \mathbf{B}+  \mathbf{O}- \mathbf{O} \right) \\
 &= \left( \mathbf{B}- 1 \right)
 \end{align*}
-
 
 \subsection{Value of \{2nd Term\}}
 \label{value-of-2nd-term}
@@ -1522,7 +1520,7 @@ where the following definitions hold (\(\forall i, j \in \mathbb{Z}^+\)):
 \item \(\mathbf{E}_{i, j} = \frac{1}{n}\)
 \item \(\mathbf{D_B}^{-1}_{k, k} = \frac{1}{\delta_k}\)
 \item The value of \(\delta\) is value that each term in a column must be
-divided by to become zero, in the case of the poewr walk that is just
+divided by to become zero, in the case of the power walk that is just
 \(\frac{1}{\mathtt{colSums}\left( \mathbf{B} \right)} = \vec{1}\mathbf{B}\),
 but if there were zeros in a column, it would be necessary to swap out
 the \$0\$s for \$1\$s and then sum in order to prevent a division by zero
@@ -1553,13 +1551,109 @@ But the next step requires showing that:
 \left( \beta-1 \right)\mathbf{D}_\mathbf{A} \mathbf{D}_{\mathbf{B}}^{- 1} &= \mathbf{I} - n \mathbf{D}_{B}^{- 1}
 \end{align*}
 
+\subsection{Equate the Power Walk to the Random Surfer}
+\label{sec:org73d898f}
+Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
 
-it seems to right because if \(\mathbf{A}\) is totally disconnected we get \(\left[ 0 \right]_{n\times n} = \mathbf{I}-n \left[ \frac{1}{n} \right]_{n\times n}\), not sure how to show it though.
+\begin{align}
+    \mathbf{D}_{\mathbf{M}} = \mathrm{diag}\left( \mathtt{colSum} \left( \mathbf{M} \right) \right) &= \mathrm{diag} \left( \vec{1} \mathbf{M} \right)
+\end{align}
+
+
+To scale each column of that matrix to 1, each column will need to be divieded by the column sum, unless the column is already zero, this needs to be done to turn an adjacency matrix into a matrix of probabilities:
+
+\begin{align}
+    \mathbf{D}_{\mathbf{A}} ^{- 1} :  \left[     \mathbf{D}_{\mathbf{A}} ^{- 1}  \right]_i =
+    \begin{cases}
+	0 ,& \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i = 0 \\
+	\left[ \frac{1}{\mathbf{D}_{\mathbf{A}}} \right] ,& \enspace \enspace \left[ \mathbf{D}_{\mathbf{A}} \right]_i \neq 0
+    \end{cases}
+\end{align}
+
+In the case of the power walk \(\mathbf{B}= \beta^{\mathbf{A}} \neq 0\) so it is sufficient:
+
+\begin{align}
+    \mathbf{D}_{\mathbf{B}}^{- 1} &= \frac{1}{\mathrm{diag}\left( \vec{1} \left(\mathbf{\beta^{\mathbf{A}}  \right) } \right)}
+\end{align}
+
+
+Recall that the \emph{power walk} gives a transition probability matrix:
+
+\begin{align}
+%    \mathbf{T} &= \mathbf{a} \text{\fboxsep=.2em\fbox{$x$}} \\
+    \text{\textbf{Power Walk}} \nonumber \\
+\mathbf{T} &= \text{\fboxsep=.2em\fbox{$\mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}$}}  \mathbf{D}_{\mathbf{A}} \left( \beta - 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} + \text{\fboxsep=.2em\fbox{$\mathbf{E}$}} n \mathbf{D}_{\mathbf{B}}^{- 1}  \label{eq:pwbx}\\
+    \text{\textbf{Random Surfer}} \nonumber \\
+    \mathbf{T} &= \alpha \text{\fboxsep=.2em\fbox{$\mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}$}}  + \left( 1-\alpha \right) \text{\fboxsep=.2em\fbox{$\mathbf{E}$}}
+\end{align}
+
+So these are equivalent when:
+
+\begin{align}
+    \mathbf{A}\left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}^{- 1}} &= \alpha \label{fl} \\
+    \ \nonumber \\
+    1- \alpha &=  - n \mathbf{D}_{\mathbf{B}}^{- 1}  \nonumber \\
+    \implies  \alpha &=  \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1} \label{st} \\
+    \intertext{Hence we have:} \notag \\
+    \mathbf{A}\left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}^{- 1}} &= \alpha =  \mathbf{I}- n \mathbf{D}_{\mathbf{B}^{- 1}} \label{eq:eqalpha}
+\end{align}
+
+Solving for \(\beta\)  with \eqref{fl} :
+
+\begin{align}
+    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}}
+\end{align}
+
+If \(\beta\) is set accordingly then by \eqref{eq:eqalpha}:
+
+\begin{align}
+    \mathbf{A}\left( \beta- 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} &= \alpha = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1} \nonumber \\
+     \implies  \mathbf{A}\left( \beta- 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} &=  \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}
+\end{align}
+
+And setting \(\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}\)  from \eqref{st} and putting in \eqref{eq:pwbx} we have:
+
+\begin{align}
+\mathbf{T} &= \text{\fboxsep=.2em\fbox{$\mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}$}}  \mathbf{D}_{\mathbf{A}} \left( \beta - 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} + \text{\fboxsep=.2em\fbox{$\mathbf{E}$}} n \mathbf{D}_{\mathbf{B}}^{- 1}  \nonumber \\
+  \mathbf{T} &= \Gamma \text{\fboxsep=.2em\fbox{$\mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}$}}  + \left( 1-\Gamma \right) \text{\fboxsep=.2em\fbox{$\mathbf{E}$}} \nonumber \\
+  \ \nonumber \\
+  \mathbf{T} &= \Gamma \mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}  + \left( 1-\Gamma \right) \mathbf{E}
+  \end{align}
+
+\subsection{Conclusion}
+\label{sec:org9334026}
+So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
+
+
+\subsection{{\bfseries\sffamily TODO} The Second Eigenvalue}
+\label{sec:org54983ca}
+\subsubsection{{\bfseries\sffamily TODO} The Random Surfer}
+\label{sec:org1d46da6}
+The Second eigenvalue \(\xi_2\) of the Power Surfer is less than \(\alpha\) (\href{Proposal/Propsal.org}{See 3.2; Stability and Concvergence, of proposal}).
+\subsubsection{{\bfseries\sffamily TODO} Power Walk}
+\label{sec:org6043fa5}
+Because the Power Walk relates to the random surfer as demonstrated in section \ref{relating-terms-in-power-walk-to-random-surfer}, what can be said about \(\xi_{2}\)
+\begin{enumerate}
+\item Applying this to Power Walk
+\label{sec:org9564653}
+Let \(\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2\) return the second value of a transition, probability Matrix, then observe that:
+
+
+\begin{align}
+    \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny RS}} \right)  \leq \left\lvert \alpha \right\rvert  \implies      \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny PW}} \right) \leq \left\lvert \frac{\alpha - \mathbf{D}_{\mathbf{a}} \mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}}  \right\rvert
+\end{align}
+
+where:
+
+\begin{itemize}
+\item \(\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)\) refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
+\end{itemize}
+\end{enumerate}
 
 \section{Appendix}
-\label{sec:org8abcfb3}
+\label{sec:orgdcb4776}
 \subsection{Glossary}
-\label{sec:org4a35813}
+\label{sec:org9e3dccd}
 \begin{description}
 \item[{Eigenvector Centrality}] PageRank
 \begin{itemize}

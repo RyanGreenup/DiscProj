@@ -1334,13 +1334,11 @@ print(p)
 - The ~tcolorbox~ may work as a float without effort?
 - I know that ~listings~ has an option to float over two columns, maybe that's what I should do, or just avoid two columns all toghether.
 * Relating the Power Walk to the Random Surfer
-These are notes relating to [[cite:parkPowerWalkRevisiting2013][\textsection 3.3]]
-
-# #+LATEX_HEADER: \twocolumn
-** Relating terms in Power Walk to Random Surfer
   :PROPERTIES:
   :CUSTOM_ID: relating-terms-in-power-walk-to-random-surfer
   :END:
+** Introduction
+These are notes relating to [[cite:parkPowerWalkRevisiting2013][\textsection 3.3]]
 
 So if a term in the Power Walk can be related to $\alpha$ in the random
 surfer, which is in turn $\xi_2$, I'll be able to understand it better. [fn:: Although I'm not quite sure why $\alpha$ is $\xi_{2}$ either]
@@ -1360,9 +1358,7 @@ Break this into to terms so that we can simplify it a bit:
 \begin{align*}
     \mathbf{T} &= \Bigg[ \left( \mathbf{B}- \mathbf{O} \right)\mathbf{D}_{\mathbf{B}}^{- 1} \Bigg] + \Bigg\{  \mathbf{O}\mathbf{D}_{\mathbf{B}}^{- 1} \Bigg\}
 \end{align*}
-
-
-*** Value of [1st Term]
+** Value of [1st Term]
    :PROPERTIES:
    :CUSTOM_ID: value-of-1st-term
    :END:
@@ -1399,7 +1395,7 @@ This means we have
 
 
 \begin{align*}
-\mathbf{A} \in \left\{0, 1\right\} \forall i,j  \implies   \mathbf{B}_{i,j}- \mathbf{O}_{i,j} &= \left( \beta-1 \right) \mathbf{A}
+\mathbf{A} \in \left\{0, 1\right\} \forall i,j  \implies   \mathbf{B}_{i,j}- \mathbf{O}_{i,j} &= \left( \beta-1 \right) \mathbf{A}_{i,j}
 \end{align*}
 
 
@@ -1408,7 +1404,6 @@ This means we have
 \mathbf{B}&= \left( \mathbf{B}+  \mathbf{O}- \mathbf{O} \right) \\
 &= \left( \mathbf{B}- 1 \right)
 \end{align*}
-
 
 ** Value of {2nd Term}
   :PROPERTIES:
@@ -1484,8 +1479,94 @@ But the next step requires showing that:
 \left( \beta-1 \right)\mathbf{D}_\mathbf{A} \mathbf{D}_{\mathbf{B}}^{- 1} &= \mathbf{I} - n \mathbf{D}_{B}^{- 1}
 \end{align*}
 
+** Equate the Power Walk to the Random Surfer
+Define the matrix $\mathbf{D}_{\mathbf{M}}$:
 
-it seems to right because if $\mathbf{A}$ is totally disconnected we get $\left[ 0 \right]_{n\times n} = \mathbf{I}-n \left[ \frac{1}{n} \right]_{n\times n}$, not sure how to show it though.
+\begin{align}
+    \mathbf{D}_{\mathbf{M}} = \mathrm{diag}\left( \mathtt{colSum} \left( \mathbf{M} \right) \right) &= \mathrm{diag} \left( \vec{1} \mathbf{M} \right)
+\end{align}
+
+
+To scale each column of that matrix to 1, each column will need to be divieded by the column sum, unless the column is already zero, this needs to be done to turn an adjacency matrix into a matrix of probabilities:
+
+\begin{align}
+    \mathbf{D}_{\mathbf{A}} ^{- 1} :  \left[     \mathbf{D}_{\mathbf{A}} ^{- 1}  \right]_i =
+    \begin{cases}
+	0 ,& \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i = 0 \\
+	\left[ \frac{1}{\mathbf{D}_{\mathbf{A}}} \right] ,& \enspace \enspace \left[ \mathbf{D}_{\mathbf{A}} \right]_i \neq 0
+    \end{cases}
+\end{align}
+
+In the case of the power walk $\mathbf{B}= \beta^{\mathbf{A}} \neq 0$ so it is sufficient:
+
+\begin{align}
+    \mathbf{D}_{\mathbf{B}}^{- 1} &= \frac{1}{\mathrm{diag}\left( \vec{1} \left(\mathbf{\beta^{\mathbf{A}}  \right) } \right)}
+\end{align}
+
+
+Recall that the /power walk/ gives a transition probability matrix:
+
+\begin{align}
+%    \mathbf{T} &= \mathbf{a} \text{\fboxsep=.2em\fbox{$x$}} \\
+    \text{\textbf{Power Walk}} \nonumber \\
+\mathbf{T} &= \text{\fboxsep=.2em\fbox{$\mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}$}}  \mathbf{D}_{\mathbf{A}} \left( \beta - 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} + \text{\fboxsep=.2em\fbox{$\mathbf{E}$}} n \mathbf{D}_{\mathbf{B}}^{- 1}  \label{eq:pwbx}\\
+    \text{\textbf{Random Surfer}} \nonumber \\
+    \mathbf{T} &= \alpha \text{\fboxsep=.2em\fbox{$\mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}$}}  + \left( 1-\alpha \right) \text{\fboxsep=.2em\fbox{$\mathbf{E}$}}
+\end{align}
+
+So these are equivalent when:
+
+\begin{align}
+    \mathbf{A}\left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}^{- 1}} &= \alpha \label{fl} \\
+    \ \nonumber \\
+    1- \alpha &=  - n \mathbf{D}_{\mathbf{B}}^{- 1}  \nonumber \\
+    \implies  \alpha &=  \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1} \label{st} \\
+    \intertext{Hence we have:} \notag \\
+    \mathbf{A}\left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}^{- 1}} &= \alpha =  \mathbf{I}- n \mathbf{D}_{\mathbf{B}^{- 1}} \label{eq:eqalpha}
+\end{align}
+
+Solving for $\beta$  with eqref:fl :
+
+\begin{align}
+    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}}
+\end{align}
+
+If $\beta$ is set accordingly then by \eqref{eq:eqalpha}:
+
+\begin{align}
+    \mathbf{A}\left( \beta- 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} &= \alpha = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1} \nonumber \\
+     \implies  \mathbf{A}\left( \beta- 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} &=  \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}
+\end{align}
+
+And setting $\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}$  from eqref:st and putting in \eqref{eq:pwbx} we have:
+
+\begin{align}
+\mathbf{T} &= \text{\fboxsep=.2em\fbox{$\mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}$}}  \mathbf{D}_{\mathbf{A}} \left( \beta - 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} + \text{\fboxsep=.2em\fbox{$\mathbf{E}$}} n \mathbf{D}_{\mathbf{B}}^{- 1}  \nonumber \\
+  \mathbf{T} &= \Gamma \text{\fboxsep=.2em\fbox{$\mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}$}}  + \left( 1-\Gamma \right) \text{\fboxsep=.2em\fbox{$\mathbf{E}$}} \nonumber \\
+  \ \nonumber \\
+  \mathbf{T} &= \Gamma \mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}  + \left( 1-\Gamma \right) \mathbf{E}
+  \end{align}
+
+** Conclusion
+So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
+
+
+** TODO The Second Eigenvalue
+*** TODO The Random Surfer
+The Second eigenvalue \(\xi_2\) of the Power Surfer is less than $\alpha$ ([[file:Proposal/Propsal.org::#stability-convergence][See 3.2; Stability and Concvergence, of proposal]]).
+*** TODO Power Walk
+Because the Power Walk relates to the random surfer as demonstrated in section [[#relating-terms-in-power-walk-to-random-surfer]], what can be said about $\xi_{2}$
+**** Applying this to Power Walk
+Let $\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2$ return the second value of a transition, probability Matrix, then observe that:
+
+
+\begin{align}
+    \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny RS}} \right)  \leq \left\lvert \alpha \right\rvert  \implies      \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny PW}} \right) \leq \left\lvert \frac{\alpha - \mathbf{D}_{\mathbf{a}} \mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}}  \right\rvert
+\end{align}
+
+where:
+
+ - $\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)$ refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
 
 * Appendix
 ** Glossary
