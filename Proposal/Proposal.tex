@@ -1,4 +1,4 @@
-% Created 2020-08-27 Thu 21:05
+% Created 2020-09-27 Sun 23:22
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -14,7 +14,8 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
-\usepackage{minted}
+\usepackage{listings}
+\twocolumn
 \IfFileExists{../resources/style.sty}{\usepackage{../resources/style}}{}
 \IfFileExists{../resources/referencing.sty}{\usepackage{../resources/referencing}}{}
 \addbibresource{../resources/references.bib}
@@ -34,7 +35,7 @@
 \tableofcontents
 
 \section{Introduction}
-\label{sec:org9714071}
+\label{sec:org81a8e67}
 Much information is interconnected, consider for example written articles,
 research papers, citations, movies, books, personal notes, knowledge bases,
 personal releationships etc., this interconnectivity creates a network which can
@@ -60,7 +61,7 @@ This research project will be an investigation into the relationship between
 model parameters and the solution stability of the \emph{Power Walk} method.
 
 \subsection{Motivation}
-\label{sec:org7f944a8}
+\label{sec:org8453c06}
 
 Taking advantages of inter-related ideas allows for exploratory research which
 can promote both a deeper and broader understading of a topic, an example of
@@ -119,7 +120,7 @@ algorithm to identify what is most central to a topic, ideally the \emph{Power W
 method will prove to be an effective tool to achieve this.
 
 \section{Background and Rationale}
-\label{sec:org8173e6b}
+\label{sec:org8af7a91}
 Given some graph \(G(V,E)\) with \(\mid V \mid = n\), a corresponding adjacency
 matrix \(\mathbf{A}\) describes the number of edges between vertex \(i\) and \(j\),
 such that \(\mathbf{A}_{i, j}\) represents the number of edges between the
@@ -150,7 +151,10 @@ be acheived with matrix multiplication as illustrated in
 
 \begin{align}
 \mathbf{T} = \mathbf{A} \enspace \mathrm{diag}\left( \mathtt{colsums}\left(
-\mathbf{A} \right) \right) \label{eq:mat-mult-colsum} \end{align}
+\mathbf{A} \right) \right)^{-1} \label{eq:mat-mult-colsum} \end{align}
+
+
+(See \textsection \ref{scaling-matrix} for a note on the math)
 
 The state distribution \(\vec{p}_{k}\) describes the frequency (scaled to 1) of
 visiting each vertex during a random walk for the \(k^{\textrm{th}}\) step of the
@@ -174,7 +178,7 @@ solving the eigenvalue problem for \(\lambda=1\) as shown in \eqref{eq:eigen-one
 &= \mathbf{T} \vec{p} \label{eq:eigen-one} \end{align}
 
 \subsection{Random Surfer}
-\label{sec:orgda80ae1}
+\label{sec:orgf19c465}
 If however a graph is non-ergodic, this random walk will not traverse every
 vertex, to overcome this, the \emph{Random Surfer} model can be implemented
 \cite{larrypageAnatomyLargescaleHypertextual1998}. This method involves,
@@ -196,7 +200,7 @@ or a smoothing constant \cite{koppelMeasuringDirectIndirect2014} .
 \end{itemize}
 
 \subsection{Power Walk}
-\label{sec:org217af8c}
+\label{sec:orgf788c09}
 The random surfer model \eqref{eq:random-surfer}, however, assumes that all edges are an edorsement of
 the target, i.e. they are weighted positively, the power walk method
 \cite{parkPowerWalkProceedings2013}, shown in \eqref{eqref:eq:power-walk-method}, takes a
@@ -212,14 +216,16 @@ where:
 
 \begin{description}
 \item[{\(\mathbf{A'}\)}] is a weighted adjacency matrix such that \(\mathbf{A}_{i, j} \in \mathbb{R}\)
+\item[{\(\mathbf{\beta}\)}] is the ratio of probability between following an edge and
+making a jump to a vertex for which there is no path
+\begin{itemize}
+\item i.e. \(\beta x\) is the probability of following a path with a weight of 1 where:
+\begin{description}
 \item[{\(x\)}] is the probability of travelling to a vertex for which there is no connection.
 \begin{itemize}
 \item Similarly to \eqref{eq:random-surfer} , \(x = \frac{1-\alpha}{n}\)
 \end{itemize}
-\item[{\(\mathbf{\beta}\)}] is the ratio of probability between following an edge and
-making a jump to a vertex for which there is no path
-\begin{itemize}
-\item i.e. \(\beta x\) is the probability of following a path with a weight of 1.
+\end{description}
 \end{itemize}
 \end{description}
 
@@ -242,8 +248,8 @@ better suited approach, with respect to performance, because:
 
 
 
-\begin{listing}[htbp]
-\begin{minted}[]{julia}
+\lstset{language=julia,label=eigen-julia,caption={Time to Solve Eigen Value for matrix of size \(n\)},captionpos=b,numbers=none}
+\begin{lstlisting}
 using LinearAlgebra
 using TimerOutputs
 
@@ -259,12 +265,10 @@ time_eigenvec(10^3)
 ## : time_eigenvec (generic function with 1 method)
 ## : 0.072302487
 ## : 0.814937083
-\end{minted}
-\caption{\label{eigen-julia}Time to Solve Eigen Value for matrix of size \(n\)}
-\end{listing}
+\end{lstlisting}
 
 \section{Proposed Research}
-\label{sec:orgaf690e4}
+\label{sec:org4ba385c}
 Consider the ordered set of EigenVectors \eqref{eq:eigen-set} of a positive
 transition probability matrix such as \(\mathbf{S}\) \eqref{eq:random-surfer} or
 \(\mathbf{T}\) \eqref{eq:stationary-distribution}:
@@ -274,7 +278,7 @@ transition probability matrix such as \(\mathbf{S}\) \eqref{eq:random-surfer} or
 \end{align}
 
 \subsection{Dominant EigenVector}
-\label{sec:org5e37979}
+\label{sec:orgc6899a7}
 It has been shown that \(\lambda_{k} \leq 1, \enspace \forall k \leq n\) and that the dominant\footnote{Dominant in this case refers to the the largest \(\mid \lambda_{k} \mid\)} \(\lambda\) can be computed by the \emph{power method}. \cite{farahatAuthorityRankingsHITS2006}
 
 
@@ -326,8 +330,8 @@ spam.
 \cite{zhangMakingEigenvectorBasedReputation2004,boldiPageRankFunctionDamping2005}
 
 
-\begin{listing}[htbp]
-\begin{minted}[]{r}
+\lstset{language=r,label=random-surf-r,caption={Implementing the random surfer model for the graph shown in figure },captionpos=b,numbers=none}
+\begin{lstlisting}
 library(igraph)
 library(tidyverse)
 
@@ -354,9 +358,7 @@ eigen(S, symmetric = FALSE)$values
 
 ## [1]  1.000000e+00 -1.234568e-01  1.234568e-01 -1.234568e-01  2.231012e-10
 ## [6] -2.231012e-10 -8.488298e-18  3.570154e-18 -1.450336e-20  9.629650e-35
-\end{minted}
-\caption{\label{random-surf-r}Implementing the random surfer model for the graph shown in figure }
-\end{listing}
+\end{lstlisting}
 
 \begin{figure}[htbp]
 \centering
@@ -406,7 +408,7 @@ the work will be very similar in approach and hopefully offer much insight upon
 closer inspection.
 
 \subsection{Building on Literature Referred to in Primary Resource}
-\label{sec:org6b6fa0a}
+\label{sec:orgb2abcda}
 This research is focused primarily on the \emph{Power Walk} method
 proposed by Park and Simoff in a 2013 conference paper,
 \cite{parkPowerWalkProceedings2013} this paper contained some discussion of
@@ -461,9 +463,9 @@ see how the \emph{Power Walk} method would perform compared to the \emph{PageRan
 in those situations.
 
 \subsection{Page Rank}
-\label{sec:org1725de2}
+\label{sec:orgd7bf4f7}
 \subsubsection{Building on the \emph{PageRank} Method}
-\label{sec:orgf274bb5}
+\label{sec:org1059e11}
 The \emph{PageRank} method is a relatively versatile approach\footnote{The approach has even been used in conjuction with linear regression to map gene expresseions, see \cite{zhangModifiedPageRankAlgorithm2018}} that is
 relatively robust to manipulation compared with other methods for dealing with
 information retrieval, \cite{langvilleSurveyEigenvectorMethods2005} perhaps for
@@ -482,7 +484,7 @@ constant entirely. \cite{berkhoutRankingNodesGeneral2018a}
 It is not entirely clear if this approach will offer much to this method but a
 more careful inspection may reveal helpful perspectives.
 \subsubsection{Stability and Convergence}
-\label{sec:org058644a}
+\label{sec:orgf04fcf3}
 Improving the rate of convergence of the \emph{PowerRank} is obviously desirable and
 there has been considerable mathematical resarch to develop better algorithms.
 
@@ -506,7 +508,7 @@ but has been shown to improve the rate of convergence in certain cases.
 \cite{langvilleReorderingPageRankProblem2006}.
 
 \subsubsection{Insightful Miscellaneous Work}
-\label{sec:org9c37836}
+\label{sec:orge8b99a6}
 \paragraph{\emph{PageRank} as a Power Series}
 \label{power-series}
 Research has shown that the \emph{PageRank} Method can be expressed as a power series
@@ -523,7 +525,7 @@ able to show a more direct relationship between the \emph{PowerRank} and \emph{P
 approaches.
 
 \paragraph{Modelling}
-\label{sec:org6f6048d}
+\label{sec:orgae050b9}
 The \emph{PageRank} method has been leveraged as a value to assist in building
 artificial networks in order to model real-world networks, such networks have
 been shown to have upper and lower bounds on there diamaters.
@@ -533,7 +535,7 @@ in such an approach produces graphs that are more consistent with social
 networks.
 
 \paragraph{Pure Mathematics}
-\label{sec:org32c0521}
+\label{sec:org6cf0247}
 One very interesting piece of work in the literature was an application
 of the \emph{PageRank} method to a graph of integers
 with edges based on divisors, as shown in figure \ref{pure-math-graph} and listing \ref{pure-math-adj}. \cite{frahmPageRankIntegers2012}
@@ -550,8 +552,8 @@ be made by way of a hyperlink, a phone number and a street address, this would
 be 3 different types of edges between two vertecies and so would be multi-plex.}, although
 very interesting and quite practical, such research is beyond the scope of this work.
 
-\begin{listing}[htbp]
-\begin{minted}[]{r}
+\lstset{language=r,label=pure-math-adj,caption={\emph{PageRank} Probability Transition Matrix of network based on divisibility of \(\mathbb{Z}^+ \leq 30\)},captionpos=b,numbers=none}
+\begin{lstlisting}
 library(igraph)
 library(tidyverse)
 g1 <- igraph::graph.formula(30-15, 30-5, 30-6, 30-3, 30-2, 29, 28-7, 28-4, 28-2,
@@ -560,9 +562,7 @@ g1 <- igraph::graph.formula(30-15, 30-5, 30-6, 30-3, 30-2, 29, 28-7, 28-4, 28-2,
 13, 12-4, 12-3, 12-2, 11, 10-5, 10-2, 9-3, 8-2, 8-4, 7, 6-3, 6-2, 5, 4-2, 3, 2)
 
 plot(g1)
-\end{minted}
-\caption{\label{pure-math-adj}\emph{PageRank} Probability Transition Matrix of network based on divisibility of \(\mathbb{Z}^+ \leq 30\)}
-\end{listing}
+\end{lstlisting}
 
 \begin{figure}[htbp]
 \centering
@@ -572,7 +572,7 @@ plot(g1)
 
 
 \subsection{Search Engine Optimisation}
-\label{sec:org6a5f93a}
+\label{sec:org39f66fa}
 There is a considerable amount of work in the literature concerning the
 relationship between the \emph{PageRank} method and Search Engine optimisation, such
 as:
@@ -590,4 +590,41 @@ creating a limited number of edges
 
 Such literature however is suited to an ex post facto study and is hence not
 terribly relevant to the proposed research.
+\section{Reviewing the Material}
+\label{sec:org2091125}
+\subsection{Scaling Matrix from section \ref{stationary-distribution}}
+\label{scaling-matrix}
+So what we're trying to do is to scale each column such that it adds to
+1, all though we could just do:
+
+\begin{align}
+    \mathbf{T}= \frac{\mathbf{A}}{\mathrm{diag}\left( \vec{1} \mathbf{A} \right)}\end{align}
+
+The problem with this method is that if of the columns in \(\mathbf{A}\)
+are 0 it's not going to evaluate when we really want that column to just
+stay zero, so what we do instead is:
+
+\begin{align}
+    \mathbf{T}= \mathbf{A} \mathbf{D}_{\mathbf{A}}^{- 1}\end{align}
+
+Where we have:
+
+\begin{align}
+    \mathbf{\mathbf{D}_{A}}^{- 1} \quad : \quad \left[ \mathbf{D}_{\mathbf{A}}^{- 1}  \right]_i = \begin{cases}
+    0\quad, \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i &= 0 \\
+    \frac{1}{\mathbf{D}_{\mathbf{A}}}, \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i &\neq 0
+    \end{cases}   \label{dainv} \end{align}
+
+Observe also that:
+
+\begin{itemize}
+\item \(i=j\) in the above example
+
+\item \(\mathbf{D}_{\mathbf{A}}= \frac{1}{\mathbf{D}_{\mathbf{A}}} \iff \mathbf{A} \text{ is ergodic }\)
+
+\begin{itemize}
+\item i.e. in this case the use of \(\left[ \quad \right] ^{- 1}\) is non
+standard in this case for want of notation.
+\end{itemize}
+\end{itemize}
 \end{document}

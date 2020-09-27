@@ -19,6 +19,7 @@
 #+PROPERTY: header-args :eval never-export
 :END:
 :LATEX:
+#+LATEX_HEADER:\twocolumn
 #+LATEX_HEADER: \IfFileExists{../resources/style.sty}{\usepackage{../resources/style}}{}
 #+LATEX_HEADER: \IfFileExists{../resources/referencing.sty}{\usepackage{../resources/referencing}}{}
 #+LATEX_HEADER: \addbibresource{../resources/references.bib}
@@ -125,7 +126,10 @@ eqref:eq:mat-mult-colsum:
 
 \begin{align}
 \mathbf{T} = \mathbf{A} \enspace \mathrm{diag}\left( \mathtt{colsums}\left(
-\mathbf{A} \right) \right) \label{eq:mat-mult-colsum} \end{align}
+\mathbf{A} \right) \right)^{-1} \label{eq:mat-mult-colsum} \end{align}
+
+
+(See \textsection [[#scaling-matrix]] for a note on the math)
 
 The state distribution $\vec{p}_{k}$ describes the frequency (scaled to 1) of
 visiting each vertex during a random walk for the $k^{\textrm{th}}$ step of the
@@ -181,12 +185,12 @@ with a negatively weighted edges:
 
 where:
 
-- $\mathbf{A'}$ :: is a weighted adjacency matrix such that $\mathbf{A}_{i, j} \in \mathbb{R}$
-- $x$ :: is the probability of travelling to a vertex for which there is no connection.
-  + Similarly to eqref:eq:random-surfer , $x = \frac{1-\alpha}{n}$
-- $\mathbf{\beta}$ :: is the ratio of probability between following an edge and
++ $\mathbf{A'}$ :: is a weighted adjacency matrix such that $\mathbf{A}_{i, j} \in \mathbb{R}$
++ $\mathbf{\beta}$ :: is the ratio of probability between following an edge and
   making a jump to a vertex for which there is no path
-  + i.e. $\beta x$ is the probability of following a path with a weight of 1.
+  + i.e. $\beta x$ is the probability of following a path with a weight of 1 where:
+    + $x$ :: is the probability of travelling to a vertex for which there is no connection.
+      + Similarly to eqref:eq:random-surfer , $x = \frac{1-\alpha}{n}$
 
 ** Solving the stationary distribution
 :PROPERTIES:
@@ -553,6 +557,41 @@ as:
 
 Such literature however is suited to an ex post facto study and is hence not
 terribly relevant to the proposed research.
+* Reviewing the Material
+** Scaling Matrix from section [[#stationary-distribution]]
+:PROPERTIES:
+:CUSTOM_ID: scaling-matrix
+:END:
+So what we're trying to do is to scale each column such that it adds to
+1, all though we could just do:
+
+\begin{align}
+    \mathbf{T}= \frac{\mathbf{A}}{\mathrm{diag}\left( \vec{1} \mathbf{A} \right)}\end{align}
+
+The problem with this method is that if of the columns in $\mathbf{A}$
+are 0 it's not going to evaluate when we really want that column to just
+stay zero, so what we do instead is:
+
+\begin{align}
+    \mathbf{T}= \mathbf{A} \mathbf{D}_{\mathbf{A}}^{- 1}\end{align}
+
+Where we have:
+
+\begin{align}
+    \mathbf{\mathbf{D}_{A}}^{- 1} \quad : \quad \left[ \mathbf{D}_{\mathbf{A}}^{- 1}  \right]_i = \begin{cases}
+    0\quad, \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i &= 0 \\
+    \frac{1}{\mathbf{D}_{\mathbf{A}}}, \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i &\neq 0
+    \end{cases}   \label{dainv} \end{align}
+
+Observe also that:
+
+- $i=j$ in the above example [[#dainv][eqref:dainv]]
+
+- $\mathbf{D}_{\mathbf{A}}= \frac{1}{\mathbf{D}_{\mathbf{A}}} \iff \mathbf{A} \text{ is ergodic }$
+
+  - i.e. in this case the use of $\left[ \quad \right] ^{- 1}$ is non
+    standard in this case for want of notation.
+
 * Footnotes
 
 [fn:mp] Multi-plex, in this case, refers to edges between vertices accross
