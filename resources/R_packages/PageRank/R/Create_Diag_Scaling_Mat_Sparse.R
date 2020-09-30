@@ -10,7 +10,7 @@
    #'
    #' Takes a sparse matrix
    #' and returns a diagonal matrix such that each column contains
-   #' either 1 / colsum() or 0.
+   #' either 1 / colsum() or 0. (D^-1 in the papers)
    #' multiplication with this matrix would have all columns
    #' sum to 1 (or zero if that column already summed to zero)
    #'
@@ -61,6 +61,65 @@ create_sparse_diag_scaling_mat<- function(mat) {
 
    ## Inverse the non-zero Values
    D@x <- 1/D@x
+
+   ## Return the Diagonal Matrix
+   return(D)
+
+}
+
+## ** Diagonal Scaling Matrix Inv
+   #' Diagonal Factors of Sparse Matrix Inv
+   #'
+   #' Takes a sparse matrix
+   #' and returns a diagonal matrix such that each column contains
+   #' either colsum() or 0. (D in the Papers)
+   #' multiplication with this matrix would have all columns
+   #' sum to 1 (or zero if that column already summed to zero)
+   #'
+   #' @param mat Input Matrix, may either be a matrix, sparse matrix
+   #' dgCMatrix or probably even a data frame, as long as `nrow` and `colSum`
+   #' work on the data as expected it should work, output is always a
+   #' sparse matrix of class dgCMatrix
+   #'
+   #' This should take the an adjacency matrix as input and the output
+   #' can be multiplied by the original matrix to scale it to 1.
+   #'
+   #' A directed adjacency matrix should be such that A[i,j]
+   #' describes the the weight
+   #' of an edge from vertex j to vertex i (this is, unfourtunately
+   #' the transpose of what igraph gives back.)
+   #'
+   #' @return A diagonal matrix such that multiplication by the original
+   #' matrix will lead to all columns adding
+   #' to 1 (or 0 in the case of a column of zeros)
+   #' The output class is sparse matrix "dgCMatrix" from the Matrix package
+   #' use `as.matrix()` in order to get a matrix type, I didn't put that
+   #' Inside the function because it would have been confusing.
+   #'
+   #'
+   #' @examples
+   #' (mat <- matrix(1:9, nrow = 3))
+   #' mat %*% create_sparse_diag_scaling_mat(mat) %>% colSum()
+   #' mat %*% create_sparse_diag_scaling_mat(mat)
+   #'
+   #' > [1] 1 1 1 1 1
+   #' @export
+create_sparse_diag_sc_inv_mat<- function(mat) {
+  if ("matrix" %in% class(mat)) {
+    write("Warning: input is matrix, output will be dgcMatrix")
+  }
+
+   ## Get the Dimensions
+   n <- nrow(mat)
+
+   ## Make a Diagonal Matrix of Column Su m
+  D <- Matrix::sparseMatrix(i = 1:n,
+                            j = 1:n,
+                            x = Matrix::colSums(mat),
+                            dims = c(n,n))
+
+   ## Throw away explicit Zeroes
+   D <- Matrix::drop0(D)
 
    ## Return the Diagonal Matrix
    return(D)
