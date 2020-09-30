@@ -330,9 +330,9 @@ transition matrix $S$:
     B&= \begin{bmatrix}
     \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
     \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
-        \vdots      & \vdots      & \ddots & \vdots \\
+        \vdots      & \vdots      & \ddots & \vdots  \\
     \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
-    \end{bmatrix}  \\
+    \end{bmatrix} \label{eq:bgval1} \\
     N&= \left| \left| V \right| \right| \\
     \lambda &\in [0,1]
 \end{align}
@@ -729,7 +729,7 @@ Let $\mathbf{F}= \mathbf{B}\vec{p}$, consider the value of $\mathbf{F}$ :
 \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
 \vdots      & \vdots      & \ddots & \vdots \\
 \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
-\end{bmatrix}
+\end{bmatrix} \label{eq:bgVal2}
 \begin{bmatrix}
 \vec{p_1} \\ \vec{p_2} \\ \vdots \\ \vec{p_m}
 \end{bmatrix}  \\
@@ -1517,19 +1517,30 @@ Recall that the /power walk/ gives a transition probability matrix:
 So these are equivalent when:
 
 \begin{align}
-    \mathbf{A}\left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}^{- 1}} &= \alpha \label{fl} \\
+\mathbf{D}_{\mathbf{A}}   \left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}^{- 1}} &=\mathbf{I}  \alpha \label{fl} \\
     \ \nonumber \\
-    1- \alpha &=  - n \mathbf{D}_{\mathbf{B}}^{- 1}  \nonumber \\
-    \implies  \alpha &=  \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1} \label{st} \\
+  \vec{1}  \left( 1- \alpha \right) &=  - n \mathbf{D}_{\mathbf{B}}^{- 1}  \nonumber \\
+    \implies  \vec{1}\alpha &=  \vec{1}- n \mathbf{D}_{\mathbf{B}}^{- 1} \label{st} \\
     \intertext{Hence we have:} \notag \\
-    \mathbf{A}\left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}^{- 1}} &= \alpha =  \mathbf{I}- n \mathbf{D}_{\mathbf{B}^{- 1}} \label{eq:eqalpha}
+\mathbf{D}_{\mathbf{A}}  \left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}}^{- 1} &=  \vec{1}\alpha =  \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1} \label{eq:eqalpha}
 \end{align}
+
 
 Solving for $\beta$  with eqref:fl :
 
 \begin{align}
-    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}}
+    \beta&= \frac{1- \Theta}{\Theta}\\
+%    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
 \end{align}
+
+where: [fn::NOTE: Similar to a signmoid function, which is a solution to $p \propto p(1-p)$, I wonder if this provides a connection to the exponential nature of the power walk]
+- $\Theta = \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{B}}^{- 1}$
+
+but we can't really do this so instead:
+
+\[
+\vec{1} \beta = \left( 1 - \Theta \right) \Theta^{-1} \label{eq:betadef}
+\]
 
 If $\beta$ is set accordingly then by \eqref{eq:eqalpha}:
 
@@ -1547,9 +1558,10 @@ And setting $\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}$  from eqref:s
   \mathbf{T} &= \Gamma \mathbf{A}\mathbf{D}_{\mathbf{A}}^{- 1}  + \left( 1-\Gamma \right) \mathbf{E}
   \end{align}
 
+  Where $\mathbf{E}$ is square matrix of $\frac{1}{n}$ as in eqref:eq:bgval1  eqref:eq:bgVal2
+
 ** Conclusion
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
-
 
 ** TODO The Second Eigenvalue
 *** TODO The Random Surfer
@@ -1561,7 +1573,7 @@ Let $\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2$ return the
 
 
 \begin{align}
-    \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny RS}} \right)  \leq \left\lvert \alpha \right\rvert  \implies      \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny PW}} \right) \leq \left\lvert \frac{\alpha - \mathbf{D}_{\mathbf{a}} \mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}}  \right\rvert
+    \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny RS}} \right)  \leq \left\lvert \alpha \right\rvert  \implies      \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny PW}} \right) \leq \left\lvert \frac{\alpha - \mathbf{D}_{\mathbf{a}} \mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}  \right\rvert
 \end{align}
 
 where:

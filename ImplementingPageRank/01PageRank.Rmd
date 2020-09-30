@@ -1,5 +1,4 @@
 ---
-# results: table (or output or whatever)
 title: "R Notebook"
 output:
   html_document: 
@@ -91,7 +90,7 @@ the possibility of a random jump, we'll call the surfer transition matrix $S$:
 
 ```{r}
 B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
-l <- 0.8
+l <- 0.8123456789
 
 S <- l*T+(1-l)*B
 ```
