@@ -1,0 +1,27 @@
+## Create a way to Diagonalise a sparse matrix
+sparse_diag <- function(mat) {
+  #' Diagonal Factors of Sparse Matrix
+  #'
+  #' Return a Diagonal Matrix containing either 1 / colsum() or 0 such that
+  #' matrix multiplication with this matrix would have all columns
+  #' sum to 1
+  #'
+  #' This should take the transpose of an adjacency matrix in and the output
+  #' can be multiplied by the original matrix to scale it to 1.
+  #' i
+
+  ## Get the Dimensions
+  n <- nrow(mat)
+
+  ## Make a Diagonal Matrix of Column Sums
+  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
+
+  ## Throw away explicit Zeroes
+  D <- drop0(D)
+
+  ## Inverse the Values
+  D@x <- 1/D@x
+
+  ## Return the Diagonal Matrix
+  return(D)
+}
