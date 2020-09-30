@@ -2,9 +2,10 @@
 ## PreRequisite Functions ##
 ############################
 
+## TODO these could really be cleaned up a lot
 
- ## * Diagonal Scaling Matrix
-
+## * Tools
+## ** Diagonal Scaling Matrix
    #' Diagonal Factors of Sparse Matrix
    #'
    #' Takes a sparse matrix
@@ -50,7 +51,10 @@ create_sparse_diag_scaling_mat<- function(mat) {
    n <- nrow(mat)
 
    ## Make a Diagonal Matrix of Column Su m
-   D <- Matrix::sparseMatrix(i = 1:n, j = 1:n, x = Matrix::colSums(mat), dims = c(n,n))
+  D <- Matrix::sparseMatrix(i = 1:n,
+                            j = 1:n,
+                            x = Matrix::colSums(mat),
+                            dims = c(n,n))
 
    ## Throw away explicit Zeroes
    D <- Matrix::drop0(D)
@@ -63,6 +67,8 @@ create_sparse_diag_scaling_mat<- function(mat) {
 
 }
 
+## * Ergodic Graph
+## ** Probability Transition Matrix
 
 #' Adjacency to Probability Transition Matrix
 #'
@@ -90,7 +96,10 @@ adj_to_probTrans <- function(mat) {
   return(T)
 }
 
+## ** TODO Stationary Distribution of Ergodic Graph
 
+## * Power Walk
+## ** Power Walk Probability Transition Matrix
 #' Power Walk Probability Transition Matrix
 #'
 #' Takes an adjacency matrix and returns the transition
@@ -114,7 +123,7 @@ adj_to_probTrans <- function(mat) {
 #' @return The output matrix will be of the class dgCmatrix
 #' @export
 power_walk_prob_trans <- function(A, beta = 10) {
-    A      <- Matrix(A, sparse = TRUE)
+    A      <- Matrix::Matrix(A, sparse = TRUE)
 
     n      <- nrow(A)
     B      <- A
@@ -126,12 +135,7 @@ power_walk_prob_trans <- function(A, beta = 10) {
     # Bo     <- β^(A) -1
     # Bo     <- drop0(Bo)
 
-## ** Create the Scaling Matrix
 ## Create the Scaling Matrix to make row sums 1
-##
-## TODO So the issue is that 1/(colSums(Bo)+n) != 1/(colSums(B))
-##      Investigate why this is occuring, what's wrong with the math
-##      Write up notes on the mistake, make a PDF, submit the code
 ##
   δB   <- 1/(Matrix::colSums(Bo)+n) # = 1/(Matrix::colSums(B))
   δBt  <- t(δB)
@@ -143,6 +147,7 @@ power_walk_prob_trans <- function(A, beta = 10) {
 
 }
 
+## ** Power Walk Stationary Point
 
 #' Power Walk Stationary Point
 #'
@@ -178,7 +183,7 @@ power_walk_stationary_point  <- function(A, beta=10, eta) {
   ## I need δ in both places, performing ColSums multiple times and having
   ## nested functions could also get very slow if this was inside a loop so
   ## it's simpler to just redefine it.
-    A      <- Matrix(A, sparse = TRUE)
+    A      <- Matrix::Matrix(A, sparse = TRUE)
     n      <- nrow(A)
     B      <- A
     B      <- beta^A   # Element Wise exponentiation
@@ -189,12 +194,7 @@ power_walk_stationary_point  <- function(A, beta=10, eta) {
     # Bo     <- β^(A) -1
     # Bo     <- drop0(Bo)
 
-## ** Create the Scaling Matrix
 ## Create the Scaling Matrix to make row sums 1
-##
-## TODO So the issue is that 1/(colSums(Bo)+n) != 1/(colSums(B))
-##      Investigate why this is occuring, what's wrong with the math
-##      Write up notes on the mistake, make a PDF, submit the code
 ##
   δB   <- 1/(Matrix::colSums(Bo)+n) # = 1/(Matrix::colSums(B))
   δBt  <- t(δB)
@@ -206,7 +206,7 @@ power_walk_stationary_point  <- function(A, beta=10, eta) {
   n      <- nrow(A)
   p_new  <- rep(1/n, n)  # Uniform
   p      <- rep(0, n)    # Zero
-## *** Implement the Loop
+# Implement the Loop
 
  while (sum(abs(p_new - p)) > eta) {
     (p <- as.vector(p_new)) # P should remain a vector
@@ -214,6 +214,53 @@ power_walk_stationary_point  <- function(A, beta=10, eta) {
      p_new  <- T %*% p + rep(t(δB) %*% p, n)
   }
 
-  return(p)
+  return(as.vector(p))
 
+}
+## * Random Surfer
+## ** Probability Transition Matrix
+## This is the ordinary Transition Matrix because the RS is:
+## RS = ɑT + (1-ɑ)B
+## ** Stationary Distribution
+## To keep everything sparse this has to be done differently
+## than just iterating T <- TD
+#' Random Surfer Stationary Distribution
+#'
+#' Takes an Adjacency matrix and returns the Stationary Distribution using Random Surfer
+#'
+#' The returned vector will describe the probability of landing at each
+#' vertex during a random walk
+#' Using the Random Surfer model.
+#'
+#' @param alpha the value of the smoothing parameter,
+#'
+#'   * 0 would indicate that every vertex is teleported to during a random walk
+#'   * 1 would indicate that teleporting can't happen
+#' @param A An adjacancy matrix such that A[i,j] indicates travel j -> i
+#' @param dp how many decimal points of accuracy to use TODO make eta
+#'
+#' @export
+#'
+#' @examples adj_to_probTrans(matrix(1:3, 3))
+#'
+#'
+random_surfer_stationary <- function(A, alpha=0.85, dp = 2) {
+  T     <- adj_to_probTrans(A)
+  A     <- Matrix::Matrix(A, sparse = TRUE)
+  N     <- nrow(A)
+  F     <- rep((1-alpha)/N, nrow(A))  ## A nx1 vector of (1-alpha)/N
+
+  ## Solve using the power method
+  p     <- rep(0, length.out = ncol(T)); p[1] <- 1
+  p_new <- alpha*T %*% p + F
+
+  ## use a Counter to debug
+## **** TODO use eta not DP
+  i <- 0
+  while (sum(round(p, dp) != round(p_new, dp))) {
+      p     <- p_new
+      p_new <- alpha*T %*% p + F
+  }
+
+  return(as.vector(p))
 }
