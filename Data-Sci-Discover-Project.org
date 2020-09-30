@@ -1533,7 +1533,8 @@ Solving for $\beta$  with eqref:fl :
 %    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
 \end{align}
 
-where: [fn::NOTE: Similar to a signmoid function, which is a solution to $p \propto p(1-p)$, I wonder if this provides a connection to the exponential nature of the power walk]
+where: [fn:bvl]
+
 - $\Theta = \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{B}}^{- 1}$
 
 but we can't really do this so instead:
@@ -1542,7 +1543,7 @@ but we can't really do this so instead:
 \vec{1} \beta = \left( 1 - \Theta \right) \Theta^{-1} \label{eq:betadef}
 \]
 
-If $\beta$ is set accordingly then by \eqref{eq:eqalpha}:
+If $\beta$ is set accordingly then by eqref:eq:eqalpha:
 
 \begin{align}
     \mathbf{A}\left( \beta- 1 \right) \mathbf{D}_{\mathbf{B}}^{- 1} &= \alpha = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1} \nonumber \\
@@ -1588,5 +1589,7 @@ where:
   - All Vertices can be reached from any other vertex
 
 * Footnotes
+
+[fn:bvl] NOTE: Similar to a signmoid function, which is a solution to $p \propto p(1-p)$, I wonder if this provides a connection to the exponential nature of the power walk
 
 [fn:un]
