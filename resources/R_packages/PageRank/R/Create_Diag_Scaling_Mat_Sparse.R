@@ -182,28 +182,12 @@ adj_to_probTrans <- function(mat) {
 #' @return The output matrix will be of the class dgCmatrix
 #' @export
 power_walk_prob_trans <- function(A, beta = 10) {
-    A      <- Matrix::Matrix(A, sparse = TRUE)
+    n       <- nrow(A)
+    B       <- beta^A
 
-    n      <- nrow(A)
-    B      <- A
-    B      <- beta^A   # Element Wise exponentiation
-
-    Bo     <- A
-    # These two approaches are equivalent
-    Bo@x   <- beta^(A@x) -1   # This in theory would be faster
-    # Bo     <- β^(A) -1
-    # Bo     <- drop0(Bo)
-
-## Create the Scaling Matrix to make row sums 1
-##
-  δB   <- 1/(Matrix::colSums(Bo)+n) # = 1/(Matrix::colSums(B))
-  δBt  <- t(δB)
-  DB   <- diag(δB)
-
-## Create the Trans Prob Mat using Power Walk
-  T <- Bo %*% DB
-  return(T)
-
+    DB_inv  <- create_sparse_diag_scaling_mat(B)
+    T     <- B %*% DB_inv
+    return(T)
 }
 
 ## ** Power Walk Stationary Point
