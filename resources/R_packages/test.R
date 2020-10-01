@@ -21,11 +21,8 @@ Tpw <- PageRank::power_walk_prob_trans(A, beta = beta)
 Trs <- PageRank::adj_to_probTrans(A)
 
 ## * Print the Eigen Values
-eigen(Tpw, only.values = TRUE)$values
-eigen(Trs, only.values = TRUE)$values
+# eigen(Tpw, only.values = TRUE)$values
+# eigen(Trs, only.values = TRUE)$values
 
-eig_sol_pw          <- eigen(Tpw, symmetric = FALSE)$vectors[,1]
-power_method_sol_pw <- PageRank::power_walk_stationary_point(A, eta = 10^-6, beta = beta)
-
-## These should really be equal huh...
-sum(eig_sol_pw - power_method_sol_pw)
+(eig_sol_pw          <- eigen(Tpw, symmetric = FALSE)$vectors[,1]/sum(eigen(Tpw, symmetric = FALSE)$vectors[,1]))
+(power_method_sol_pw <- PageRank::power_walk_stationary_point(A, eta = 10^-6, beta = beta))
