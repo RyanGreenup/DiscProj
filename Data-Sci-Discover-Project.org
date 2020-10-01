@@ -1540,7 +1540,7 @@ where: [fn:bvl]
 but we can't really do this so instead:
 
 \[
-\vec{1} \beta = \left( 1 - \Theta \right) \Theta^{-1} \label{eq:betadef}
+\beta \mathbf{1}_{\tiny \left[ n,n \right]}  = \left( 1 - \Theta \right) \Theta^{-1} \label{eq:betadef}
 \]
 
 If $\beta$ is set accordingly then by eqref:eq:eqalpha:
@@ -1579,7 +1579,77 @@ Let $\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2$ return the
 
 where:
 
+
  - $\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)$ refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
+***** My attempt
+\begin{align}
+    \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
+%    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
+\end{align}
+
+where:
+- $\Theta = \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{B}}^{- 1}$
+
+So I thought maybe if I could find a value of $\beta$ that satisfied eqref:eq:betasig then I could show circumstances under which $\left\lvert \xi_2 \right\rvert < \alpha$.
+
+Seemingly it's only satisfied where $\beta = 1$ though, using this simulation:
+
+#+begin_src R
+g1 <- igraph::erdos.renyi.game(n = 9, 0.2)
+A <- igraph::get.adjacency(g1) # Row to column
+A <- t(A)
+# plot(g1)
+
+## * Finding beta values to behave like Random Surfer
+  beta <- 10
+  B <- beta^A
+
+  DA     <- PageRank::create_sparse_diag_sc_inv_mat(A)
+  DB_inv <- PageRank::create_sparse_diag_scaling_mat(B)
+
+ THETA <- DA %*% DB_inv
+
+THETA <- function(A, beta) {
+  B  <- beta^A
+  DA     <- PageRank::create_sparse_diag_sc_inv_mat(A)
+  DB_inv <- PageRank::create_sparse_diag_scaling_mat(B)
+  return(DA %*% DB_inv)
+}
+
+THETA_inv <- function(A, beta) {
+  B  <- beta^A
+  DB     <- PageRank::create_sparse_diag_sc_inv_mat(B)
+  DA_inv <- PageRank::create_sparse_diag_scaling_mat(A)
+  return(DA %*% DB_inv)
+}
+
+beta_func <- function(A, beta) {
+    return(1-THETA(A, beta^A) %*% THETA_inv(A, beta^A))
+}
+
+THETA(A, 10) %*% THETA_inv(A, 10)
+
+
+eta <- 10^-6
+beta <- 1.01
+while (mean(beta*matrix(1, nrow(A), ncol(A)) - beta_func(A, beta)) > eta) {
+    beta <- beta + 0.01
+    print(beta)
+    print(diag(beta_func(A, beta)))
+    print(beta*matrix(1, nrow(A), ncol(A)))
+    print(beta_func(A, beta))
+#    Sys.sleep(0.1)
+}
+
+beta
+
+
+diag(beta_func(A, beta))
+beta
+
+
+## * blah
+#+end_src
 
 * Appendix
 ** Glossary
