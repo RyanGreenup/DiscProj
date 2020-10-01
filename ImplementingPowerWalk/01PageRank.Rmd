@@ -102,9 +102,10 @@ The eigenvector corresponding to the the eigenvalue of 1 will be the stationary 
 
 ```{r}
 eigen(S, symmetric = FALSE)
+?eigen
 ```
 
-So in this case ~~the~~ a stationary point is $\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle$
+So in this case the stationary point is $\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle$
 
 which can be verified:
 
