@@ -1800,6 +1800,13 @@ No not really, it terms of accuracy
 
 ** TODO Is the determinant faster or slower?
 Significantly slower for large matrices.
+** TODO Import wikipedia data
+- Import the wikipedia data
+- Measure the density
+- Use the density to guess the \(p\) of the game
+  + Justify the witht the scatterplot matrix
+- Measure the affect of different \(\beta\) values on \(\lambda_2\) for graphs ov various sizes given that \(p\) value.
+  + Or atleast a range within that prob
 
 * What's the central article of Wikipedia
 
