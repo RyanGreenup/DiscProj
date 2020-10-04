@@ -6,6 +6,7 @@
   }
 
   pacman::p_load(PageRank, devtools, Matrix, igraph)
+  mise()
 
 g1 <- igraph::erdos.renyi.game(n = 9, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
@@ -120,7 +121,6 @@ mean(x) ## 96%
 
 ## * Looking at Density and Beta
 
-PageRank::power_walk_stationary_point()
 
 n <- 30
 g1 <- igraph::erdos.renyi.game(n = n, 0.2)
@@ -132,29 +132,66 @@ df <- data.frame()
 #df <- data.frame("e2"=c(), "A_dens" = c(), "A_det" = c(), "beta" = c())
 df
 
-n <- 100
+n <- 20
 p <- 1:n/n
 beta <- 1:n/n
+beta <- runif(n)*100
 sz <- 1:n/n+10
-vals <- matrix(nrow(n^3, ncol = 3+1)
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+input_var
 
-for (p in p) {
-  for (beta in beta) {
-    for (sz in sz) {
+
+random_graph <- function(n, p, beta, size) {
       g1 <- igraph::erdos.renyi.game(n = sz, p)
-       A <- igraph::get.adjacency(g1) # Row to column
-       A <- t(A)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
 
-       A_dens <- mean(A)
-       T      <- PageRank::power_walk_prob_trans(A)
-       eigen(T, only.values = TRUE)
-
-
-
-
-    }
-  }
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      return(c(abs(e2), A_dens))
 }
 
-eigen(T, values.only = TRUE)
-eigen(T, only.values = TRUE)$values[1]
+X <- as.vector(input_var[i,])
+random_graph(X$n, X$p, X$beta, X$size)
+
+## TODO this should use pmap.
+Y <- matrix(ncol = 2, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
+head(Y)
+
+data <- cbind(input_var, Y)
+data$beta
+
+ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  geom_point()
+
+curve(dchisq(x, df = 10), from = 0, to = 40)
+
+
+
+ggplot(data, aes(y = chi, x = index)) +
+  geom_point(data)
+
+
+names(data)
+ggplot(data, aes(x = index, y = chi)) +
+  geom_line()
+
+
+chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*6
+index  <- seq(from = 0, to = 2, length.out = 100)
+chidata  <- data.frame(index = index, chi = chival)
+ggplot(data) +
+  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  geom_line(data = chidata, mapping = aes(x = index, y = chi))
