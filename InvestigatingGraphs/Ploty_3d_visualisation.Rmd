@@ -1,0 +1,162 @@
+---
+title: "Eigenvalue vs density vs determinant"
+author: "Ryan Greenup"
+date: "10/4/2020"
+output: html_document
+---
+
+# Investigating Second Eigenvalue
+
+```{r}
+  library(pacman)
+  pacman::p_load(PageRank, devtools, Matrix, igraph, mise, tidyverse, rgl, latex2exp, plotly)
+#  mise()
+```
+
+## Looking at Density
+
+### Constants
+
+Define some constants
+
+```{r}
+n <- 20
+p <- 1:n/n
+beta <- 1:n/n
+beta <- runif(n)*100
+#sz <- 1:n/n+10
+sz <- (1:n/n)*100+10
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+head(input_var)
+```
+
+### Function to Build Graph
+
+```{r}
+random_graph <- function(n, p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      return(c(abs(e2), A_dens, A_det))
+}
+```
+
+### Return results
+
+Map the function
+
+```{r}
+nc <- length(random_graph(1, 1, 1, 1))
+Y <- matrix(ncol = nc, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant")
+(data <- cbind(input_var, Y)) %>% head()
+data <- data[data$density!=0,]
+
+
+```
+
+
+### Plot Results
+
+
+```{r}
+
+chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
+index  <- seq(from = 0, to = 2.2, length.out = 100)
+chidata  <- data.frame(index = index, chi = chival)
+ggplot(data) +
+  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Density of Adjacency Matrix", y = TeX("$\\xi_2$ of $T_{PW}$"))
+```
+
+This is interesting, lets look at a snapshot of it:
+
+```{r}
+pairs(data, cex = 0.01)
+```
+
+This suggests that only the determinant and density affect eigenvalue2 over all possible adjacency matrices.
+the probability of forming edges is directly correlated with density so it can be ommitted, the plot of p~eigenvalue 2 is a heteroskedasdic inverse linear model, much like e2~density, suggesting that it woun't be of much predictive value compared to density. in practice we measure density not p so :shrug.
+
+It appears that density ~ determinant is:
+
+$$
+\left|\mathrm{det}\left( \mathbf{A} \right)-0.5\right|\ <\ \left|\frac{1}{100\cdot \mathtt{mean}\left( \mathbf{A} \right)}\right|
+$$
+
+this restriction carries over to density, so the determinant can be used to indirectly predict e2.
+
+extreme determinant implies that density will be about half, this means that a large determinant will mean a predictable albeit moderate E2. If det(A) = 0 we know nothing and must look at density. (is det faster or slower?)
+
+
+Fairly pointless given that the determinant is harder to calculate anyway:
+
+```{r}
+library(Matrix)
+n <- 1
+sz <- 1000
+p <- 0.4
+dens_time <- replicate(n, {
+  start <- Sys.time()
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      mean_a <- mean(A)
+  return(Sys.time()-start)
+})
+
+det_time<- replicate(n, {
+  start <- Sys.time()
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      det_a <- det(A)
+  return(Sys.time() - start)
+})
+#mean((dens_time-det_time)/dens_time)
+det_time_mean <- mean(det_time)
+dens_time_mean <- mean(dens_time)
+
+(dens_time_mean-det_time_mean)*100/dens_time_mean
+```
+
+
+
+So it seems that the only things that generally affect $\xi_2$ across all possible
+adjacency matrices are density and determinant of $\mathbf{A}$, so let's look at
+that:
+
+```{r}
+library(plotly)
+
+mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
+mtcars$am[which(mtcars$am == 1)] <- 'Manual'
+mtcars$am <- as.factor(mtcars$am)
+
+d <- data[sample(1:nrow(data), 1000),]
+
+fig <- plot_ly(d, x = ~determinant, y = ~density, z = ~eigenvalue2)
+fig <- fig %>% add_markers(size = 1)
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'Determinant'),
+                     yaxis = list(title = 'density'),
+                     zaxis = list(title = '2nd Eigenvalue')))
+
+fig
+
+```
+
+
+

@@ -1796,7 +1796,10 @@ ggplot(data) +
 
 *** TODO Change the colour of each model by using pivot_longer
 ** TODO Could I get better performance by also considering the determinant?
+No not really, it terms of accuracy
 
+** TODO Is the determinant faster or slower?
+Significantly slower for large matrices.
 
 * What's the central article of Wikipedia
 
