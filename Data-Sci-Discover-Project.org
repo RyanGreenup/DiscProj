@@ -1650,6 +1650,155 @@ beta
 
 ## * blah
 #+end_src
+* Investigating the Second EigenValue
+
+Maybe I should look at the most appropriate way to simulate social network links, one possibility is [[https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf][this paper ]] cite:zengPracticalSimulationMethod2013.
+
+Actually there is a data set available
+ cite:garritanoWikipediaArticleNetworks2019, I should just analyse that, see [[file:~/Dropbox/DataSci/Visual_Analytics/Assessment/the-marvel-universe-social-network/plotly3d_Marvel.r][how
+it was done in Visual Analytics as a reminder]].
+
+Using the Wikipedia ArtYeah I think that's right, thaicle compare density and Determinant.
+
+Is the determinant easily calculated for a large matrix?
+  It appears to diverge
+
+  Will the determinant diverge for large matrices?
+  Will the prob of making edges in the game just be the density?
+
+  Look at comparing the determinant and the density of the wikipedia adjacency matrix.
+
+  What are some ways that we can model the second eigenvalue?
+
+** Plotting Various Values
+
+There is some relationship between the determinant and the density
+
+#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Determinant.png :eval never-export
+  library(pacman)
+  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
+n <- 20
+p <- 1:n/n
+beta <- 1:n/n
+beta <- runif(n)*100
+sz <- 1:n/n+10
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+input_var
+
+
+random_graph <- function(n, p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      return(c(abs(e2), A_det))
+}
+
+## TODO this should use pmap.
+Y <- matrix(ncol = 2, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
+
+data <- cbind(input_var, Y)
+
+ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  geom_point() +
+  labs(x = "Determinant of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
+  scale_size_continuous(range = c(0.1,1))
+#+end_src
+
+#+RESULTS[08882d661cf5d2410c8335d1850632709c7cf5c5]:
+[[file:Media/EigenValue_Determinant.png]]
+
+
+#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density.png :eval never-export
+  library(pacman)
+  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
+n <- 100
+p <- 1:n/n
+beta <- 1:n/n
+beta <- runif(n)*100
+sz <- 1:n/n+10
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+input_var
+
+
+random_graph <- function(n, p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      return(c(abs(e2), A_dens))
+}
+
+## TODO this should use pmap.
+Y <- matrix(ncol = 2, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
+
+data <- cbind(input_var, Y)
+
+ggplot(data, aes(x = determinant, y = eigenvalue2, color = size, shape = factor(n))) +
+  geom_point(base_size = 99, aes(size = beta)) +
+  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
+  scale_size_continuous(range = c(0.1,1))
+#+end_src
+
+#+RESULTS[6c4a71508e3f2f85ac4b033caba9732f9dfb60cc]:
+[[file:Media/EigenValue_Density.png]]
+
+Maybe this looks like a Chi distribution?
+
+#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density_Chi.png :eval never-export
+chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*6
+index  <- seq(from = 0, to = 2, length.out = 100)
+chidata  <- data.frame(index = index, chi = chival)
+ggplot(data) +
+  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
+#+end_src
+
+#+RESULTS[c7a830cfab9be72b1ce3782f148a5dcb92c49f48]:
+[[file:Media/EigenValue_Density_Chi.png]]
+
+
+** TODO Model the log transformed data using a linear regression or log(-x) regression
+
+\begin{align}
+    \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
+\end{align}
+
+*** TODO Change the colour of each model by using pivot_longer
+** TODO Could I get better performance by also considering the determinant?
+
+
+* What's the central article of Wikipedia
 
 * Appendix
 ** Glossary
