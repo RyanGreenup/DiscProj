@@ -1787,7 +1787,6 @@ ggplot(data) +
 #+RESULTS[c7a830cfab9be72b1ce3782f148a5dcb92c49f48]:
 [[file:Media/EigenValue_Density_Chi.png]]
 
-
 ** TODO Model the log transformed data using a linear regression or log(-x) regression
 
 \begin{align}
@@ -1801,12 +1800,14 @@ No not really, it terms of accuracy
 ** TODO Is the determinant faster or slower?
 Significantly slower for large matrices.
 ** TODO Import wikipedia data
-- Import the wikipedia data
-- Measure the density
-- Use the density to guess the \(p\) of the game
-  + Justify the witht the scatterplot matrix
-- Measure the affect of different \(\beta\) values on \(\lambda_2\) for graphs ov various sizes given that \(p\) value.
-  + Or atleast a range within that prob
+- +Import the wikipedia data+
+- +Measure the density+
+- +Use the density to guess the \(p\) of the game+
+  + +Justify the witht the scatterplot matrix+
+- +Measure the affect of different \(\beta\) values on \(\lambda_2\) for graphs ov various sizes given that \(p\) value.+
+  + +Or atleast a range within that prob+
+
+    use a /Barabassi-Albert/ Random Graph through the ~igraph::
 
 * What's the central article of Wikipedia
 

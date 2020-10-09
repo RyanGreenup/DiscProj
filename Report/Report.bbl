@@ -117,6 +117,62 @@
       \verb http://doi.org/10.1145/383952.384003
       \endverb
     \endentry
+    \entry{parkPowerWalkRevisiting2013}{inproceedings}{}
+      \name{author}{2}{}{%
+        {{hash=86084ac8caf5f18b13cd932bd6aa8dff}{%
+           family={Park},
+           familyi={P\bibinitperiod},
+           given={Laurence\bibnamedelimb A.\bibnamedelimi F.},
+           giveni={L\bibinitperiod\bibinitdelim A\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+        {{hash=96654bcd1175d60cd5c42be759fc1603}{%
+           family={Simoff},
+           familyi={S\bibinitperiod},
+           given={Simeon},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Brisbane, Queensland, Australia}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{fullhash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{bibnamehash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{authorbibnamehash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{authornamehash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \strng{authorfullhash}{c83776840cc1e750910e46b6b4ba2eeb}
+      \field{sortinit}{P}
+      \field{sortinithash}{bb5b15f2db90f7aef79bb9e83defefcb}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Measurement of graph centrality provides us with an indication of the importance or popularity of each vertex in a graph. When dealing with graphs that are not centrally controlled (such as the Web, social networks and academic citation graphs), centrality measure must 1) correlate with vertex importance/popularity, 2) scale well in terms of computation, and 3) be difficult to manipulate by individuals. The Random Surfer probability transition model, combined with Eigenvalue Centrality produced PageRank, which has shown to satisfy the required properties. Existing centrality measures (including PageRank) make the assumption that all directed edges are positive, implying an endorsement. Recent work on sentiment analysis has shown that this assumption is not valid. In this article, we introduce a new method of transitioning a graph, called Power Walk, that can successfully compute centrality scores for graphs with real weighted edges. We show that it satisfies the desired properties, and that its computation time and centrality ranking is similar to when using the Random Surfer model for non-negative matrices. Finally, stability and convergence analysis shows us that both stability and convergence when using the power method, are dependent on the Power Walk parameter β.}
+      \field{booktitle}{Proceedings of the 18th {{Australasian Document Computing Symposium}}}
+      \field{day}{5}
+      \field{isbn}{978-1-4503-2524-0}
+      \field{month}{12}
+      \field{series}{{{ADCS}} '13}
+      \field{shorttitle}{Power Walk}
+      \field{title}{Power Walk: Revisiting the Random Surfer}
+      \field{urlday}{31}
+      \field{urlmonth}{7}
+      \field{urlyear}{2020}
+      \field{year}{2013}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{50\bibrangedash 57}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1145/2537734.2537749
+      \endverb
+      \verb{urlraw}
+      \verb http://doi.org/10.1145/2537734.2537749
+      \endverb
+      \verb{url}
+      \verb http://doi.org/10.1145/2537734.2537749
+      \endverb
+      \keyw{graph centrality,PageRank,random surfer,sentiment}
+    \endentry
     \entry{zhangMakingEigenvectorBasedReputation2004}{inproceedings}{}
       \name{author}{5}{}{%
         {{hash=0f5b8b674eea6432492c32e093925682}{%
