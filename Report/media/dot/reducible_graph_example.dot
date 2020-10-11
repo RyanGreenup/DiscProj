@@ -20,7 +20,7 @@
     label="Irreducible"
 
     5 -> 6 -> 6 -> 8 ->7 -> 6;
-    7 -> 5
+    7 -> 5 [color = "red" style = "dashed"];
   }
 
 }

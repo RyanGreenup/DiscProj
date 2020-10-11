@@ -16,10 +16,14 @@
   {}
 \endgroup
 
+\preamble{%
+\ifdefined\DeclarePrefChars\DeclarePrefChars{'’-}\else\fi%
+}
+
 
 \refsection{0}
   \datalist[entry]{nty/global//global/global}
-    \entry{AdjacencyMatrix2020a}{inreference}{}
+    \entry{rosenDiscreteMathematicsIts2007}{inreference}{}
       \field{sortinit}{A}
       \field{sortinithash}{a3dcedd53b04d1adfd5ac303ecd5e6fa}
       \field{labeltitlesource}{title}
@@ -48,6 +52,165 @@
       \endverb
       \verb{url}
       \verb https://en.wikipedia.org/w/index.php?title=Adjacency_matrix&oldid=979433676
+      \endverb
+    \endentry
+    \entry{albertDiameterWorldWideWeb1999}{article}{}
+      \name{author}{3}{}{%
+        {{hash=d85e8d2b76e8626b1a45373f4e027914}{%
+           family={Albert},
+           familyi={A\bibinitperiod},
+           given={Réka},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f0f51cd5afc669d57dbff9b8e913c55c}{%
+           family={Jeong},
+           familyi={J\bibinitperiod},
+           given={Hawoong},
+           giveni={H\bibinitperiod}}}%
+        {{hash=15bacd7ddfc866c5dd96976d4b0244d5}{%
+           family={Barabási},
+           familyi={B\bibinitperiod},
+           given={Albert-László},
+           giveni={A\bibinithyphendelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{bf79a88c4a5a18ebb3c929448cd04193}
+      \strng{fullhash}{bf79a88c4a5a18ebb3c929448cd04193}
+      \strng{bibnamehash}{bf79a88c4a5a18ebb3c929448cd04193}
+      \strng{authorbibnamehash}{bf79a88c4a5a18ebb3c929448cd04193}
+      \strng{authornamehash}{bf79a88c4a5a18ebb3c929448cd04193}
+      \strng{authorfullhash}{bf79a88c4a5a18ebb3c929448cd04193}
+      \field{sortinit}{A}
+      \field{sortinithash}{a3dcedd53b04d1adfd5ac303ecd5e6fa}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0028-0836, 1476-4687}
+      \field{journaltitle}{Nature}
+      \field{langid}{english}
+      \field{month}{9}
+      \field{number}{6749}
+      \field{title}{Diameter of the {{World}}-{{Wide Web}}}
+      \field{urlday}{11}
+      \field{urlmonth}{10}
+      \field{urlyear}{2020}
+      \field{volume}{401}
+      \field{year}{1999}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{130\bibrangedash 131}
+      \range{pages}{2}
+      \verb{doi}
+      \verb 10.1038/43601
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/REPEQYB6/albertDiameterWorldWideWeb1999.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://www.nature.com/articles/43601
+      \endverb
+      \verb{url}
+      \verb http://www.nature.com/articles/43601
+      \endverb
+    \endentry
+    \entry{barabasiPhysicsWeb2001}{article}{}
+      \name{author}{1}{}{%
+        {{hash=15bacd7ddfc866c5dd96976d4b0244d5}{%
+           family={Barabási},
+           familyi={B\bibinitperiod},
+           given={Albert-László},
+           giveni={A\bibinithyphendelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{fullhash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{bibnamehash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{authorbibnamehash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{authornamehash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{authorfullhash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{issn}{0953-8585, 2058-7058}
+      \field{journaltitle}{Phys. World}
+      \field{langid}{english}
+      \field{month}{7}
+      \field{number}{7}
+      \field{title}{The Physics of the {{Web}}}
+      \field{urlday}{11}
+      \field{urlmonth}{10}
+      \field{urlyear}{2020}
+      \field{volume}{14}
+      \field{year}{2001}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{33\bibrangedash 38}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.1088/2058-7058/14/7/32
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/FNC7UBYW/Barabási - 2001 - The physics of the Web.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://iopscience.iop.org/article/10.1088/2058-7058/14/7/32
+      \endverb
+      \verb{url}
+      \verb https://iopscience.iop.org/article/10.1088/2058-7058/14/7/32
+      \endverb
+    \endentry
+    \entry{barabasiScalefreeCharacteristicsRandom2000}{article}{}
+      \name{author}{3}{}{%
+        {{hash=15bacd7ddfc866c5dd96976d4b0244d5}{%
+           family={Barabási},
+           familyi={B\bibinitperiod},
+           given={Albert-László},
+           giveni={A\bibinithyphendelim L\bibinitperiod}}}%
+        {{hash=d85e8d2b76e8626b1a45373f4e027914}{%
+           family={Albert},
+           familyi={A\bibinitperiod},
+           given={Réka},
+           giveni={R\bibinitperiod}}}%
+        {{hash=f0f51cd5afc669d57dbff9b8e913c55c}{%
+           family={Jeong},
+           familyi={J\bibinitperiod},
+           given={Hawoong},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{3cbe2fb47fac96c0211882780fe93bb7}
+      \strng{fullhash}{3cbe2fb47fac96c0211882780fe93bb7}
+      \strng{bibnamehash}{3cbe2fb47fac96c0211882780fe93bb7}
+      \strng{authorbibnamehash}{3cbe2fb47fac96c0211882780fe93bb7}
+      \strng{authornamehash}{3cbe2fb47fac96c0211882780fe93bb7}
+      \strng{authorfullhash}{3cbe2fb47fac96c0211882780fe93bb7}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{issn}{03784371}
+      \field{journaltitle}{Physica A: Statistical Mechanics and its Applications}
+      \field{langid}{english}
+      \field{month}{6}
+      \field{number}{1-4}
+      \field{shorttitle}{Scale-Free Characteristics of Random Networks}
+      \field{title}{Scale-Free Characteristics of Random Networks: The Topology of the World-Wide Web}
+      \field{urlday}{11}
+      \field{urlmonth}{10}
+      \field{urlyear}{2020}
+      \field{volume}{281}
+      \field{year}{2000}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{69\bibrangedash 77}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1016/S0378-4371(00)00018-2
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/XJSL3BUY/barabasiScalefreeCharacteristicsRandom2000.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0378437100000182
+      \endverb
+      \verb{url}
+      \verb https://linkinghub.elsevier.com/retrieve/pii/S0378437100000182
       \endverb
     \endentry
     \entry{berkhoutRankingNodesGeneral2018a}{article}{}
@@ -278,7 +441,7 @@
       \verb https://en.wikipedia.org/w/index.php?title=DOT_(graph_description_language)&oldid=961944797
       \endverb
     \endentry
-    \entry{foussAlgorithmsModelsNetwork2016}{book}{}
+    \entry{larsonElementaryLinearAlgebra1991}{book}{}
       \name{author}{3}{}{%
         {{hash=dce86343cb82c96bc3cce45aa41cb364}{%
            family={Fouss},
@@ -460,29 +623,43 @@
       \verb https://kaggle.com/andreagarritano/wikipedia-article-networks
       \endverb
     \endentry
-    \entry{GooglePressCenter2001}{online}{}
+    \entry{golubMatrixComputations1996}{book}{}
+      \name{author}{2}{}{%
+        {{hash=8b856da92ad549d323acc679ecf7f474}{%
+           family={Golub},
+           familyi={G\bibinitperiod},
+           given={Gene\bibnamedelima H.},
+           giveni={G\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
+        {{hash=4ed2d13e66ef340bd8d892c23333c87b}{%
+           family={Van\bibnamedelima Loan},
+           familyi={V\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={Charles\bibnamedelima F.},
+           giveni={C\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Baltimore}%
+      }
+      \list{publisher}{1}{%
+        {Johns Hopkins University Press}%
+      }
+      \strng{namehash}{315525c1558db03561c0e8a8b605758b}
+      \strng{fullhash}{315525c1558db03561c0e8a8b605758b}
+      \strng{bibnamehash}{315525c1558db03561c0e8a8b605758b}
+      \strng{authorbibnamehash}{315525c1558db03561c0e8a8b605758b}
+      \strng{authornamehash}{315525c1558db03561c0e8a8b605758b}
+      \strng{authorfullhash}{315525c1558db03561c0e8a8b605758b}
       \field{sortinit}{G}
       \field{sortinithash}{62eb2aa29549e4fdbd3cb154ec5711cb}
-      \field{labeltitlesource}{shorttitle}
-      \field{day}{15}
-      \field{month}{7}
-      \field{shorttitle}{Google {{Press Center}}}
-      \field{title}{Google {{Press Center}}: {{Fun Facts}}}
-      \field{urlday}{9}
-      \field{urlmonth}{10}
-      \field{urlyear}{2020}
-      \field{year}{2001}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{edition}{3rd ed}
+      \field{isbn}{978-0-8018-5413-2 978-0-8018-5414-9}
+      \field{pagetotal}{694}
+      \field{series}{Johns {{Hopkins}} Studies in the Mathematical Sciences}
+      \field{title}{Matrix Computations}
+      \field{year}{1996}
       \field{dateera}{ce}
-      \field{urldateera}{ce}
-      \verb{file}
-      \verb /home/ryan/Zotero/storage/X6HY2V3D/funfacts.html
-      \endverb
-      \verb{urlraw}
-      \verb https://web.archive.org/web/20010715123343/https://www.google.com/press/funfacts.html
-      \endverb
-      \verb{url}
-      \verb https://web.archive.org/web/20010715123343/https://www.google.com/press/funfacts.html
-      \endverb
+      \keyw{Data processing,Matrices}
     \endentry
     \entry{guptaWTFWhoFollow2013}{inproceedings}{}
       \name{author}{6}{}{%
@@ -675,6 +852,66 @@
       \endverb
       \keyw{knowledge}
     \endentry
+    \entry{langvilleReorderingPageRankProblem2006}{article}{}
+      \name{author}{2}{}{%
+        {{hash=f579305f4490bb8fbb116886a015e519}{%
+           family={Langville},
+           familyi={L\bibinitperiod},
+           given={Amy\bibnamedelima N.},
+           giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
+        {{hash=4c69e3607c3315a1262f92ab7e95985b}{%
+           family={Meyer},
+           familyi={M\bibinitperiod},
+           given={Carl\bibnamedelima D.},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Philadelphia, United States, Philadelphia}%
+      }
+      \list{publisher}{1}{%
+        {Society for Industrial and Applied Mathematics}%
+      }
+      \strng{namehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{fullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{bibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authorbibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authornamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \strng{authorfullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \field{extraname}{1}
+      \field{sortinit}{L}
+      \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We describe a reordering particularly suited to the PageRank problem, which reduces the computation of the PageRank vector to that of solving a much smaller system and then using forward substitution to get the full solution vector. We compare the theoretical rates of convergence of the original PageRank algorithm to that of the new reordered PageRank algorithm, showing that the new algorithm can do no worse than the original algorithm. We present results of an experimental comparison on five datasets, which demonstrate that the reordered PageRank algorithm can provide a speedup of as much as a factor of 6. We also note potential additional benefits that result from the proposed reordering.}
+      \field{issn}{10648275}
+      \field{journaltitle}{SIAM Journal on Scientific Computing; Philadelphia}
+      \field{langid}{english}
+      \field{number}{6}
+      \field{pagetotal}{9}
+      \field{title}{A {{Reordering}} for the {{PageRank Problem}}}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{volume}{27}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{9}
+      \range{pages}{1}
+      \verb{doi}
+      \verb http://dx.doi.org.ezproxy.uws.edu.au/10.1137/040607551
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/I5R5A6YY/Langville and Meyer - 2006 - A Reordering for the PageRank Problem.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1
+      \endverb
+      \verb{url}
+      \verb http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1
+      \endverb
+      \keyw{Mathematics}
+    \endentry
     \entry{langvilleGooglePageRankScience2012}{book}{}
       \name{author}{2}{}{%
         {{hash=f579305f4490bb8fbb116886a015e519}{%
@@ -700,6 +937,7 @@
       \strng{authorbibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
       \strng{authornamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
       \strng{authorfullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
+      \field{extraname}{2}
       \field{sortinit}{L}
       \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
       \field{labelnamesource}{author}
@@ -766,7 +1004,7 @@
       \verb http://www.sciencedirect.com/science/article/pii/S016975529800110X
       \endverb
     \endentry
-    \entry{larsonElementaryLinearAlgebra1991}{book}{}
+    \entry{larsonElementaryLinearAlgebra1991a}{book}{}
       \name{author}{2}{}{%
         {{hash=8199c3ea1d4ae7a5ccbdaac7e7d521e5}{%
            family={Larson},
@@ -1033,40 +1271,6 @@
       \endverb
       \keyw{graph centrality,PageRank,random surfer,sentiment}
     \endentry
-    \entry{rosenDiscreteMathematicsIts2007}{book}{}
-      \name{author}{1}{}{%
-        {{hash=5d7c5a2525564580a8aa04190ae2b822}{%
-           family={Rosen},
-           familyi={R\bibinitperiod},
-           given={Kenneth\bibnamedelima H.},
-           giveni={K\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
-      }
-      \list{location}{1}{%
-        {Boston}%
-      }
-      \list{publisher}{1}{%
-        {McGraw-Hill Higher Education}%
-      }
-      \strng{namehash}{5d7c5a2525564580a8aa04190ae2b822}
-      \strng{fullhash}{5d7c5a2525564580a8aa04190ae2b822}
-      \strng{bibnamehash}{5d7c5a2525564580a8aa04190ae2b822}
-      \strng{authorbibnamehash}{5d7c5a2525564580a8aa04190ae2b822}
-      \strng{authornamehash}{5d7c5a2525564580a8aa04190ae2b822}
-      \strng{authorfullhash}{5d7c5a2525564580a8aa04190ae2b822}
-      \field{sortinit}{R}
-      \field{sortinithash}{b9c68a358aea118dfa887b6e902414a7}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{annotation}{OCLC: ocm67346104}
-      \field{edition}{6th ed}
-      \field{isbn}{978-0-07-288008-3 978-0-07-322972-0}
-      \field{note}{The foundations : logic and proofs -- Basic structures : sets, functions, sequences, and sums -- The fundamentals : algorithms, the integers, and matrices -- Induction and recursion -- Counting -- Discrete probability -- Advanced counting techniques -- Relations -- Graphs -- Trees -- Boolean algebra -- Modeling computation}
-      \field{pagetotal}{843}
-      \field{title}{Discrete Mathematics and Its Applications}
-      \field{year}{2007}
-      \field{dateera}{ce}
-      \keyw{Computer science,Logic; Symbolic and mathematical,Mathematics}
-    \endentry
     \entry{sazProbabilityTheoryThis}{online}{}
       \name{author}{1}{}{%
         {{hash=267e7f896b662b67e3b397adc1ad4027}{%
@@ -1097,40 +1301,6 @@
       \endverb
       \verb{url}
       \verb https://math.stackexchange.com/questions/1327283/is-this-graph-ergodic
-      \endverb
-    \endentry
-    \entry{teamSparseMatrixOperations}{book}{}
-      \name{author}{1}{}{%
-        {{hash=5eeee04fde6de2fba69fe9ef50a6ad85}{%
-           family={Team},
-           familyi={T\bibinitperiod},
-           given={Stan\bibnamedelima Development},
-           giveni={S\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
-      }
-      \strng{namehash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{fullhash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{bibnamehash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{authorbibnamehash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{authornamehash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \strng{authorfullhash}{5eeee04fde6de2fba69fe9ef50a6ad85}
-      \field{sortinit}{T}
-      \field{sortinithash}{51f9faf24c60c62ca764a77f78cf5666}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{Reference for the functions defined in the Stan math library and available in the Stan programming language.}
-      \field{title}{6 {{Sparse Matrix Operations}} | {{Stan Functions Reference}}}
-      \field{urlday}{7}
-      \field{urlmonth}{8}
-      \field{urlyear}{2020}
-      \field{urldateera}{ce}
-      \verb{file}
-      \verb /home/ryan/Zotero/storage/J7V6QUKX/sparse-matrices.html
-      \endverb
-      \verb{urlraw}
-      \verb https://mc-stan.org/docs/2_22/functions-reference/sparse-matrices.html
-      \endverb
-      \verb{url}
-      \verb https://mc-stan.org/docs/2_22/functions-reference/sparse-matrices.html
       \endverb
     \endentry
     \entry{DOTLanguage}{online}{}
@@ -1274,6 +1444,8 @@
       \endverb
     \endentry
   \enddatalist
+  \missing{AdjacencyMatrix2020a}
+  \missing{foussAlgorithmsModelsNetwork2016}
 \endrefsection
 \endinput
 
