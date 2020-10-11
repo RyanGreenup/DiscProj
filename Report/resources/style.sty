@@ -81,11 +81,13 @@
 % % Numbering
 % \renewcommand{\thesection}{}
 % \renewcommand{\thesubsection}{}
+%%%%%%%%%%%%%%%%%%%5
 \renewcommand{\thesection}{~\arabic{section}~}
 \setcounter{subsection}{1}
 \renewcommand{\thesubsection}{~\arabic{section}.\arabic{subsection}~}
 \setcounter{subsubsection}{1}
 \renewcommand{\thesubsubsection}{~\arabic{section}.\arabic{subsection}.\arabic{subsubsection}~}
+%%%%%%%%%%%%%%%%%%%%%
 
 
 % ** Font Style
@@ -122,34 +124,6 @@
 \definecolor{coltit}{RGB}{84, 65, 86}
 \definecolor{colname}{RGB}{236, 66 ,255}
 		
-% *** Change Colours
-% **** Section
-\titleformat{\section}
-{\color{colsse}\normalfont\LARGE\bfseries}
-{\color{colsse}\thesection}{0em}{}
-\fontfamily{cmss}\selectfont
-% **** SubSection
-\titleformat{\subsection}
-{\color{colsss}\normalfont\Large\bfseries}
-{\color{colsss}\thesubsection}{0em}{}[\rule{0 in}{2pt}]
-\fontfamily{cmss}\selectfont
-% Change Font
-\fontfamily{cmss}\selectfont
-% **** Paragraph
-\titleformat{\paragraph}
-{\color{colsss}\normalfont\large}
-{\color{colsss}\theparagraph}{0em}{}[\rule{0 in}{1 pt}]
-\fontfamily{cmss}\selectfont
-% Change Font
-\fontfamily{cmss}\selectfont
-
-
-
-
-
-
-	
-% 	
 % * Code Blocks
 % ** Listings Package
 
