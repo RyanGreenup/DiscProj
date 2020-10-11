@@ -15,7 +15,7 @@
 # #+CSL_STYLE: /home/ryan/Templates/CSL/nature.csl
 :END:
 :R:
-#+PROPERTY: header-args:R :session TADMain :dir ./ :cache yes :eval never-export :exports both
+#+PROPERTY: header-args:R :session ReportDiscProj :dir ./ :eval never-export :exports both
 # exports: both (or code or whatever)
 # results: table (or output or whatever)
 :END:
@@ -221,9 +221,9 @@ An a periodic graph has only one eigenvalue that lies on the unit circle, this i
 
 
 #+NAME: fig:aperiodic
-#+CAPTION: A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic, this does not represent the random surfer moidel, which would in theory connect every vertex but with some probability.
+#+CAPTION: A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic, this does not represent the random surfer model, which would in theory connect every vertex but with some probability.
 #+attr_html: :width 400px
-#+attr_latex: :width 6cm
+#+attr_latex: :width 9cm
 [[file:media/dot/aperiodic.dot.png]]
 
 **** The Fix
@@ -249,7 +249,7 @@ The relation ship in eqref:eq:recurrence can now be re expressed as:
 #+NAME: fig:rseg
 #+CAPTION:  A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model eqref:eq:random-surfer blue /teleportation/ edges are introduced, these may be followed with a probability of \(1 - \alpha \)
 #+attr_html: :width 400px
-#+attr_latex: :width 6cm
+#+attr_latex: :width 9cm
 [[file:media/dot/random_surfer.dot.png]]
 *** Limitations
 The /Random Surfer/ Model can only consider positively weighted edges, it cannot
@@ -371,7 +371,7 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
 
 #+NAME: preamble
 #+CAPTION: Implemented Packages used in this report
-#+BEGIN_SRC R
+#+BEGIN_SRC R :results none
   if (require("pacman")) {
       library(pacman)
     }else{
@@ -379,7 +379,7 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
       library(pacman)
     }
 
-    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)
+    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise)
 #+END_SRC
 
 ** Implementing the Random Surfer
@@ -394,12 +394,16 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
 
 Consider the following graph:
 
-#+BEGIN_SRC R :exports both :results output graphics file :file media/example-graph-power-walk.png
+#+BEGIN_SRC R :exports both :results output graphics file :file media/example-graph-power-walk.png :session ReportDiscProj
 g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
   plot(g1)
 #+END_SRC
 
-#+RESULTS[2815f7d61f2fce78bf0e5b08a984401e8489e99e]:
+#+NAME: example-rs-graph
+#+CAPTION: Exemplar graph to solve Random Surfer Model with
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+#+RESULTS[7de5d25f92fb5d3fdc637f7e5e9390e4492faabe]:
 [[file:media/example-graph-power-walk.png]]
 
 ***** Adjacency Matrix
@@ -409,52 +413,44 @@ g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4
 
 The adjacency Matrix is given by:
 
-#+BEGIN_SRC R
-  A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %>%
-    as.matrix()
+#+NAME: adj-mat-random-surf
+#+CAPTION: Return the Adjacency Matrix corresponding to figure [[example-rs-graph]]
+#+BEGIN_SRC R :results output :session ReportDiscProj
+  A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE)
 
-  ## Adjust the Order
-  (A <- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))])
+  ## igraph gives back the transpose
+  (A <- t(A))
 #+END_SRC
 
-#+BEGIN_EXAMPLE
-  ##    1 2 3 4 5 6 7 8 9 10
-  ## 1  0 1 0 0 0 0 0 0 0  0
-  ## 2  1 0 0 0 0 0 0 0 0  0
-  ## 3  0 0 0 1 0 0 0 0 0  0
-  ## 4  0 0 1 0 0 0 0 0 0  0
-  ## 5  1 1 1 1 0 0 0 0 0  0
-  ## 6  0 1 1 0 0 0 0 0 0  0
-  ## 7  0 1 0 0 0 0 0 0 0  0
-  ## 8  1 1 0 0 1 1 1 0 0  0
-  ## 9  0 1 1 1 0 0 0 0 0  0
-  ## 10 0 0 1 1 0 0 0 0 0  0
-#+END_EXAMPLE
+#+RESULTS[07ccd3f9e44696a6bf13432d1c4d930c65dab917]: adj-mat-random-surf
+#+begin_example
+   1 2 8 5 7 6 9 3 4 10
+1  0 1 1 1 0 0 0 0 0  0
+2  1 0 1 1 1 1 1 0 0  0
+8  0 0 0 0 0 0 0 0 0  0
+5  0 0 1 0 0 0 0 0 0  0
+7  0 0 1 0 0 0 0 0 0  0
+6  0 0 1 0 0 0 0 0 0  0
+9  0 0 0 0 0 0 0 0 0  0
+3  0 0 0 1 0 1 1 0 1  1
+4  0 0 0 1 0 0 1 1 0  1
+10 0 0 0 0 0 0 0 0 0  0
+#+end_example
 
-***** State Distribution
-    :PROPERTIES:
-    :CUSTOM_ID: state-distribution
-    :END:
-
-The state distribution is the transpose of the adjacency matrix:
-
-#+BEGIN_SRC R
-  (p0 <- t(A))
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-  ##    1 2 3 4 5 6 7 8 9 10
-  ## 1  0 1 0 0 1 0 0 1 0  0
-  ## 2  1 0 0 0 1 1 1 1 1  0
-  ## 3  0 0 0 1 1 1 0 0 1  1
-  ## 4  0 0 1 0 1 0 0 0 1  1
-  ## 5  0 0 0 0 0 0 0 1 0  0
-  ## 6  0 0 0 0 0 0 0 1 0  0
-  ## 7  0 0 0 0 0 0 0 1 0  0
-  ## 8  0 0 0 0 0 0 0 0 0  0
-  ## 9  0 0 0 0 0 0 0 0 0  0
-  ## 10 0 0 0 0 0 0 0 0 0  0
-#+END_EXAMPLE
+#+RESULTS[c1566cbc1c0c0b0dc96d2df0449ca574cf7553ea]:
+#+begin_example
+   1 2 8 5 7 6 9 3 4 10
+1  0 1 1 1 0 0 0 0 0  0
+2  1 0 1 1 1 1 1 0 0  0
+8  0 0 0 0 0 0 0 0 0  0
+5  0 0 1 0 0 0 0 0 0  0
+7  0 0 1 0 0 0 0 0 0  0
+6  0 0 1 0 0 0 0 0 0  0
+9  0 0 0 0 0 0 0 0 0  0
+3  0 0 0 1 0 1 1 0 1  1
+4  0 0 0 1 0 0 1 1 0  1
+10 0 0 0 0 0 0 0 0 0  0
+#+end_example
 
 ***** Probability Transition Matrix
     :PROPERTIES:
@@ -465,9 +461,31 @@ The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
 
+if \(\mathbf{A}\) had vertices with a 0 out-degree, the relationship in eqref:eq:basic-trans-def would not work, instead columns that sum to 0 would
+need to be left while all other columns be divided by the column sum to get
+\(\mathbf{T}\). An alternative approach using sparse matrices will be presented
+below and in this case there exists corresponding \(\mathbf{T}\) that is
+stochastic and so it is sufficient to use the relationship at
+eqref:eq:basic-trans-def, this is shown in listing [[basic-trans-def]].
+
+#+NAME: basic-trans-def
+#+CAPTION: Solve the Transition Probability Matrix by scaling each column to 1 using matrix multiplication.
 #+BEGIN_SRC R
-  p0 %*% diag(1/colSums(p0))
+(T <- A %*% diag(1/colSums(A)))
+
 #+END_SRC
+
+#+RESULTS[3a75a37735656a12861ee3215b3dbcf861147b59]: basic-trans-def
+| 0 | 1 | 0.2 | 0.25 | 0 |   0 |                 0 | 0 | 0 |   0 |
+| 1 | 0 | 0.2 | 0.25 | 1 | 0.5 | 0.333333333333333 | 0 | 0 |   0 |
+| 0 | 0 |   0 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
+| 0 | 0 | 0.2 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
+| 0 | 0 | 0.2 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
+| 0 | 0 | 0.2 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
+| 0 | 0 |   0 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
+| 0 | 0 |   0 | 0.25 | 0 | 0.5 | 0.333333333333333 | 0 | 1 | 0.5 |
+| 0 | 0 |   0 | 0.25 | 0 |   0 | 0.333333333333333 | 1 | 0 | 0.5 |
+| 0 | 0 |   0 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
 
 #+BEGIN_EXAMPLE
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]      [,9] [,10]
@@ -489,12 +507,24 @@ scaled to 1.
      :END:
 
 #+BEGIN_SRC R
-  adj_to_probTrans <- function(adjMat) {
-    t(adjMat) %*% diag(1/colSums(t(adjMat)))
-  }
+   adj_to_probTrans <- function(A) {
+     A %*% diag(1/colSums(A))
+   }
 
-  (T <- adj_to_probTrans(A)) %>% round(2)
+   (T <- adj_to_probTrans(A)) %>% round(2)
 #+END_SRC
+
+#+RESULTS[80ac3570de54db17c9439ac1d3c0e05a3d66e0d5]:
+| 0 | 1 | 0.2 | 0.25 | 0 |   0 |    0 | 0 | 0 |   0 |
+| 1 | 0 | 0.2 | 0.25 | 1 | 0.5 | 0.33 | 0 | 0 |   0 |
+| 0 | 0 |   0 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
+| 0 | 0 | 0.2 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
+| 0 | 0 | 0.2 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
+| 0 | 0 | 0.2 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
+| 0 | 0 |   0 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
+| 0 | 0 |   0 | 0.25 | 0 | 0.5 | 0.33 | 0 | 1 | 0.5 |
+| 0 | 0 |   0 | 0.25 | 0 |   0 | 0.33 | 1 | 0 | 0.5 |
+| 0 | 0 |   0 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
 
 #+BEGIN_EXAMPLE
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -515,42 +545,62 @@ scaled to 1.
    :CUSTOM_ID: page-rank-random-surfer
    :END:
 
-The random surfer page rank method modifies the probability transition
-matrix $T$ so that the method works also for non-ergodic graphs by
-introducing the possibility of a random jump, we'll call the surfer
-transition matrix $S$:
+Recall from [[#fix]] the following variables of the /Random Surfer/ model:
+
 
 \begin{align}
-    S &= \lambda T +  \left( 1- \lambda \right)B :\\
+    \mathbf{B} &= \alpha T +  \left( 1- \alpha \right)B :\\
 \ \\
-    B&= \begin{bmatrix}
-    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
-    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \mathbf{B}&= \begin{bmatrix}
+    \frac{1}{n} & \frac{1}{n} & \ldots & \frac{1}{n} \\
+    \frac{1}{n} & \frac{1}{n} & \ldots & \frac{1}{n} \\
         \vdots      & \vdots      & \ddots & \vdots  \\
-    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \frac{1}{n} & \frac{1}{n} & \ldots & \frac{1}{n} \\
     \end{bmatrix} \label{eq:bgval1} \\
-    N&= \left| \left| V \right| \right| \\
-    \lambda &\in [0,1]
+    n&= \left| \left| V \right| \right| \\
+    \alpha &\in [0,1]
 \end{align}
 
+These are
+assigned to /*R*/ variables in listing [[r-var-random-surfer]].
+
+#+NAME: r-var-random-surfer
+#+CAPTION: Assign Random Surfer Variables, observe the unique value given to ~l~, this will be relevant later.
 #+BEGIN_SRC R
   B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
   l <- 0.8123456789
 
-  S <- l*T+(1-l)*B
+  (S <- l*T+(1-l)*B) %>% round(2)
+
+
 #+END_SRC
 
+#+RESULTS[a1c71764fb16e4d62521e674975bfa6aee4ae335]: r-var-random-surfer
+| 0.02 | 0.83 | 0.18 | 0.22 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
+| 0.83 | 0.02 | 0.18 | 0.22 | 0.83 | 0.42 | 0.29 | 0.02 | 0.02 | 0.02 |
+| 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
+| 0.02 | 0.02 | 0.18 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
+| 0.02 | 0.02 | 0.18 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
+| 0.02 | 0.02 | 0.18 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
+| 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
+| 0.02 | 0.02 | 0.02 | 0.22 | 0.02 | 0.42 | 0.29 | 0.02 | 0.83 | 0.42 |
+| 0.02 | 0.02 | 0.02 | 0.22 | 0.02 | 0.02 | 0.29 | 0.83 | 0.02 | 0.42 |
+| 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
 ***** Eigen Value Method
     :PROPERTIES:
     :CUSTOM_ID: eigen-value-method
     :END:
 
 The eigenvector corresponding to the the eigenvalue of 1 will be the
-stationary point:
+stationary point, this is shown in listing [[eigenSol-rand-surf]]
 
+#+NAME: eigenSol-rand-surf
+#+CAPTION: Solve the Eigen vectors and Eigen values of the transition probability matrix corresponding to the graph.
 #+BEGIN_SRC R
   eigen(S, symmetric = FALSE)
 #+END_SRC
+
+#+RESULTS[adc3575f8b0eb19bbca16a4d24fedbabc2fbb026]: eigenSol-rand-surf
 
 #+begin_example
 eigen() decomposition
@@ -584,71 +634,74 @@ $vectors
 
 #+end_example
 
-So in this case the stationary point is
+So in this case the stationary point corresponds to the eigenvector given by:
+\[
+\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle
+\]
 
-$\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle$
-
-which can be verified:
+this can be verified by using identity eqref:eq:eigenprob:
 
 $$
 1 \vec{p} = S\vec{p}
 $$
 
 #+BEGIN_SRC R
-  (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1])
+  (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1]) %>% Re() %>%  round(2)
 #+END_SRC
 
-#+BEGIN_EXAMPLE
-  ##  [1] -0.48531271 -0.52732002 -0.49152601 -0.47977477 -0.05288058 -0.05288058
-  ##  [7] -0.05288058 -0.04558671 -0.04558671 -0.04558671
-#+END_EXAMPLE
+#+RESULTS[8c4fc0c8edff5276b3d867f244f7b8cf82ec6570]:
+| 0.49 |
+| 0.53 |
+| 0.04 |
+| 0.05 |
+| 0.05 |
+| 0.05 |
+| 0.04 |
+| 0.49 |
+| 0.48 |
+| 0.04 |
 
 #+BEGIN_SRC R
-  (p_new <- S %*% p)
+  (p_new <- S %*% p) %>% Re()  %>% as.vector() %>% round(2)
 #+END_SRC
 
-#+BEGIN_EXAMPLE
-  ##           [,1]
-  ## 1  -0.48531271
-  ## 2  -0.52732002
-  ## 3  -0.49152601
-  ## 4  -0.47977477
-  ## 5  -0.05288058
-  ## 6  -0.05288058
-  ## 7  -0.05288058
-  ## 8  -0.04558671
-  ## 9  -0.04558671
-  ## 10 -0.04558671
-#+END_EXAMPLE
+#+RESULTS[bed98d6948b27a333c70e2bb0e89e6b802f77d0d]:
+| 0.49 |
+| 0.53 |
+| 0.04 |
+| 0.05 |
+| 0.05 |
+| 0.05 |
+| 0.04 |
+| 0.49 |
+| 0.48 |
+| 0.04 |
 
 However this vector does not sum to 1 so the scale should be adjusted
 (for probabilities the vector should sum to 1):
 
 #+BEGIN_SRC R
-  (p_new <- p_new/sum(p_new))
+  (p_new <- p_new/sum(p_new)) %>% Re() %>% round(2)
 #+END_SRC
 
-#+BEGIN_EXAMPLE
-  ##         [,1]
-  ## 1  0.2129185
-  ## 2  0.2313481
-  ## 3  0.2156444
-  ## 4  0.2104889
-  ## 5  0.0232000
-  ## 6  0.0232000
-  ## 7  0.0232000
-  ## 8  0.0200000
-  ## 9  0.0200000
-  ## 10 0.0200000
-#+END_EXAMPLE
+#+RESULTS[5f23c0c6ebf01cd1a6ec983c30c7fb08b8c9e927]:
+| 0.22 |
+| 0.23 |
+| 0.02 |
+| 0.02 |
+| 0.02 |
+| 0.02 |
+| 0.02 |
+| 0.22 |
+| 0.21 |
+| 0.02 |
 
 ***** Power Value Method
     :PROPERTIES:
     :CUSTOM_ID: power-value-method
     :END:
 
-Using the power method should give the same result, which it indeed
-does, but for the scale:
+Using the power method should give the same result as the eigenvalue method, again but for scale:
 
 #+BEGIN_SRC R
   p_new <- p_new *123456789
@@ -658,69 +711,47 @@ does, but for the scale:
       (p_new <- S %*% p)
   }
 
-  p_new
+  round(Re(p_new), 2)
 #+END_SRC
 
-#+BEGIN_EXAMPLE
-  ##        [,1]
-  ## 1  26286237
-  ## 2  28561500
-  ## 3  26622771
-  ## 4  25986282
-  ## 5   2864198
-  ## 6   2864198
-  ## 7   2864198
-  ## 8   2469136
-  ## 9   2469136
-  ## 10  2469136
-#+END_EXAMPLE
+#+RESULTS[93f1088c513e3a607eba35114723e6175a54335c]:
+| 26602899.78 |
+| 28759738.27 |
+|  2316719.99 |
+|  2693115.49 |
+|  2693115.49 |
+|  2693115.49 |
+|  2316719.99 |
+| 26834105.29 |
+| 26230539.22 |
+|  2316719.99 |
 
-#+BEGIN_SRC R
-  p
-#+END_SRC
-
-#+BEGIN_EXAMPLE
-  ##        [,1]
-  ## 1  26286237
-  ## 2  28561500
-  ## 3  26622771
-  ## 4  25986282
-  ## 5   2864198
-  ## 6   2864198
-  ## 7   2864198
-  ## 8   2469136
-  ## 9   2469136
-  ## 10  2469136
-#+END_EXAMPLE
-
-This answer is however identical in direction, if it scaled to 1 the
+If scaled to 1 the
 same value will be returned:
 
 #+BEGIN_SRC R
-  (p_new <- p_new/sum(p_new))
+  (p_new <- p_new/sum(p_new)) %>% Re %>% round(2)
 #+END_SRC
 
-#+BEGIN_EXAMPLE
-  ##         [,1]
-  ## 1  0.2129185
-  ## 2  0.2313481
-  ## 3  0.2156444
-  ## 4  0.2104889
-  ## 5  0.0232000
-  ## 6  0.0232000
-  ## 7  0.0232000
-  ## 8  0.0200000
-  ## 9  0.0200000
-  ## 10 0.0200000
-#+END_EXAMPLE
+#+RESULTS[5f23c0c6ebf01cd1a6ec983c30c7fb08b8c9e927]:
+| 0.22 |
+| 0.23 |
+| 0.02 |
+| 0.02 |
+| 0.02 |
+| 0.02 |
+| 0.02 |
+| 0.22 |
+| 0.21 |
+| 0.02 |
 
 ***** Scaling
     :PROPERTIES:
     :CUSTOM_ID: scaling
     :END:
 
-However if the initial state sums to 1, then the scale of the stationary
-vector will also sum to 1.
+If the initial state sums to 1, then the scale of the stationary
+vector will also sum to 1, so this isn't in practice an issue for the power method:
 
 #+BEGIN_SRC R
   p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -733,6 +764,8 @@ vector will also sum to 1.
 
   cbind(p_new, p)
 #+END_SRC
+
+#+RESULTS[2588d1419148286a42553ef3f6471216baeecccf]:
 
 #+BEGIN_EXAMPLE
   ##         [,1]      [,2]
@@ -772,7 +805,31 @@ A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 summary(A)
 #+end_src
 
-#+RESULTS[26753ee076e693bdce4667779622cffec7f8d950]:
+#+RESULTS[01a1045469fde58128a6b943003aabcf4b005731]:
+#+begin_example
+1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
+        i      j   x
+1  808361  49547  90
+2  428268  98950  88
+3  111018 198129  96
+4  330573 218343  85
+5  556574 271674  94
+6   80297 329285  85
+7  410107 346309  88
+8  893744 380886  88
+9  753918 492423  93
+10 309389 515236  90
+11 401507 611744 104
+12 110381 625266  94
+13 297550 641236  97
+14 648515 691630 103
+15 146681 732490 103
+16 821733 778479  71
+17 941850 843950  73
+18 105277 966175 109
+19  15447 974487  89
+20 941903 990749  73
+#+end_example
 
 As before in section [[#probability-transition-matrix]], the probability transition matrix can be found by:
 
@@ -813,31 +870,30 @@ D <- sparse_diag(t(A))
 summary(D)
 #+end_src
 
-#+RESULTS[175b4834319aa086de0fe8c242730344f4f80681]:
+#+RESULTS[96dcae690f8f87784cf7f17cd5d00136e2dee1be]:
 #+begin_example
-
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j           x
-1   57981  57981 0.011235955
-2   61426  61426 0.010309278
-3  139900 139900 0.012048193
-4  152229 152229 0.009615385
-5  175521 175521 0.010204082
-6  187782 187782 0.013513514
-7  233553 233553 0.011904762
-8  288279 288279 0.010309278
-9  381442 381442 0.011494253
-10 401058 401058 0.014084507
-11 541818 541818 0.012820513
-12 542888 542888 0.014492754
-13 578270 578270 0.010101010
-14 595348 595348 0.011764706
-15 610432 610432 0.011904762
-16 614645 614645 0.012195122
-17 776459 776459 0.010989011
-18 803589 803589 0.008474576
-19 821120 821120 0.009708738
-20 821769 821769 0.012658228
+1   15447  15447 0.011235955
+2   80297  80297 0.011764706
+3  105277 105277 0.009174312
+4  110381 110381 0.010638298
+5  111018 111018 0.010416667
+6  146681 146681 0.009708738
+7  297550 297550 0.010309278
+8  309389 309389 0.011111111
+9  330573 330573 0.011764706
+10 401507 401507 0.009615385
+11 410107 410107 0.011363636
+12 428268 428268 0.011363636
+13 556574 556574 0.010638298
+14 648515 648515 0.009708738
+15 753918 753918 0.010752688
+16 808361 808361 0.011111111
+17 821733 821733 0.014084507
+18 893744 893744 0.011363636
+19 941850 941850 0.013698630
+20 941903 941903 0.013698630
 #+end_example
 
 and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
@@ -846,30 +902,30 @@ and hence the probability transition matrix may be implemented by performing mat
 summary(t(A) %*% D)
 #+end_src
 
-#+RESULTS[ad7d15da22594d5a66fdf838525c092c6f5f93e7]:
+#+RESULTS[7f259bb86c55619e0d9d4ac000bb89535fa5473f]:
 #+begin_example
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j x
-1  809115  57981 1
-2   83355  61426 1
-3  649740 139900 1
-4  451810 152229 1
-5  775788 175521 1
-6  364814 187782 1
-7  631441 233553 1
-8  630438 288279 1
-9  681415 381442 1
-10 103999 401058 1
-11 976802 541818 1
-12 217196 542888 1
-13 755635 578270 1
-14 993420 595348 1
-15 206922 610432 1
-16 462031 614645 1
-17 566334 776459 1
-18  66922 803589 1
-19 809688 821120 1
-20 291405 821769 1
+1  974487  15447 1
+2  329285  80297 1
+3  966175 105277 1
+4  625266 110381 1
+5  198129 111018 1
+6  732490 146681 1
+7  641236 297550 1
+8  515236 309389 1
+9  218343 330573 1
+10 611744 401507 1
+11 346309 410107 1
+12  98950 428268 1
+13 271674 556574 1
+14 691630 648515 1
+15 492423 753918 1
+16  49547 808361 1
+17 778479 821733 1
+18 380886 893744 1
+19 843950 941850 1
+20 990749 941903 1
 #+end_example
 
 **** Solving the Random Surfer via the Power Method
@@ -941,6 +997,10 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 p %>% head() %>% print()
 #+end_src
+
+#+RESULTS[ed72d96e5b69871f8a3e07792406adff2e6e1db2]:
+: org_babel_R_eoe
+
 ** Power Walk Method
 *** Introduction
 
