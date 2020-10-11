@@ -12,7 +12,6 @@
 #+INFOJS_OPT: view:info toc:3
 #+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="resources/bigblow.css">
 #+CSL_STYLE: /home/ryan/Templates/CSL/nature.csl
-./resources/
 :END:
 :R:
 #+PROPERTY: header-args:R :session DiscProj :dir ./ :cache yes :eval never-export :exports both :results output
@@ -1768,9 +1767,6 @@ ggplot(data, aes(x = determinant, y = eigenvalue2, color = size, shape = factor(
   scale_size_continuous(range = c(0.1,1))
 #+end_src
 
-#+RESULTS[6c4a71508e3f2f85ac4b033caba9732f9dfb60cc]:
-[[file:Media/EigenValue_Density.png]]
-
 Maybe this looks like a Chi distribution?
 
 #+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density_Chi.png :eval never-export
@@ -1809,6 +1805,7 @@ Significantly slower for large matrices.
 
     use a /Barabassi-Albert/ Random Graph through the ~igraph::
 
+** TODO What about the trace of the matrix?
 * What's the central article of Wikipedia
 
 * Appendix

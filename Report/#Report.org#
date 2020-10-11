@@ -1,4 +1,4 @@
-:PREAMBLE:
+jjjkkPREAMBLE:
 #+OPTIONS: broken-links:auto todo:nil H:9
 #+STARTUP: overview
 #+AUTHOR: Ryan Greenup
@@ -29,15 +29,14 @@
 #+LATEX_HEADER: \usetikzlibrary{lindenmayersystems}
 :END:
 * Implementing the Power Walk and the Random Surfer
- assess node centrality by perfor cite:teamSparseMatrixOperations
-
+ assess node centrality by perfor
 ** Page Rank Methods
 *** Introduction
 
 The centrality score of a graph is a metric that measures the importance and
 popularity of a vertex. [fn:: For a small graph drawn in a way to minimise
 overlapping edges the centremost geometric vertex will coincide with the highest
-centrality score, for example in figure [[irreducible-example]] vertex $D$ is the
+centrality score, for example in figure [[non-ergodic-example]] vertex $D$ is the
 vertex with the highest frequency during a random walk]
  
 
@@ -98,13 +97,12 @@ The approach in [[#PageRank-Generally]] has the following issues
 :PROPERTIES:
 :CUSTOM_ID: definitions
 :END:
-The following definitions are used in this report [fn:: see generally [[cite:langvilleGooglePageRankScience2012][Ch. 15]] for further reading] :
+The following definitions are used in this report (see generally [[cite:langvilleGooglePageRankScience2012][Ch. 15]]):
 
 - Markov Chains :: are discrete mathematical model such that future values depend only on current values [[cite:foussAlgorithmsModelsNetwork2016][\textsection 1.5]]
-- Stochastic Matrices :: contain only positive values where each column sums to 1 cite:langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991
-  + some authors use rows (see e.g. [[cite:langvilleGooglePageRankScience2012][\textsection 15.3]]), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
-    - /Column Stochastic/ and /Row Stochastic/ can be used to more clearly distinguish between which type of stochastic matrix is being used.
+- Column Stochastic Matrices :: contain only positive values where each column sums to 1 cite:larsonElementaryLinearAlgebra1991
   + Many programming languages return /unit-eigenvectors/ \(\vec{x}\) such that \(\left\lvert \left\lvert \vec{x} \right\rvert \right\rvert = 1 \) as opposed to \(\mathtt{sum} \left( \vec{\mathtt{x}}\right) = 1\), so when solving for a stationary vector it can be necessary to perform \(\vec{\mathtt{p}} \leftarrow \frac{\vec{\mathtt{p}}}{\sum \vec{p}}\)
+  + some authors use rows (see e.g. [[cite:langvilleGooglePageRankScience2012][\textsection 15.3]]), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
 - Irreducible :: graphs have a path from from any given vertex to another vertex. [[cite:langvilleGooglePageRankScience2012][\textsection 15.2]]
   + Ergodic :: graphs are irreducible graphs with further constraints outside
     the scope of this report (see e.g.
@@ -112,8 +110,6 @@ The following definitions are used in this report [fn:: see generally [[cite:lan
     - It is a necessary but not a sufficient condition of ergodic graphs that all vertices be reachable from any other vertices (see cite:sazProbabilityTheoryThis for a counter example.)
 - Primitive Matrices :: are non-negative irreducible matrices that have only one eigenvalue on the unit circle.
   + If a matrix is primitive it will approach a limit under exponentiation [[cite:langvilleGooglePageRankScience2012][\textsection 15.2]]
-- Transition Probability Matrix :: is a stochastic matrix where each column is a vector of probabilities such that \(\mathbf{T}_{i,j}\) represents the probability of travelling from vertex \(j\) to vertex \(i\) during a random walk.
-  + Some Authors consider the transpose (see e.g. cite:langvilleGooglePageRankScience2012).
 - Aperiodic :: Markov chains are markov chains with an irreducible and primitive transition probability matrix.
   + If the transition probability matrix is irreducible and imprimitive it is said to be a periodic Markov chain.
 - Regular :: Markov Chains are regular irreducible and aperiodic.
@@ -122,90 +118,17 @@ The following definitions are used in this report [fn:: see generally [[cite:lan
 - PageRank :: A process of measuring graph centrality by using a random walk algorithm and measuring the most frequent node
   + In the literature (see e.g. cite:guptaWTFWhoFollow2013,langvilleGooglePageRankScience2012) the Random Surfer model is usually used to refer to the introduction of a probability of travelling to any other node, this is discussed in CROSSREF
 
-**** Notation
-:PROPERTIES:
-:CUSTOM_ID: notation
-:END:
-- \(\mathbf{A}\) :: Is the adjacency matrix of a graph
-  + \(\mathbf{A}_{i,j} = 1 \) :: Indicates that \(j\) and \(i\) are adjacent vertices.
-- \(\mathbf{T}\) :: Is the transition probability matrix of a graph
-  + \(\mathf{T}_{i,j}\) is equal to the probability of travelling \(j \rightarrow  i \) during a random walk.
-    - \(\mathbf{T} = \mathbf{A} \mathbf{D}_{\mathbf{A}}^{-1} \)
-      + Where \(\mathbf{D}^{-1}\) is a matrix such that multiplication with which scales each column of \(\mathbf{A}\) to 1.
-        - \(\mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\mathbf{D}^{-1}_{\mathbf{A}} = \frac{1}{\vec{1}\mathbf{D}_{\mathbf{A}}} \) for some stochastic matrix \(\mathbf{A}\)
-- \(n\) :: Refers to the number of vertices in a graph elements of a matrix
-  + \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
-- \(\mathbf{B}_{i,j} = \frac{1}{n}\) :: Is a matrix of size \(n\times n\) representing the background probability of uniformly selecting any vertex of a graph.
-- \(\vec{1}\) :: is a vector of length \(n\) containing only the value 1.
-  + The convention that a vector behaves as a vertical \(n \times 1 \) matrix will be used here.
-  + Some authors use \(\mathbf{e}\), see e.g. cite:langvilleGooglePageRankScience2012
-- \(\mathbf{J} = \vec{1}\cdot \vec{1}^{\mathrm{T}} \iff \mathbf{J}_{i,j} = 1\) :: Is a completely dense \(n \times n \) matrix.
-  + It's worth noting that \(\mathbf{E}, \mathbf{J}\) are common choices for this matrix.
-- \(\alpha\) :: The probability of teleporting from one vertex to another during a random walk.
-  + In the literature $\alpha$ is often referred to as a damping factor (see e.g.  cite:berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005)
-  or a smoothing constant (see e.g cite:koppelMeasuringDirectIndirect2014).
-
 *** Markov Chains
 The relationship in eqref:eq:recurrence is a /Markov Chain/ and it is known that the power method will converge:
 
 - for a stochastic irreducible markov chain [[cite:foussAlgorithmsModelsNetwork2016][\textsection 1.5.5]],
 - regardless of the initial condition of the process for an /aperiodic/ Markov chain [[cite:langvilleGooglePageRankScience2012][\textsection 4.4]]
 
-**** Stochastic
-If a vertex had a 0 outdegree the corresponding column sum for the adjacency
-matrix describing that graph would also be zero and the matrix non-stochastic,
-this could occur in the context of a random walk where a link to a page with no
-outgoing links was followed (e.g. an image), this would be the end of the
-walk.
-
-So to ensure that eqref:eq:recurrence will converge, the probability transition
-matrix must be made stochastic, to acheive this a uniform probability of teleporing from a dead end to any other vertex can be introduced:
-
-\begin{align}
-\mathrm{S} = \mathrm{T}+ \frac{\vec{a} \cdot \vec{1}^{\mathrm{T}} }{n} \label{eq:nearly-random-surfer}
-\end{align}
-
-This however would not be sufficient to ensure that eqref:eq:recurrence would converge, in addition the transition probability matrix must be made irreducible and aperiodic (i.e. primitive). cite:langvilleGooglePageRankScience2012
-
-#+NAME:  fig:stochastic-example
-#+CAPTION: \(D\) is a /dangling node/, a dead end during a random walk, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other vertex as per eqref:eq:nearly-random-surfer (denoted in red) will cause \(\mathbf{T}\) to be stochastic.
-#+attr_html: :width 400px
-#+attr_latex: :width 6cm
-[[file:media/dot/stochastic_graph_example.dot.png]]
-
-
-
-**** Irreducible
-A graph that allows travel from any given vertex to any other vertex is said to be irreducible cite:langvilleGooglePageRankScience2012, see for example figure [[irreducible-example]], this is important in the context of a random walk because only in an irreducible graph can all vertexes be reached from any initial condition.
-
-**** Aperiodic
-An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right) \) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \mathbf{A} is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes [fn:: Actually it would be sufficient to merely link one vertex to itself [[cite:langvilleGooglePageRankScience2012][\textsection 15.2]] but this isn't very illustrative or helpful in this context ]
-
-**** The Fix
-To ensure that the transition probability matrix is primitive (i.e. irreducible and aperiodic) as well as stochastic, instead of introducing the possible to teleport out of dead ends, introduce a probability of teleporting to any node at any time (\(\alpha \)), this approach is known as the /Random Surfer/ model and the transition probability matrix is given by cite:larrypageAnatomyLargescaleHypertextual1998 :
-
-\begin{align}
-\mathbf{S} = \alpha \mathbf{T} + \frac{(1- \alpha)}{n} \mathbf{J} \label{eq:random-surfer}
-\end{align}
-
-This matrix is primitive and stochastic and so will converge, it is also unfourtunately completely dense (see CROSSREF) [[cite:langvilleGooglePageRankScience2012][\textsection 4.5]].
-
-#+NAME: fig:aperiodic
-#+CAPTION: A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic, this does not represent the random surfer moidel, which would in theory connect every vertex but with some probability.
-#+attr_html: :width 400px
-#+attr_latex: :width 6cm
-[[file:media/dot/aperiodic.dot.png]]
-
-
-
-#+NAME: fig:rseg
-#+CAPTION:  A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model eqref:eq:random-surfer blue /teleportation/ edges are introduced, these may be followed with a probability of \(1 - \alpha \)
-#+attr_html: :width 400px
-#+attr_latex: :width 6cm
-[[file:media/dot/random_surfer.dot.png]]
+If a vertex had no
+So to ensure that eqref:eq:recurrence will converge, the probability transition matrix must be stochastic, to ensure this
 
 *** Irreducible Graphs
-
+A graph that allows travel from some vertex to any other vertex is said to be irreducible cite:langvilleGooglePageRankScience2012.
 This issue occurs with non-ergodic graphs.
 
 If not ergodic there are rank sinks from dangling nodes.
@@ -219,7 +142,7 @@ Most Adjacency matrices resulting from webpages and analagous networks are spars
 The Barabassi Albert graph is a good analogue CITE
 see figure ref:fig:den_undir_ba for an example.
 
-#+NAME: irreducible-example
+#+NAME: non-ergodic-example
 #+CAPTION: Example of a non-ergodic graph (produced using ~DOT~, see cite:DOTLanguage,DOTGraphDescription2020)
 #+attr_html: :width 400px
 #+attr_latex: :width 6cm
@@ -1439,7 +1362,6 @@ print(p)
 :  [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
 : [13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
 : [19] 0.04923063 0.05044542
-
 *** Creating a Package
 * Relating the Power Walk to the Random Surfer
   :PROPERTIES:

@@ -1,4 +1,4 @@
-% Created 2020-10-09 Fri 13:04
+% Created 2020-10-11 Sun 16:32
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -22,11 +22,11 @@
 \usepackage{tikz}
 \usetikzlibrary{decorations.fractals}
 \usetikzlibrary{lindenmayersystems}
-\author{Ryan Greenup \& James Guerra}
+\author{Ryan Greenup}
 \date{\today}
 \title{}
 \hypersetup{
- pdfauthor={Ryan Greenup \& James Guerra},
+ pdfauthor={Ryan Greenup},
  pdftitle={},
  pdfkeywords={},
  pdfsubject={},
@@ -36,11 +36,1529 @@
 
 \tableofcontents
 
+\section{Implementing the Power Walk and the Random Surfer}
+\label{sec:orge0335d9}
+assess node centrality by perfor \cite{teamSparseMatrixOperations}
 
+\subsection{Page Rank Methods}
+\label{sec:org8d574a0}
+\subsubsection{Introduction}
+\label{sec:org8cb19db}
+
+The centrality score of a graph is a metric that measures the importance and
+popularity of a vertex. \footnote{For a small graph drawn in a way to minimise
+overlapping edges the centremost geometric vertex will coincide with the highest
+centrality score, for example in figure \ref{irreducible-example} vertex \(D\) is the
+vertex with the highest frequency during a random walk}
+
+
+The \emph{PageRank} method asserts that the centrality of a vertex can be measured by the frequency of incidence with that vertex during a random walk.
+
+\subsubsection{Implementing PageRank Generally}
+\label{PageRank-Generally}
+A graph can be expressed as an adjacency matrix \(\mathbf{A}\):
+
+\[
+A_{i,j} \in \left\{ 0,1 \right\}
+\]
+
+Where each element of the matrix indicates whether or not travel from vertex \(j\) to vertex \(i\) is possible with a value of 1. \footnote{Some authors define an adjacency matrix transposed (see e.g. \cite{rosenDiscreteMathematicsIts2007,AdjacencyMatrix2020a,meghabghabSearchEnginesLink2008}) this unfourtunately includes the \texttt{igraph} library \cite{gaborcsardiIgraphManualPages2019} but that convention will not be followed in this paper}
+
+During a random walk the probability of arriving at vertex \(j\) from vertex
+\(i\) can similarly be described as an element of a transition probability
+matrix \(\mathbf{T}_{i,j}\), this matrix can be described by the following
+relationship \footnote{In this paper \(\vec{1}\) refers to a vector containing only
+values of 1, the size of which should be clear from the context}:
+
+\begin{align}
+\mathbf{T} &= \mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} \label{eq:basic-trans-def} : \\
+& \mathbf{D}_{\mathbf{A}} = \mathrm{diag}\left(\vec{1} \mathbf{A}\right) \label{eq:diagScaleDef}
+\end{align}
+
+The value of \(\mathbf{D}\) is such that under matrix multiplication \(\mathbf{A}\) will have columns that sum to 1 (i.e. a \emph{column stochastic matrix}, see \textsection \ref{definitions}), for a non-ergodic graph the definition of \(\mathbf{D}\) would need to be adjusted to acheive this, this is discussed below CROSSREF.
+
+During the random walk, the running tally of frequencies, at the \(i^{\mathrm{th}}\) step of the walk, can be described by a vector \(\vec{p}\), this vector can be determined for each step by matrix multiplication:
+
+\begin{align}
+\vec{p_{i+1}} = \mathbf{T}\vec{p_{i}} \label{eq:recurrence}
+\end{align}
+
+This relationship is a linear recurrence relation, more importantly however it is a \emph{Markov Chain} \cite[\textsection 4.4]{langvilleGooglePageRankScience2012}.
+
+Finding the Stationary point for this relationship will give a frequency distribution for the nodes and a metric to measure the centrality of vertices.
+
+\subsubsection{Issues}
+\label{issues}
+The approach in \ref{PageRank-Generally} has the following issues
+
+\begin{enumerate}
+\item Convergence of \eqref{eq:recurrence}
+\begin{enumerate}
+\item Will this relationship converge or diverge?
+\item How quickly will it converge?
+\item Will it converge uniquely?
+\end{enumerate}
+\item Reducible graphs
+\begin{enumerate}
+\item If it is not possible to perform a random walk across an entire graph for all initial conditions, this approach doesn't have a clear analogue.
+\end{enumerate}
+\item Cycles
+\begin{enumerate}
+\item A graph that is cyclical may not converge uniquely
+\begin{enumerate}
+\item Consider for example the graph \(A\rightarrow B\).
+\end{enumerate}
+\end{enumerate}
+\end{enumerate}
+
+\subsubsection{Definitions}
+\label{definitions}
+The following definitions are used in this report \footnote{see generally \cite[Ch. 15]{langvilleGooglePageRankScience2012} for further reading} :
+
+\begin{description}
+\item[{Markov Chains}] are discrete mathematical model such that future values depend only on current values \cite[\textsection 1.5]{foussAlgorithmsModelsNetwork2016}
+\item[{Stochastic Matrices}] contain only positive values where each column sums to 1 \cite{langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991}
+\begin{itemize}
+\item some authors use rows (see e.g. \cite[\textsection 15.3]{langvilleGooglePageRankScience2012}), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
+\begin{itemize}
+\item \emph{Column Stochastic} and \emph{Row Stochastic} can be used to more clearly distinguish between which type of stochastic matrix is being used.
+\end{itemize}
+\item Many programming languages return \emph{unit-eigenvectors} \(\vec{x}\) such that \(\left\lvert \left\lvert \vec{x} \right\rvert \right\rvert = 1\) as opposed to \(\mathtt{sum} \left( \vec{\mathtt{x}}\right) = 1\), so when solving for a stationary vector it can be necessary to perform \(\vec{\mathtt{p}} \leftarrow \frac{\vec{\mathtt{p}}}{\sum \vec{p}}\)
+\end{itemize}
+\item[{Irreducible}] graphs have a path from from any given vertex to another vertex. \cite[\textsection 15.2]{langvilleGooglePageRankScience2012}
+\begin{description}
+\item[{Ergodic}] graphs are irreducible graphs with further constraints outside
+the scope of this report (see e.g.
+\cite{nathanaelackermancameronfreeralexkruckmanandrehanapatelProperlyErodicStructures2017,chenEigenvaluesInequalitiesErgodic2005})
+\begin{itemize}
+\item It is a necessary but not a sufficient condition of ergodic graphs that all vertices be reachable from any other vertices (see \cite{sazProbabilityTheoryThis} for a counter example.)
+\end{itemize}
+\end{description}
+\item[{Primitive Matrices}] are non-negative irreducible matrices that have only one eigenvalue on the unit circle.
+\begin{itemize}
+\item If a matrix is primitive it will approach a limit under exponentiation \cite[\textsection 15.2]{langvilleGooglePageRankScience2012}
+\end{itemize}
+\item[{Transition Probability Matrix}] is a stochastic matrix where each column is a vector of probabilities such that \(\mathbf{T}_{i,j}\) represents the probability of travelling from vertex \(j\) to vertex \(i\) during a random walk.
+\begin{itemize}
+\item Some Authors consider the transpose (see e.g. \cite{langvilleGooglePageRankScience2012}).
+\end{itemize}
+\item[{Aperiodic}] Markov chains are markov chains with an irreducible and primitive transition probability matrix.
+\begin{itemize}
+\item If the transition probability matrix is irreducible and imprimitive it is said to be a periodic Markov chain.
+\end{itemize}
+\item[{Regular}] Markov Chains are regular irreducible and aperiodic.
+\item[{Sparse}] Matrices contain a majority of elements with values equal to 0 \cite[\textsection 4.2]{langvilleGooglePageRankScience2012}
+\item[{Sparse}] Iterating the
+\item[{PageRank}] A process of measuring graph centrality by using a random walk algorithm and measuring the most frequent node
+\begin{itemize}
+\item In the literature (see e.g. \cite{guptaWTFWhoFollow2013,langvilleGooglePageRankScience2012}) the Random Surfer model is usually used to refer to the introduction of a probability of travelling to any other node, this is discussed in CROSSREF
+\end{itemize}
+\end{description}
+
+\paragraph{Notation}
+\label{notation}
+\begin{description}
+\item[{\(\mathbf{A}\)}] Is the adjacency matrix of a graph
+\begin{description}
+\item[{\(\mathbf{A}_{i,j} = 1\)}] Indicates that \(j\) and \(i\) are adjacent vertices.
+\end{description}
+\item[{\(\mathbf{T}\)}] Is the transition probability matrix of a graph
+\begin{itemize}
+\item \(\mathf{T}_{i,j}\) is equal to the probability of travelling \(j \rightarrow  i\) during a random walk.
+\begin{itemize}
+\item \(\mathbf{T} = \mathbf{A} \mathbf{D}_{\mathbf{A}}^{-1}\)
+\begin{itemize}
+\item Where \(\mathbf{D}^{-1}\) is a matrix such that multiplication with which scales each column of \(\mathbf{A}\) to 1.
+\begin{itemize}
+\item \(\mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\mathbf{D}^{-1}_{\mathbf{A}} = \frac{1}{\vec{1}\mathbf{D}_{\mathbf{A}}}\) for some stochastic matrix \(\mathbf{A}\)
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\end{itemize}
+\item[{\(n\)}] Refers to the number of vertices in a graph elements of a matrix
+\begin{itemize}
+\item \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
+\end{itemize}
+\item[{\(\mathbf{B}_{i,j} = \frac{1}{n}\)}] Is a matrix of size \(n\times n\) representing the background probability of uniformly selecting any vertex of a graph.
+\item[{\(\vec{1}\)}] is a vector of length \(n\) containing only the value 1.
+\begin{itemize}
+\item The convention that a vector behaves as a vertical \(n \times 1\) matrix will be used here.
+\item Some authors use \(\mathbf{e}\), see e.g. \cite{langvilleGooglePageRankScience2012}
+\end{itemize}
+\item[{\(\mathbf{J} = \vec{1}\cdot \vec{1}^{\mathrm{T}} \iff \mathbf{J}_{i,j} = 1\)}] Is a completely dense \(n \times n\) matrix.
+\begin{itemize}
+\item It's worth noting that \(\mathbf{E}, \mathbf{J}\) are common choices for this matrix.
+\end{itemize}
+\item[{\(\alpha\)}] The probability of teleporting from one vertex to another during a random walk.
+\begin{itemize}
+\item In the literature \(\alpha\) is often referred to as a damping factor (see e.g.  \cite{berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005})
+\end{itemize}
+or a smoothing constant (see e.g \cite{koppelMeasuringDirectIndirect2014}).
+\end{description}
+
+\subsubsection{Markov Chains}
+\label{sec:org26ad1e3}
+The relationship in \eqref{eq:recurrence} is a \emph{Markov Chain} and it is known that the power method will converge:
+
+\begin{itemize}
+\item for a stochastic irreducible markov chain \cite[\textsection 1.5.5]{foussAlgorithmsModelsNetwork2016},
+\item regardless of the initial condition of the process for an \emph{aperiodic} Markov chain \cite[\textsection 4.4]{langvilleGooglePageRankScience2012}
+\end{itemize}
+
+\paragraph{Stochastic}
+\label{sec:orgf71219c}
+If a vertex had a 0 outdegree the corresponding column sum for the adjacency
+matrix describing that graph would also be zero and the matrix non-stochastic,
+this could occur in the context of a random walk where a link to a page with no
+outgoing links was followed (e.g. an image), this would be the end of the
+walk.
+
+So to ensure that \eqref{eq:recurrence} will converge, the probability transition
+matrix must be made stochastic, to acheive this a uniform probability of teleporing from a dead end to any other vertex can be introduced:
+
+\begin{align}
+\mathrm{S} = \mathrm{T}+ \frac{\vec{a} \cdot \vec{1}^{\mathrm{T}} }{n} \label{eq:nearly-random-surfer}
+\end{align}
+
+This however would not be sufficient to ensure that \eqref{eq:recurrence} would converge, in addition the transition probability matrix must be made irreducible and aperiodic (i.e. primitive). \cite{langvilleGooglePageRankScience2012}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=6cm]{media/dot/stochastic_graph_example.dot.png}
+\caption{\label{fig:stochastic-example}\(D\) is a \emph{dangling node}, a dead end during a random walk, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other vertex as per \eqref{eq:nearly-random-surfer} (denoted in red) will cause \(\mathbf{T}\) to be stochastic.}
+\end{figure}
+
+
+
+\paragraph{Irreducible}
+\label{sec:org6a65416}
+A graph that allows travel from any given vertex to any other vertex is said to be irreducible \cite{langvilleGooglePageRankScience2012}, see for example figure \ref{irreducible-example}, this is important in the context of a random walk because only in an irreducible graph can all vertexes be reached from any initial condition.
+
+\paragraph{Aperiodic}
+\label{sec:org681f32f}
+An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \mathbf{A} is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative or helpful in this context}
+
+\paragraph{The Fix}
+\label{sec:orgba5660e}
+To ensure that the transition probability matrix is primitive (i.e. irreducible and aperiodic) as well as stochastic, instead of introducing the possible to teleport out of dead ends, introduce a probability of teleporting to any node at any time (\(\alpha\)), this approach is known as the \emph{Random Surfer} model and the transition probability matrix is given by \cite{larrypageAnatomyLargescaleHypertextual1998} :
+
+\begin{align}
+\mathbf{S} = \alpha \mathbf{T} + \frac{(1- \alpha)}{n} \mathbf{J} \label{eq:random-surfer}
+\end{align}
+
+This matrix is primitive and stochastic and so will converge, it is also unfourtunately completely dense (see CROSSREF) \cite[\textsection 4.5]{langvilleGooglePageRankScience2012}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=6cm]{media/dot/aperiodic.dot.png}
+\caption{\label{fig:aperiodic}A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic, this does not represent the random surfer moidel, which would in theory connect every vertex but with some probability.}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=6cm]{media/dot/random_surfer.dot.png}
+\caption{\label{fig:rseg}A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue \emph{teleportation} edges are introduced, these may be followed with a probability of \(1 - \alpha\)}
+\end{figure}
+
+\subsubsection{Irreducible Graphs}
+\label{sec:org10b066d}
+
+This issue occurs with non-ergodic graphs.
+
+If not ergodic there are rank sinks from dangling nodes.
+
+If the transition probability matrix is irreducible and stochastic then there will be a unique positive stationary distribution, under iteration \eqref{eq:recurrence} will converge to this stationery distribution if \(\mathbf{T}\) is aperiodic. \cite[\textsection 4.4]{langvilleGooglePageRankScience2012}
+
+
+
+Most Adjacency matrices resulting from webpages and analagous networks are sparse matrices (see figure x), this is a good thing because it requires far less computational resources to work with \cite[\textsection 4.2]{langvilleGooglePageRankScience2012}
+
+The Barabassi Albert graph is a good analogue CITE
+see figure \ref{fig:den_undir_ba} for an example.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=6cm]{media/dot/reducible_graph_example.dot.png}
+\caption{\label{irreducible-example}Example of a non-ergodic graph (produced using \texttt{DOT}, see \cite{DOTLanguage,DOTGraphDescription2020})}
+\end{figure}
+
+
+Random surfer adds random probability.
+
+Power Walk redefines probability
+
+The next issue however is that we need to use sparse matrices, otherwise it is too slow, these will be discussed below.
+
+
+
+
+The definition used in this article is PageRank is the process of a random walk algorithm that ranks pages based on there frequency of incidence during a random walk, this has been used in the litereature (see e.g. \cite[\textsection 3.1]{guptaWTFWhoFollow2013}), the class of random walk algorithm most often associated with this is the \emph{Random Surfer} Model by page and brin \cite{larrypageAnatomyLargescaleHypertextual1998}, this implements a small probability of making ajumping to any vertex of the graph at each step.
+
+This paper is concerned with a different approach to create the transition probability matrix.
+
+
+
+\(\sum_{p\in \vec{p}} \left[ p \right]\)
+
+Using this transition matrix the state distribution at any point can be returned
+The issue with \eqref{eq:basic-trans-def}
+
+Ergodic is a proble8m
+
+
+The \emph{PageRank} method, developed by Larry Page and Sergey Brin in 1998 \cite{larrypageAnatomyLargescaleHypertextual1998} is a method to measure node centrality by building on the concept of the stationary distribution of a graph.
+
+
+A method to asses node centrality by performing a random walk across graph and
+recording the frequencies of
+This approach is relatively easy to implement if any vertex can reach any other
+vertex during a random walk (such a graph is said to be ergodic), if however a
+graph is not ergodic this method will not work.
+
+named after larry page \cite{GooglePressCenter2001}
+If a graph is
+
+The Page Rank methodrefers to the random surfer but I'm using it in this document to refer to any process that attributes a probability of landing on a vertex during a random walk to a graph that is not ergodic.
+
+If each vertex is connected the graph is said to be ergodic and there is a closed solution for the limit values of the frequencies given this random walk:
+
+\begin{itemize}
+\item The eigenvalue equal to 1
+\item If the graph is not directed \(\vec{p}\) is a vector of length \(n\):
+\begin{itemize}
+\item \(n\) is the number of nodes in the graph \(G\)
+\item \(\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}\)
+\begin{itemize}
+\item \(\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]\)
+\end{itemize}
+\end{itemize}
+\end{itemize}
+
+
+For large matrices calculating the eigenvalues will be expensive and so instead the power method is used, which is essentially looping over until the vector converges to a solution.
+
+\begin{align}
+\vec{p} = \mathrm{T}\vec{p} \label{eq:pageRank-Method}
+\end{align}
+where:
+
+\begin{description}
+\item[{\(\mathrm{A}\)}] Is the adjacency Matrix, an element is 1 if movement from the row vertex to the column vertex is permitted.
+\begin{itemize}
+\item The matrix may be weighted in some way, for example 5 edges between vertices may be such that a 5 is used in the matrix not a 1
+\item An undirected graph will be such that \(\mathbf{A} = \mathbf{A}^{\mathrm{\mathbf{T}}}\)
+\end{itemize}
+\item[{\(\mathrm{T}\)}] Is the transition probability matrix, an element in the matrix describes the probability of moving from the column-vertex to the row-vertex
+\begin{itemize}
+\item The transition matrix is intended to be such that for a given state distribution \(\vec{p}\), the next iteration of a random walk will be \(\mathrm{T}\vec{p}\)
+\item Observe also that \(\mathrm{T} = \mathrm{T} \cdot \mathrm{diag}(\mathtt{colsums}(\mathrm{A^{\mathrm{T}}}))\)
+\begin{itemize}
+\item i.e. the transpose of the adjacency matrix with each column scaled to 1.
+\end{itemize}
+\end{itemize}
+\end{description}
+
+\subsubsection{Large Graphs}
+\label{sec:org746b07b}
+
+
+The relationship in \eqref{eq:recurrence} is equivelant to the eigenvalue value problem, where \(\mathbf{T}\) is the eigenvector \footnote{More accurately the eigenvector specifically scaled specifically to 1, so it would be more correct to say the eigenvector \(\frac{\vec{x}}{\sum \vec{x}}\)} \(\vec{x}\) that corresponds to the eigenvalue \(\xi=1\):
+
+\begin{align}
+\vec{p} (1) = \mathbf{T} \vec{p} \label{eq:eigenprob}
+\end{align}
+
+
+Solving eigenvecotrs for large matrices can be very difficult and so this approach isn't suitable for analysing large networks.
+
+Upon iteration \eqref{eq:recurrence} will converge to stable stationary point equal (as shown in \eqref{eq:eigenprob}) and this must be implemented.
+
+
+
+considering the linear recurrence relation is a markov chain because any future progression depends only on the current state and not the past.
+
+\subsubsection{Random Surfer}
+\label{sec:orgc85ff27}
+\paragraph{Introduction}
+\label{sec:org6a55482}
+For con If a graph is non-ergodic, then a random walk isn't as easy to implement
+because in escence there are multiple disconnected graphs, to address this, some
+value \(\lambda\) is introduces which represents the probability of moving from
+one vertex to any other vertex. Essentially the difference here is
+
+\begin{minted}[]{r}
+  if (require("pacman")) {
+      library(pacman)
+    }else{
+      install.packages("pacman")
+      library(pacman)
+    }
+\end{minted}
+
+\begin{minted}[]{r}
+    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)
+\end{minted}
+
+\paragraph{Small Graph, Ordinary Matrices}
+\label{implementing-page-rank-methods}
+\subparagraph{Example Graph}
+\label{example-graph}
+Consider the following Graph taken from the paper:
+
+\begin{minted}[]{r}
+  g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
+  plot(g1)
+\end{minted}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{ImplementingPageRank/01PageRank_files/figure-html/unnamed-chunk-2-1.png}
+\end{center}
+
+\begin{enumerate}
+\item Adjacency Matrix
+\label{adjacency-matrix}
+The adjacency Matrix is given by:
+
+\begin{minted}[]{r}
+  A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %>%
+    as.matrix()
+
+  ## Adjust the Order
+  (A <- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))])
+\end{minted}
+
+\begin{verbatim}
+  ##    1 2 3 4 5 6 7 8 9 10
+  ## 1  0 1 0 0 0 0 0 0 0  0
+  ## 2  1 0 0 0 0 0 0 0 0  0
+  ## 3  0 0 0 1 0 0 0 0 0  0
+  ## 4  0 0 1 0 0 0 0 0 0  0
+  ## 5  1 1 1 1 0 0 0 0 0  0
+  ## 6  0 1 1 0 0 0 0 0 0  0
+  ## 7  0 1 0 0 0 0 0 0 0  0
+  ## 8  1 1 0 0 1 1 1 0 0  0
+  ## 9  0 1 1 1 0 0 0 0 0  0
+  ## 10 0 0 1 1 0 0 0 0 0  0
+\end{verbatim}
+
+\item State Distribution
+\label{state-distribution}
+The state distribution is the transpose of the adjacency matrix:
+
+\begin{minted}[]{r}
+  (p0 <- t(A))
+\end{minted}
+
+\begin{verbatim}
+  ##    1 2 3 4 5 6 7 8 9 10
+  ## 1  0 1 0 0 1 0 0 1 0  0
+  ## 2  1 0 0 0 1 1 1 1 1  0
+  ## 3  0 0 0 1 1 1 0 0 1  1
+  ## 4  0 0 1 0 1 0 0 0 1  1
+  ## 5  0 0 0 0 0 0 0 1 0  0
+  ## 6  0 0 0 0 0 0 0 1 0  0
+  ## 7  0 0 0 0 0 0 0 1 0  0
+  ## 8  0 0 0 0 0 0 0 0 0  0
+  ## 9  0 0 0 0 0 0 0 0 0  0
+  ## 10 0 0 0 0 0 0 0 0 0  0
+\end{verbatim}
+
+\item Probability Transition Matrix
+\label{probability-transition-matrix}
+The probability transition matrix is such that each column of the
+initial state distribution (i.e. the transposed adjacency matrix) is
+scaled to 1.
+
+\begin{minted}[]{r}
+  p0 %*% diag(1/colSums(p0))
+\end{minted}
+
+\begin{verbatim}
+  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]      [,9] [,10]
+  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.0000000   0.0
+  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.3333333   0.0
+  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.3333333   0.5
+  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.3333333   0.5
+  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
+  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+\end{verbatim}
+
+\begin{enumerate}
+\item Create a Function
+\label{create-a-function}
+\begin{minted}[]{r}
+  adj_to_probTrans <- function(adjMat) {
+    t(adjMat) %*% diag(1/colSums(t(adjMat)))
+  }
+
+  (T <- adj_to_probTrans(A)) %>% round(2)
+\end{minted}
+
+\begin{verbatim}
+  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.00   0.0
+  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.33   0.0
+  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.33   0.5
+  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.33   0.5
+  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+\end{verbatim}
+\end{enumerate}
+\end{enumerate}
+
+\subparagraph{Page Rank Random Surfer}
+\label{page-rank-random-surfer}
+The random surfer page rank method modifies the probability transition
+matrix \(T\) so that the method works also for non-ergodic graphs by
+introducing the possibility of a random jump, we'll call the surfer
+transition matrix \(S\):
+
+\begin{align}
+    S &= \lambda T +  \left( 1- \lambda \right)B :\\
+\ \\
+    B&= \begin{bmatrix}
+    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+        \vdots      & \vdots      & \ddots & \vdots  \\
+    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \end{bmatrix} \label{eq:bgval1} \\
+    N&= \left| \left| V \right| \right| \\
+    \lambda &\in [0,1]
+\end{align}
+
+\begin{minted}[]{r}
+  B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
+  l <- 0.8123456789
+
+  S <- l*T+(1-l)*B
+\end{minted}
+
+\begin{enumerate}
+\item Eigen Value Method
+\label{eigen-value-method}
+The eigenvector corresponding to the the eigenvalue of 1 will be the
+stationary point:
+
+\begin{minted}[]{r}
+  eigen(S, symmetric = FALSE)
+\end{minted}
+
+\begin{verbatim}
+eigen() decomposition
+$values
+ [1]  1.000000e+00 -8.123457e-01 -8.123457e-01  8.123457e-01 -3.407464e-09  3.407464e-09
+ [7]  6.878591e-17 -4.393838e-17 -1.126771e-18 -1.292735e-32
+
+$vectors
+            [,1]          [,2]          [,3]          [,4]          [,5]          [,6]
+ [1,] 0.48726141 -7.071005e-01  1.590774e-03  5.000000e-01  6.735753e-01 -6.735753e-01
+ [2,] 0.52676629  7.071005e-01 -1.590774e-03  5.000000e-01  9.622504e-02 -9.622505e-02
+ [3,] 0.49149620 -2.975837e-03  7.071050e-01 -5.000000e-01  9.622504e-02 -9.622505e-02
+ [4,] 0.48044122  2.975837e-03 -7.071050e-01 -5.000000e-01  2.886751e-01 -2.886751e-01
+ [5,] 0.04932738  1.463673e-18 -5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [6,] 0.04932738  1.463673e-18  5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [7,] 0.04932738  1.463673e-18 -2.077937e-17  2.124631e-17 -3.849002e-01  3.849002e-01
+ [8,] 0.04243328 -6.484884e-18 -1.103904e-17  6.319692e-17  8.072508e-09  8.072508e-09
+ [9,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
+[10,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
+               [,7]          [,8]          [,9]         [,10]
+ [1,] -3.963430e-01  3.962600e-01  1.828019e-01 -1.752367e-01
+ [2,] -1.291621e-01  2.027302e-01  2.199538e-01 -2.197680e-01
+ [3,] -3.955284e-01  3.894308e-02  2.223048e-01 -2.248876e-01
+ [4,] -4.215353e-01  1.043870e-01  2.747562e-01 -2.777266e-01
+ [5,]  5.166485e-01 -8.109210e-01 -8.798152e-01  8.790721e-01
+ [6,]  5.201366e-02 -1.308878e-01 -1.049028e-01  1.056778e-01
+ [7,]  1.346275e-01 -1.936007e-01  9.054366e-02 -9.554811e-02
+ [8,]  2.547528e-16 -1.352936e-16 -1.025353e-16  1.072771e-16
+ [9,]  3.196396e-01  1.965446e-01 -2.821213e-03 -5.466313e-03
+[10,]  3.196396e-01  1.965446e-01 -2.821213e-03  1.388344e-02
+
+\end{verbatim}
+
+So in this case the stationary point is
+
+\(\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle\)
+
+which can be verified:
+
+$$
+1 \vec{p} = S\vec{p}
+$$
+
+\begin{minted}[]{r}
+  (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1])
+\end{minted}
+
+\begin{verbatim}
+  ##  [1] -0.48531271 -0.52732002 -0.49152601 -0.47977477 -0.05288058 -0.05288058
+  ##  [7] -0.05288058 -0.04558671 -0.04558671 -0.04558671
+\end{verbatim}
+
+\begin{minted}[]{r}
+  (p_new <- S %*% p)
+\end{minted}
+
+\begin{verbatim}
+  ##           [,1]
+  ## 1  -0.48531271
+  ## 2  -0.52732002
+  ## 3  -0.49152601
+  ## 4  -0.47977477
+  ## 5  -0.05288058
+  ## 6  -0.05288058
+  ## 7  -0.05288058
+  ## 8  -0.04558671
+  ## 9  -0.04558671
+  ## 10 -0.04558671
+\end{verbatim}
+
+However this vector does not sum to 1 so the scale should be adjusted
+(for probabilities the vector should sum to 1):
+
+\begin{minted}[]{r}
+  (p_new <- p_new/sum(p_new))
+\end{minted}
+
+\begin{verbatim}
+  ##         [,1]
+  ## 1  0.2129185
+  ## 2  0.2313481
+  ## 3  0.2156444
+  ## 4  0.2104889
+  ## 5  0.0232000
+  ## 6  0.0232000
+  ## 7  0.0232000
+  ## 8  0.0200000
+  ## 9  0.0200000
+  ## 10 0.0200000
+\end{verbatim}
+
+\item Power Value Method
+\label{power-value-method}
+Using the power method should give the same result, which it indeed
+does, but for the scale:
+
+\begin{minted}[]{r}
+  p_new <- p_new *123456789
+
+  while (sum(round(p, 9) != round(p_new, 9))) {
+      (p     <- p_new)
+      (p_new <- S %*% p)
+  }
+
+  p_new
+\end{minted}
+
+\begin{verbatim}
+  ##        [,1]
+  ## 1  26286237
+  ## 2  28561500
+  ## 3  26622771
+  ## 4  25986282
+  ## 5   2864198
+  ## 6   2864198
+  ## 7   2864198
+  ## 8   2469136
+  ## 9   2469136
+  ## 10  2469136
+\end{verbatim}
+
+\begin{minted}[]{r}
+  p
+\end{minted}
+
+\begin{verbatim}
+  ##        [,1]
+  ## 1  26286237
+  ## 2  28561500
+  ## 3  26622771
+  ## 4  25986282
+  ## 5   2864198
+  ## 6   2864198
+  ## 7   2864198
+  ## 8   2469136
+  ## 9   2469136
+  ## 10  2469136
+\end{verbatim}
+
+This answer is however identical in direction, if it scaled to 1 the
+same value will be returned:
+
+\begin{minted}[]{r}
+  (p_new <- p_new/sum(p_new))
+\end{minted}
+
+\begin{verbatim}
+  ##         [,1]
+  ## 1  0.2129185
+  ## 2  0.2313481
+  ## 3  0.2156444
+  ## 4  0.2104889
+  ## 5  0.0232000
+  ## 6  0.0232000
+  ## 7  0.0232000
+  ## 8  0.0200000
+  ## 9  0.0200000
+  ## 10 0.0200000
+\end{verbatim}
+
+\item Scaling
+\label{scaling}
+However if the initial state sums to 1, then the scale of the stationary
+vector will also sum to 1.
+
+\begin{minted}[]{r}
+  p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+  p_new <- S %*% p
+
+  while (sum(round(p, 9) != round(p_new, 9))) {
+      (p     <- p_new)
+      (p_new <- S %*% p)
+  }
+
+  cbind(p_new, p)
+\end{minted}
+
+\begin{verbatim}
+  ##         [,1]      [,2]
+  ## 1  0.2129185 0.2129185
+  ## 2  0.2313481 0.2313481
+  ## 3  0.2156444 0.2156444
+  ## 4  0.2104889 0.2104889
+  ## 5  0.0232000 0.0232000
+  ## 6  0.0232000 0.0232000
+  ## 7  0.0232000 0.0232000
+  ## 8  0.0200000 0.0200000
+  ## 9  0.0200000 0.0200000
+  ## 10 0.0200000 0.0200000
+\end{verbatim}
+\end{enumerate}
+\paragraph{Large Graph, Sparse Matrices using CRS}
+\label{sec:orgb505ce2}
+\subparagraph{Creating the Probability Transition Matrix}
+\label{sec:org5b1fee0}
+Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
+
+An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
+
+A matrix exhibiting this property is known as a sparse matrix CITE
+
+The properties of a sparse matrix can be implemented in order to improve performance, one such method to acheive this is \emph{Compressed Sparse Row} (CSR) storage, which involves creating a seperate array of values and corresponding indices. CITE
+
+This is implemented by the Matrix package in \textbf{\emph{R}}. CITE
+
+An sparse matrix can be created using the following syntax, which will return a matrix of the class \texttt{dgCMatrix}:
+
+\begin{minted}[]{r}
+library(Matrix)
+## Create Example Matrix
+n <- 20
+m <- 10^6
+i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 90)
+A <- sparseMatrix(i, j, x = x, dims = c(m, m))
+
+summary(A)
+\end{minted}
+
+As before in section \ref{probability-transition-matrix}, the probability transition matrix can be found by:
+
+\begin{enumerate}
+\item Transposing the adjacency matrix, then
+\item Scaling the columns to one
+\end{enumerate}
+
+To implement this for a sparseMatrix of the class \texttt{dgCMatrix}, the same technique of multiplying by a diagonalised matrix may be implemented, however to create this new matrix, a new \texttt{sparseMatrix} will need to be created using the properties of the original matrix, this can be done like so:
+
+
+\begin{minted}[]{r}
+ sparse_diag <- function(mat) {
+  #' Diagonal Factors of Sparse Matrix
+  #'
+  #' Return a Diagonal Matrix of the 1 / colsum() such that
+  #' matrix multiplication with this matrix would have all column sums
+  #' sum to 1
+  #'
+  #' This should take the transpose of an adjacency matrix in and the output
+  #' can be multiplied by the original matrix to scale it to 1.
+  #' i
+
+  ## Get the Dimensions
+  n <- nrow(mat)
+
+  ## Make a Diagonal Matrix of Column Sums
+  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
+
+  ## Throw away explicit Zeroes
+  D <- drop0(D)
+
+  ## Inverse the Values
+  D@x <- 1/D@x
+
+  ## Return the Diagonal Matrix
+  return(D)
+}
+D <- sparse_diag(t(A))
+summary(D)
+\end{minted}
+
+\begin{verbatim}
+
+1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
+        i      j           x
+1   57981  57981 0.011235955
+2   61426  61426 0.010309278
+3  139900 139900 0.012048193
+4  152229 152229 0.009615385
+5  175521 175521 0.010204082
+6  187782 187782 0.013513514
+7  233553 233553 0.011904762
+8  288279 288279 0.010309278
+9  381442 381442 0.011494253
+10 401058 401058 0.014084507
+11 541818 541818 0.012820513
+12 542888 542888 0.014492754
+13 578270 578270 0.010101010
+14 595348 595348 0.011764706
+15 610432 610432 0.011904762
+16 614645 614645 0.012195122
+17 776459 776459 0.010989011
+18 803589 803589 0.008474576
+19 821120 821120 0.009708738
+20 821769 821769 0.012658228
+\end{verbatim}
+
+and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
+
+\begin{minted}[]{r}
+summary(t(A) %*% D)
+\end{minted}
+
+\begin{verbatim}
+1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
+        i      j x
+1  809115  57981 1
+2   83355  61426 1
+3  649740 139900 1
+4  451810 152229 1
+5  775788 175521 1
+6  364814 187782 1
+7  631441 233553 1
+8  630438 288279 1
+9  681415 381442 1
+10 103999 401058 1
+11 976802 541818 1
+12 217196 542888 1
+13 755635 578270 1
+14 993420 595348 1
+15 206922 610432 1
+16 462031 614645 1
+17 566334 776459 1
+18  66922 803589 1
+19 809688 821120 1
+20 291405 821769 1
+\end{verbatim}
+
+\subparagraph{Solving the Random Surfer via the Power Method}
+\label{sec:org7f3bd4f}
+Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
+
+However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
+
+The power method is given by:
+
+\begin{align}
+\vec{p}= \mathbf{S} \vec{p}
+\end{align}
+
+where:
+
+\begin{align}
+S &= \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \\
+\vec{p} &= \left( \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \right) \vec{p}\\
+&= \alpha \mathbf{T}\vec{p} +  \left( 1-\alpha \right) \mathbf{B} \vec{p}
+\end{align}
+
+Let \(\mathbf{F}= \mathbf{B}\vec{p}\), consider the value of \(\mathbf{F}\) :
+
+\begin{align}
+\mathbf{F} &=
+\begin{bmatrix}
+\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+\vdots      & \vdots      & \ddots & \vdots \\
+\frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+\end{bmatrix} \label{eq:bgVal2}
+\begin{bmatrix}
+\vec{p_1} \\ \vec{p_2} \\ \vdots \\ \vec{p_m}
+\end{bmatrix}  \\
+&= \begin{bmatrix}
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\vdots  \\
+\left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
+\end{bmatrix}  \\
+& \text{Probabilities sum to 1 and hence:} \\
+&= \begin{bmatrix}
+\frac{1}{N} \\
+\frac{1}{N} \\
+\frac{1}{N} \\
+\vdots  \\
+\frac{1}{N} \\
+\end{bmatrix}
+\end{align}
+So instead the power method can be implemented by performing an algorithm to the effect of:
+
+\begin{minted}[]{r}
+## Find Stationary point of random surfer
+N     <- nrow(A)
+alpha <- 0.8
+F     <- rep((1-alpha)/N, nrow(A))  ## A nx1 vector of (1-alpha)/N
+
+## Solve using the power method
+p     <- rep(0, length.out = ncol(T)); p[1] <- 1
+p_new <- alpha*T %*% p + F
+
+## use a Counter to debug
+i <- 0
+while (sum(round(p, 9) != round(p_new, 9))) {
+    p     <- p_new
+    p_new <- alpha*T %*% p + F
+    (i <- i+1) %>% print()
+}
+
+p %>% head() %>% print()
+\end{minted}
+\subsubsection{Power Walk Method}
+\label{sec:org1d5db20}
+\paragraph{Introduction}
+\label{sec:org1c04ccc}
+
+\begin{align}
+\mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
+\end{align}
+
+
+
+where:
+
+\begin{itemize}
+\item \(\mathbf{B}= \beta^{\mathbf{A}}\)
+\begin{description}
+\item[{\(x\beta^{1}\) }] probability of following an edge of weight 1
+\item[{\(x\beta^{0}\) }] probability of following an edge of weight 0
+\item[{\(x\beta^{-1}\)}] probability of following an edge of weight -
+\end{description}
+\item \(D_{B} = \mathtt{colsums}(\mathbf{B})\)
+\item[{\(\mathbf{A}\)}] The Adjacency Matrix
+\end{itemize}
+
+\paragraph{Ordinary Matrices}
+\label{sec:org4d7f15b}
+Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
+\paragraph{Sparse Matrices}
+\label{sec:orgf16a996}
+\subparagraph{Theory; Simplifying Power Walk to be solved with Sparse Matrices}
+\label{sec:org7182b99}
+The Random Surfer model is:
+
+$$\begin{aligned}
+    \mathbf{S} &= \alpha \mathbf{T} +  \mathbf{F}  \label{eq:sparse-RS}\end{aligned}$$
+
+where:
+
+\begin{itemize}
+\item \(\mathbf{T}\)
+
+\begin{itemize}
+\item is an \(i \times j\) matrix that describes the probability of
+travelling from vertex \(j\) to \(i\)
+
+\begin{itemize}
+\item This is transpose from the way that \texttt{igraph} produces an adjacency
+matrix.
+\end{itemize}
+\end{itemize}
+
+\item \(\mathbf{F} = \begin{bmatrix} \frac{1}{n} \\ \frac{1}{n} \\ \frac{1}{n} \vdots \end{bmatrix}\)
+\end{itemize}
+
+Interpreting the transition probability matrix in this way is such that
+\(\mathbf{T}= \mathbf{A}\mathbf{D}^{- 1}_A\) under the following
+conditions:
+
+
+\begin{itemize}
+\item No column of \(\mathbf{A}\) sums to zero
+
+\begin{itemize}
+\item If this does happen the question arises how to deal with
+\(\mathbf{D_\mathbf{A}^{- 1}}\)
+
+\begin{itemize}
+\item I've been doing \(\mathbf{D}^{\mathrm{T}}_{\mathbf{A}, i, j} := \mathtt{diag} \left( {\frac{1}{\mathtt{colsums}\left( \mathbf{A} \right)}} \right)\)
+and then replacing any \(0\) on the diagonal with 1.
+\end{itemize}
+
+\item What is done in the paper is to make another matrix \(\mathbf{Z}\)
+that is filled with 0, if a column sum of \(\mathbf{A}\) adds to zero
+then that column in \(\mathbf{Z}\) becomes \(\frac{1}{n}\)
+
+\begin{itemize}
+\item This has the effect of making each row identical
+
+\item The probability of going from an orphaned vertex to any other
+vertex would hence be \(\frac{1}{n}\)
+
+\item The idea with this method is then to use
+\(D_\mathbf{\left( A+Z \right)}^{- 1}\) this will be consistent with
+the \emph{Random Surfer} the method using \(\mathbf{F}\) in
+[[\#eq:sparse-RS][]] \eqref{eq:sparse-RS}
+\end{itemize}
+
+where each row is identical that is a 0
+\end{itemize}
+\end{itemize}
+
+The way to deal with the \emph{Power Walk} is more or less the same.
+
+observe that:
+
+$$\begin{aligned}
+   \left( \mathbf{B} = \beta^{\mathbf{A}} \right)\wedge \left( \mathbf{A}_{i, j}\right)\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}\end{aligned}$$
+
+
+
+Be mindful that the use of exponentiation in
+] is not an element wise exponentiation
+and not an actual matrix exponential (which would be defined by using
+power series and logs but is defined)
+
+So if I have:
+
+\begin{itemize}
+\item \(\mathbf{O}_{i, j} := 0, \quad \forall i,j\leq n \in \mathbb{Z}^+\)
+
+\item \(\vec{p_i}\) as the state distribution, being a vector of length \(n\)
+\end{itemize}
+
+Then It can be shown (see \eqref{eq:sparse-power-walk}):
+
+$$\begin{aligned}
+    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}\end{aligned})$$
+
+
+
+where:
+
+\begin{itemize}
+\item \(\vec{\delta_i} = \frac{1}{\mathtt{colsums} \left( \mathbf{B} \right)}\)
+\begin{itemize}
+\item A vector\ldots{}(\(n\times 1\) matrix)
+\end{itemize}
+\item[{\(\vec{1}\) }] is a vector containing all 1's
+\begin{itemize}
+\item A vector\ldots{}(\(n\times 1\) matrix)
+\end{itemize}
+\item[{\(\vec{\delta^{\mathrm{T}}}\)}] refers to the transpoxe of \(\vec{\detla}\) (\(1\times n\) matrix)
+\item[{\(\vec{\delta^{\mathrm{T}}} \vec{p_{i}}\)}] is some number (because it's a dot product)
+\end{itemize}
+
+This means we can do:
+
+\begin{align}
+  \overrightarrow{p_{i + 1}} & = \mathbf{T}_{\mathrm{pw}}
+  \overrightarrow{p_i}\\
+& = \mathbf{BD}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i}\\
+  & = \left( \mathbf{B} - \mathbf{O} + \mathbf{O} \right)
+  \mathbf{D}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
+  & = \left( \left( \mathbf{B} - \mathbf{O} \right)
+  \mathbf{D}_{\mathbf{B}}^{- 1} + \mathbf{OD}_{\mathbf{B}}^{- 1} \right)
+  \overrightarrow{p_i}\\
+  & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i}\\
+  & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \vec{1} (\overrightarrow{\delta^{\mathrm{T}}}
+  \overrightarrow{p_i}) \\
+  & = \left( \mathbf{B} - \mathbf{O} \right) \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta^{\mathrm{T}}}
+  \overrightarrow{p_i})
+\end{align}
+
+where:
+
+
+Let \((\mathbf{B}-\mathbf{O}) = \mathbf{B_{\mathbf{O}}}\):
+
+\begin{eqnarray*}
+  \overrightarrow{p_{i + 1}} & = \mathbf{B_{\mathbf{O}}} \mathbf{D}_{\mathbf{B}}^{- 1}
+  \overrightarrow{p_i} + \mathtt{rep} (\overrightarrow{\delta^{\mathrm{T}}}
+  \overrightarrow{p_i}) &
+\end{eqnarray*}
+
+Now solve \(\tmmathbf{D}_B^{- 1}\) in terms of \(\mathbf{B_{O}}\) :
+
+\begin{align}
+  \mathbf{B}_{\mathbf{\mathbf{O}}} = & (\mathbf{B}-\mathbf{O})\\
+  \mathbf{B} = & \mathbf{B}_{\mathbf{\mathbf{O}}}
+  +\mathbf{O}
+\end{align}
+
+If we have \(\delta_{\mathbf{B}}\) as the column sums of\(\tmmathbf{\Beta}\) \(\mathbf{B}\):
+
+\begin{align}
+\delta^{-1}_{\mathbf{B}} &= \vec{1}\mathbf{B} \\
+&= \vec{1} \left( \mathbf{B_{O}} + \mathbf{O}\right) \\
+&= \vec{1}  \mathbf{B_{O}} + \vec{1}\mathbf{O} \\
+&= \vec{1} \mathbf{B_{\mathbf{O}}} + \langle n, n, n, ... n \rangle \\
+&= \vec{1} \mathbf{B_{\mathbf{O}}} + \vec{1} n \\
+\delta_{\mathbf{B}}&=\mathtt{1/(colSums(\mathbf{B_{O}}) + n )}
+\end{align}
+
+Then if we have \(\mathit{{\tmstrong{{\tmem{D}}}}}_{\mathit{{\tmem{{\tmstrong{B}}}}}} =
+\mathtt{diag} (\delta_{\tmmathbf{B}}) \mathtt{}\):
+
+
+\[ \begin{array}{lll}
+     \mathit{{\tmstrong{{\tmem{D}}}}}_{\mathit{{\tmem{{\tmstrong{B}}}}}}^{- 1}
+     & = & \mathrm{diag} \left( \delta^{- 1}_{\mathbf{B}} \right)\\
+     & = & \mathtt{diag} \left( \mathtt{ColSums}
+     (\mathtt{\tmmathbf{B}_{\tmmathbf{O}}}) + \mathtt{n}
+     \right)^{\mathtt{- 1}}
+   \end{array} \]
+
+And so the the power method can be implemented using sparse matrices:
+
+\begin{align}
+\vec{p_{i+1}} = \mathrm{B_{O}} \enspace \mathrm{diag}\left( \vec{1} \mathbf{B_{O}} + \vec{1}n \right) \vec{p_{i}} + \vec{1} \vec{\delta^{\mathrm{T}}\vec{p_{i}}}
+\end{align}
+
+in terms of \textbf{\emph{R}}:
+
+\begin{minted}[]{r}
+p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
+
+# It would also be possible to sum the element-wise product
+(t(δ) %*% p) == sum(δ * p)
+
+# Because R treats vectors the same as a nX1 matrix we could also
+# perform the dot product of the two vectors, meaning the following
+# would be true in R but not generally
+
+(t(δ) %*% p) == (δ %*% p)
+\end{minted}
+
+
+\begin{enumerate}
+\item Solving the Background Probability
+\label{sec:orgc1a256d}
+In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the \emph{Kronecker Product}):
+
+
+
+Define \(\vec{\delta}\) as the column sums of
+\[\begin{aligned}
+     \vec{\delta} & = \mathtt{colsum} (\text{{\bfseries{B}}})^{- 1}\\
+     & = \frac{1}{\overrightarrow{1^{{\scriptsize \ensuremath{\boldsymbol{T}}}}}
+     \ensuremath{\boldsymbol{B}}}
+   \end{aligned}\]
+
+
+Then we have:
+
+
+\[ \begin{aligned}
+     \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} & = \left(
+     \begin{array}{cccc}
+       1 & 1 & 1 & \\
+       1 & 1 & 1 & \ldots\\
+       1 & 1 & 1 & \\
+       & \vdots &  & \ddots
+     \end{array} \right) \left( \begin{array}{cccc}
+       \frac{1}{\delta_1} & 0 & 0 & \\
+       0 & \frac{1}{\delta_2} & 0 & \ldots\\
+       0 & 0 & \frac{1}{\delta_{13}} & \\
+       & \vdots &  & \ddots
+     \end{array} \right) \left( \begin{array}{c}
+       p_{i, 1}\\
+       p_{i, 2}\\
+       p_{i, 3}\\
+       \vdots
+     \end{array} \right) \nonumber \nonumber\\
+     & = \left( \begin{array}{cccccc}
+       \frac{p_{i, 1}}{\delta 1} & + & \frac{p_{i, 2}}{\delta_2} & + &
+       \frac{p_{i, 3}}{\delta_3} & \\
+       \frac{p_{i, 1}}{\delta 1} & + & \frac{p_{i, 2}}{\delta_2} & + &
+       \frac{p_{i, 3}}{\delta_3} & \ldots\\
+       \frac{p_{i, 1}}{\delta 1} & + & \frac{p_{i, 2}}{\delta_2} & + &
+       \frac{p_{i, 3}}{\delta_3} & \\
+       &  & \vdots &  &  & \ddots
+     \end{array} \right) \nonumber \nonumber\\
+     & = \left( \begin{array}{c}
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
+       \sum^n_{k = 1} [p_{i, k} \delta_i]\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     & = \left( \begin{array}{c}
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+       \overrightarrow{p_i}\\
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}} \vec{p}_i\\
+       \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}} \vec{p}_i\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     & = \overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+     \overrightarrow{p_i} \left( \begin{array}{c}
+       1\\
+       1\\
+       1\\
+       \vdots
+     \end{array} \right) \nonumber\\
+     & = (\overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+     \overrightarrow{p_i})  \vec{1}\\
+     & = \mathtt{repeat} (\overrightarrow{\delta} \overrightarrow{p_i}
+     \mathtt{, n}) \label{eq:sparse-power-walk}
+   \end{aligned} \]
+Observe also that If we let \(\vec{\delta}\) and \(p_i\) be 1 dimensional
+vectors, this can also be expressed as a dot product:
+
+\begin{center}
+\begin{tabular}{ll}
+Matrices & Vectors\\
+\(\vec{\delta^{\mathrm{T}}} \vec{p_{i}}\) & \(\vec{\delta} \vec{p_{i}}\)\\
+\end{tabular}
+
+\end{center}
+\end{enumerate}
+
+\subparagraph{Practical; Implementing the Power Walk on Sparse Matrices}
+\label{sec:org97d942c}
+\begin{enumerate}
+\item Inspect the newly created matrix and create constants
+\label{sec:org0806e22}
+\item Setup
+\label{sec:org7343847}
+\begin{enumerate}
+\item Load Packages
+\label{sec:org9260e05}
+\begin{minted}[]{r}
+if (require("pacman")) {
+    library(pacman)
+  }else{
+    install.packages("pacman")
+    library(pacman)
+  }
+  pacman::p_load(Matrix, igraph, plotly, mise, docstring, expm)
+  mise()
+\end{minted}
+
+\begin{verbatim}
+Loading required package: pacman
+\end{verbatim}
+
+\item Define function to create DiagonalsSparse Diagonal Function
+\label{sec:org3f3d1ae}
+This doesn't matter for the power walk, real exponents will always give non-zero values anyway
+\begin{minted}[]{r}
+sparse_diag <- function(mat) {
+  #' Diagonal Factors of Sparse Matrix
+  #'
+  #' Return a Diagonal Matrix containing either 1 / colsum() or 0 such that
+  #' matrix multiplication with this matrix would have all columns
+  #' sum to 1
+  #'
+  #' This should take the transpose of an adjacency matrix in and the output
+  #' can be multiplied by the original matrix to scale it to 1.
+  #' i
+  # mat  <- A
+  ## Get the Dimensions
+  n <- nrow(mat)
+
+  ## Make a Diagonal Matrix of Column Sums
+      ## If a column sums to zero the diag can be zero iff the adjacency_matrix>=0
+  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
+
+  ## Throw away explicit Zeroes
+  D <- drop0(D)
+
+  ## Inverse the Values
+  D@x <- 1/D@x
+
+  ## Return the Diagonal Matrix
+  return(D)
+}
+\end{minted}
+
+\item Make an Example Graph
+\label{sec:orgdf9ef8f}
+\begin{minted}[]{r}
+g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
+A <- igraph::get.adjacency(g1) # Row to column
+
+
+beta = 0.843234
+β = beta
+\end{minted}
+\item Plot
+\label{sec:orgd615383}
+
+\begin{minted}[]{r}
+plot(g1)
+\end{minted}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{./Media/Example-graph-plot-debug-power-walk.png}
+\end{center}
+\end{enumerate}
+
+\item Power Walk
+\label{sec:orgee07ea6}
+\begin{enumerate}
+\item Define B
+\label{sec:orgf3ae834}
+\begin{minted}[]{r}
+B      <- A
+B@x    <- β^(A@x)
+B      <- A
+B       <- β^A
+
+Bo     <- A
+
+# These two approaches are equivalent
+Bo@x   <- β^(A@x) -1   # This in theory would be faster
+# Bo     <- β^(A) -1
+# Bo     <- drop0(Bo)
+
+
+  n <- nrow(A)
+\end{minted}
+
+\begin{minted}[]{r}
+print(B)
+\end{minted}
+
+\begin{verbatim}
+20 x 20 Matrix of class "dgeMatrix"
+          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]
+ [1,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [2,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+ [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [5,] 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [6,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [8,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+ [9,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+[10,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[11,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
+[13,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[14,] 1.000000 0.843234 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+[15,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[16,] 0.843234 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[17,] 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 0.843234 0.843234
+[18,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
+[19,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234
+[20,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+          [,9]    [,10]    [,11]    [,12]    [,13]    [,14]    [,15]    [,16]
+ [1,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234 0.843234
+ [2,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+ [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+ [5,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [6,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+ [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+ [8,] 1.000000 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000
+ [9,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[10,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000
+[11,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000
+[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[13,] 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[14,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
+[15,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
+[16,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
+[17,] 1.000000 1.000000 0.843234 0.843234 0.843234 1.000000 1.000000 1.000000
+[18,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
+[19,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
+[20,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
+         [,17]    [,18]    [,19]    [,20]
+ [1,] 1.000000 1.000000 1.000000 0.843234
+ [2,] 1.000000 1.000000 0.843234 1.000000
+ [3,] 0.843234 1.000000 0.843234 1.000000
+ [4,] 0.843234 1.000000 1.000000 1.000000
+ [5,] 1.000000 0.843234 1.000000 1.000000
+ [6,] 1.000000 1.000000 1.000000 1.000000
+ [7,] 0.843234 1.000000 1.000000 1.000000
+ [8,] 0.843234 1.000000 0.843234 1.000000
+ [9,] 1.000000 1.000000 1.000000 1.000000
+[10,] 1.000000 1.000000 1.000000 1.000000
+[11,] 0.843234 1.000000 1.000000 1.000000
+[12,] 0.843234 1.000000 1.000000 1.000000
+[13,] 0.843234 1.000000 1.000000 1.000000
+[14,] 1.000000 1.000000 0.843234 0.843234
+[15,] 1.000000 1.000000 1.000000 1.000000
+[16,] 1.000000 1.000000 1.000000 0.843234
+[17,] 1.000000 0.843234 0.843234 1.000000
+[18,] 0.843234 1.000000 0.843234 1.000000
+[19,] 0.843234 0.843234 1.000000 1.000000
+[20,] 1.000000 1.000000 1.000000 1.000000
+\end{verbatim}
+
+
+\begin{minted}[]{r}
+print(Bo)
+\end{minted}
+
+\begin{verbatim}
+20 x 20 sparse Matrix of class "dgCMatrix"
+
+ [1,]  .        -0.156766  .         .         .        -0.156766  .
+ [2,] -0.156766  .         .         .        -0.156766  .         .
+ [3,]  .         .         .         .         .         .         .
+ [4,]  .         .         .         .         .         .         .
+ [5,]  .        -0.156766  .         .         .         .         .
+ [6,] -0.156766  .         .         .         .         .         .
+ [7,]  .         .         .         .         .         .         .
+ [8,]  .         .         .        -0.156766  .        -0.156766  .
+ [9,] -0.156766  .         .         .        -0.156766  .         .
+[10,] -0.156766 -0.156766  .         .         .         .         .
+[11,]  .         .         .         .         .         .         .
+[12,]  .         .         .         .         .        -0.156766  .
+[13,]  .         .         .         .         .         .         .
+[14,]  .        -0.156766  .        -0.156766  .        -0.156766  .
+[15,] -0.156766  .         .         .         .         .         .
+[16,] -0.156766  .        -0.156766  .         .         .         .
+[17,]  .         .        -0.156766 -0.156766  .         .        -0.156766
+[18,]  .         .         .         .        -0.156766  .         .
+[19,]  .        -0.156766 -0.156766  .         .         .         .
+[20,] -0.156766  .         .         .         .         .         .
+
+ [1,]  .        -0.156766 -0.156766  .         .         .         .
+ [2,]  .         .        -0.156766  .         .         .        -0.156766
+ [3,]  .         .         .         .         .         .         .
+ [4,] -0.156766  .         .         .         .         .        -0.156766
+ [5,]  .        -0.156766  .         .         .         .         .
+ [6,] -0.156766  .         .         .        -0.156766  .        -0.156766
+ [7,]  .         .         .         .         .         .         .
+ [8,]  .         .         .         .        -0.156766 -0.156766  .
+ [9,]  .         .         .         .         .         .         .
+[10,]  .         .         .         .         .         .         .
+[11,]  .         .         .         .         .        -0.156766  .
+[12,] -0.156766  .         .         .         .         .         .
+[13,] -0.156766  .         .        -0.156766  .         .         .
+[14,]  .         .         .         .         .         .         .
+[15,]  .         .        -0.156766 -0.156766  .         .         .
+[16,]  .         .         .         .        -0.156766  .        -0.156766
+[17,] -0.156766  .         .        -0.156766 -0.156766 -0.156766  .
+[18,]  .         .         .         .         .         .         .
+[19,] -0.156766  .         .         .         .         .        -0.156766
+[20,]  .         .         .         .         .         .        -0.156766
+
+ [1,] -0.156766 -0.156766  .         .         .        -0.156766
+ [2,]  .         .         .         .        -0.156766  .
+ [3,]  .        -0.156766 -0.156766  .        -0.156766  .
+ [4,]  .         .        -0.156766  .         .         .
+ [5,]  .         .         .        -0.156766  .         .
+ [6,]  .         .         .         .         .         .
+ [7,]  .         .        -0.156766  .         .         .
+ [8,]  .         .        -0.156766  .        -0.156766  .
+ [9,]  .         .         .         .         .         .
+[10,] -0.156766  .         .         .         .         .
+[11,] -0.156766  .        -0.156766  .         .         .
+[12,]  .        -0.156766 -0.156766  .         .         .
+[13,]  .         .        -0.156766  .         .         .
+[14,]  .        -0.156766  .         .        -0.156766 -0.156766
+[15,]  .         .         .         .         .         .
+[16,]  .         .         .         .         .        -0.156766
+[17,]  .         .         .        -0.156766 -0.156766  .
+[18,]  .         .        -0.156766  .        -0.156766  .
+[19,]  .         .        -0.156766 -0.156766  .         .
+[20,]  .        -0.156766  .         .         .         .
+\end{verbatim}
+
+\item Solve the Scaling Matrix
+\label{sec:org19d1650}
+We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
+
+\begin{minted}[]{r}
+(δB   <- 1/(colSums(Bo)+n))
+\end{minted}
+
+\begin{verbatim}
+ [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
+ [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
+[13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
+[19] 0.05246754 0.05120406
+\end{verbatim}
+
+
+\begin{minted}[]{r}
+(δB   <- 1/(colSums(B)))
+\end{minted}
+
+\begin{verbatim}
+ [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
+ [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
+[13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
+[19] 0.05246754 0.05120406
+\end{verbatim}
+
+
+\item Find the Transition Probability Matrix
+\label{sec:org6d024ad}
+\begin{minted}[]{r}
+  DB   <- diag(δB)
+## ** Create the Transition Probability Matrix
+## Create the Trans Prob Mat using Power Walk
+  T <- Bo %*% DB
+\end{minted}
+
+\item Implement the Loop
+\label{sec:org7a51541}
+\begin{minted}[]{r}
+## ** Implement the Power Walk
+## *** Set Initial Values
+  p_new  <- rep(1/n, n)  # Uniform
+  p      <- rep(0, n)    # Zero
+  η      <- 10^(-6)
+## *** Implement the Loop
+
+ while (sum(abs(p_new - p)) > η) {
+    (p <- as.vector(p_new)) # P should remain a vector
+    sum(p <- as.vector(p_new)) # P should remain a vector
+     p_new  <- T %*% p + rep(t(δB) %*% p, n)
+  }
+## ** Report the Values
+print(paste("The stationary point is"))
+print(p)
+\end{minted}
+
+\begin{verbatim}
+[1] "The stationary point is"
+ [1] 0.04882572 0.04963556 0.05044542 0.05044541 0.05044543 0.05004049
+ [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
+[13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
+[19] 0.04923063 0.05044542
+\end{verbatim}
+\end{enumerate}
+\end{enumerate}
+
+\subsubsection{Creating a Package}
+\label{sec:org9b1fc9e}
 \section{Relating the Power Walk to the Random Surfer}
 \label{relating-terms-in-power-walk-to-random-surfer}
 \subsection{Introduction}
-\label{sec:org5bfb68e}
+\label{sec:orgbf88d95}
 These are notes relating to \cite[\textsection 3.3]{parkPowerWalkRevisiting2013}
 
 So if a term in the Power Walk can be related to \(\alpha\) in the random
@@ -178,7 +1696,7 @@ But the next step requires showing that:
 \end{align*}
 
 \subsection{Equate the Power Walk to the Random Surfer}
-\label{sec:org9bc5b82}
+\label{sec:orgeddc3c4}
 Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
 
 \begin{align}
@@ -232,7 +1750,8 @@ Solving for \(\beta\)  with \eqref{fl} :
 %    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
 \end{align}
 
-where: \footnote{NOTE: Similar to a signmoid function, which is a solution to \(p \propto p(1-p)\), I wonder if this provides a connection to the exponential nature of the power walk}
+where: \footnote{NOTE: Similar to a signmoid function, which is a solution to \(p \propto p(1-p)\), I wonder if this provides a connection to the exponential nature of the power walk
+`﻿erdos.renyi﻿`﻿erdos.renyi﻿``}
 
 \begin{itemize}
 \item \(\Theta = \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{B}}^{- 1}\)
@@ -263,19 +1782,19 @@ And setting \(\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}\)  from \eqre
 Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}  \eqref{eq:bgVal2}
 
 \subsection{Conclusion}
-\label{sec:org3f38dc0}
+\label{sec:org35ce599}
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
 
 \subsection{The Second Eigenvalue}
-\label{sec:org121c651}
+\label{sec:org3cc7f6b}
 \subsubsection{The Random Surfer}
-\label{sec:org55095e1}
+\label{sec:org1671b1f}
 The Second eigenvalue \(\xi_2\) of the Power Surfer is less than \(\alpha\) (\href{Proposal/Propsal.org}{See 3.2; Stability and Concvergence, of proposal}).
 \subsubsection{Power Walk}
-\label{sec:orgce0a31a}
+\label{sec:orge8aa8c0}
 Because the Power Walk relates to the random surfer as demonstrated in section \ref{relating-terms-in-power-walk-to-random-surfer}, what can be said about \(\xi_{2}\)
 \paragraph{Applying this to Power Walk}
-\label{sec:org96e0fa2}
+\label{sec:org5570691}
 Let \(\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2\) return the second value of a transition, probability Matrix, then observe that:
 
 
@@ -290,7 +1809,7 @@ where:
 \item \(\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)\) refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
 \end{itemize}
 \subparagraph{My attempt}
-\label{sec:orgcb4abef}
+\label{sec:org9b1d9ef}
 \begin{align}
     \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
 %    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
@@ -361,6 +1880,179 @@ beta
 
 ## * blah
 \end{minted}
+
+\section{Investigating the Second EigenValue}
+\label{sec:org67f5498}
+
+Maybe I should look at the most appropriate way to simulate social network links, one possibility is \href{https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf}{this paper } \cite{zengPracticalSimulationMethod2013}.
+
+Actually there is a data set available
+ \cite{garritanoWikipediaArticleNetworks2019}, I should just analyse that, see \href{file:///home/ryan/Dropbox/DataSci/Visual\_Analytics/Assessment/the-marvel-universe-social-network/plotly3d\_Marvel.r}{how
+it was done in Visual Analytics as a reminder}.
+
+Using the Wikipedia ArtYeah I think that's right, thaicle compare density and Determinant.
+
+Is the determinant easily calculated for a large matrix?
+  It appears to diverge
+
+Will the determinant diverge for large matrices?
+Will the prob of making edges in the game just be the density?
+
+Look at comparing the determinant and the density of the wikipedia adjacency matrix.
+
+What are some ways that we can model the second eigenvalue?
+
+\subsection{Plotting Various Values}
+\label{sec:org4956814}
+
+There is some relationship between the determinant and the density, check out the pairs plot:
+
+
+
+\begin{minted}[]{r}
+  library(pacman)
+  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
+n <- 20
+p <- 1:n/n
+beta <- 1:n/n
+beta <- runif(n)*100
+sz <- 1:n/n+10
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+input_var
+
+
+random_graph <- function(n, p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      return(c(abs(e2), A_det))
+}
+
+## TODO this should use pmap.
+Y <- matrix(ncol = 2, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
+
+data <- cbind(input_var, Y)
+
+ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  geom_point() +
+  labs(x = "Determinant of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
+  scale_size_continuous(range = c(0.1,1))
+\end{minted}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{../Media/EigenValue_Determinant.png}
+\end{center}
+
+
+\begin{minted}[]{r}
+  library(pacman)
+  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
+n <- 100
+p <- 1:n/n
+beta <- 1:n/n
+beta <- runif(n)*100
+sz <- 1:n/n+10
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+input_var
+
+
+random_graph <- function(n, p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      return(c(abs(e2), A_dens))
+}
+
+## TODO this should use pmap.
+Y <- matrix(ncol = 2, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
+
+data <- cbind(input_var, Y)
+
+ggplot(data, aes(x = determinant, y = eigenvalue2, color = size, shape = factor(n))) +
+  geom_point(base_size = 99, aes(size = beta)) +
+  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
+  scale_size_continuous(range = c(0.1,1))
+\end{minted}
+
+Maybe this looks like a Chi distribution?
+
+\begin{minted}[]{r}
+chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*6
+index  <- seq(from = 0, to = 2, length.out = 100)
+chidata  <- data.frame(index = index, chi = chival)
+ggplot(data) +
+  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
+\end{minted}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{../Media/EigenValue_Density_Chi.png}
+\end{center}
+
+\subsection{Model the log transformed data using a linear regression or log(-x) regression}
+\label{sec:orge122d82}
+
+\begin{align}
+    \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
+\end{align}
+
+\subsubsection{Change the colour of each model by using pivot\textsubscript{longer}}
+\label{sec:orgb6f08cb}
+\subsection{Could I get better performance by also considering the determinant?}
+\label{sec:org2de6875}
+No not really, it terms of accuracy
+
+\subsection{Is the determinant faster or slower?}
+\label{sec:orga073388}
+Significantly slower for large matrices.
+\subsection{Import wikipedia data}
+\label{sec:org74da214}
+\begin{itemize}
+\item \sout{Import the wikipedia data}
+\item \sout{Measure the density}
+\item \sout{Use the density to guess the \(p\) of the game}
+\begin{itemize}
+\item \sout{Justify the witht the scatterplot matrix}
+\end{itemize}
+\item \sout{Measure the affect of different \(\beta\) values on \(\lambda_2\) for graphs ov various sizes given that \(p\) value.}
+\begin{itemize}
+\item \sout{Or atleast a range within that prob}
+
+use a \emph{Barabassi-Albert} Random Graph through the \textasciitilde{}igraph::
+\end{itemize}
+\end{itemize}
 
 \section{Cauchy Integral Formula}
 \label{cauchy-integral-formula}
@@ -445,4 +2137,44 @@ Arbitrary Code:
   exit 0
 \end{minted}
 \end{enumerate}
+\section{Appendix}
+\label{sec:orga6bfb6e}
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+library(Matrix)
+library(igraph)
+n <- 200
+m <- 5
+power <- 1
+g <- igraph::sample_pa(n = n, power = power, m = m, directed = FALSE)
+plot(g)
+A <- t(get.adjacency(g))
+plot(A)
+image(A)
+
+
+# Create a Plotting Region
+par(pty = "s", mai = c(0.1, 0.1, 0.4, 0.1))
+
+
+# create the image
+
+title=paste0("Undirected Barabassi Albert Graph with parameters:\n Power = ", power, "; size = ", n, "; Edges/step = ", round(m))
+image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
+\end{minted}
+\caption{\label{r-den_undir_ba}Use \textbf{\emph{R}} to produce an image illustrating the density of a simulated BA graph, see the output in figure \ref{fig:den_undir_ba}}
+\end{listing}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/DensityUndirectedBA.png}
+\caption{\label{fig:den_undir_ba}Plot of the adjacency matrix corresponding to a Barabassi-Albert Graph produced by listing \ref{r-den_undir_ba}, the matrix is quite sparse.}
+\end{figure}
+\section{Extensions to this Report}
+\label{sec:org4dc4966}
+Accellerating the Computatoin of Page Rank \cite{langvilleGooglePageRankScience2012}
+
+\section{Is the power Walk transition prob matrix a stochastic because it may contain negatives?}
+\label{sec:org8dbf1fa}
 \end{document}

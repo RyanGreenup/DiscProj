@@ -1,0 +1,72 @@
+  digraph {
+  rankdir=TB;
+  subgraph cluster01 {
+    label="1.fázis"
+
+    aSTART;
+    node [shape = doublecircle]; a001; 
+    node [shape = ellipse];
+
+    aSTART -> a0 [ penwidth = 3 label = "0" ];
+    a0 -> a00 [ penwidth = 3 label = "0" ];  
+    a00 -> a001 [ penwidth = 3 label = "1" ];
+
+
+    a0 -> aSTART [ label = "1" ];  
+    a00 -> a00 [ label = "0" ];  
+    a001 -> a0 [ label = "0"];
+    a001 -> aSTART [ label = "1"];
+    aSTART -> aSTART [ label = "1"];  
+  }
+  subgraph cluster02
+  {
+  label="2.fázis"
+  bSTART; b1; b11;
+  node [shape = doublecircle]; b111;
+  node [shape = ellipse];
+
+  bSTART -> b1 [ penwidth = 3 label = "1" ];
+  b1 -> b11 [ penwidth = 3 label = "1" ];  
+  b11 -> b111 [ penwidth = 3 label = "1" ];
+
+  b1 -> bSTART [ label = "0" ];  
+  b11 -> bSTART [ label = "0" ];  
+  b111 -> bSTART [ label = "0"];
+  bSTART -> bSTART [ label = "0"];
+
+  b111 -> b111 [label = "1"];
+  }
+
+  subgraph cluster03
+  {
+  label="3.fázis";  
+
+    cSTART; c0; c1; c01; c10;
+    node [shape = doublecircle]; c010; c100;
+    node [shape = ellipse];
+
+    cSTART -> c0 [ penwidth = 3 label = "0" ];
+    c0 -> c01 [ label = "1" ];  
+    c01 -> c010 [ penwidth = 3 label = "0" ];
+
+    cSTART -> c1 [ label = "1" ];  
+    c1 -> c10 [ penwidth = 3 label = "0" ];    
+    c10 -> c100 [ label = "0" ];    
+
+    c0 -> c1 [ penwidth = 3 label = "1" ];
+    c01 -> c1 [ label = "1" ];
+    c1 -> c1 [label = "1"];
+
+    c10 -> c01 [ penwidth = 3 label = "1"];
+
+    c010 -> c100 [penwidth = 3 label = "0"];
+    c010 -> c01 [label = "1"];
+
+    c100 -> c01 [label = "1"];
+    c100 -> c0 [label = "0"];
+
+  }
+
+  a001 -> b1 [color = "red" style = "dashed"];
+  b111 -> c1 [color = "red" style = "dashed"];
+}

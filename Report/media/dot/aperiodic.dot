@@ -1,0 +1,32 @@
+  digraph finite_state_machine {
+    rankdir=LR;
+    node [shape = circle];
+
+      1 [label = "A"]
+      2 [label = "B"]
+      3 [label = "C"]
+      4 [label = "D"]
+      5 [label = "A"]
+      6 [label = "B"]
+      7 [label = "C"]
+      8 [label = "D"]
+
+
+  subgraph cluster01 {
+        label=<Periodic <BR />
+        <FONT POINT-SIZE="10">(ξ=±½ ± ½ℑ)</FONT>>
+        
+        1 -> 2 -> 3 -> 4 -> 1;
+  }
+
+  subgraph cluster02  {
+    label="Aperiodic"
+
+
+        5 -> 6 -> 7 -> 8 -> 5  ;
+        7 -> 5  [color = "red" style = "dashed"];
+        8 -> 5  [color = "red" style = "dashed"];
+        8 -> 6  [color = "red" style = "dashed"];
+  }
+
+}

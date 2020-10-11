@@ -43,12 +43,12 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{shorttitle}
       \field{abstract}{The basis of Google’s acclaimed PageRank is an artificial mixing of the Markov chain representing the connectivity structure of the network under study with a maximally connected network where every node is connected to every other node. The rate with which the original network is mixed with the strongly connected one is called damping factor. The choice of the damping factor can influence the ranking of the nodes. As we show in this paper, the ranks of transient nodes, i.e., nodes not belonging to a strongly connected component without outgoing links in the original network, tend to zero as the damping factor increases. In this paper we develop a new methodology for obtaining a meaningful ranking of nodes without having to resort to mixing the network with an artificial one. Our new ranking relies on an adjusted definition of the ergodic projector of the Markov chain representing the original network. We will show how the new ergodic projector leads to a more structural way of ranking (transient) nodes. Numerical examples are provided to illustrate the impact of this new ranking approach.}
-      \field{annotation}{The choice of damping factor of Googles page rank might have a large impact on the values given to vertices. \par This suggests an approach that uses structural network dynatims to provide an appropriate score distribution. \par The method implemented is not something I have come yet to understand, but it could be very interesting to see: \par - how it relates to the power walk method\\ - whether or not it could offer insightts into the convergence and stability of the power walk method\\ - Whether or not the method would be compatible with negatively weighted edges.}
       \field{day}{1}
       \field{issn}{1573-7594}
       \field{journaltitle}{Discrete Event Dyn Syst}
       \field{langid}{english}
       \field{month}{3}
+      \field{note}{The choice of damping factor of Googles page rank might have a large impact on the values given to vertices. \par This suggests an approach that uses structural network dynatims to provide an appropriate score distribution. \par The method implemented is not something I have come yet to understand, but it could be very interesting to see: \par - how it relates to the power walk method\\ - whether or not it could offer insightts into the convergence and stability of the power walk method\\ - Whether or not the method would be compatible with negatively weighted edges.}
       \field{number}{1}
       \field{shorttitle}{Ranking Nodes in General Networks}
       \field{title}{Ranking Nodes in General Networks: A {{Markov}} Multi-Chain Approach}
@@ -134,12 +134,12 @@
       \field{sortinithash}{8de16967003c7207dae369d874f1456e}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{annotation}{This is a discussion on the stability, complexity and critical role of parameters involved in the computation.}
       \field{day}{1}
       \field{issn}{15335399}
       \field{journaltitle}{ACM Trans. Inter. Tech.}
       \field{langid}{english}
       \field{month}{2}
+      \field{note}{This is a discussion on the stability, complexity and critical role of parameters involved in the computation.}
       \field{number}{1}
       \field{title}{Inside {{PageRank}}}
       \field{urlday}{18}
@@ -324,13 +324,13 @@
       \field{sortinithash}{4c244ceae61406cdc0cc2ce1cb1ff703}
       \field{labeltitlesource}{shorttitle}
       \field{abstract}{Mathematics (colloquially, maths, or math), is the body of knowledge centered on concepts such as quantity, structure, space, and change, and also the academic discipline that studies them.}
+      \field{annotation}{Page Version ID: 929215996}
       \field{booktitle}{Wikipedia}
       \field{day}{4}
       \field{hour}{10}
       \field{langid}{english}
       \field{minute}{49}
       \field{month}{12}
-      \field{note}{Page Version ID: 929215996}
       \field{second}{52}
       \field{shorttitle}{Category}
       \field{timezone}{Z}
@@ -571,10 +571,10 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{Google, the largest search engine worldwide, adopts PageRank technology to determine the rank of website listings. This paper describes how damping factor is a critical factor in changing a website's ranking in traditional Google PageRank technology. A modified algorithm based on input–output ratio concept is proposed to substitute for the damping factor. Besides there is no need to choose an optimal damping factor value, the modified algorithm has an equivalent effect on computation as the traditional Google's PageRank algorithm. Copyright © 2006 John Wiley \& Sons, Ltd.}
+      \field{annotation}{\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/asmb.656}
       \field{issn}{1526-4025}
       \field{journaltitle}{Applied Stochastic Models in Business and Industry}
       \field{langid}{english}
-      \field{note}{\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/asmb.656}
       \field{number}{5-6}
       \field{title}{Damping Factor in {{Google}} Page Ranking}
       \field{urlday}{19}
@@ -735,7 +735,7 @@
       \verb 10.2307/40322211
       \endverb
       \verb{eprint}
-      \verb 10.2307/40322211?origin=crossref
+      \verb 10.2307/40322211
       \endverb
       \verb{file}
       \verb /home/ryan/Zotero/storage/LM2R57VI/40322211.html
@@ -867,11 +867,11 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{Purpose – Social media platforms allow near‐unfettered creation and exchange of user generated content (UGC). Drawing from network science, the purpose of this paper is to examine whether high and low quality UGC differ in their connectivity structures in Wikipedia (which consists of interconnected user generated articles). Design/methodology/approach – Using Featured Articles as a proxy for high quality, a network analysis was undertaken of the revision history of six different language Wikipedias, to offer a network‐centric explanation for the emergence of quality in UGC. Findings – The network structure of interactions between articles and contributors plays an important role in the emergence of quality. Specifically the analysis reveals that high‐quality articles cluster in hubs that span structural holes. Research limitations/implications – The analysis does not capture the strength of interactions between articles and contributors. The implication of this limitation is that quality is viewed as a binary variable. Extensions to this research will relate strength of interactions to different levels of quality in UGC. Practical implications – The findings help harness the “wisdom of the crowds” effectively. Organisations should nurture users and articles at the structural hubs from an early stage. This can be done through appropriate design of collaborative knowledge systems and development of organisational policies to empower hubs. Originality/value – The network centric perspective on quality in UGC and the use of a dynamic modelling tool are novel. The paper is of value to researchers in the area of social computing and to practitioners implementing and maintaining such platforms in organisations.}
-      \field{annotation}{Is there a relationship between content quality and the structure of connections? Can high quality Wikipedia pages be used as a benchmark for the structure of connections. \par The network structure of interactions between articles plays an important role in the emergence of quality. \par High quality articles clusture in hubs.}
       \field{day}{1}
       \field{issn}{1468-4527}
       \field{journaltitle}{Online Information Review}
       \field{month}{1}
+      \field{note}{Is there a relationship between content quality and the structure of connections? Can high quality Wikipedia pages be used as a benchmark for the structure of connections. \par The network structure of interactions between articles plays an important role in the emergence of quality. \par High quality articles clusture in hubs.}
       \field{number}{4}
       \field{title}{Network Analysis of User Generated Content Quality in {{Wikipedia}}}
       \field{urlday}{17}
@@ -980,10 +980,10 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{We show how automatically extracted citations in historical corpora can be used to measure the direct and indirect influence of authors on each other. These measures can in turn be used to determine an author's overall prominence in the corpus and to identify distinct schools of thought. We apply our methods to two major historical corpora. Using scholarly consensus as a gold standard, we demonstrate empirically the superiority of indirect influence over direct influence as a basis for various measures of authorial impact.}
+      \field{annotation}{\_eprint: https://asistdl.onlinelibrary.wiley.com/doi/pdf/10.1002/asi.23118}
       \field{issn}{2330-1643}
       \field{journaltitle}{Journal of the Association for Information Science and Technology}
       \field{langid}{english}
-      \field{note}{\_eprint: https://asistdl.onlinelibrary.wiley.com/doi/pdf/10.1002/asi.23118}
       \field{number}{10}
       \field{title}{Measuring Direct and Indirect Authorial Influence in Historical Corpora}
       \field{urlday}{21}
@@ -1195,11 +1195,11 @@
       \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{annotation}{For Recommender systems with limited access to data, Wikipedia can be used as an analogue with respect to connections to significantly improve performance.}
       \field{booktitle}{2010 {{Fifth International Workshop Semantic Media Adaptation}} and {{Personalization}}}
       \field{eventtitle}{2010 5th {{International Workshop}} on {{Semantic Media Adaptation}} and {{Personalization}} ({{SMAP}})}
       \field{isbn}{978-1-4244-8603-8}
       \field{month}{12}
+      \field{note}{For Recommender systems with limited access to data, Wikipedia can be used as an analogue with respect to connections to significantly improve performance.}
       \field{title}{Using {{Wikipedia}} to Alleviate Data Sparsity Issues in {{Recommender Systems}}}
       \field{urlday}{17}
       \field{urlmonth}{8}
@@ -1265,12 +1265,12 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{We prove logarithmic upper bounds for the diameters of the random-surfer Webgraph model and the PageRank-based selection Webgraph model, confirming the small world phenomenon holds for them. In the special case when the generated graph is a tree, we provide close lower and upper bounds for the diameters of both models.}
-      \field{annotation}{Graphs can be generated in order to model real world networks, these models can use the degree or page rank of a given vertex as a parameter to create the next vertex in generating the graph. \par This paper discusses upper and lower bounds for the diameter of a graph generated using random-surfer web-graph model.}
       \field{day}{1}
       \field{issn}{1432-0541}
       \field{journaltitle}{Algorithmica}
       \field{langid}{english}
       \field{month}{10}
+      \field{note}{Graphs can be generated in order to model real world networks, these models can use the degree or page rank of a given vertex as a parameter to create the next vertex in generating the graph. \par This paper discusses upper and lower bounds for the diameter of a graph generated using random-surfer web-graph model.}
       \field{number}{2}
       \field{title}{It’s a {{Small World}} for {{Random Surfers}}}
       \field{urlday}{18}
@@ -1508,9 +1508,9 @@
       \field{sortinithash}{98cf339a479c0454fe09153a08675a15}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
+      \field{annotation}{OCLC: 863604118}
       \field{isbn}{978-0-07-098510-0}
       \field{langid}{english}
-      \field{note}{OCLC: 863604118}
       \field{title}{Linear Algebra with Applications}
       \field{year}{2009}
       \field{dateera}{ce}
@@ -1568,7 +1568,7 @@
       \field{dateera}{ce}
       \field{urldateera}{ce}
       \verb{file}
-      \verb /home/ryan/Zotero/storage/FH5YZ2YM/2537734.html
+      \verb /home/ryan/Zotero/storage/3YRMUVP9/parkPowerWalkProceedings2013.pdf;/home/ryan/Zotero/storage/FH5YZ2YM/2537734.html
       \endverb
       \verb{urlraw}
       \verb https://dl-acm-org.ezproxy.uws.edu.au/doi/10.1145/2537734.2537749
@@ -1786,12 +1786,12 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{The PageRank algorithm is widely considered these years because of its great significance in search engine technology and other scientific domains. Though the power method is the initial measure to settle the PageRank problem, it gives poor convergence when the damping factor is sufficiently close to 1. This difficulty encourages researchers to present improved iterative methods for accelerating PageRank computations. In this paper, a cheap and practical extrapolation approach which is determined by the trace of the Google matrix is proposed, and it is more attractive when combined with the well-known Arnoldi-type algorithm. Convergence analysis of our algorithms is given. Numerical examples illustrate the efficiency of these accelerated schemes.}
-      \field{annotation}{This is exactly what laurence was saying and also what Bryan and Leise said.}
       \field{day}{15}
       \field{issn}{0377-0427}
       \field{journaltitle}{Journal of Computational and Applied Mathematics}
       \field{langid}{english}
       \field{month}{3}
+      \field{note}{This is exactly what laurence was saying and also what Bryan and Leise said.}
       \field{title}{A New Extrapolation Method for {{PageRank}} Computations}
       \field{urlday}{19}
       \field{urlmonth}{8}
@@ -1894,13 +1894,13 @@
       \field{sortinithash}{1af34bd8c148ffb32de1494636b49713}
       \field{labeltitlesource}{shorttitle}
       \field{abstract}{The size of the English Wikipedia can be measured in terms of the number of articles, number of words, and the size of the database, among other ways. As of 20 August 2020, there are 6,144,070 articles in the English Wikipedia containing over 3.6 billion words. Wikipedia continues to grow, and the number of articles in Wikipedia is increasing by over 17,000 a month. The number of articles added to Wikipedia every month reached its maximum in 2006, at over 50,000 new articles a month, and has been slowly but steadily declining since then. While this might seem to show that Wikipedia's growth is slowing or stopping, it should be noted that the amount of text added to Wikipedia articles every year has been constant since 2006, at roughly 1 gigabyte of (compressed) text added per year. This implies that as time progresses, proportionally more content is added to existing articles rather than new articles, and that Wikipedia has maintained the same persistent rate of growth throughout the past decade. In other words, over time, the average article size is growing faster than the number of articles. Most of the earlier entries were extracted from Wikipedia:Milestones. Later entries are taken from observations of the new software's built-in article count features. For information on what Wikipedia's software counts as an article, see Wikipedia:What is an article\#Lists of articles and statistics. The article count of bot-generated Wikipedias such as the Cebuano-language edition of Wikipedia, as well as the Swedish-, Dutch- and the Waray-language editions, grow much faster than those that are primarily written by humans such as the English Wikipedia. Swedish Wikipedian Sverker Johansson's Lsjbot is the primary author of those four primarily bot-generated Wikipedias. However, individual articles in bot-generated Wikipedias are on average much shorter than those in primarily human-written Wikipedias. Thus, article count alone is a poor indicator of the scale and scope of all Wikipedia editions.}
+      \field{annotation}{Page Version ID: 970572970}
       \field{booktitle}{Wikipedia}
       \field{day}{1}
       \field{hour}{3}
       \field{langid}{english}
       \field{minute}{23}
       \field{month}{8}
-      \field{note}{Page Version ID: 970572970}
       \field{second}{8}
       \field{shorttitle}{Wikipedia}
       \field{timezone}{Z}
@@ -2066,11 +2066,11 @@
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
       \field{abstract}{Pathways are the functional building blocks of complex diseases such as cancer. Identifying disease-associated pathways is of great importance to the development of novel therapeutics, as it provides functional insights into the pathogenesis of a disease. Existing methods for pathway ranking, however, are mostly based on an enrichment score assigned to each pathway independently, which could be biased by overlooking the interactions between pathways. In this paper, we consider a modification of Google's PageRank algorithm in order to fully incorporate the pathway dependencies into the pathway ranking. The proposed measurement is a trade-off between two important aspects, namely, the phenotype–pathway association and pathway coexpression. We propose to use a projection correlation to quantify pathway coexpression, and a generalized R2 for phenotype–pathway association. Our simulation study on real pathways shows the competitive performance of the new measure compared with enrichment-based analyses in pathway ranking.}
-      \field{annotation}{e204 sta4.204 \par The page rank method can be used for modelling gene expression.}
+      \field{annotation}{\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/sta4.204}
       \field{issn}{2049-1573}
       \field{journaltitle}{Stat}
       \field{langid}{english}
-      \field{note}{\_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1002/sta4.204}
+      \field{note}{e204 sta4.204 \par The page rank method can be used for modelling gene expression.}
       \field{number}{1}
       \field{title}{A Modified {{PageRank}} Algorithm for Biological Pathway Ranking}
       \field{urlday}{19}

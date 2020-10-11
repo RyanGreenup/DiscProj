@@ -164,6 +164,7 @@ disconnected vertex $(V)$, this is shown in eqref:eq:random-surfer:
 \mathbf{T}_{\textrm{RS}} = \mathbf{S} = \alpha \mathbf{T} + (1-\alpha) \mathbf{B}
 \label{eq:random-surfer} \end{align}
 
+
 where:
 
 - $\mathbf{B}$ is matrix of size $n \times n$ such that $\mathbf{B}_{i, j} = \frac{1}{n}, \enspace \forall i,j \in \left[1, n\right]\cap \mathbb{N}$
