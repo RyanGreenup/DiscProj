@@ -139,14 +139,15 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 \lstset{
 %  frame=tb,
-  frame=leftline,
+  frame=shadowbox,
+%  backgroundcolor=\color{lightlightgray},
   framesep=15pt,
-  language=Java,
+  language=R,
   aboveskip=15pt,
   belowskip=20pt,
   showstringspaces=false,
   columns=flexible,
-  basicstyle={\small\ttfamily},
+  basicstyle={\footnotesize\ttfamily},
   numbers=none,
 %  backgroundcolor=\color{Snow2},
   numberstyle=\tiny\color{gray},
@@ -174,16 +175,35 @@
 \RequirePackage{minted}
 \setminted{linenos,tabsize=2,breaklines, breakanywhere}
 \RequirePackage{mdframed}
-\RequirePackage{tcolorbox}
-\RequirePackage{etoolbox}
+%
+% \mdfsetup{
+%   linecolor=blue!75!black,
+%   linewidth=2pt,
+% frametitlerule=true,
+% frametitlebackgroundcolor=gray!20,
+% innertopmargin=\topskip
+% }
+% \surroundwithmdframed{minted}
+ \RequirePackage{etoolbox}
 
+ \tcbuselibrary{minted}
+
+\RequirePackage{tcolorbox}
 % Use tcolorbox, even though it breaks html conversion, it makes it way easier,
   %if you need to fix the html conversion just remove the box by commenting this out.
 \BeforeBeginEnvironment{minted}{\begin{tcolorbox}[
-		colback=blue!1!white,colframe=blue!75!black,colbacktitle=red!20!blue!8, 
-		coltitle=blue, enhanced jigsaw, breakable
+    breakable, enhanced jigsaw,
+    colback=blue!1!white,colframe=blue!75!black,colbacktitle=red!20!blue!8,
+    coltitle=blue, enhanced jigsaw, breakable,
 %		title=\textbf{\textit{R}}\ ,fonttitle=\it,
-		left=0.6cm, %Indent for the line numbers, % use line numbers because line-breaks
-		 /tcb/left skip=0.5 cm %Indent the whole box
-		 ]}%
-	\AfterEndEnvironment{minted}{\end{tcolorbox}}%
+    left=0.8cm, %Indent for the line numbers, % use line numbers because line-breaks
+      /tcb/left skip=0.5 cm %Indent the whole box
+      ]}%
+  \AfterEndEnvironment{minted}{\end{tcolorbox}}%
+
+
+
+
+% Wrapping with tcolorbox means there's no breaking, instead you need to use tcblisting which org mode won't export to
+% using \surroundwithmdframed{} offers a fix for that
+% Using listings is a work around but they tend to split across pages too frequently (and don't support many languages)
