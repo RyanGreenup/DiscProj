@@ -2,16 +2,19 @@
 #
 # Why not ~latexmk -pdf~ ?
   # Does not export the org file.
-  # Does not like to clean up the directory at all
+  # Sometimes it just doesn't work so ~watch make~ is needed not ~latexmk -pvc~
+    # To replace ~-pvc~ try ~watch make~ or ~while true; do make --silent; sleep 1; done~
   # Practice
-  # To replace ~-pvc~ try ~watch make~ or ~while true; do make --silent; sleep 1; done~
+# Probably better to just have org mode auto export the latex
+
 # @file
 # @version 0.1
 #
 # Use Tabs not Spaces
 # https://opensource.com/article/18/8/what-how-makefile
 # https://www.gnu.org/software/make/manual/html_node/How-Make-Works.html
-all: Report.tex Report.pdf Report.bbl Report.html
+# all: Report.tex Report.pdf Report.bbl Report.html
+all: Report.pdf Report.bbl Report.html
 .PHONY: all
 
 
@@ -24,8 +27,8 @@ clear:
 
 # * Rules
 
-Report.tex : Report.org
-	@ emacs -l ~/.emacs.d/init.el Report.org --batch -f org-latex-export-to-latex --kill
+# Report.tex : Report.org
+# 	@ emacs -l ~/.emacs.d/init.el Report.org --batch -f org-latex-export-to-latex --kill
 
 Report.pdf : Report.tex
 # there was a reason I didn't use latexmk, I just can't remember

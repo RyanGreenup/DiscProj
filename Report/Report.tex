@@ -1,4 +1,4 @@
-% Created 2020-10-11 Sun 22:23
+% Created 2020-10-12 Mon 14:59
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -14,7 +14,7 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
-\usepackage{minted}
+\usepackage{listings}
 \IfFileExists{./resources/style.sty}{\usepackage{./resources/style}}{}
 \IfFileExists{./resources/referencing.sty}{\usepackage{./resources/referencing}}{}
 \addbibresource{./resources/references.bib}
@@ -38,8 +38,8 @@
 \tableofcontents
 
 
-\subsection{Introduction}
-\label{sec:org140cc19}
+\section{Introduction}
+\label{sec:org611d742}
 The centrality score of a graph is a metric that measures the
 importance and popularity of a vertex. \footnote{For a small graph drawn
 in a way to minimise overlapping edges the centremost geometric vertex
@@ -52,7 +52,7 @@ The \emph{PageRank} method asserts that the centrality of a vertex can be
 measured by the frequency of incidence with that vertex during a
 random walk.
 
-\subsection{Implementing PageRank Generally}
+\section{Implementing PageRank Generally}
 \label{PageRank-Generally}
 A graph can be expressed as an adjacency matrix \(\mathbf{A}\):
 
@@ -108,7 +108,7 @@ The following definitions are used in this report \footnote{see generally \cite[
 
 \begin{description}
 \item[{Markov Chains}] are discrete mathematical model such that future values depend only on current values \cite[\textsection 1.5]{foussAlgorithmsModelsNetwork2016}
-\item[{Stochastic Matrices}] contain only positive values where each column sums to 1 \cite{langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991}
+\item[{Stochastic Matrices}] contain only positive values where each column sums to 1 \cite{langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991} (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
 \begin{itemize}
 \item some authors use rows (see e.g. \cite[\textsection 15.3]{langvilleGooglePageRankScience2012}), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
 \begin{itemize}
@@ -196,7 +196,7 @@ or a smoothing constant (see e.g \cite{koppelMeasuringDirectIndirect2014}).
 \end{description}
 
 \subsection{Random Surfer Model}
-\label{sec:orga18bc07}
+\label{sec:orga874311}
 \subsubsection{Issues}
 \label{issues}
 The approach in \ref{PageRank-Generally} has the following issues
@@ -259,7 +259,7 @@ This however would not be sufficient to ensure that \eqref{eq:recurrence} would 
 \end{figure}
 
 \paragraph{Irreducible}
-\label{sec:orgc7c0600}
+\label{sec:org9a83ec8}
 A graph that allows travel from any given vertex to any other vertex is said to be irreducible \cite{langvilleGooglePageRankScience2012}, see for example figure \ref{irreducible-example}, this is important in the context of a random walk because only in an irreducible graph can all vertexes be reached from any initial condition.
 
 \begin{figure}[htbp]
@@ -269,14 +269,14 @@ A graph that allows travel from any given vertex to any other vertex is said to 
 \end{figure}
 
 \paragraph{Aperiodic}
-\label{sec:org5bcd84b}
+\label{sec:org37a19ad}
 An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \mathbf{A} is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative or helpful in this context}
 
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=6cm]{media/dot/aperiodic.dot.png}
-\caption{\label{fig:aperiodic}A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic, this does not represent the random surfer moidel, which would in theory connect every vertex but with some probability.}
+\includegraphics[width=9cm]{media/dot/aperiodic.dot.png}
+\caption{\label{fig:aperiodic}A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic, this does not represent the random surfer model, which would in theory connect every vertex but with some probability.}
 \end{figure}
 
 \paragraph{The Fix}
@@ -299,11 +299,11 @@ The relation ship in \eqref{eq:recurrence} can now be re expressed as:
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=6cm]{media/dot/random_surfer.dot.png}
+\includegraphics[width=9cm]{media/dot/random_surfer.dot.png}
 \caption{\label{fig:rseg}A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue \emph{teleportation} edges are introduced, these may be followed with a probability of \(1 - \alpha\)}
 \end{figure}
 \subsubsection{Limitations}
-\label{sec:org2f22083}
+\label{sec:org48a4665}
 The \emph{Random Surfer} Model can only consider positively weighted edges, it cannot
 take into account negatively weighted edges. This limitation is increasingly
 important as techniques of sentiment analysis are developed which could indicate
@@ -349,8 +349,8 @@ at \ref{fix} \(\mathbf{W}\) will be a primitive stochastic matrix and so if
 \(\mathbf{W}\) was used in place of \(\mathbf{T}\) in \eqref{eq:recurrence} a solution
 would exist.
 
-\subsection{Sparse Matrices}
-\label{sec:org35ab689}
+\section{Sparse Matrices}
+\label{sparse-matrix}
 Most Adjacency matrices resulting from webpages and analagous networks
 result in sparse adjacency matrices (see figure \ref{fig:den_undir_ba}),
 this is a good thing because it requires far less computational
@@ -382,7 +382,7 @@ This is implemented in \textbf{\emph{R}} with the \texttt{Matrix} package
 \end{align}
 
 
-\subsubsection{Solving the Stationary Distribution}
+\subsection{Solving the Stationary Distribution}
 \label{solving-stationary-dist}
 The relationship in \eqref{eq:recurrence} \footnote{This assumes that the transition
 probability matrix is stochastic and primitive as it would be for \(\mathbf{S}\)
@@ -414,12 +414,12 @@ algorithms.
 
 With some effort however it is possible to express the algorithms in such a way that only involves sparse matrices.
 
-\subsection{Implementing the Models}
-\label{sec:orgfb5562c}
+\section{Implementing the Models}
+\label{sec:orgc483064}
 To Implement the models, first they'll be implemented using an ordinary matrix and then improved to work with sparse matrices and algorithms, the implementation has been performed with \emph{\textbf{R}} and the preamble is provided in listings \ref{preamble}
 
-\begin{listing}[htbp]
-\begin{minted}[]{r}
+\lstset{language=r,label=preamble,caption={Implemented Packages used in this report},captionpos=b,numbers=none}
+\begin{lstlisting}
   if (require("pacman")) {
       library(pacman)
     }else{
@@ -427,75 +427,68 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
       library(pacman)
     }
 
-    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring)
-\end{minted}
-\caption{\label{preamble}Implemented Packages used in this report}
-\end{listing}
+    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise)
+#   options(scipen=20) # Resist Scientific Notation
+\end{lstlisting}
 
 \subsection{Implementing the Random Surfer}
-\label{sec:org454ff50}
+\label{sec:org292f7c0}
 \subsubsection{Small Graph, Ordinary Matrices}
 \label{implementing-page-rank-methods}
 \paragraph{Example Graph}
 \label{example-graph}
 Consider the following graph:
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
   plot(g1)
-\end{minted}
+\end{lstlisting}
 
-\begin{center}
-\includegraphics[width=.9\linewidth]{media/example-graph-power-walk.png}
-\end{center}
-
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/example-graph-power-walk.png}
+\caption{\label{example-rs-graph}Exemplar graph to solve Random Surfer Model with}
+\end{figure}
 
 \subparagraph{Adjacency Matrix}
 \label{adjacency-matrix}
 The adjacency Matrix is given by:
 
-\begin{minted}[]{r}
-  A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE) %>%
-    as.matrix()
+\lstset{language=r,label=adj-mat-random-surf,caption={Return the Adjacency Matrix corresponding to figure \ref{example-rs-graph}},captionpos=b,numbers=none}
+\begin{lstlisting}
+  A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE)
 
-  ## Adjust the Order
-  (A <- A[order(as.integer(row.names(A))), order(as.integer(colnames(A)))])
-\end{minted}
+  ## igraph gives back the transpose
+  (A <- t(A))
+\end{lstlisting}
 
 \begin{verbatim}
-  ##    1 2 3 4 5 6 7 8 9 10
-  ## 1  0 1 0 0 0 0 0 0 0  0
-  ## 2  1 0 0 0 0 0 0 0 0  0
-  ## 3  0 0 0 1 0 0 0 0 0  0
-  ## 4  0 0 1 0 0 0 0 0 0  0
-  ## 5  1 1 1 1 0 0 0 0 0  0
-  ## 6  0 1 1 0 0 0 0 0 0  0
-  ## 7  0 1 0 0 0 0 0 0 0  0
-  ## 8  1 1 0 0 1 1 1 0 0  0
-  ## 9  0 1 1 1 0 0 0 0 0  0
-  ## 10 0 0 1 1 0 0 0 0 0  0
+   1 2 8 5 7 6 9 3 4 10
+1  0 1 1 1 0 0 0 0 0  0
+2  1 0 1 1 1 1 1 0 0  0
+8  0 0 0 0 0 0 0 0 0  0
+5  0 0 1 0 0 0 0 0 0  0
+7  0 0 1 0 0 0 0 0 0  0
+6  0 0 1 0 0 0 0 0 0  0
+9  0 0 0 0 0 0 0 0 0  0
+3  0 0 0 1 0 1 1 0 1  1
+4  0 0 0 1 0 0 1 1 0  1
+10 0 0 0 0 0 0 0 0 0  0
 \end{verbatim}
 
-\subparagraph{State Distribution}
-\label{state-distribution}
-The state distribution is the transpose of the adjacency matrix:
-
-\begin{minted}[]{r}
-  (p0 <- t(A))
-\end{minted}
-
 \begin{verbatim}
-  ##    1 2 3 4 5 6 7 8 9 10
-  ## 1  0 1 0 0 1 0 0 1 0  0
-  ## 2  1 0 0 0 1 1 1 1 1  0
-  ## 3  0 0 0 1 1 1 0 0 1  1
-  ## 4  0 0 1 0 1 0 0 0 1  1
-  ## 5  0 0 0 0 0 0 0 1 0  0
-  ## 6  0 0 0 0 0 0 0 1 0  0
-  ## 7  0 0 0 0 0 0 0 1 0  0
-  ## 8  0 0 0 0 0 0 0 0 0  0
-  ## 9  0 0 0 0 0 0 0 0 0  0
-  ## 10 0 0 0 0 0 0 0 0 0  0
+   1 2 8 5 7 6 9 3 4 10
+1  0 1 1 1 0 0 0 0 0  0
+2  1 0 1 1 1 1 1 0 0  0
+8  0 0 0 0 0 0 0 0 0  0
+5  0 0 1 0 0 0 0 0 0  0
+7  0 0 1 0 0 0 0 0 0  0
+6  0 0 1 0 0 0 0 0 0  0
+9  0 0 0 0 0 0 0 0 0  0
+3  0 0 0 1 0 1 1 0 1  1
+4  0 0 0 1 0 0 1 1 0  1
+10 0 0 0 0 0 0 0 0 0  0
 \end{verbatim}
 
 \subparagraph{Probability Transition Matrix}
@@ -504,34 +497,59 @@ The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
 
-\begin{minted}[]{r}
-  p0 %*% diag(1/colSums(p0))
-\end{minted}
+if \(\mathbf{A}\) had vertices with a 0 out-degree, the relationship in \eqref{eq:basic-trans-def} would not work, instead columns that sum to 0 would
+need to be left while all other columns be divided by the column sum to get
+\(\mathbf{T}\). An alternative approach using sparse matrices will be presented
+below and in this case there exists corresponding \(\mathbf{T}\) that is
+stochastic and so it is sufficient to use the relationship at
+\eqref{eq:basic-trans-def}, this is shown in listing \ref{basic-trans-def}.
+
+\lstset{language=r,label=basic-trans-def,caption={Solve the Transition Probability Matrix by scaling each column to 1 using matrix multiplication.},captionpos=b,numbers=none}
+\begin{lstlisting}
+(T <- A %*% diag(1/colSums(A)))
+
+\end{lstlisting}
 
 \begin{verbatim}
-  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]      [,9] [,10]
-  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.0000000   0.0
-  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.3333333   0.0
-  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.3333333   0.5
-  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.3333333   0.5
-  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
-  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
-  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
-  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
-  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
-  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
+   [,1] [,2] [,3] [,4] [,5] [,6]      [,7] [,8] [,9] [,10]
+1     0    1  0.2 0.25    0  0.0 0.0000000    0    0   0.0
+2     1    0  0.2 0.25    1  0.5 0.3333333    0    0   0.0
+8     0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
+5     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+7     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+6     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+9     0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
+3     0    0  0.0 0.25    0  0.5 0.3333333    0    1   0.5
+4     0    0  0.0 0.25    0  0.0 0.3333333    1    0   0.5
+10    0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
 \end{verbatim}
+
 
 \begin{enumerate}
 \item Create a Function
 \label{create-a-function}
-\begin{minted}[]{r}
-  adj_to_probTrans <- function(adjMat) {
-    t(adjMat) %*% diag(1/colSums(t(adjMat)))
-  }
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+   adj_to_probTrans <- function(A) {
+     A %*% diag(1/colSums(A))
+   }
 
-  (T <- adj_to_probTrans(A)) %>% round(2)
-\end{minted}
+   (T <- adj_to_probTrans(A)) %>% round(2)
+\end{lstlisting}
+
+\begin{verbatim}
+   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+1     0    1  0.2 0.25    0  0.0 0.00    0    0   0.0
+2     1    0  0.2 0.25    1  0.5 0.33    0    0   0.0
+8     0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
+5     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
+7     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
+6     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
+9     0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
+3     0    0  0.0 0.25    0  0.5 0.33    0    1   0.5
+4     0    0  0.0 0.25    0  0.0 0.33    1    0   0.5
+10    0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
+\end{verbatim}
 
 \begin{verbatim}
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -550,136 +568,150 @@ scaled to 1.
 
 \paragraph{Page Rank Random Surfer}
 \label{page-rank-random-surfer}
-The random surfer page rank method modifies the probability transition
-matrix \(T\) so that the method works also for non-ergodic graphs by
-introducing the possibility of a random jump, we'll call the surfer
-transition matrix \(S\):
+Recall from \ref{fix} the following variables of the \emph{Random Surfer} model:
+
 
 \begin{align}
-    S &= \lambda T +  \left( 1- \lambda \right)B :\\
+    \mathbf{B} &= \alpha T +  \left( 1- \alpha \right)B :\\
 \ \\
-    B&= \begin{bmatrix}
-    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
-    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \mathbf{B}&= \begin{bmatrix}
+    \frac{1}{n} & \frac{1}{n} & \ldots & \frac{1}{n} \\
+    \frac{1}{n} & \frac{1}{n} & \ldots & \frac{1}{n} \\
         \vdots      & \vdots      & \ddots & \vdots  \\
-    \frac{1}{N} & \frac{1}{N} & \ldots & \frac{1}{N} \\
+    \frac{1}{n} & \frac{1}{n} & \ldots & \frac{1}{n} \\
     \end{bmatrix} \label{eq:bgval1} \\
-    N&= \left| \left| V \right| \right| \\
-    \lambda &\in [0,1]
+    n&= \left| \left| V \right| \right| \\
+    \alpha &\in [0,1]
 \end{align}
 
-\begin{minted}[]{r}
+These are
+assigned to \emph{\textbf{R}} variables in listing \ref{r-var-random-surfer}.
+
+\lstset{language=r,label=r-var-random-surfer,caption={Assign Random Surfer Variables, observe the unique value given to \texttt{l}, this will be relevant later.},captionpos=b,numbers=none}
+\begin{lstlisting}
   B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
   l <- 0.8123456789
 
-  S <- l*T+(1-l)*B
-\end{minted}
+  (S <- l*T+(1-l)*B) %>% round(2)
 
+
+\end{lstlisting}
+
+\begin{verbatim}
+   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+1  0.02 0.83 0.18 0.22 0.02 0.02 0.02 0.02 0.02  0.02
+2  0.83 0.02 0.18 0.22 0.83 0.42 0.29 0.02 0.02  0.02
+8  0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+5  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+7  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+6  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+9  0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+3  0.02 0.02 0.02 0.22 0.02 0.42 0.29 0.02 0.83  0.42
+4  0.02 0.02 0.02 0.22 0.02 0.02 0.29 0.83 0.02  0.42
+10 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+\end{verbatim}
 \subparagraph{Eigen Value Method}
 \label{eigen-value-method}
 The eigenvector corresponding to the the eigenvalue of 1 will be the
-stationary point:
+stationary point, this is shown in listing \ref{eigenSol-rand-surf}
 
-\begin{minted}[]{r}
-  eigen(S, symmetric = FALSE)
-\end{minted}
+\lstset{language=r,label=eigenSol-rand-surf,caption={Solve the Eigen vectors and Eigen values of the transition probability matrix corresponding to the graph.},captionpos=b,numbers=none}
+\begin{lstlisting}
+print(eigen(S, symmetric = FALSE, only.values = TRUE)$values, 9)
+print(eigen(S, symmetric = FALSE)$vectors, 3)
+\end{lstlisting}
 
 \begin{verbatim}
-eigen() decomposition
-$values
- [1]  1.000000e+00 -8.123457e-01 -8.123457e-01  8.123457e-01 -3.407464e-09  3.407464e-09
- [7]  6.878591e-17 -4.393838e-17 -1.126771e-18 -1.292735e-32
-
-$vectors
-            [,1]          [,2]          [,3]          [,4]          [,5]          [,6]
- [1,] 0.48726141 -7.071005e-01  1.590774e-03  5.000000e-01  6.735753e-01 -6.735753e-01
- [2,] 0.52676629  7.071005e-01 -1.590774e-03  5.000000e-01  9.622504e-02 -9.622505e-02
- [3,] 0.49149620 -2.975837e-03  7.071050e-01 -5.000000e-01  9.622504e-02 -9.622505e-02
- [4,] 0.48044122  2.975837e-03 -7.071050e-01 -5.000000e-01  2.886751e-01 -2.886751e-01
- [5,] 0.04932738  1.463673e-18 -5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
- [6,] 0.04932738  1.463673e-18  5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
- [7,] 0.04932738  1.463673e-18 -2.077937e-17  2.124631e-17 -3.849002e-01  3.849002e-01
- [8,] 0.04243328 -6.484884e-18 -1.103904e-17  6.319692e-17  8.072508e-09  8.072508e-09
- [9,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
-[10,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
-               [,7]          [,8]          [,9]         [,10]
- [1,] -3.963430e-01  3.962600e-01  1.828019e-01 -1.752367e-01
- [2,] -1.291621e-01  2.027302e-01  2.199538e-01 -2.197680e-01
- [3,] -3.955284e-01  3.894308e-02  2.223048e-01 -2.248876e-01
- [4,] -4.215353e-01  1.043870e-01  2.747562e-01 -2.777266e-01
- [5,]  5.166485e-01 -8.109210e-01 -8.798152e-01  8.790721e-01
- [6,]  5.201366e-02 -1.308878e-01 -1.049028e-01  1.056778e-01
- [7,]  1.346275e-01 -1.936007e-01  9.054366e-02 -9.554811e-02
- [8,]  2.547528e-16 -1.352936e-16 -1.025353e-16  1.072771e-16
- [9,]  3.196396e-01  1.965446e-01 -2.821213e-03 -5.466313e-03
-[10,]  3.196396e-01  1.965446e-01 -2.821213e-03  1.388344e-02
-
+ [1]  1.00000000e+00+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
+ [3]  8.12345679e-01+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
+ [5]  5.81488197e-10+0.0000000e+00i -5.81487610e-10+0.0000000e+00i
+ [7] -6.74980227e-16+0.0000000e+00i  3.21036747e-17+0.0000000e+00i
+ [9]  1.34928172e-18+1.1137323e-17i  1.34928172e-18-1.1137323e-17i
+           [,1]         [,2]         [,3]         [,4]         [,5]
+ [1,] 0.4873+0i -7.07e-01+0i  5.00e-01+0i -2.07e-03+0i -6.74e-01+0i
+ [2,] 0.5268+0i  7.07e-01+0i  5.00e-01+0i  2.07e-03+0i -9.62e-02+0i
+ [3,] 0.0424+0i  9.09e-18+0i -3.50e-17+0i -5.05e-17+0i  1.38e-09+0i
+ [4,] 0.0493+0i -1.25e-18+0i -1.65e-16+0i  4.25e-17+0i  3.85e-01+0i
+ [5,] 0.0493+0i -8.30e-18+0i -3.75e-17+0i  3.71e-17+0i  3.85e-01+0i
+ [6,] 0.0493+0i -8.30e-18+0i -3.75e-17+0i  9.76e-18+0i  3.85e-01+0i
+ [7,] 0.0424+0i -1.32e-18+0i -3.50e-17+0i  1.60e-17+0i -3.01e-08+0i
+ [8,] 0.4915+0i -2.98e-03+0i -5.00e-01+0i -7.07e-01+0i -9.62e-02+0i
+ [9,] 0.4804+0i  2.98e-03+0i -5.00e-01+0i  7.07e-01+0i -2.89e-01+0i
+[10,] 0.0424+0i  5.57e-18+0i -3.77e-17+0i  3.14e-18+0i -3.24e-08+0i
+              [,6]         [,7]         [,8]                [,9]
+ [1,]  6.74e-01+0i  6.53e-01+0i -2.15e-01+0i -2.00e-01+1.53e-01i
+ [2,]  9.62e-02+0i  1.09e-01+0i -1.96e-01+0i -1.59e-01+0.00e+00i
+ [3,]  1.38e-09+0i  1.42e-15+0i -2.84e-16+0i -6.73e-17+1.32e-16i
+ [4,] -3.85e-01+0i -4.37e-01+0i  7.85e-01+0i  6.37e-01+0.00e+00i
+ [5,] -3.85e-01+0i -3.56e-01+0i  2.81e-01+0i  2.84e-02-1.63e-01i
+ [6,] -3.85e-01+0i -3.58e-01+0i -3.68e-01+0i  4.84e-02-2.68e-01i
+ [7,] -3.01e-08+0i -2.63e-02+0i -2.34e-01+0i -3.47e-02+4.29e-01i
+ [8,]  9.62e-02+0i  1.32e-01+0i -6.40e-02+0i -1.09e-01-2.84e-01i
+ [9,]  2.89e-01+0i  3.11e-01+0i  1.20e-01+0i -1.34e-01-1.50e-01i
+[10,] -3.24e-08+0i -2.82e-02+0i -1.08e-01+0i -7.64e-02+2.83e-01i
+                    [,10]
+ [1,] -2.00e-01-1.53e-01i
+ [2,] -1.59e-01-0.00e+00i
+ [3,] -6.73e-17-1.32e-16i
+ [4,]  6.37e-01+0.00e+00i
+ [5,]  2.84e-02+1.63e-01i
+ [6,]  4.84e-02+2.68e-01i
+ [7,] -3.47e-02-4.29e-01i
+ [8,] -1.09e-01+2.84e-01i
+ [9,] -1.34e-01+1.50e-01i
+[10,] -7.64e-02-2.83e-01i
 \end{verbatim}
 
-So in this case the stationary point is
 
-\(\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle\)
+So in this case the stationary point corresponds to the eigenvector given by:
+\[
+\langle -0.49, -0.53, -0.49, -0.48, -0.05, -0.05, -0.05, -0.04, -0.04, -0.04 \rangle
+\]
 
-which can be verified:
+this can be verified by using identity \eqref{eq:eigenprob}:
 
 $$
 1 \vec{p} = S\vec{p}
 $$
 
-\begin{minted}[]{r}
-  (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1])
-\end{minted}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+  (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1]) %>% Re() %>%  round(2)
+\end{lstlisting}
 
 \begin{verbatim}
-  ##  [1] -0.48531271 -0.52732002 -0.49152601 -0.47977477 -0.05288058 -0.05288058
-  ##  [7] -0.05288058 -0.04558671 -0.04558671 -0.04558671
+[1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
 \end{verbatim}
 
-\begin{minted}[]{r}
-  (p_new <- S %*% p)
-\end{minted}
+
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+  (p_new <- S %*% p) %>% Re()  %>% as.vector() %>% round(2)
+\end{lstlisting}
 
 \begin{verbatim}
-  ##           [,1]
-  ## 1  -0.48531271
-  ## 2  -0.52732002
-  ## 3  -0.49152601
-  ## 4  -0.47977477
-  ## 5  -0.05288058
-  ## 6  -0.05288058
-  ## 7  -0.05288058
-  ## 8  -0.04558671
-  ## 9  -0.04558671
-  ## 10 -0.04558671
+[1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
 \end{verbatim}
+
 
 However this vector does not sum to 1 so the scale should be adjusted
 (for probabilities the vector should sum to 1):
 
-\begin{minted}[]{r}
-  (p_new <- p_new/sum(p_new))
-\end{minted}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+  (p_new <- p_new/sum(p_new)) %>% Re() %>% as.vector() %>% round(2)
+\end{lstlisting}
 
 \begin{verbatim}
-  ##         [,1]
-  ## 1  0.2129185
-  ## 2  0.2313481
-  ## 3  0.2156444
-  ## 4  0.2104889
-  ## 5  0.0232000
-  ## 6  0.0232000
-  ## 7  0.0232000
-  ## 8  0.0200000
-  ## 9  0.0200000
-  ## 10 0.0200000
+[1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
 \end{verbatim}
 
 \subparagraph{Power Value Method}
 \label{power-value-method}
-Using the power method should give the same result, which it indeed
-does, but for the scale:
+Using the power method should give the same result as the eigenvalue method, again but for scale:
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
   p_new <- p_new *123456789
 
   while (sum(round(p, 9) != round(p_new, 9))) {
@@ -687,68 +719,34 @@ does, but for the scale:
       (p_new <- S %*% p)
   }
 
-  p_new
-\end{minted}
+  round(Re(p_new), 2) %>% as.vector()
+\end{lstlisting}
 
 \begin{verbatim}
-  ##        [,1]
-  ## 1  26286237
-  ## 2  28561500
-  ## 3  26622771
-  ## 4  25986282
-  ## 5   2864198
-  ## 6   2864198
-  ## 7   2864198
-  ## 8   2469136
-  ## 9   2469136
-  ## 10  2469136
+[1] 26602900 28759738  2316720  2693115  2693115  2693115  2316720 26834105
+[9] 26230539  2316720
 \end{verbatim}
 
-\begin{minted}[]{r}
-  p
-\end{minted}
 
-\begin{verbatim}
-  ##        [,1]
-  ## 1  26286237
-  ## 2  28561500
-  ## 3  26622771
-  ## 4  25986282
-  ## 5   2864198
-  ## 6   2864198
-  ## 7   2864198
-  ## 8   2469136
-  ## 9   2469136
-  ## 10  2469136
-\end{verbatim}
-
-This answer is however identical in direction, if it scaled to 1 the
+If scaled to 1 the
 same value will be returned:
 
-\begin{minted}[]{r}
-  (p_new <- p_new/sum(p_new))
-\end{minted}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+  (p_new <- p_new/sum(p_new)) %>% Re %>% as.vector() %>% round(2)
+\end{lstlisting}
 
 \begin{verbatim}
-  ##         [,1]
-  ## 1  0.2129185
-  ## 2  0.2313481
-  ## 3  0.2156444
-  ## 4  0.2104889
-  ## 5  0.0232000
-  ## 6  0.0232000
-  ## 7  0.0232000
-  ## 8  0.0200000
-  ## 9  0.0200000
-  ## 10 0.0200000
+[1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
 \end{verbatim}
 
 \subparagraph{Scaling}
 \label{scaling}
-However if the initial state sums to 1, then the scale of the stationary
-vector will also sum to 1.
+If the initial state sums to 1, then the scale of the stationary
+vector will also sum to 1, so this isn't in practice an issue for the power method:
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
   p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
   p_new <- S %*% p
 
@@ -758,7 +756,21 @@ vector will also sum to 1.
   }
 
   cbind(p_new, p)
-\end{minted}
+\end{lstlisting}
+
+\begin{verbatim}
+         [,1]       [,2]
+1  0.21548349 0.21548349
+2  0.23295388 0.23295388
+8  0.01876543 0.01876543
+5  0.02181424 0.02181424
+7  0.02181424 0.02181424
+6  0.02181424 0.02181424
+9  0.01876543 0.01876543
+3  0.21735625 0.21735625
+4  0.21246737 0.21246737
+10 0.01876543 0.01876543
+\end{verbatim}
 
 \begin{verbatim}
   ##         [,1]      [,2]
@@ -774,22 +786,17 @@ vector will also sum to 1.
   ## 10 0.0200000 0.0200000
 \end{verbatim}
 \subsubsection{Large Graph, Sparse Matrices using CRS}
-\label{sec:orgdf15edd}
+\label{sec:org83a53c5}
 \paragraph{Creating the Probability Transition Matrix}
-\label{sec:orgb83d023}
-Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
+\label{sec:org0c78411}
+Implementing the page rank method on a larger graph requires the use of more
+efficient form of matrix storage as discussed at \ref{sparse-matrix}
 
-An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
+A sparse matrix can be created using the following syntax, which will return a
+matrix of the class \texttt{dgCMatrix}:
 
-A matrix exhibiting this property is known as a sparse matrix CITE
-
-The properties of a sparse matrix can be implemented in order to improve performance, one such method to acheive this is \emph{Compressed Sparse Row} (CSR) storage, which involves creating a seperate array of values and corresponding indices. CITE
-
-This is implemented by the Matrix package in \textbf{\emph{R}}. CITE
-
-An sparse matrix can be created using the following syntax, which will return a matrix of the class \texttt{dgCMatrix}:
-
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 library(Matrix)
 ## Create Example Matrix
 n <- 20
@@ -798,29 +805,56 @@ i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 9
 A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 
 summary(A)
-\end{minted}
+\end{lstlisting}
+
+\begin{verbatim}
+1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
+        i      j   x
+1  343874  62034  90
+2  620555 188720 112
+3  150966 209725 102
+4  764638 222146  98
+5  799107 231057  72
+6  914309 235736  95
+7  259820 296541  79
+8  250848 405410  87
+9  471817 462384  79
+10 864226 470524  98
+11 860729 586366  95
+12 348239 635279  90
+13 317038 672329  98
+14 488483 678811  91
+15 650014 688822  89
+16 527889 702831  85
+17 725910 772908  70
+18 460036 780390  97
+19 512626 809085  97
+20 358993 862259  99
+\end{verbatim}
 
 As before in section \ref{probability-transition-matrix}, the probability transition matrix can be found by:
 
 \begin{enumerate}
-\item Transposing the adjacency matrix, then
+\item Creating adjacency matrix
+\begin{enumerate}
+\item Transposing as necessary such that \(\mathbf{A}_{i,j}\neq 0\) indicates that \(j\) is connected to \(i\) by a directed edge.
+\end{enumerate}
 \item Scaling the columns to one
 \end{enumerate}
 
-To implement this for a sparseMatrix of the class \texttt{dgCMatrix}, the same technique of multiplying by a diagonalised matrix may be implemented, however to create this new matrix, a new \texttt{sparseMatrix} will need to be created using the properties of the original matrix, this can be done like so:
+To implement this for a sparseMatrix of the class \texttt{dgCMatrix}, the same
+technique of multiplying by a diagonalised matrix as in \eqref{eq:diagScaleDef} may be
+implemented, using sparse matrices has the advantage however that only non-zero
+elements will be operated on, meaning that columns that some to zero can still
+be used to create a probability transition matrix \footnote{Although this matrix may
+still have columns that sum to zero and will hence be non-stochastic}
+pracice an error however to create this new matrix, a new \texttt{sparseMatrix} will
+need to be created using the properties of the original matrix, this can be done
+like so:
 
-
-\begin{minted}[]{r}
+\lstset{language=r,label=sparse-diag,caption={A function that takes in a column \(\rightarrow\) row adjacency matrix (\(\mathbf{A}\)) and returns a diagonal matrix (\(\mathbf{D}^{-1}_{\mathbf{A}}}\)) such that \(\vec{1}\mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\)},captionpos=b,numbers=none}
+\begin{lstlisting}
  sparse_diag <- function(mat) {
-  #' Diagonal Factors of Sparse Matrix
-  #'
-  #' Return a Diagonal Matrix of the 1 / colsum() such that
-  #' matrix multiplication with this matrix would have all column sums
-  #' sum to 1
-  #'
-  #' This should take the transpose of an adjacency matrix in and the output
-  #' can be multiplied by the original matrix to scale it to 1.
-  #' i
 
   ## Get the Dimensions
   n <- nrow(mat)
@@ -837,72 +871,78 @@ To implement this for a sparseMatrix of the class \texttt{dgCMatrix}, the same t
   ## Return the Diagonal Matrix
   return(D)
 }
+\end{lstlisting}
+
+Applying this to the previously created sparse matrix:
+
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 D <- sparse_diag(t(A))
 summary(D)
-\end{minted}
+\end{lstlisting}
 
 \begin{verbatim}
-
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j           x
-1   57981  57981 0.011235955
-2   61426  61426 0.010309278
-3  139900 139900 0.012048193
-4  152229 152229 0.009615385
-5  175521 175521 0.010204082
-6  187782 187782 0.013513514
-7  233553 233553 0.011904762
-8  288279 288279 0.010309278
-9  381442 381442 0.011494253
-10 401058 401058 0.014084507
-11 541818 541818 0.012820513
-12 542888 542888 0.014492754
-13 578270 578270 0.010101010
-14 595348 595348 0.011764706
-15 610432 610432 0.011904762
-16 614645 614645 0.012195122
-17 776459 776459 0.010989011
-18 803589 803589 0.008474576
-19 821120 821120 0.009708738
-20 821769 821769 0.012658228
+1  150966 150966 0.009803922
+2  250848 250848 0.011494253
+3  259820 259820 0.012658228
+4  317038 317038 0.010204082
+5  343874 343874 0.011111111
+6  348239 348239 0.011111111
+7  358993 358993 0.010101010
+8  460036 460036 0.010309278
+9  471817 471817 0.012658228
+10 488483 488483 0.010989011
+11 512626 512626 0.010309278
+12 527889 527889 0.011764706
+13 620555 620555 0.008928571
+14 650014 650014 0.011235955
+15 725910 725910 0.014285714
+16 764638 764638 0.010204082
+17 799107 799107 0.013888889
+18 860729 860729 0.010526316
+19 864226 864226 0.010204082
+20 914309 914309 0.010526316
 \end{verbatim}
 
 and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
 
-\begin{minted}[]{r}
-summary(t(A) %*% D)
-\end{minted}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+summary((T <- t(A) %*% D))
+\end{lstlisting}
 
 \begin{verbatim}
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j x
-1  809115  57981 1
-2   83355  61426 1
-3  649740 139900 1
-4  451810 152229 1
-5  775788 175521 1
-6  364814 187782 1
-7  631441 233553 1
-8  630438 288279 1
-9  681415 381442 1
-10 103999 401058 1
-11 976802 541818 1
-12 217196 542888 1
-13 755635 578270 1
-14 993420 595348 1
-15 206922 610432 1
-16 462031 614645 1
-17 566334 776459 1
-18  66922 803589 1
-19 809688 821120 1
-20 291405 821769 1
+1  209725 150966 1
+2  405410 250848 1
+3  296541 259820 1
+4  672329 317038 1
+5   62034 343874 1
+6  635279 348239 1
+7  862259 358993 1
+8  780390 460036 1
+9  462384 471817 1
+10 678811 488483 1
+11 809085 512626 1
+12 702831 527889 1
+13 188720 620555 1
+14 688822 650014 1
+15 772908 725910 1
+16 222146 764638 1
+17 231057 799107 1
+18 586366 860729 1
+19 470524 864226 1
+20 235736 914309 1
 \end{verbatim}
 
 \paragraph{Solving the Random Surfer via the Power Method}
-\label{sec:org0e6a159}
+\label{random-surfer-sparse-fix}
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
-However, creating a matrix of background probabilites (denoted by \texttt{B} is section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
+However, creating a matrix of background probabilites (denoted by \texttt{B} in section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
 
 The power method is given by:
 
@@ -946,12 +986,13 @@ Let \(\mathbf{F}= \mathbf{B}\vec{p}\), consider the value of \(\mathbf{F}\) :
 \frac{1}{N} \\
 \end{bmatrix}
 \end{align}
-So instead the power method can be implemented by performing an algorithm to the effect of:
+So instead the power method can be implemented by performing an algorithm that involves only sparse matrices:
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 ## Find Stationary point of random surfer
 N     <- nrow(A)
-alpha <- 0.8
+alpha <- 0.85
 F     <- rep((1-alpha)/N, nrow(A))  ## A nx1 vector of (1-alpha)/N
 
 ## Solve using the power method
@@ -967,15 +1008,30 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 }
 
 p %>% head() %>% print()
-\end{minted}
-\subsection{Power Walk Method}
-\label{sec:org6f7c322}
-\subsubsection{Introduction}
-\label{sec:org0e61de2}
+\end{lstlisting}
 
-\begin{align}
-\mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
-\end{align}
+\begin{verbatim}
+[1] 1
+[1] 2
+6 x 1 Matrix of class "dgeMatrix"
+        [,1]
+[1,] 1.5e-07
+[2,] 1.5e-07
+[3,] 1.5e-07
+[4,] 1.5e-07
+[5,] 1.5e-07
+[6,] 1.5e-07
+\end{verbatim}
+
+\subsection{Power Walk Method}
+\label{sec:orga9e31d7}
+\subsubsection{Introduction}
+\label{sec:org60a036e}
+Recall from \ref{pwalk} that the power walk is given by:
+
+\begin{align*}
+\mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B}
+\end{align*}
 
 
 
@@ -988,17 +1044,128 @@ where:
 \item[{\(x\beta^{0}\) }] probability of following an edge of weight 0
 \item[{\(x\beta^{-1}\)}] probability of following an edge of weight -
 \end{description}
-\item \(D_{B} = \mathtt{colsums}(\mathbf{B})\)
+\item \(\mathbf{D}_{\mathbf{B}} = \mathtt{colsums}(\mathbf{B})\)
 \item[{\(\mathbf{A}\)}] The Adjacency Matrix
 \end{itemize}
 
 \subsubsection{Ordinary Matrices}
-\label{sec:orgb7eb39f}
-Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
+\label{sec:org8e97f03}
+Implementing the Power walk using ordinary matrices is very similar to the \emph{Random Surfer} model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
+
+Create the Adjacency Matrix
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+  A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE)
+
+## * Function to create Prob Trans Mat
+adj_to_probTrans <- function(A, beta) {
+    B     <- A
+    B     <- beta^A           # Element Wise exponentiation
+    D     <- diag(colSums(B)) # B is completely dense so D ≄ 0
+    D_in  <- solve(D)         # Solve returns inverse of matrix
+    W     <- B %*% D_in
+
+    return(as.matrix(W))
+}
+
+beta <- β <- 0.867
+(W <- adj_to_probTrans(A, beta = β)) %>% round(2)
+\end{lstlisting}
+
+\begin{verbatim}
+   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+1  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.11 0.11   0.1
+2  0.09 0.11  0.1 0.10 0.10 0.10  0.1 0.11 0.11   0.1
+8  0.09 0.09  0.1 0.09 0.09 0.09  0.1 0.11 0.11   0.1
+5  0.09 0.09  0.1 0.10 0.10 0.10  0.1 0.09 0.09   0.1
+7  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.11 0.11   0.1
+6  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.09 0.11   0.1
+9  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.09 0.09   0.1
+3  0.10 0.11  0.1 0.10 0.10 0.10  0.1 0.11 0.09   0.1
+4  0.10 0.11  0.1 0.10 0.10 0.10  0.1 0.09 0.11   0.1
+10 0.10 0.11  0.1 0.10 0.10 0.10  0.1 0.09 0.09   0.1
+\end{verbatim}
+
+Look at the Eigenvalues:
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+eigen(W, only.values = TRUE)$values %>% round(9)
+eigen(W)$vectors/sum(eigen(W)$vectors)
+\end{lstlisting}
+
+\begin{verbatim}
+ [1]  1.000000000+0.000000000i  0.014269902+0.000000000i
+ [3] -0.014148391+0.000000000i  0.014147087+0.000000000i
+ [5]  0.007672842+0.004095136i  0.007672842-0.004095136i
+ [7]  0.000000000+0.000000000i  0.000000000+0.000000000i
+ [9]  0.000000000+0.000000000i  0.000000000+0.000000000i
+               [,1]             [,2]            [,3]            [,4]
+ [1,] 0.10153165+0i  5.107247e-02+0i  0.073531664+0i  0.009918277+0i
+ [2,] 0.10159353+0i -1.161249e-01+0i  0.071987451+0i -0.009531974+0i
+ [3,] 0.09609664+0i -2.162636e-01+0i  0.198568750+0i  0.141245296+0i
+ [4,] 0.09725145+0i  6.794340e-02+0i -0.012230606+0i -0.001148014+0i
+ [5,] 0.10153165+0i  5.107247e-02+0i  0.073531664+0i  0.009918277+0i
+ [6,] 0.10008449+0i  1.115133e-01+0i -0.005625969+0i -0.156796770+0i
+ [7,] 0.09865794+0i  1.175228e-01+0i -0.084225633+0i  0.008563891+0i
+ [8,] 0.10157348+0i -6.053608e-02+0i -0.078607240+0i  0.165540590+0i
+ [9,] 0.10155286+0i -6.104664e-03+0i -0.079165209+0i -0.166535117+0i
+[10,] 0.10012631+0i -9.522175e-05+0i -0.157764873+0i -0.001174456+0i
+                         [,5]                    [,6]             [,7]
+ [1,]  0.00633946+0.04208220i  0.00633946-0.04208220i  3.014602e-16+0i
+ [2,]  0.00757768+0.03910216i  0.00757768-0.03910216i  1.909248e-16+0i
+ [3,]  0.22697603+0.00000000i  0.22697603+0.00000000i  3.985744e-02+0i
+ [4,] -0.11628681-0.11808928i -0.11628681+0.11808928i -2.471407e-01+0i
+ [5,]  0.00633946+0.04208220i  0.00633946-0.04208220i  7.520823e-02+0i
+ [6,] -0.03494625-0.01031801i -0.03494625+0.01031801i  1.719325e-01+0i
+ [7,] -0.07581902-0.06371153i -0.07581902+0.06371153i  6.131013e-03+0i
+ [8,]  0.00717270+0.04008639i  0.00717270-0.04008639i  5.526770e-17+0i
+ [9,]  0.00675977+0.04107970i  0.00675977-0.04107970i  1.105354e-16+0i
+[10,] -0.03411300-0.01231382i -0.03411300+0.01231382i -4.598845e-02+0i
+                  [,8]             [,9]            [,10]
+ [1,] -1.791605e-17+0i -4.365749e-17+0i  1.179767e-17+0i
+ [2,] -7.334385e-17+0i -8.731498e-17+0i -5.190977e-17+0i
+ [3,] -1.241234e-01+0i -1.401965e-01+0i -8.894098e-02+0i
+ [4,]  1.691000e-01+0i  1.687523e-01+0i  1.041947e-01+0i
+ [5,] -2.144546e-01+0i  2.715852e-02+0i  3.085359e-02+0i
+ [6,]  4.535455e-02+0i -1.959109e-01+0i -1.350483e-01+0i
+ [7,]  7.398187e-02+0i  3.163948e-02+0i -1.260060e-01+0i
+ [8,]  8.062225e-17+0i  3.638124e-17+0i  5.898837e-18+0i
+ [9,]  2.687408e-17+0i  3.638124e-17+0i  5.662884e-17+0i
+[10,]  5.014155e-02+0i  1.085570e-01+0i  2.149470e-01+0i
+\end{verbatim}
+
+Unlike the \emph{Random Surfer} Model in listing \ref{eigenSol-rand-surf} at \ref{eigen-value-method} the relationship between the second eigenvalue and the model parameters is not as clear, this provides that the
+
+Use the power method
+
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+## * Power Method
+p    <- rep(0, nrow(W))
+p[1] <- 1
+p_new    <- rep(0, nrow(W))
+p_new[2]    <- 1
+
+while (sum(round(p, 9) != round(p_new, 9))) {
+    (p     <- p_new)
+    (p_new <- W %*% p)
+}
+
+
+p %>% as.vector()
+\end{lstlisting}
+
+\begin{verbatim}
+[1] 0.10153165 0.10159353 0.09609664 0.09725145 0.10153165 0.10008449
+[7] 0.09865794 0.10157348 0.10155286 0.10012631
+\end{verbatim}
+
+
+
 \subsubsection{Sparse Matrices}
-\label{sec:orgef01898}
+\label{sec:orgf1cba4a}
 \paragraph{Theory; Simplifying Power Walk to be solved with Sparse Matrices}
-\label{sec:orgd628789}
+\label{sec:org8472cc3}
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -1063,15 +1230,14 @@ The way to deal with the \emph{Power Walk} is more or less the same.
 
 observe that:
 
-$$\begin{aligned}
-   \left( \mathbf{B} = \beta^{\mathbf{A}} \right)\wedge \left( \mathbf{A}_{i, j}\right)\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}\end{aligned}$$
+\begin{align}
+   \left( \mathbf{B} = \beta^{\mathbf{A}} \right)\wedge \left( \mathbf{A}_{i, j}\right)\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}
+\end{align}
 
 
 
-Be mindful that the use of exponentiation in
-] is not an element wise exponentiation
-and not an actual matrix exponential (which would be defined by using
-power series and logs but is defined)
+Be mindful that the use of exponentiation in \eqref{eq:b-is-pos} is not an element wise
+exponentiation and not an actual matrix exponential.
 
 So if I have:
 
@@ -1081,10 +1247,13 @@ So if I have:
 \item \(\vec{p_i}\) as the state distribution, being a vector of length \(n\)
 \end{itemize}
 
-Then It can be shown (see \eqref{eq:sparse-power-walk}):
+Then It can be shown (see \eqref{eq:sparse-power-walk} at \ref{solve-background-prob-power-walk-sparse}):
 
-$$\begin{aligned}
-    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}\end{aligned})$$
+\begin{align}
+    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} &= (\overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+     \overrightarrow{p_i})  \vec{1}\\
+& = \mathtt{repeat} \left(\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n} \right) \\
+\end{align}
 
 
 
@@ -1175,7 +1344,8 @@ And so the the power method can be implemented using sparse matrices:
 
 in terms of \textbf{\emph{R}}:
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 # It would also be possible to sum the element-wise product
@@ -1183,14 +1353,14 @@ p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 # Because R treats vectors the same as a nX1 matrix we could also
 # perform the dot product of the two vectors, meaning the following
-# would be true in R but not generally
+# would be true in R but not true generally
 
 (t(δ) %*% p) == (δ %*% p)
-\end{minted}
+\end{lstlisting}
 
 
 \subparagraph{Solving the Background Probability}
-\label{sec:org3926316}
+\label{solve-background-prob-power-walk-sparse}
 In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the \emph{Kronecker Product}):
 
 
@@ -1270,90 +1440,25 @@ Matrices & Vectors\\
 \end{center}
 
 \paragraph{Practical; Implementing the Power Walk on Sparse Matrices}
-\label{sec:org0e119f8}
+\label{sec:org918e80b}
 \subparagraph{Inspect the newly created matrix and create constants}
-\label{sec:orge63ca61}
+\label{sec:org23b422e}
 \subparagraph{Setup}
-\label{sec:org0447a17}
+\label{sec:orgcd6b1bc}
 \begin{enumerate}
-\item Load Packages
-\label{sec:orge323aa3}
-\begin{minted}[]{r}
-if (require("pacman")) {
-    library(pacman)
-  }else{
-    install.packages("pacman")
-    library(pacman)
-  }
-  pacman::p_load(Matrix, igraph, plotly, mise, docstring, expm)
-  mise()
-\end{minted}
-
-\begin{verbatim}
-Loading required package: pacman
-\end{verbatim}
-
 \item Define function to create DiagonalsSparse Diagonal Function
-\label{sec:org5dfeee9}
-This doesn't matter for the power walk, real exponents will always give non-zero values anyway
-\begin{minted}[]{r}
-sparse_diag <- function(mat) {
-  #' Diagonal Factors of Sparse Matrix
-  #'
-  #' Return a Diagonal Matrix containing either 1 / colsum() or 0 such that
-  #' matrix multiplication with this matrix would have all columns
-  #' sum to 1
-  #'
-  #' This should take the transpose of an adjacency matrix in and the output
-  #' can be multiplied by the original matrix to scale it to 1.
-  #' i
-  # mat  <- A
-  ## Get the Dimensions
-  n <- nrow(mat)
+\label{sec:org3ecabc9}
 
-  ## Make a Diagonal Matrix of Column Sums
-      ## If a column sums to zero the diag can be zero iff the adjacency_matrix>=0
-  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
-
-  ## Throw away explicit Zeroes
-  D <- drop0(D)
-
-  ## Inverse the Values
-  D@x <- 1/D@x
-
-  ## Return the Diagonal Matrix
-  return(D)
-}
-\end{minted}
-
-\item Make an Example Graph
-\label{sec:org93f7128}
-\begin{minted}[]{r}
-g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
-A <- igraph::get.adjacency(g1) # Row to column
-
-
-beta = 0.843234
-β = beta
-\end{minted}
-\item Plot
-\label{sec:orgd1e1d18}
-
-\begin{minted}[]{r}
-plot(g1)
-\end{minted}
-
-\begin{center}
-\includegraphics[width=.9\linewidth]{./Media/Example-graph-plot-debug-power-walk.png}
-\end{center}
+Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the \texttt{sparse\_diag} function in listing \ref{sparse-diag} will still work.
 \end{enumerate}
 
 \subparagraph{Power Walk}
-\label{sec:org04cadf8}
+\label{sec:org0c73430}
 \begin{enumerate}
 \item Define B
-\label{sec:org4fc64a5}
-\begin{minted}[]{r}
+\label{sec:orgdaecede}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 B      <- A
 B@x    <- β^(A@x)
 B      <- A
@@ -1367,192 +1472,177 @@ Bo@x   <- β^(A@x) -1   # This in theory would be faster
 # Bo     <- drop0(Bo)
 
 
-  n <- nrow(A)
-\end{minted}
+ n <- nrow(A)
+\end{lstlisting}
 
-\begin{minted}[]{r}
-print(B)
-\end{minted}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+print(round(B, 2))
+\end{lstlisting}
 
 \begin{verbatim}
 20 x 20 Matrix of class "dgeMatrix"
-          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]
- [1,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
- [2,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
- [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
- [5,] 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [6,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
- [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [8,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
- [9,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
-[10,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[11,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
-[13,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
-[14,] 1.000000 0.843234 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
-[15,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[16,] 0.843234 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
-[17,] 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 0.843234 0.843234
-[18,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
-[19,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234
-[20,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-          [,9]    [,10]    [,11]    [,12]    [,13]    [,14]    [,15]    [,16]
- [1,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234 0.843234
- [2,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
- [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
- [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
- [5,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [6,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
- [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [8,] 1.000000 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000
- [9,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[10,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000
-[11,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000
-[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
-[13,] 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
-[14,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
-[15,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
-[16,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
-[17,] 1.000000 1.000000 0.843234 0.843234 0.843234 1.000000 1.000000 1.000000
-[18,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[19,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
-[20,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
-         [,17]    [,18]    [,19]    [,20]
- [1,] 1.000000 1.000000 1.000000 0.843234
- [2,] 1.000000 1.000000 0.843234 1.000000
- [3,] 0.843234 1.000000 0.843234 1.000000
- [4,] 0.843234 1.000000 1.000000 1.000000
- [5,] 1.000000 0.843234 1.000000 1.000000
- [6,] 1.000000 1.000000 1.000000 1.000000
- [7,] 0.843234 1.000000 1.000000 1.000000
- [8,] 0.843234 1.000000 0.843234 1.000000
- [9,] 1.000000 1.000000 1.000000 1.000000
-[10,] 1.000000 1.000000 1.000000 1.000000
-[11,] 0.843234 1.000000 1.000000 1.000000
-[12,] 0.843234 1.000000 1.000000 1.000000
-[13,] 0.843234 1.000000 1.000000 1.000000
-[14,] 1.000000 1.000000 0.843234 0.843234
-[15,] 1.000000 1.000000 1.000000 1.000000
-[16,] 1.000000 1.000000 1.000000 0.843234
-[17,] 1.000000 0.843234 0.843234 1.000000
-[18,] 0.843234 1.000000 0.843234 1.000000
-[19,] 0.843234 0.843234 1.000000 1.000000
-[20,] 1.000000 1.000000 1.000000 1.000000
+      [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10] [,11] [,12] [,13]
+ [1,] 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00  1.00  0.84  1.00  1.00
+ [2,] 1.00 1.00 0.84 1.00 1.00 1.00 1.00 1.00 1.00  1.00  0.84  1.00  1.00
+ [3,] 1.00 0.84 1.00 1.00 1.00 0.84 1.00 1.00 1.00  1.00  1.00  1.00  0.84
+ [4,] 1.00 1.00 1.00 1.00 1.00 0.84 1.00 1.00 1.00  1.00  1.00  1.00  1.00
+ [5,] 1.00 1.00 1.00 1.00 1.00 1.00 0.84 0.84 1.00  0.84  1.00  1.00  1.00
+ [6,] 1.00 1.00 0.84 0.84 1.00 1.00 1.00 1.00 1.00  1.00  1.00  1.00  1.00
+ [7,] 1.00 1.00 1.00 1.00 0.84 1.00 1.00 1.00 1.00  1.00  1.00  0.84  1.00
+ [8,] 1.00 1.00 1.00 1.00 0.84 1.00 1.00 1.00 1.00  1.00  1.00  1.00  0.84
+ [9,] 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00  1.00  0.84  0.84  0.84
+[10,] 1.00 1.00 1.00 1.00 0.84 1.00 1.00 1.00 1.00  1.00  1.00  1.00  0.84
+[11,] 0.84 0.84 1.00 1.00 1.00 1.00 1.00 1.00 0.84  1.00  1.00  1.00  1.00
+[12,] 1.00 1.00 1.00 1.00 1.00 1.00 0.84 1.00 0.84  1.00  1.00  1.00  1.00
+[13,] 1.00 1.00 0.84 1.00 1.00 1.00 1.00 0.84 0.84  0.84  1.00  1.00  1.00
+[14,] 0.84 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00  1.00  1.00  1.00  1.00
+[15,] 0.84 1.00 1.00 1.00 1.00 1.00 0.84 0.84 1.00  1.00  1.00  1.00  0.84
+[16,] 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00  1.00  1.00  1.00  1.00
+[17,] 0.84 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00  0.84  0.84  1.00  1.00
+[18,] 1.00 1.00 1.00 1.00 1.00 1.00 0.84 1.00 0.84  1.00  1.00  0.84  0.84
+[19,] 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00  0.84  1.00  1.00  1.00
+[20,] 0.84 1.00 1.00 1.00 1.00 0.84 0.84 1.00 0.84  1.00  1.00  1.00  1.00
+      [,14] [,15] [,16] [,17] [,18] [,19] [,20]
+ [1,]  0.84  0.84  1.00  0.84  1.00  1.00  0.84
+ [2,]  1.00  1.00  1.00  1.00  1.00  1.00  1.00
+ [3,]  1.00  1.00  1.00  1.00  1.00  1.00  1.00
+ [4,]  1.00  1.00  1.00  1.00  1.00  1.00  1.00
+ [5,]  1.00  1.00  1.00  1.00  1.00  1.00  1.00
+ [6,]  1.00  1.00  1.00  1.00  1.00  1.00  0.84
+ [7,]  1.00  0.84  1.00  1.00  0.84  1.00  0.84
+ [8,]  1.00  0.84  1.00  1.00  1.00  1.00  1.00
+ [9,]  1.00  1.00  1.00  1.00  0.84  1.00  0.84
+[10,]  1.00  1.00  1.00  0.84  1.00  0.84  1.00
+[11,]  1.00  1.00  1.00  0.84  1.00  1.00  1.00
+[12,]  1.00  1.00  1.00  1.00  0.84  1.00  1.00
+[13,]  1.00  0.84  1.00  1.00  0.84  1.00  1.00
+[14,]  1.00  1.00  1.00  1.00  0.84  1.00  0.84
+[15,]  1.00  1.00  1.00  1.00  0.84  1.00  1.00
+[16,]  1.00  1.00  1.00  1.00  1.00  1.00  0.84
+[17,]  1.00  1.00  1.00  1.00  1.00  1.00  1.00
+[18,]  0.84  0.84  1.00  1.00  1.00  1.00  0.84
+[19,]  1.00  1.00  1.00  1.00  1.00  1.00  1.00
+[20,]  0.84  1.00  0.84  1.00  0.84  1.00  1.00
 \end{verbatim}
 
 
-\begin{minted}[]{r}
-print(Bo)
-\end{minted}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
+print(Bo,2)
+\end{lstlisting}
 
 \begin{verbatim}
 20 x 20 sparse Matrix of class "dgCMatrix"
 
- [1,]  .        -0.156766  .         .         .        -0.156766  .
- [2,] -0.156766  .         .         .        -0.156766  .         .
- [3,]  .         .         .         .         .         .         .
- [4,]  .         .         .         .         .         .         .
- [5,]  .        -0.156766  .         .         .         .         .
- [6,] -0.156766  .         .         .         .         .         .
- [7,]  .         .         .         .         .         .         .
- [8,]  .         .         .        -0.156766  .        -0.156766  .
- [9,] -0.156766  .         .         .        -0.156766  .         .
-[10,] -0.156766 -0.156766  .         .         .         .         .
-[11,]  .         .         .         .         .         .         .
-[12,]  .         .         .         .         .        -0.156766  .
-[13,]  .         .         .         .         .         .         .
-[14,]  .        -0.156766  .        -0.156766  .        -0.156766  .
-[15,] -0.156766  .         .         .         .         .         .
-[16,] -0.156766  .        -0.156766  .         .         .         .
-[17,]  .         .        -0.156766 -0.156766  .         .        -0.156766
-[18,]  .         .         .         .        -0.156766  .         .
-[19,]  .        -0.156766 -0.156766  .         .         .         .
-[20,] -0.156766  .         .         .         .         .         .
+ [1,] .        .        .        .        .        .        .        .
+ [2,] .        .           -0.16 .        .        .        .        .
+ [3,] .           -0.16 .        .        .           -0.16 .        .
+ [4,] .        .        .        .        .           -0.16 .        .
+ [5,] .        .        .        .        .        .           -0.16    -0.16
+ [6,] .        .           -0.16    -0.16 .        .        .        .
+ [7,] .        .        .        .           -0.16 .        .        .
+ [8,] .        .        .        .           -0.16 .        .        .
+ [9,] .        .        .        .        .        .        .        .
+[10,] .        .        .        .           -0.16 .        .        .
+[11,]    -0.16    -0.16 .        .        .        .        .        .
+[12,] .        .        .        .        .        .           -0.16 .
+[13,] .        .           -0.16 .        .        .        .           -0.16
+[14,]    -0.16 .        .        .        .        .        .        .
+[15,]    -0.16 .        .        .        .        .           -0.16    -0.16
+[16,] .        .        .        .        .        .        .        .
+[17,]    -0.16 .        .        .        .        .        .        .
+[18,] .        .        .        .        .        .           -0.16 .
+[19,] .        .        .        .        .        .        .        .
+[20,]    -0.16 .        .        .        .           -0.16    -0.16 .
 
- [1,]  .        -0.156766 -0.156766  .         .         .         .
- [2,]  .         .        -0.156766  .         .         .        -0.156766
- [3,]  .         .         .         .         .         .         .
- [4,] -0.156766  .         .         .         .         .        -0.156766
- [5,]  .        -0.156766  .         .         .         .         .
- [6,] -0.156766  .         .         .        -0.156766  .        -0.156766
- [7,]  .         .         .         .         .         .         .
- [8,]  .         .         .         .        -0.156766 -0.156766  .
- [9,]  .         .         .         .         .         .         .
-[10,]  .         .         .         .         .         .         .
-[11,]  .         .         .         .         .        -0.156766  .
-[12,] -0.156766  .         .         .         .         .         .
-[13,] -0.156766  .         .        -0.156766  .         .         .
-[14,]  .         .         .         .         .         .         .
-[15,]  .         .        -0.156766 -0.156766  .         .         .
-[16,]  .         .         .         .        -0.156766  .        -0.156766
-[17,] -0.156766  .         .        -0.156766 -0.156766 -0.156766  .
-[18,]  .         .         .         .         .         .         .
-[19,] -0.156766  .         .         .         .         .        -0.156766
-[20,]  .         .         .         .         .         .        -0.156766
+ [1,] .        .           -0.16 .        .           -0.16    -0.16 .
+ [2,] .        .           -0.16 .        .        .        .        .
+ [3,] .        .        .        .           -0.16 .        .        .
+ [4,] .        .        .        .        .        .        .        .
+ [5,] .           -0.16 .        .        .        .        .        .
+ [6,] .        .        .        .        .        .        .        .
+ [7,] .        .        .           -0.16 .        .           -0.16 .
+ [8,] .        .        .        .           -0.16 .           -0.16 .
+ [9,] .        .           -0.16    -0.16    -0.16 .        .        .
+[10,] .        .        .        .           -0.16 .        .        .
+[11,]    -0.16 .        .        .        .        .        .        .
+[12,]    -0.16 .        .        .        .        .        .        .
+[13,]    -0.16    -0.16 .        .        .        .           -0.16 .
+[14,] .        .        .        .        .        .        .        .
+[15,] .        .        .        .           -0.16 .        .        .
+[16,] .        .        .        .        .        .        .        .
+[17,] .           -0.16    -0.16 .        .        .        .        .
+[18,]    -0.16 .        .           -0.16    -0.16    -0.16    -0.16 .
+[19,] .           -0.16 .        .        .        .        .        .
+[20,]    -0.16 .        .        .        .           -0.16 .           -0.16
 
- [1,] -0.156766 -0.156766  .         .         .        -0.156766
- [2,]  .         .         .         .        -0.156766  .
- [3,]  .        -0.156766 -0.156766  .        -0.156766  .
- [4,]  .         .        -0.156766  .         .         .
- [5,]  .         .         .        -0.156766  .         .
- [6,]  .         .         .         .         .         .
- [7,]  .         .        -0.156766  .         .         .
- [8,]  .         .        -0.156766  .        -0.156766  .
- [9,]  .         .         .         .         .         .
-[10,] -0.156766  .         .         .         .         .
-[11,] -0.156766  .        -0.156766  .         .         .
-[12,]  .        -0.156766 -0.156766  .         .         .
-[13,]  .         .        -0.156766  .         .         .
-[14,]  .        -0.156766  .         .        -0.156766 -0.156766
-[15,]  .         .         .         .         .         .
-[16,]  .         .         .         .         .        -0.156766
-[17,]  .         .         .        -0.156766 -0.156766  .
-[18,]  .         .        -0.156766  .        -0.156766  .
-[19,]  .         .        -0.156766 -0.156766  .         .
-[20,]  .        -0.156766  .         .         .         .
+ [1,]    -0.16 .        .           -0.16
+ [2,] .        .        .        .
+ [3,] .        .        .        .
+ [4,] .        .        .        .
+ [5,] .        .        .        .
+ [6,] .        .        .           -0.16
+ [7,] .           -0.16 .           -0.16
+ [8,] .        .        .        .
+ [9,] .           -0.16 .           -0.16
+[10,]    -0.16 .           -0.16 .
+[11,]    -0.16 .        .        .
+[12,] .           -0.16 .        .
+[13,] .           -0.16 .        .
+[14,] .           -0.16 .           -0.16
+[15,] .           -0.16 .        .
+[16,] .        .        .           -0.16
+[17,] .        .        .        .
+[18,] .        .        .           -0.16
+[19,] .        .        .        .
+[20,] .           -0.16 .        .
 \end{verbatim}
 
 \item Solve the Scaling Matrix
-\label{sec:orga7530e2}
+\label{sec:org47ed8a0}
 We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 (δB   <- 1/(colSums(Bo)+n))
-\end{minted}
+\end{lstlisting}
 
 \begin{verbatim}
- [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
- [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
-[13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
-[19] 0.05246754 0.05120406
+ [1] 0.05203951 0.05079631 0.05120406 0.05039501 0.05120406 0.05120406
+ [7] 0.05203951 0.05120406 0.05203951 0.05161840 0.05161840 0.05120406
+[13] 0.05246754 0.05120406 0.05203951 0.05039501 0.05120406 0.05290267
+[19] 0.05039501 0.05290267
 \end{verbatim}
 
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 (δB   <- 1/(colSums(B)))
-\end{minted}
+\end{lstlisting}
 
 \begin{verbatim}
- [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
- [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
-[13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
-[19] 0.05246754 0.05120406
+ [1] 0.05203951 0.05079631 0.05120406 0.05039501 0.05120406 0.05120406
+ [7] 0.05203951 0.05120406 0.05203951 0.05161840 0.05161840 0.05120406
+[13] 0.05246754 0.05120406 0.05203951 0.05039501 0.05120406 0.05290267
+[19] 0.05039501 0.05290267
 \end{verbatim}
 
 
 \item Find the Transition Probability Matrix
-\label{sec:org9f015f4}
-\begin{minted}[]{r}
+\label{sec:org575e386}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
   DB   <- diag(δB)
 ## ** Create the Transition Probability Matrix
 ## Create the Trans Prob Mat using Power Walk
   T <- Bo %*% DB
-\end{minted}
+\end{lstlisting}
 
 \item Implement the Loop
-\label{sec:org501477b}
-\begin{minted}[]{r}
+\label{sec:org54f1379}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 ## ** Implement the Power Walk
 ## *** Set Initial Values
   p_new  <- rep(1/n, n)  # Uniform
@@ -1568,23 +1658,23 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 ## ** Report the Values
 print(paste("The stationary point is"))
 print(p)
-\end{minted}
+\end{lstlisting}
 
 \begin{verbatim}
 [1] "The stationary point is"
- [1] 0.04882572 0.04963556 0.05044542 0.05044541 0.05044543 0.05004049
- [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
-[13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
-[19] 0.04923063 0.05044542
+ [1] 0.04947529 0.05068616 0.05028254 0.05108978 0.05028254 0.05028254
+ [7] 0.04947529 0.05028254 0.04947529 0.04987892 0.04987892 0.05028253
+[13] 0.04907167 0.05028253 0.04947529 0.05108978 0.05028254 0.04866804
+[19] 0.05108978 0.04866805
 \end{verbatim}
 \end{enumerate}
 
-\subsection{Creating a Package}
-\label{sec:orga855ef6}
+\section{Creating a Package}
+\label{sec:orgde4ff20}
 \section{Relating the Power Walk to the Random Surfer}
 \label{relating-terms-in-power-walk-to-random-surfer}
 \subsection{Introduction}
-\label{sec:org74965c9}
+\label{sec:org184d767}
 These are notes relating to \cite[\textsection 3.3]{parkPowerWalkRevisiting2013}
 
 So if a term in the Power Walk can be related to \(\alpha\) in the random
@@ -1722,7 +1812,7 @@ But the next step requires showing that:
 \end{align*}
 
 \subsection{Equate the Power Walk to the Random Surfer}
-\label{sec:orgce51980}
+\label{sec:org9b92ac1}
 Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
 
 \begin{align}
@@ -1808,19 +1898,19 @@ And setting \(\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}\)  from \eqre
 Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}  \eqref{eq:bgVal2}
 
 \subsection{Conclusion}
-\label{sec:org93d9ea8}
+\label{sec:orgbf6bbf8}
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
 
 \subsection{The Second Eigenvalue}
-\label{sec:org6281be1}
+\label{sec:orgc1a2349}
 \subsubsection{The Random Surfer}
-\label{sec:orgfc8fc48}
+\label{sec:org4f41974}
 The Second eigenvalue \(\xi_2\) of the Power Surfer is less than \(\alpha\) (\href{Proposal/Propsal.org}{See 3.2; Stability and Concvergence, of proposal}).
 \subsubsection{Power Walk}
-\label{sec:org79edf26}
+\label{sec:org2d3d83b}
 Because the Power Walk relates to the random surfer as demonstrated in section \ref{relating-terms-in-power-walk-to-random-surfer}, what can be said about \(\xi_{2}\)
 \paragraph{Applying this to Power Walk}
-\label{sec:org6eda0f1}
+\label{sec:orge89601c}
 Let \(\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2\) return the second value of a transition, probability Matrix, then observe that:
 
 
@@ -1835,7 +1925,7 @@ where:
 \item \(\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)\) refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
 \end{itemize}
 \subparagraph{My attempt}
-\label{sec:org52fc0ae}
+\label{sec:org8137736}
 \begin{align}
     \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
 %    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
@@ -1850,7 +1940,8 @@ So I thought maybe if I could find a value of \(\beta\) that satisfied \eqref{eq
 
 Seemingly it's only satisfied where \(\beta = 1\) though, using this simulation:
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 g1 <- igraph::erdos.renyi.game(n = 9, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
 A <- t(A)
@@ -1905,9 +1996,9 @@ beta
 
 
 ## * blah
-\end{minted}
+\end{lstlisting}
 \section{Simulating the Structure of the Web}
-\label{sec:org37b8043}
+\label{sec:org74e2f40}
 A graph of the internet is \emph{scale free}, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by \cite[\textsection 10.7.2]{langvilleGooglePageRankScience2012}:
 
 \begin{align}
@@ -1917,7 +2008,7 @@ n \propto j^{-k}, \quad \exists k \in \mathbb{R}
 The \emph{Erdos Renyi} game is a random network, a superior approach to model the web is to use a scale free networks \cite{barabasiPhysicsWeb2001} such as the Barabasi-Albert graph \cite{barabasiScalefreeCharacteristicsRandom2000}
 
 \section{Investigating the Second EigenValue}
-\label{sec:org3b1b856}
+\label{sec:org6aa239e}
 
 Maybe I should look at the most appropriate way to simulate social network links, one possibility is \href{https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf}{this paper } \cite{zengPracticalSimulationMethod2013}.
 
@@ -1938,13 +2029,14 @@ Look at comparing the determinant and the density of the wikipedia adjacency mat
 What are some ways that we can model the second eigenvalue?
 
 \subsection{Plotting Various Values}
-\label{sec:orgc863a2e}
+\label{sec:org7fd8f04}
 
 There is some relationship between the determinant and the density, check out the pairs plot:
 
 
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
   library(pacman)
   pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
 n <- 20
@@ -1987,14 +2079,15 @@ ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, sh
   geom_point() +
   labs(x = "Determinant of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
   scale_size_continuous(range = c(0.1,1))
-\end{minted}
+\end{lstlisting}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{../Media/EigenValue_Determinant.png}
 \end{center}
 
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
   library(pacman)
   pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
 n <- 100
@@ -2037,11 +2130,12 @@ ggplot(data, aes(x = determinant, y = eigenvalue2, color = size, shape = factor(
   geom_point(base_size = 99, aes(size = beta)) +
   labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
   scale_size_continuous(range = c(0.1,1))
-\end{minted}
+\end{lstlisting}
 
 Maybe this looks like a Chi distribution?
 
-\begin{minted}[]{r}
+\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
 chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*6
 index  <- seq(from = 0, to = 2, length.out = 100)
 chidata  <- data.frame(index = index, chi = chival)
@@ -2050,30 +2144,30 @@ ggplot(data) +
   geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
   scale_size_continuous(range = c(0.1,1)) +
   labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-\end{minted}
+\end{lstlisting}
 
 \begin{center}
 \includegraphics[width=.9\linewidth]{../Media/EigenValue_Density_Chi.png}
 \end{center}
 
 \subsection{Model the log transformed data using a linear regression or log(-x) regression}
-\label{sec:orga7d2a24}
+\label{sec:org42fba6f}
 
 \begin{align}
     \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
 \end{align}
 
 \subsubsection{Change the colour of each model by using pivot\textsubscript{longer}}
-\label{sec:org60eb1ea}
+\label{sec:org0645a1d}
 \subsection{Could I get better performance by also considering the determinant?}
-\label{sec:org272e5aa}
+\label{sec:org1679814}
 No not really, it terms of accuracy
 
 \subsection{Is the determinant faster or slower?}
-\label{sec:org8edfd48}
+\label{sec:org93a75a6}
 Significantly slower for large matrices.
 \subsection{Import wikipedia data}
-\label{sec:org6df90c9}
+\label{sec:orge591e70}
 \begin{itemize}
 \item \sout{Import the wikipedia data}
 \item \sout{Measure the density}
@@ -2127,9 +2221,10 @@ Some Images: \cite{ngStableAlgorithmsLink2001}
 \label{heading-2}
 \subsubsection{Heading 3}
 \label{heading-3}
-\begin{minted}[]{sh}
+\lstset{language=sh,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
   echo "Hello World"
-\end{minted}
+\end{lstlisting}
 
 
 \paragraph{Heading 4}
@@ -2141,7 +2236,8 @@ Some Images: \cite{ngStableAlgorithmsLink2001}
 \label{heading-6}
 Arbitrary Code:
 
-\begin{minted}[]{sh}
+\lstset{language=sh,label= ,caption= ,captionpos=b,numbers=none}
+\begin{lstlisting}
   n/bash
 
   # Print Help
@@ -2170,13 +2266,13 @@ Arbitrary Code:
   echo "Conversion from Org Successful, MD is in Clipboard"
 
   exit 0
-\end{minted}
+\end{lstlisting}
 \end{enumerate}
 \section{Appendix}
-\label{sec:orgd22d506}
+\label{sec:orgdb68a95}
 
-\begin{listing}[htbp]
-\begin{minted}[]{r}
+\lstset{language=r,label=r-den_undir_ba,caption={\textbf{\emph{R}} code to produce an image illustrating the density of a simulated Barabasi-Albert graph, the \emph{Barabasi-Albert} graph is a good analouge for the link structure of the internet \cite{langvilleGooglePageRankScience2012,barabasiPhysicsWeb2001,barabasiScalefreeCharacteristicsRandom2000} see the output in figure \ref{fig:den_undir_ba}},captionpos=b,numbers=none}
+\begin{lstlisting}
 library(Matrix)
 library(igraph)
 n <- 200
@@ -2197,9 +2293,7 @@ par(pty = "s", mai = c(0.1, 0.1, 0.4, 0.1))
 
 title=paste0("Undirected Barabassi Albert Graph with parameters:\n Power = ", power, "; size = ", n, "; Edges/step = ", round(m))
 image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
-\end{minted}
-\caption{\label{r-den_undir_ba}\textbf{\emph{R}} code to produce an image illustrating the density of a simulated Barabasi-Albert graph, the \emph{Barabasi-Albert} graph is a good analouge for the link structure of the internet \cite{langvilleGooglePageRankScience2012,barabasiPhysicsWeb2001,barabasiScalefreeCharacteristicsRandom2000} see the output in figure \ref{fig:den_undir_ba}}
-\end{listing}
+\end{lstlisting}
 
 \begin{figure}[htbp]
 \centering
@@ -2207,21 +2301,21 @@ image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
 \caption{\label{fig:den_undir_ba}Plot of the adjacency matrix corresponding to a Barabassi-Albert (i.e. \emph{Scale Free}) Graph produced by listing \ref{r-den_undir_ba}, observe the matrix is quite sparse.}
 \end{figure}
 \section{Graph Diagrams}
-\label{sec:orgf487c2a}
+\label{sec:org5e801b5}
 Graph Diagrams shown in \ref{markov} where produced using \texttt{DOT} (see \cite{DOTLanguage,DOTGraphDescription2020}).
 \section{Extensions to this Report}
-\label{sec:orgf6a471e}
+\label{sec:orge1cc574}
 Accellerating the Computatoin of Page Rank \cite{langvilleGooglePageRankScience2012}
 
 \section{Is the power Walk transition prob matrix a stochastic because it may contain negatives?}
-\label{sec:orgd7d83fe}
+\label{sec:org3876a23}
 \section{Look at the Trace of the Matrix as a comparison point}
-\label{sec:org2603cfa}
+\label{sec:org36db485}
 \section{TODO Diamater}
-\label{sec:org027098e}
+\label{sec:org283c3d8}
 Diamater of the web sounds like a fun read \cite{albertDiameterWorldWideWeb1999}
 \section{Improving the Performance of Page Rank}
-\label{sec:org14544c9}
+\label{sec:orgaad11c2}
 
 This:
 

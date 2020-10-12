@@ -15,7 +15,7 @@
 # #+CSL_STYLE: /home/ryan/Templates/CSL/nature.csl
 :END:
 :R:
-#+PROPERTY: header-args:R :session ReportDiscProj :dir ./ :eval never-export :exports both
+#+PROPERTY: header-args:R :session ReportDiscProj :dir ./ :eval never-export :exports both :results output
 # exports: both (or code or whatever)
 # results: table (or output or whatever)
 :END:
@@ -30,7 +30,7 @@
 #+LATEX_HEADER: \usetikzlibrary{decorations.fractals}
 #+LATEX_HEADER: \usetikzlibrary{lindenmayersystems}
 :END:
-** Introduction
+* Introduction
 The centrality score of a graph is a metric that measures the
 importance and popularity of a vertex. [fn:: For a small graph drawn
 in a way to minimise overlapping edges the centremost geometric vertex
@@ -43,7 +43,7 @@ The /PageRank/ method asserts that the centrality of a vertex can be
 measured by the frequency of incidence with that vertex during a
 random walk.
 
-** Implementing PageRank Generally
+* Implementing PageRank Generally
    :PROPERTIES:
    :CUSTOM_ID: PageRank-Generally
    :END:
@@ -102,7 +102,7 @@ centrality of vertices.
 The following definitions are used in this report [fn:: see generally [[cite:langvilleGooglePageRankScience2012][Ch. 15]] for further reading] :
 
 - Markov Chains :: are discrete mathematical model such that future values depend only on current values [[cite:foussAlgorithmsModelsNetwork2016][\textsection 1.5]]
-- Stochastic Matrices :: contain only positive values where each column sums to 1 cite:langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991
+- Stochastic Matrices :: contain only positive values where each column sums to 1 cite:langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991 (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
   + some authors use rows (see e.g. [[cite:langvilleGooglePageRankScience2012][\textsection 15.3]]), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
     - /Column Stochastic/ and /Row Stochastic/ can be used to more clearly distinguish between which type of stochastic matrix is being used.
   + Many programming languages return /unit-eigenvectors/ \(\vec{x}\) such that \(\left\lvert \left\lvert \vec{x} \right\rvert \right\rvert = 1 \) as opposed to \(\mathtt{sum} \left( \vec{\mathtt{x}}\right) = 1\), so when solving for a stationary vector it can be necessary to perform \(\vec{\mathtt{p}} \leftarrow \frac{\vec{\mathtt{p}}}{\sum \vec{p}}\)
@@ -299,7 +299,10 @@ at [[#fix]] \(\mathbf{W}\) will be a primitive stochastic matrix and so if
 \(\mathbf{W}\) was used in place of \(\mathbf{T}\) in eqref:eq:recurrence a solution
 would exist.
 
-** Sparse Matrices
+* Sparse Matrices
+:PROPERTIES:
+:CUSTOM_ID: sparse-matrix
+:END:
 Most Adjacency matrices resulting from webpages and analagous networks
 result in sparse adjacency matrices (see figure [[fig:den_undir_ba]]),
 this is a good thing because it requires far less computational
@@ -331,7 +334,7 @@ cite:batesMatrixSparseDense2019a .
 \end{align}
 
 
-*** Solving the Stationary Distribution
+** Solving the Stationary Distribution
 :PROPERTIES:
 :CUSTOM_ID: solving-stationary-dist
 :END:
@@ -366,7 +369,7 @@ algorithms.
 
 With some effort however it is possible to express the algorithms in such a way that only involves sparse matrices.
 
-** Implementing the Models
+* Implementing the Models
 To Implement the models, first they'll be implemented using an ordinary matrix and then improved to work with sparse matrices and algorithms, the implementation has been performed with /*R*/ and the preamble is provided in listings [[preamble]]
 
 #+NAME: preamble
@@ -380,6 +383,7 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
     }
 
     pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise)
+#   options(scipen=20) # Resist Scientific Notation
 #+END_SRC
 
 ** Implementing the Random Surfer
@@ -456,7 +460,6 @@ The adjacency Matrix is given by:
     :PROPERTIES:
     :CUSTOM_ID: probability-transition-matrix
     :END:
-
 The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
@@ -476,30 +479,20 @@ eqref:eq:basic-trans-def, this is shown in listing [[basic-trans-def]].
 #+END_SRC
 
 #+RESULTS[3a75a37735656a12861ee3215b3dbcf861147b59]: basic-trans-def
-| 0 | 1 | 0.2 | 0.25 | 0 |   0 |                 0 | 0 | 0 |   0 |
-| 1 | 0 | 0.2 | 0.25 | 1 | 0.5 | 0.333333333333333 | 0 | 0 |   0 |
-| 0 | 0 |   0 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
-| 0 | 0 | 0.2 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
-| 0 | 0 | 0.2 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
-| 0 | 0 | 0.2 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
-| 0 | 0 |   0 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
-| 0 | 0 |   0 | 0.25 | 0 | 0.5 | 0.333333333333333 | 0 | 1 | 0.5 |
-| 0 | 0 |   0 | 0.25 | 0 |   0 | 0.333333333333333 | 1 | 0 | 0.5 |
-| 0 | 0 |   0 |    0 | 0 |   0 |                 0 | 0 | 0 |   0 |
+#+begin_example
+   [,1] [,2] [,3] [,4] [,5] [,6]      [,7] [,8] [,9] [,10]
+1     0    1  0.2 0.25    0  0.0 0.0000000    0    0   0.0
+2     1    0  0.2 0.25    1  0.5 0.3333333    0    0   0.0
+8     0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
+5     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+7     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+6     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+9     0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
+3     0    0  0.0 0.25    0  0.5 0.3333333    0    1   0.5
+4     0    0  0.0 0.25    0  0.0 0.3333333    1    0   0.5
+10    0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
+#+end_example
 
-#+BEGIN_EXAMPLE
-  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8]      [,9] [,10]
-  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.0000000   0.0
-  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.3333333   0.0
-  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.3333333   0.5
-  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.3333333   0.5
-  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
-  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
-  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.0000000   0.0
-  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
-  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
-  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.0000000   0.0
-#+END_EXAMPLE
 
 ****** Create a Function
      :PROPERTIES:
@@ -515,16 +508,19 @@ eqref:eq:basic-trans-def, this is shown in listing [[basic-trans-def]].
 #+END_SRC
 
 #+RESULTS[80ac3570de54db17c9439ac1d3c0e05a3d66e0d5]:
-| 0 | 1 | 0.2 | 0.25 | 0 |   0 |    0 | 0 | 0 |   0 |
-| 1 | 0 | 0.2 | 0.25 | 1 | 0.5 | 0.33 | 0 | 0 |   0 |
-| 0 | 0 |   0 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
-| 0 | 0 | 0.2 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
-| 0 | 0 | 0.2 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
-| 0 | 0 | 0.2 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
-| 0 | 0 |   0 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
-| 0 | 0 |   0 | 0.25 | 0 | 0.5 | 0.33 | 0 | 1 | 0.5 |
-| 0 | 0 |   0 | 0.25 | 0 |   0 | 0.33 | 1 | 0 | 0.5 |
-| 0 | 0 |   0 |    0 | 0 |   0 |    0 | 0 | 0 |   0 |
+#+begin_example
+   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+1     0    1  0.2 0.25    0  0.0 0.00    0    0   0.0
+2     1    0  0.2 0.25    1  0.5 0.33    0    0   0.0
+8     0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
+5     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
+7     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
+6     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
+9     0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
+3     0    0  0.0 0.25    0  0.5 0.33    0    1   0.5
+4     0    0  0.0 0.25    0  0.0 0.33    1    0   0.5
+10    0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
+#+end_example
 
 #+BEGIN_EXAMPLE
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -576,16 +572,19 @@ assigned to /*R*/ variables in listing [[r-var-random-surfer]].
 #+END_SRC
 
 #+RESULTS[a1c71764fb16e4d62521e674975bfa6aee4ae335]: r-var-random-surfer
-| 0.02 | 0.83 | 0.18 | 0.22 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
-| 0.83 | 0.02 | 0.18 | 0.22 | 0.83 | 0.42 | 0.29 | 0.02 | 0.02 | 0.02 |
-| 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
-| 0.02 | 0.02 | 0.18 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
-| 0.02 | 0.02 | 0.18 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
-| 0.02 | 0.02 | 0.18 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
-| 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
-| 0.02 | 0.02 | 0.02 | 0.22 | 0.02 | 0.42 | 0.29 | 0.02 | 0.83 | 0.42 |
-| 0.02 | 0.02 | 0.02 | 0.22 | 0.02 | 0.02 | 0.29 | 0.83 | 0.02 | 0.42 |
-| 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 | 0.02 |
+#+begin_example
+   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+1  0.02 0.83 0.18 0.22 0.02 0.02 0.02 0.02 0.02  0.02
+2  0.83 0.02 0.18 0.22 0.83 0.42 0.29 0.02 0.02  0.02
+8  0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+5  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+7  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+6  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+9  0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+3  0.02 0.02 0.02 0.22 0.02 0.42 0.29 0.02 0.83  0.42
+4  0.02 0.02 0.02 0.22 0.02 0.02 0.29 0.83 0.02  0.42
+10 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+#+end_example
 ***** Eigen Value Method
     :PROPERTIES:
     :CUSTOM_ID: eigen-value-method
@@ -597,42 +596,52 @@ stationary point, this is shown in listing [[eigenSol-rand-surf]]
 #+NAME: eigenSol-rand-surf
 #+CAPTION: Solve the Eigen vectors and Eigen values of the transition probability matrix corresponding to the graph.
 #+BEGIN_SRC R
-  eigen(S, symmetric = FALSE)
+print(eigen(S, symmetric = FALSE, only.values = TRUE)$values, 9)
+print(eigen(S, symmetric = FALSE)$vectors, 3)
 #+END_SRC
 
 #+RESULTS[adc3575f8b0eb19bbca16a4d24fedbabc2fbb026]: eigenSol-rand-surf
-
 #+begin_example
-eigen() decomposition
-$values
- [1]  1.000000e+00 -8.123457e-01 -8.123457e-01  8.123457e-01 -3.407464e-09  3.407464e-09
- [7]  6.878591e-17 -4.393838e-17 -1.126771e-18 -1.292735e-32
-
-$vectors
-            [,1]          [,2]          [,3]          [,4]          [,5]          [,6]
- [1,] 0.48726141 -7.071005e-01  1.590774e-03  5.000000e-01  6.735753e-01 -6.735753e-01
- [2,] 0.52676629  7.071005e-01 -1.590774e-03  5.000000e-01  9.622504e-02 -9.622505e-02
- [3,] 0.49149620 -2.975837e-03  7.071050e-01 -5.000000e-01  9.622504e-02 -9.622505e-02
- [4,] 0.48044122  2.975837e-03 -7.071050e-01 -5.000000e-01  2.886751e-01 -2.886751e-01
- [5,] 0.04932738  1.463673e-18 -5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
- [6,] 0.04932738  1.463673e-18  5.541166e-17  2.124631e-17 -3.849002e-01  3.849002e-01
- [7,] 0.04932738  1.463673e-18 -2.077937e-17  2.124631e-17 -3.849002e-01  3.849002e-01
- [8,] 0.04243328 -6.484884e-18 -1.103904e-17  6.319692e-17  8.072508e-09  8.072508e-09
- [9,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
-[10,] 0.04243328  6.952446e-18 -9.740331e-18  6.005334e-17  8.072508e-09  8.072509e-09
-               [,7]          [,8]          [,9]         [,10]
- [1,] -3.963430e-01  3.962600e-01  1.828019e-01 -1.752367e-01
- [2,] -1.291621e-01  2.027302e-01  2.199538e-01 -2.197680e-01
- [3,] -3.955284e-01  3.894308e-02  2.223048e-01 -2.248876e-01
- [4,] -4.215353e-01  1.043870e-01  2.747562e-01 -2.777266e-01
- [5,]  5.166485e-01 -8.109210e-01 -8.798152e-01  8.790721e-01
- [6,]  5.201366e-02 -1.308878e-01 -1.049028e-01  1.056778e-01
- [7,]  1.346275e-01 -1.936007e-01  9.054366e-02 -9.554811e-02
- [8,]  2.547528e-16 -1.352936e-16 -1.025353e-16  1.072771e-16
- [9,]  3.196396e-01  1.965446e-01 -2.821213e-03 -5.466313e-03
-[10,]  3.196396e-01  1.965446e-01 -2.821213e-03  1.388344e-02
-
+ [1]  1.00000000e+00+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
+ [3]  8.12345679e-01+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
+ [5]  5.81488197e-10+0.0000000e+00i -5.81487610e-10+0.0000000e+00i
+ [7] -6.74980227e-16+0.0000000e+00i  3.21036747e-17+0.0000000e+00i
+ [9]  1.34928172e-18+1.1137323e-17i  1.34928172e-18-1.1137323e-17i
+           [,1]         [,2]         [,3]         [,4]         [,5]
+ [1,] 0.4873+0i -7.07e-01+0i  5.00e-01+0i -2.07e-03+0i -6.74e-01+0i
+ [2,] 0.5268+0i  7.07e-01+0i  5.00e-01+0i  2.07e-03+0i -9.62e-02+0i
+ [3,] 0.0424+0i  9.09e-18+0i -3.50e-17+0i -5.05e-17+0i  1.38e-09+0i
+ [4,] 0.0493+0i -1.25e-18+0i -1.65e-16+0i  4.25e-17+0i  3.85e-01+0i
+ [5,] 0.0493+0i -8.30e-18+0i -3.75e-17+0i  3.71e-17+0i  3.85e-01+0i
+ [6,] 0.0493+0i -8.30e-18+0i -3.75e-17+0i  9.76e-18+0i  3.85e-01+0i
+ [7,] 0.0424+0i -1.32e-18+0i -3.50e-17+0i  1.60e-17+0i -3.01e-08+0i
+ [8,] 0.4915+0i -2.98e-03+0i -5.00e-01+0i -7.07e-01+0i -9.62e-02+0i
+ [9,] 0.4804+0i  2.98e-03+0i -5.00e-01+0i  7.07e-01+0i -2.89e-01+0i
+[10,] 0.0424+0i  5.57e-18+0i -3.77e-17+0i  3.14e-18+0i -3.24e-08+0i
+              [,6]         [,7]         [,8]                [,9]
+ [1,]  6.74e-01+0i  6.53e-01+0i -2.15e-01+0i -2.00e-01+1.53e-01i
+ [2,]  9.62e-02+0i  1.09e-01+0i -1.96e-01+0i -1.59e-01+0.00e+00i
+ [3,]  1.38e-09+0i  1.42e-15+0i -2.84e-16+0i -6.73e-17+1.32e-16i
+ [4,] -3.85e-01+0i -4.37e-01+0i  7.85e-01+0i  6.37e-01+0.00e+00i
+ [5,] -3.85e-01+0i -3.56e-01+0i  2.81e-01+0i  2.84e-02-1.63e-01i
+ [6,] -3.85e-01+0i -3.58e-01+0i -3.68e-01+0i  4.84e-02-2.68e-01i
+ [7,] -3.01e-08+0i -2.63e-02+0i -2.34e-01+0i -3.47e-02+4.29e-01i
+ [8,]  9.62e-02+0i  1.32e-01+0i -6.40e-02+0i -1.09e-01-2.84e-01i
+ [9,]  2.89e-01+0i  3.11e-01+0i  1.20e-01+0i -1.34e-01-1.50e-01i
+[10,] -3.24e-08+0i -2.82e-02+0i -1.08e-01+0i -7.64e-02+2.83e-01i
+                    [,10]
+ [1,] -2.00e-01-1.53e-01i
+ [2,] -1.59e-01-0.00e+00i
+ [3,] -6.73e-17-1.32e-16i
+ [4,]  6.37e-01+0.00e+00i
+ [5,]  2.84e-02+1.63e-01i
+ [6,]  4.84e-02+2.68e-01i
+ [7,] -3.47e-02-4.29e-01i
+ [8,] -1.09e-01+2.84e-01i
+ [9,] -1.34e-01+1.50e-01i
+[10,] -7.64e-02-2.83e-01i
 #+end_example
+
 
 So in this case the stationary point corresponds to the eigenvector given by:
 \[
@@ -650,51 +659,24 @@ $$
 #+END_SRC
 
 #+RESULTS[8c4fc0c8edff5276b3d867f244f7b8cf82ec6570]:
-| 0.49 |
-| 0.53 |
-| 0.04 |
-| 0.05 |
-| 0.05 |
-| 0.05 |
-| 0.04 |
-| 0.49 |
-| 0.48 |
-| 0.04 |
+:  [1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
 
 #+BEGIN_SRC R
   (p_new <- S %*% p) %>% Re()  %>% as.vector() %>% round(2)
 #+END_SRC
 
 #+RESULTS[bed98d6948b27a333c70e2bb0e89e6b802f77d0d]:
-| 0.49 |
-| 0.53 |
-| 0.04 |
-| 0.05 |
-| 0.05 |
-| 0.05 |
-| 0.04 |
-| 0.49 |
-| 0.48 |
-| 0.04 |
+:  [1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
 
 However this vector does not sum to 1 so the scale should be adjusted
 (for probabilities the vector should sum to 1):
 
 #+BEGIN_SRC R
-  (p_new <- p_new/sum(p_new)) %>% Re() %>% round(2)
+  (p_new <- p_new/sum(p_new)) %>% Re() %>% as.vector() %>% round(2)
 #+END_SRC
 
 #+RESULTS[5f23c0c6ebf01cd1a6ec983c30c7fb08b8c9e927]:
-| 0.22 |
-| 0.23 |
-| 0.02 |
-| 0.02 |
-| 0.02 |
-| 0.02 |
-| 0.02 |
-| 0.22 |
-| 0.21 |
-| 0.02 |
+:  [1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
 
 ***** Power Value Method
     :PROPERTIES:
@@ -711,39 +693,22 @@ Using the power method should give the same result as the eigenvalue method, aga
       (p_new <- S %*% p)
   }
 
-  round(Re(p_new), 2)
+  round(Re(p_new), 2) %>% as.vector()
 #+END_SRC
 
 #+RESULTS[93f1088c513e3a607eba35114723e6175a54335c]:
-| 26602899.78 |
-| 28759738.27 |
-|  2316719.99 |
-|  2693115.49 |
-|  2693115.49 |
-|  2693115.49 |
-|  2316719.99 |
-| 26834105.29 |
-| 26230539.22 |
-|  2316719.99 |
+:  [1] 26602900 28759738  2316720  2693115  2693115  2693115  2316720 26834105
+:  [9] 26230539  2316720
 
 If scaled to 1 the
 same value will be returned:
 
 #+BEGIN_SRC R
-  (p_new <- p_new/sum(p_new)) %>% Re %>% round(2)
+  (p_new <- p_new/sum(p_new)) %>% Re %>% as.vector() %>% round(2)
 #+END_SRC
 
 #+RESULTS[5f23c0c6ebf01cd1a6ec983c30c7fb08b8c9e927]:
-| 0.22 |
-| 0.23 |
-| 0.02 |
-| 0.02 |
-| 0.02 |
-| 0.02 |
-| 0.02 |
-| 0.22 |
-| 0.21 |
-| 0.02 |
+:  [1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
 
 ***** Scaling
     :PROPERTIES:
@@ -766,6 +731,19 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
 #+END_SRC
 
 #+RESULTS[2588d1419148286a42553ef3f6471216baeecccf]:
+#+begin_example
+         [,1]       [,2]
+1  0.21548349 0.21548349
+2  0.23295388 0.23295388
+8  0.01876543 0.01876543
+5  0.02181424 0.02181424
+7  0.02181424 0.02181424
+6  0.02181424 0.02181424
+9  0.01876543 0.01876543
+3  0.21735625 0.21735625
+4  0.21246737 0.21246737
+10 0.01876543 0.01876543
+#+end_example
 
 #+BEGIN_EXAMPLE
   ##         [,1]      [,2]
@@ -782,17 +760,11 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
 #+END_EXAMPLE
 *** Large Graph, Sparse Matrices using CRS
 **** Creating the Probability Transition Matrix
-Implementing the page rank method on a larger graph requires the use of more efficient form of matrix storage.
+Implementing the page rank method on a larger graph requires the use of more
+efficient form of matrix storage as discussed at [[#sparse-matrix]]
 
-An adjacency matrix (atleast in the context of graphs relating to webpages and social networks) will contain elements that are mostly zero because the number of edges leaving any vertex will tend to be significantly less than the total number of vertices.
-
-A matrix exhibiting this property is known as a sparse matrix CITE
-
-The properties of a sparse matrix can be implemented in order to improve performance, one such method to acheive this is /Compressed Sparse Row/ (CSR) storage, which involves creating a seperate array of values and corresponding indices. CITE
-
-This is implemented by the Matrix package in */R/*. CITE
-
-An sparse matrix can be created using the following syntax, which will return a matrix of the class ~dgCMatrix~:
+A sparse matrix can be created using the following syntax, which will return a
+matrix of the class ~dgCMatrix~:
 
 #+begin_src R :results output
 library(Matrix)
@@ -809,47 +781,48 @@ summary(A)
 #+begin_example
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j   x
-1  808361  49547  90
-2  428268  98950  88
-3  111018 198129  96
-4  330573 218343  85
-5  556574 271674  94
-6   80297 329285  85
-7  410107 346309  88
-8  893744 380886  88
-9  753918 492423  93
-10 309389 515236  90
-11 401507 611744 104
-12 110381 625266  94
-13 297550 641236  97
-14 648515 691630 103
-15 146681 732490 103
-16 821733 778479  71
-17 941850 843950  73
-18 105277 966175 109
-19  15447 974487  89
-20 941903 990749  73
+1  832961  14530  77
+2  410264  57606  97
+3  782033 111998  86
+4   82383 176945  93
+5  110039 239517 103
+6  713327 249015  98
+7    3377 387382  87
+8  183673 466594  90
+9  459326 509037  98
+10 360156 554024  91
+11 697837 573216 106
+12 460554 582729  80
+13 353957 654474  87
+14 941579 683010 108
+15 955791 763690 104
+16 726278 790608  85
+17 317527 867693  90
+18  71267 949427  81
+19 126551 992218  96
+20 723320 992960  84
 #+end_example
 
 As before in section [[#probability-transition-matrix]], the probability transition matrix can be found by:
 
-1. Transposing the adjacency matrix, then
+1. Creating adjacency matrix
+   a. Transposing as necessary such that \(\mathbf{A}_{i,j}\neq 0\) indicates that \(j\) is connected to \(i\) by a directed edge.
 2. Scaling the columns to one
 
-To implement this for a sparseMatrix of the class ~dgCMatrix~, the same technique of multiplying by a diagonalised matrix may be implemented, however to create this new matrix, a new ~sparseMatrix~ will need to be created using the properties of the original matrix, this can be done like so:
+To implement this for a sparseMatrix of the class ~dgCMatrix~, the same
+technique of multiplying by a diagonalised matrix as in eqref:eq:diagScaleDef may be
+implemented, using sparse matrices has the advantage however that only non-zero
+elements will be operated on, meaning that columns that some to zero can still
+be used to create a probability transition matrix [fn:: Although this matrix may
+still have columns that sum to zero and will hence be non-stochastic]
+pracice an error however to create this new matrix, a new ~sparseMatrix~ will
+need to be created using the properties of the original matrix, this can be done
+like so:
 
-
+#+NAME: sparse-diag
+#+CAPTION: A function that takes in a column \(\rightarrow \) row adjacency matrix (\(\mathbf{A}\)) and returns a diagonal matrix (\(\mathbf{D}^{-1}_{\mathbf{A}}}\)) such that \(\vec{1}\mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\)
 #+begin_src R :results output
  sparse_diag <- function(mat) {
-  #' Diagonal Factors of Sparse Matrix
-  #'
-  #' Return a Diagonal Matrix of the 1 / colsum() such that
-  #' matrix multiplication with this matrix would have all column sums
-  #' sum to 1
-  #'
-  #' This should take the transpose of an adjacency matrix in and the output
-  #' can be multiplied by the original matrix to scale it to 1.
-  #' i
 
   ## Get the Dimensions
   n <- nrow(mat)
@@ -866,6 +839,15 @@ To implement this for a sparseMatrix of the class ~dgCMatrix~, the same techniqu
   ## Return the Diagonal Matrix
   return(D)
 }
+#+end_src
+
+#+RESULTS: sparse-diag
+
+#+RESULTS:
+
+Applying this to the previously created sparse matrix:
+
+#+begin_src R :results output
 D <- sparse_diag(t(A))
 summary(D)
 #+end_src
@@ -874,64 +856,67 @@ summary(D)
 #+begin_example
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j           x
-1   15447  15447 0.011235955
-2   80297  80297 0.011764706
-3  105277 105277 0.009174312
-4  110381 110381 0.010638298
-5  111018 111018 0.010416667
-6  146681 146681 0.009708738
-7  297550 297550 0.010309278
-8  309389 309389 0.011111111
-9  330573 330573 0.011764706
-10 401507 401507 0.009615385
-11 410107 410107 0.011363636
-12 428268 428268 0.011363636
-13 556574 556574 0.010638298
-14 648515 648515 0.009708738
-15 753918 753918 0.010752688
-16 808361 808361 0.011111111
-17 821733 821733 0.014084507
-18 893744 893744 0.011363636
-19 941850 941850 0.013698630
-20 941903 941903 0.013698630
+1    3377   3377 0.011494253
+2   71267  71267 0.012345679
+3   82383  82383 0.010752688
+4  110039 110039 0.009708738
+5  126551 126551 0.010416667
+6  183673 183673 0.011111111
+7  317527 317527 0.011111111
+8  353957 353957 0.011494253
+9  360156 360156 0.010989011
+10 410264 410264 0.010309278
+11 459326 459326 0.010204082
+12 460554 460554 0.012500000
+13 697837 697837 0.009433962
+14 713327 713327 0.010204082
+15 723320 723320 0.011904762
+16 726278 726278 0.011764706
+17 782033 782033 0.011627907
+18 832961 832961 0.012987013
+19 941579 941579 0.009259259
+20 955791 955791 0.009615385
 #+end_example
 
 and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
 
 #+begin_src R :results output
-summary(t(A) %*% D)
+summary((T <- t(A) %*% D))
 #+end_src
 
 #+RESULTS[7f259bb86c55619e0d9d4ac000bb89535fa5473f]:
 #+begin_example
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j x
-1  974487  15447 1
-2  329285  80297 1
-3  966175 105277 1
-4  625266 110381 1
-5  198129 111018 1
-6  732490 146681 1
-7  641236 297550 1
-8  515236 309389 1
-9  218343 330573 1
-10 611744 401507 1
-11 346309 410107 1
-12  98950 428268 1
-13 271674 556574 1
-14 691630 648515 1
-15 492423 753918 1
-16  49547 808361 1
-17 778479 821733 1
-18 380886 893744 1
-19 843950 941850 1
-20 990749 941903 1
+1  387382   3377 1
+2  949427  71267 1
+3  176945  82383 1
+4  239517 110039 1
+5  992218 126551 1
+6  466594 183673 1
+7  867693 317527 1
+8  654474 353957 1
+9  554024 360156 1
+10  57606 410264 1
+11 509037 459326 1
+12 582729 460554 1
+13 573216 697837 1
+14 249015 713327 1
+15 992960 723320 1
+16 790608 726278 1
+17 111998 782033 1
+18  14530 832961 1
+19 683010 941579 1
+20 763690 955791 1
 #+end_example
 
 **** Solving the Random Surfer via the Power Method
+:PROPERTIES:
+:CUSTOM_ID: random-surfer-sparse-fix
+:END:
 Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
 
-However, creating a matrix of background probabilites (denoted by ~B~ is section [[#page-rank-random-surfer]]) will not be feasible, it would simply be too large, instead some algebra can be used to reduce $B$ from a matrix into a vector containing only $\frac{1-\alpha}{N}$.
+However, creating a matrix of background probabilites (denoted by ~B~ in section [[#page-rank-random-surfer]]) will not be feasible, it would simply be too large, instead some algebra can be used to reduce $B$ from a matrix into a vector containing only $\frac{1-\alpha}{N}$.
 
 The power method is given by:
 
@@ -975,12 +960,12 @@ Let $\mathbf{F}= \mathbf{B}\vec{p}$, consider the value of $\mathbf{F}$ :
 \frac{1}{N} \\
 \end{bmatrix}
 \end{align}
-So instead the power method can be implemented by performing an algorithm to the effect of:
+So instead the power method can be implemented by performing an algorithm that involves only sparse matrices:
 
-#+begin_src R
+#+begin_src R :results output
 ## Find Stationary point of random surfer
 N     <- nrow(A)
-alpha <- 0.8
+alpha <- 0.85
 F     <- rep((1-alpha)/N, nrow(A))  ## A nx1 vector of (1-alpha)/N
 
 ## Solve using the power method
@@ -999,14 +984,26 @@ p %>% head() %>% print()
 #+end_src
 
 #+RESULTS[ed72d96e5b69871f8a3e07792406adff2e6e1db2]:
-: org_babel_R_eoe
+#+begin_example
+[1] 1
+[1] 2
+6 x 1 Matrix of class "dgeMatrix"
+        [,1]
+[1,] 1.5e-07
+[2,] 1.5e-07
+[3,] 1.5e-07
+[4,] 1.5e-07
+[5,] 1.5e-07
+[6,] 1.5e-07
+#+end_example
 
 ** Power Walk Method
 *** Introduction
+Recall from [[#pwalk]] that the power walk is given by:
 
-\begin{align}
-\mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B} \label{eq:pwalk-def}
-\end{align}
+\begin{align*}
+\mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B}
+\end{align*}
 
 
 
@@ -1016,11 +1013,120 @@ where:
   - $x\beta^{1}$  :: probability of following an edge of weight 1
   - $x\beta^{0}$  :: probability of following an edge of weight 0
   - $x\beta^{-1}$ :: probability of following an edge of weight -
-- $D_{B} = \mathtt{colsums}(\mathbf{B})$
+- $\mathbf{D}_{\mathbf{B}} = \mathtt{colsums}(\mathbf{B})$
 - $\mathbf{A}$ :: The Adjacency Matrix
 
 *** Ordinary Matrices
-Solving the Power walk can be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
+Implementing the Power walk using ordinary matrices is very similar to the /Random Surfer/ model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
+
+Create the Adjacency Matrix
+#+begin_src R
+  A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE)
+
+## * Function to create Prob Trans Mat
+adj_to_probTrans <- function(A, beta) {
+    B     <- A
+    B     <- beta^A           # Element Wise exponentiation
+    D     <- diag(colSums(B)) # B is completely dense so D ≄ 0
+    D_in  <- solve(D)         # Solve returns inverse of matrix
+    W     <- B %*% D_in
+
+    return(as.matrix(W))
+}
+
+beta <- β <- 0.867
+(W <- adj_to_probTrans(A, beta = β)) %>% round(2)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+1  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.11 0.11   0.1
+2  0.09 0.11  0.1 0.10 0.10 0.10  0.1 0.11 0.11   0.1
+8  0.09 0.09  0.1 0.09 0.09 0.09  0.1 0.11 0.11   0.1
+5  0.09 0.09  0.1 0.10 0.10 0.10  0.1 0.09 0.09   0.1
+7  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.11 0.11   0.1
+6  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.09 0.11   0.1
+9  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.09 0.09   0.1
+3  0.10 0.11  0.1 0.10 0.10 0.10  0.1 0.11 0.09   0.1
+4  0.10 0.11  0.1 0.10 0.10 0.10  0.1 0.09 0.11   0.1
+10 0.10 0.11  0.1 0.10 0.10 0.10  0.1 0.09 0.09   0.1
+#+end_example
+
+Look at the Eigenvalues:
+#+begin_src R  :results output
+eigen(W, only.values = TRUE)$values %>% round(9)
+eigen(W)$vectors/sum(eigen(W)$vectors)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+ [1]  1.000000000+0.000000000i  0.014269902+0.000000000i
+ [3] -0.014148391+0.000000000i  0.014147087+0.000000000i
+ [5]  0.007672842+0.004095136i  0.007672842-0.004095136i
+ [7]  0.000000000+0.000000000i  0.000000000+0.000000000i
+ [9]  0.000000000+0.000000000i  0.000000000+0.000000000i
+               [,1]             [,2]            [,3]            [,4]
+ [1,] 0.10153165+0i  5.107247e-02+0i  0.073531664+0i  0.009918277+0i
+ [2,] 0.10159353+0i -1.161249e-01+0i  0.071987451+0i -0.009531974+0i
+ [3,] 0.09609664+0i -2.162636e-01+0i  0.198568750+0i  0.141245296+0i
+ [4,] 0.09725145+0i  6.794340e-02+0i -0.012230606+0i -0.001148014+0i
+ [5,] 0.10153165+0i  5.107247e-02+0i  0.073531664+0i  0.009918277+0i
+ [6,] 0.10008449+0i  1.115133e-01+0i -0.005625969+0i -0.156796770+0i
+ [7,] 0.09865794+0i  1.175228e-01+0i -0.084225633+0i  0.008563891+0i
+ [8,] 0.10157348+0i -6.053608e-02+0i -0.078607240+0i  0.165540590+0i
+ [9,] 0.10155286+0i -6.104664e-03+0i -0.079165209+0i -0.166535117+0i
+[10,] 0.10012631+0i -9.522175e-05+0i -0.157764873+0i -0.001174456+0i
+                         [,5]                    [,6]             [,7]
+ [1,]  0.00633946+0.04208220i  0.00633946-0.04208220i  3.014602e-16+0i
+ [2,]  0.00757768+0.03910216i  0.00757768-0.03910216i  1.909248e-16+0i
+ [3,]  0.22697603+0.00000000i  0.22697603+0.00000000i  3.985744e-02+0i
+ [4,] -0.11628681-0.11808928i -0.11628681+0.11808928i -2.471407e-01+0i
+ [5,]  0.00633946+0.04208220i  0.00633946-0.04208220i  7.520823e-02+0i
+ [6,] -0.03494625-0.01031801i -0.03494625+0.01031801i  1.719325e-01+0i
+ [7,] -0.07581902-0.06371153i -0.07581902+0.06371153i  6.131013e-03+0i
+ [8,]  0.00717270+0.04008639i  0.00717270-0.04008639i  5.526770e-17+0i
+ [9,]  0.00675977+0.04107970i  0.00675977-0.04107970i  1.105354e-16+0i
+[10,] -0.03411300-0.01231382i -0.03411300+0.01231382i -4.598845e-02+0i
+                  [,8]             [,9]            [,10]
+ [1,] -1.791605e-17+0i -4.365749e-17+0i  1.179767e-17+0i
+ [2,] -7.334385e-17+0i -8.731498e-17+0i -5.190977e-17+0i
+ [3,] -1.241234e-01+0i -1.401965e-01+0i -8.894098e-02+0i
+ [4,]  1.691000e-01+0i  1.687523e-01+0i  1.041947e-01+0i
+ [5,] -2.144546e-01+0i  2.715852e-02+0i  3.085359e-02+0i
+ [6,]  4.535455e-02+0i -1.959109e-01+0i -1.350483e-01+0i
+ [7,]  7.398187e-02+0i  3.163948e-02+0i -1.260060e-01+0i
+ [8,]  8.062225e-17+0i  3.638124e-17+0i  5.898837e-18+0i
+ [9,]  2.687408e-17+0i  3.638124e-17+0i  5.662884e-17+0i
+[10,]  5.014155e-02+0i  1.085570e-01+0i  2.149470e-01+0i
+#+end_example
+
+Unlike the /Random Surfer/ Model in listing [[eigenSol-rand-surf]] at [[#eigen-value-method]] the relationship between the second eigenvalue and the model parameters is not as clear, this provides that the
+
+Use the power method
+
+#+begin_src R
+## * Power Method
+p    <- rep(0, nrow(W))
+p[1] <- 1
+p_new    <- rep(0, nrow(W))
+p_new[2]    <- 1
+
+while (sum(round(p, 9) != round(p_new, 9))) {
+    (p     <- p_new)
+    (p_new <- W %*% p)
+}
+
+
+p %>% as.vector()
+#+end_src
+
+#+RESULTS:
+:  [1] 0.10153165 0.10159353 0.09609664 0.09725145 0.10153165 0.10008449
+:  [7] 0.09865794 0.10157348 0.10155286 0.10012631
+
+
+
 *** Sparse Matrices
 **** Theory; Simplifying Power Walk to be solved with Sparse Matrices
 The Random Surfer model is:
@@ -1073,15 +1179,14 @@ The way to deal with the /Power Walk/ is more or less the same.
 
 observe that:
 
-$$\begin{aligned}
-   \left( \mathbf{B} = \beta^{\mathbf{A}} \right)\wedge \left( \mathbf{A}_{i, j}\right)\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}\end{aligned}$$
+\begin{align}
+   \left( \mathbf{B} = \beta^{\mathbf{A}} \right)\wedge \left( \mathbf{A}_{i, j}\right)\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}
+\end{align}
 
 
 
-Be mindful that the use of exponentiation in
-[[#eq:b-is-pos][[eq:b-is-pos]]] is not an element wise exponentiation
-and not an actual matrix exponential (which would be defined by using
-power series and logs but is defined)
+Be mindful that the use of exponentiation in eqref:eq:b-is-pos is not an element wise
+exponentiation and not an actual matrix exponential.
 
 So if I have:
 
@@ -1089,10 +1194,13 @@ So if I have:
 
 - $\vec{p_i}$ as the state distribution, being a vector of length $n$
 
-Then It can be shown (see eqref:eq:sparse-power-walk):
+Then It can be shown (see eqref:eq:sparse-power-walk at [[#solve-background-prob-power-walk-sparse]]):
 
-$$\begin{aligned}
-    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} = \mathtt{repeat} (\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n}\end{aligned})$$
+\begin{align}
+    \mathbf{O} \mathbf{D}_{\mathbf{B}}^{-1} \vec{p_i} &= (\overrightarrow{\delta^{{\footnotesize \tmmathbf{T}}}}
+     \overrightarrow{p_i})  \vec{1}\\
+& = \mathtt{repeat} \left(\vec{p} \bullet \vec{\delta^{\tiny \mathrm{T}}} \mathtt{, n} \right) \\
+\end{align}
 
 
 
@@ -1177,7 +1285,7 @@ And so the the power method can be implemented using sparse matrices:
 
 in terms of */R/*:
 
-#+begin_src R
+#+begin_src R :eval never
 p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 # It would also be possible to sum the element-wise product
@@ -1185,13 +1293,16 @@ p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 # Because R treats vectors the same as a nX1 matrix we could also
 # perform the dot product of the two vectors, meaning the following
-# would be true in R but not generally
+# would be true in R but not true generally
 
 (t(δ) %*% p) == (δ %*% p)
 #+end_src
 
 
 ***** Solving the Background Probability
+:PROPERTIES:
+:CUSTOM_ID: solve-background-prob-power-walk-sparse
+:END:
 In this case a vertical single column matrix will represent a vector and $\otimes$ will represent the outer product (i.e. the /Kronecker Product/):
 
 
@@ -1268,76 +1379,14 @@ vectors, this can also be expressed as a dot product:
 **** Practical; Implementing the Power Walk on Sparse Matrices
 ***** Inspect the newly created matrix and create constants
 ***** Setup
-****** Load Packages
-#+begin_src R :session example
-if (require("pacman")) {
-    library(pacman)
-  }else{
-    install.packages("pacman")
-    library(pacman)
-  }
-  pacman::p_load(Matrix, igraph, plotly, mise, docstring, expm)
-  mise()
-#+end_src
-
-#+RESULTS[b1fd4f7af2cadbc1374b0f8d78f62a6ad9342541]:
-: Loading required package: pacman
-
 ****** Define function to create DiagonalsSparse Diagonal Function
-This doesn't matter for the power walk, real exponents will always give non-zero values anyway
-#+begin_src R :session example
-sparse_diag <- function(mat) {
-  #' Diagonal Factors of Sparse Matrix
-  #'
-  #' Return a Diagonal Matrix containing either 1 / colsum() or 0 such that
-  #' matrix multiplication with this matrix would have all columns
-  #' sum to 1
-  #'
-  #' This should take the transpose of an adjacency matrix in and the output
-  #' can be multiplied by the original matrix to scale it to 1.
-  #' i
-  # mat  <- A
-  ## Get the Dimensions
-  n <- nrow(mat)
 
-  ## Make a Diagonal Matrix of Column Sums
-      ## If a column sums to zero the diag can be zero iff the adjacency_matrix>=0
-  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
-
-  ## Throw away explicit Zeroes
-  D <- drop0(D)
-
-  ## Inverse the Values
-  D@x <- 1/D@x
-
-  ## Return the Diagonal Matrix
-  return(D)
-}
-#+end_src
-
-#+RESULTS[b8327916d90bdc5810e057f7de6f3e0808ea7b88]:
-
-****** Make an Example Graph
-#+begin_src R :session example
-g1 <- igraph::erdos.renyi.game(n = 20, 0.2)
-A <- igraph::get.adjacency(g1) # Row to column
-
-
-beta = 0.843234
-β = beta
-#+end_src
-****** Plot
-
-#+BEGIN_SRC R :exports both :session example :results output graphics file :file ./Media/Example-graph-plot-debug-power-walk.png
-plot(g1)
-#+END_SRC
-
-#+RESULTS[5eec355fc3d55ed8cd2dd42e0f68ab07c9ca67fa]:
-[[file:./Media/Example-graph-plot-debug-power-walk.png]]
+Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the ~sparse_diag~ function in listing [[sparse-diag]] will still work.
 
 ***** Power Walk
 ****** Define B
-#+begin_src R :session example
+#+begin_src R
+A      <- Matrix::Matrix(A, sparse = TRUE)
 B      <- A
 B@x    <- β^(A@x)
 B      <- A
@@ -1351,190 +1400,104 @@ Bo@x   <- β^(A@x) -1   # This in theory would be faster
 # Bo     <- drop0(Bo)
 
 
-  n <- nrow(A)
+ n <- nrow(A)
 #+end_src
 
 #+RESULTS[bc515375922834cfac37ab066bfcd2261fe752a0]:
+#+begin_example
+10 x 10 sparse Matrix of class "dgCMatrix"
+   [[ suppressing 10 column names ‘1’, ‘2’, ‘8’ ... ]]
 
-#+begin_src R :session example :results output
-print(B)
+1  . 1 . . . . . . . .
+2  1 . . . . . . . . .
+8  1 1 . 1 1 1 . . . .
+5  1 1 . . . . . 1 1 .
+7  . 1 . . . . . . . .
+6  . 1 . . . . . 1 . .
+9  . 1 . . . . . 1 1 .
+3  . . . . . . . . 1 .
+4  . . . . . . . 1 . .
+10 . . . . . . . 1 1 .
+#+end_example
+
+#+begin_src R  :results output
+print(round(B, 2))
 #+end_src
 
 #+RESULTS[a32b596a74cff397c7bf190d87be4f0fa650f331]:
 #+begin_example
-20 x 20 Matrix of class "dgeMatrix"
-          [,1]     [,2]     [,3]     [,4]     [,5]     [,6]     [,7]     [,8]
- [1,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
- [2,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
- [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
- [5,] 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [6,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
- [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [8,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
- [9,] 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
-[10,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[11,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
-[13,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
-[14,] 1.000000 0.843234 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
-[15,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[16,] 0.843234 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
-[17,] 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 0.843234 0.843234
-[18,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000
-[19,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234
-[20,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-          [,9]    [,10]    [,11]    [,12]    [,13]    [,14]    [,15]    [,16]
- [1,] 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 0.843234 0.843234
- [2,] 1.000000 0.843234 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
- [3,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
- [4,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
- [5,] 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [6,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
- [7,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
- [8,] 1.000000 1.000000 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000
- [9,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[10,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000
-[11,] 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000
-[12,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
-[13,] 1.000000 1.000000 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
-[14,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234
-[15,] 1.000000 0.843234 0.843234 1.000000 1.000000 1.000000 1.000000 1.000000
-[16,] 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234 1.000000 1.000000
-[17,] 1.000000 1.000000 0.843234 0.843234 0.843234 1.000000 1.000000 1.000000
-[18,] 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000 1.000000
-[19,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 1.000000
-[20,] 1.000000 1.000000 1.000000 1.000000 1.000000 0.843234 1.000000 0.843234
-         [,17]    [,18]    [,19]    [,20]
- [1,] 1.000000 1.000000 1.000000 0.843234
- [2,] 1.000000 1.000000 0.843234 1.000000
- [3,] 0.843234 1.000000 0.843234 1.000000
- [4,] 0.843234 1.000000 1.000000 1.000000
- [5,] 1.000000 0.843234 1.000000 1.000000
- [6,] 1.000000 1.000000 1.000000 1.000000
- [7,] 0.843234 1.000000 1.000000 1.000000
- [8,] 0.843234 1.000000 0.843234 1.000000
- [9,] 1.000000 1.000000 1.000000 1.000000
-[10,] 1.000000 1.000000 1.000000 1.000000
-[11,] 0.843234 1.000000 1.000000 1.000000
-[12,] 0.843234 1.000000 1.000000 1.000000
-[13,] 0.843234 1.000000 1.000000 1.000000
-[14,] 1.000000 1.000000 0.843234 0.843234
-[15,] 1.000000 1.000000 1.000000 1.000000
-[16,] 1.000000 1.000000 1.000000 0.843234
-[17,] 1.000000 0.843234 0.843234 1.000000
-[18,] 0.843234 1.000000 0.843234 1.000000
-[19,] 0.843234 0.843234 1.000000 1.000000
-[20,] 1.000000 1.000000 1.000000 1.000000
+10 x 10 Matrix of class "dgeMatrix"
+      1    2 8    5    7    6 9    3    4 10
+1  1.00 0.87 1 1.00 1.00 1.00 1 1.00 1.00  1
+2  0.87 1.00 1 1.00 1.00 1.00 1 1.00 1.00  1
+8  0.87 0.87 1 0.87 0.87 0.87 1 1.00 1.00  1
+5  0.87 0.87 1 1.00 1.00 1.00 1 0.87 0.87  1
+7  1.00 0.87 1 1.00 1.00 1.00 1 1.00 1.00  1
+6  1.00 0.87 1 1.00 1.00 1.00 1 0.87 1.00  1
+9  1.00 0.87 1 1.00 1.00 1.00 1 0.87 0.87  1
+3  1.00 1.00 1 1.00 1.00 1.00 1 1.00 0.87  1
+4  1.00 1.00 1 1.00 1.00 1.00 1 0.87 1.00  1
+10 1.00 1.00 1 1.00 1.00 1.00 1 0.87 0.87  1
 #+end_example
 
 
-#+begin_src R :session example :results output
-print(Bo)
+#+begin_src R  :results output
+print(Bo,2)
 #+end_src
 
 #+RESULTS[bad3b48f1882200a41147309b6b523c317c6e071]:
 #+begin_example
-20 x 20 sparse Matrix of class "dgCMatrix"
+10 x 10 sparse Matrix of class "dgCMatrix"
+   [[ suppressing 10 column names ‘1’, ‘2’, ‘8’ ... ]]
 
- [1,]  .        -0.156766  .         .         .        -0.156766  .
- [2,] -0.156766  .         .         .        -0.156766  .         .
- [3,]  .         .         .         .         .         .         .
- [4,]  .         .         .         .         .         .         .
- [5,]  .        -0.156766  .         .         .         .         .
- [6,] -0.156766  .         .         .         .         .         .
- [7,]  .         .         .         .         .         .         .
- [8,]  .         .         .        -0.156766  .        -0.156766  .
- [9,] -0.156766  .         .         .        -0.156766  .         .
-[10,] -0.156766 -0.156766  .         .         .         .         .
-[11,]  .         .         .         .         .         .         .
-[12,]  .         .         .         .         .        -0.156766  .
-[13,]  .         .         .         .         .         .         .
-[14,]  .        -0.156766  .        -0.156766  .        -0.156766  .
-[15,] -0.156766  .         .         .         .         .         .
-[16,] -0.156766  .        -0.156766  .         .         .         .
-[17,]  .         .        -0.156766 -0.156766  .         .        -0.156766
-[18,]  .         .         .         .        -0.156766  .         .
-[19,]  .        -0.156766 -0.156766  .         .         .         .
-[20,] -0.156766  .         .         .         .         .         .
-
- [1,]  .        -0.156766 -0.156766  .         .         .         .
- [2,]  .         .        -0.156766  .         .         .        -0.156766
- [3,]  .         .         .         .         .         .         .
- [4,] -0.156766  .         .         .         .         .        -0.156766
- [5,]  .        -0.156766  .         .         .         .         .
- [6,] -0.156766  .         .         .        -0.156766  .        -0.156766
- [7,]  .         .         .         .         .         .         .
- [8,]  .         .         .         .        -0.156766 -0.156766  .
- [9,]  .         .         .         .         .         .         .
-[10,]  .         .         .         .         .         .         .
-[11,]  .         .         .         .         .        -0.156766  .
-[12,] -0.156766  .         .         .         .         .         .
-[13,] -0.156766  .         .        -0.156766  .         .         .
-[14,]  .         .         .         .         .         .         .
-[15,]  .         .        -0.156766 -0.156766  .         .         .
-[16,]  .         .         .         .        -0.156766  .        -0.156766
-[17,] -0.156766  .         .        -0.156766 -0.156766 -0.156766  .
-[18,]  .         .         .         .         .         .         .
-[19,] -0.156766  .         .         .         .         .        -0.156766
-[20,]  .         .         .         .         .         .        -0.156766
-
- [1,] -0.156766 -0.156766  .         .         .        -0.156766
- [2,]  .         .         .         .        -0.156766  .
- [3,]  .        -0.156766 -0.156766  .        -0.156766  .
- [4,]  .         .        -0.156766  .         .         .
- [5,]  .         .         .        -0.156766  .         .
- [6,]  .         .         .         .         .         .
- [7,]  .         .        -0.156766  .         .         .
- [8,]  .         .        -0.156766  .        -0.156766  .
- [9,]  .         .         .         .         .         .
-[10,] -0.156766  .         .         .         .         .
-[11,] -0.156766  .        -0.156766  .         .         .
-[12,]  .        -0.156766 -0.156766  .         .         .
-[13,]  .         .        -0.156766  .         .         .
-[14,]  .        -0.156766  .         .        -0.156766 -0.156766
-[15,]  .         .         .         .         .         .
-[16,]  .         .         .         .         .        -0.156766
-[17,]  .         .         .        -0.156766 -0.156766  .
-[18,]  .         .        -0.156766  .        -0.156766  .
-[19,]  .         .        -0.156766 -0.156766  .         .
-[20,]  .        -0.156766  .         .         .         .
+1  .     -0.13 . .     .     .     . .     .     .
+2  -0.13 .     . .     .     .     . .     .     .
+8  -0.13 -0.13 . -0.13 -0.13 -0.13 . .     .     .
+5  -0.13 -0.13 . .     .     .     . -0.13 -0.13 .
+7  .     -0.13 . .     .     .     . .     .     .
+6  .     -0.13 . .     .     .     . -0.13 .     .
+9  .     -0.13 . .     .     .     . -0.13 -0.13 .
+3  .     .     . .     .     .     . .     -0.13 .
+4  .     .     . .     .     .     . -0.13 .     .
+10 .     .     . .     .     .     . -0.13 -0.13 .
 #+end_example
 
 ****** Solve the Scaling Matrix
 We don't need to worry about any terms of $\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}$ being 0:
 
-#+begin_src R :session example
+#+begin_src R
 (δB   <- 1/(colSums(Bo)+n))
 #+end_src
 
 #+RESULTS[4e9078e02cac88e2b390d1de64aa94cfe1ea0faa]:
-:  [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
-:  [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
-: [13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
-: [19] 0.05246754 0.05120406
+:         1         2         8         5         7         6         9         3
+: 0.1041558 0.1086720 0.1000000 0.1013479 0.1013479 0.1013479 0.1000000 0.1071237
+:         4        10
+: 0.1056189 0.1000000
 
-#+begin_src R :session example
+#+begin_src R
 (δB   <- 1/(colSums(B)))
 #+end_src
 
 #+RESULTS[dad08f4612601febd1e915b158e85aad0430943b]:
-:  [1] 0.05290267 0.05203951 0.05120406 0.05120406 0.05120406 0.05161840
-:  [7] 0.05039501 0.05246754 0.05079631 0.05120406 0.05120406 0.05161840
-: [13] 0.05120406 0.05246754 0.05120406 0.05203951 0.05379495 0.05120406
-: [19] 0.05246754 0.05120406
+:         1         2         8         5         7         6         9         3
+: 0.1041558 0.1086720 0.1000000 0.1013479 0.1013479 0.1013479 0.1000000 0.1071237
+:         4        10
+: 0.1056189 0.1000000
 
 
 ****** Find the Transition Probability Matrix
-#+begin_src R :session example
+#+begin_src R
   DB   <- diag(δB)
 ## ** Create the Transition Probability Matrix
 ## Create the Trans Prob Mat using Power Walk
   T <- Bo %*% DB
 #+END_SRC
 
+#+RESULTS:
+
 ****** Implement the Loop
-#+begin_src R :session example
+#+begin_src R
 ## ** Implement the Power Walk
 ## *** Set Initial Values
   p_new  <- rep(1/n, n)  # Uniform
@@ -1554,12 +1517,11 @@ print(p)
 
 #+RESULTS[95b35a53d822393ea1522a4e5bc714a0cd0834e2]:
 : [1] "The stationary point is"
-:  [1] 0.04882572 0.04963556 0.05044542 0.05044541 0.05044543 0.05004049
-:  [7] 0.05125527 0.04923064 0.05085035 0.05044543 0.05044542 0.05004049
-: [13] 0.05044542 0.04923064 0.05044543 0.04963557 0.04801586 0.05044542
-: [19] 0.04923063 0.05044542
+:  [1] 0.10153165 0.10159353 0.09609664 0.09725146 0.10153165 0.10008449
+:  [7] 0.09865795 0.10157347 0.10155286 0.10012631
 
-** Creating a Package
+* Creating a Package
+In order to investigate the behaviour of
 * Relating the Power Walk to the Random Surfer
   :PROPERTIES:
   :CUSTOM_ID: relating-terms-in-power-walk-to-random-surfer
