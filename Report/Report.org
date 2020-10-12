@@ -387,7 +387,7 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
       library(pacman)
     }
 
-    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise)
+    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise, corrplot)
 #   options(scipen=20) # Resist Scientific Notation
 #+END_SRC
 
@@ -1526,6 +1526,9 @@ print(p)
 :  [7] 0.09865795 0.10157347 0.10155286 0.10012631
 
 * Creating a Package
+:PROPERTIES:
+:CUSTOM_ID: create-package
+:END:
 In order to investigate the effect of the model parameters on the second
 Eigenvalue it will be necessary to use these functions, in order to document and
 work with them in a modular way they were placed into an */R/* package and made
@@ -1558,11 +1561,117 @@ library(tidyverse) # Maybe, TODO check if this is used, I don't think it is
 
 ** ER Graphs Plotting Various Values
 
+The /Erdos Renyi/ game creates a graph by creating every single edge with some
+constant probability. [[cite:IgraphManualPages][IgraphManualPagesa]] Sampling these graphs will provide a broad picture for the
+overall behaviour between the method parameters of the /Power Walk/ and the
+second eigenvalue.
+
+
+By looping over many random graphs for a variety of probabilities a data set can
+be constructed and a correlation plot generated. To implement this a data frame
+of input values was constructed in listing [[input_var]], a function that builds a
+data frame with the second eigenvalue, density, determinant and trace was constructed in listing [[output_def]] and finally a correlation plot was generated in listing [[corrplot]] shown in figure [[fig:corrplot]].
+
+
+#+NAME: input_var
+#+CAPTION: A data frame consisting of input variables to be used to generate /Erdos Renyi/ graphs.
+#+begin_src R
+# Generate Constants
+n         <- 20
+p         <- 1:n/n
+beta      <- 1:n/n
+beta      <- runif(n)*100
+#sz       <- 1:n/n+10
+sz        <- (1:n/n)*100+10
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+
+# Print out a sample of all the rows
+input_var[sample(1:nrow(input_var), 6),]
+#+end_src
+
+#+RESULTS:
+:       n    p       beta size
+: 7154 20 0.70  0.5872766  100
+: 4103 20 0.15 82.8545866   65
+: 133  20 0.65 64.6700020   15
+: 3887 20 0.35 76.8201442   60
+: 1725 20 0.25 64.6700020   35
+: 6071 20 0.55 26.0913073   90
+
+#+NAME: output_def
+#+CAPTION: Function to return a vector \(\left\langle \left\lvert \xi_2 \right\rvert,
+  \mathrm{mean}\left(\mathbf{A}\right), \left\lvert A \right\rvert,
+\mathrm{tr}\left( \mathbf{A} \right)\right\rangle\) corresponding to the /Power Walk/ method using the ~PageRank~ package discussed at [[#create-package]].
+#+begin_src R
+random_graph <- function(n, p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      T_tr     <- sum(diag(T))
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      T_det  <- det(T)
+      return(c(abs(e2), A_dens, T_det, T_tr)) # A_det and T_tr are uncorrelated
+}
+#+end_src
+
+#+RESULTS:
+
+#+NAME: corrplot
+#+CAPTION: Produce a correlation plot Created from a dataframe constructed from the values assigned in listing [[input_var]] by using the function defined in listing [[output_def]], see figure [[fig:corrplot]].
+#+BEGIN_SRC R :exports both :results output graphics file :file media/corrplot.png :eval never-export
+filename <- "erdosData.rds"
+
+if (file.exists(filename)) {
+
+  data <- readRDS(filename)
+
+  } else {
+
+# Loop over the data
+nc <- length(random_graph(1, 1, 1, 1))
+Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+
+## Remove the 0i component
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+
+## Clean up the data frame
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant", "trace")
+data <- cbind(input_var, Y)
+data <- data[data$density!=0,]
+
+## Save the data
+saveRDS(data, filename)
+}
+
+corrplot(cor(data), method = "ellipse", type = "lower")
+#+end_src
+
+#+RESULTS: corrplot
+[[file:media/corrplot.png]]
+
 There is some relationship between the determinant and the density, check out the pairs plot:
 
+There appears to be a strong negative correlation between the eigenvalue and the density of the adjacency matrix.
+
+This relationship is plotted in listing [[dens_plot_er]] and figure [[fig:dens_plot_er]].
+
+The relationship appears almost linear and so the data is log transformed in [[fig:dens_plot_er]] revealing a concave down relationship, this relationship could be parabolic or logarithmic and so two models are fitted and overlayed in listing [[test_models]] and shown in figure [[fig:test_models]]. The logarithmic model is a significantly better fit and by investigating the coefficients of the fith the following relationship can be determined:
+
+Easier to calculate the trace than \(\xi_{2}\) so this is an easy way to tell how quickly a solution will be found.
 
 
-#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Determinant.png :eval never-export
+#+BEGIN_SRC R :exports both :results output graphics file :file media/EigenValue_Determinant.png :eval never-export
   library(pacman)
   pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
 n <- 20
@@ -1608,7 +1717,7 @@ ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, sh
 #+end_src
 
 #+RESULTS[08882d661cf5d2410c8335d1850632709c7cf5c5]:
-[[file:../Media/EigenValue_Determinant.png]]
+[[file:media/EigenValue_Determinant.png]]
 
 
 #+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density.png :eval never-export
