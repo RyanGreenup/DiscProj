@@ -43,6 +43,8 @@ The /PageRank/ method asserts that the centrality of a vertex can be
 measured by the frequency of incidence with that vertex during a
 random walk.
 
+TODO: Talk about convergence and the second Eigenvalue to provide motivation for the report.
+
 * Implementing PageRank Generally
    :PROPERTIES:
    :CUSTOM_ID: PageRank-Generally
@@ -370,6 +372,9 @@ algorithms.
 With some effort however it is possible to express the algorithms in such a way that only involves sparse matrices.
 
 * Implementing the Models
+:PROPERTIES:
+:CUSTOM_ID: implement_models
+:END:
 To Implement the models, first they'll be implemented using an ordinary matrix and then improved to work with sparse matrices and algorithms, the implementation has been performed with /*R*/ and the preamble is provided in listings [[preamble]]
 
 #+NAME: preamble
@@ -1521,13 +1526,177 @@ print(p)
 :  [7] 0.09865795 0.10157347 0.10155286 0.10012631
 
 * Creating a Package
-In order to investigate the behaviour of
+In order to investigate the effect of the model parameters on the second
+Eigenvalue it will be necessary to use these functions, in order to document and
+work with them in a modular way they were placed into an */R/* package and made
+available on /GitHub/ [fn: https://github.com/RyanGreenup/PageRank], to load this package use the ~devtools~ library as shown in listing [[load-gh]].
+
+#+NAME:
+#+CAPTION:  Load the /PageRank/ package which consists of the functions from [[#implement_models]]
+#+begin_src R
+library(devtools)
+library(Matrix)
+library(tidyverse) # Maybe, TODO check if this is used, I don't think it is
+
+  if (require("PageRank")) {
+      library(PageRank)
+    }else{
+      devtools::install_github("ryangreenup/PageRank")
+      library(PageRank)
+    }
+
+#+end_src
+
+#+RESULTS:
+: Loading required package: usethis
+: Loading required package: PageRank
+:
+: Attaching package: ‘PageRank’
+
+* Investigating the Second EigenValue
+
+
+** ER Graphs Plotting Various Values
+
+There is some relationship between the determinant and the density, check out the pairs plot:
+
+
+
+#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Determinant.png :eval never-export
+  library(pacman)
+  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
+n <- 20
+p <- 1:n/n
+beta <- 1:n/n
+beta <- runif(n)*100
+sz <- 1:n/n+10
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+input_var
+
+
+random_graph <- function(n, p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      return(c(abs(e2), A_det))
+}
+
+## TODO this should use pmap.
+Y <- matrix(ncol = 2, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
+
+data <- cbind(input_var, Y)
+
+ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  geom_point() +
+  labs(x = "Determinant of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
+  scale_size_continuous(range = c(0.1,1))
+#+end_src
+
+#+RESULTS[08882d661cf5d2410c8335d1850632709c7cf5c5]:
+[[file:../Media/EigenValue_Determinant.png]]
+
+
+#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density.png :eval never-export
+  library(pacman)
+  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
+n <- 100
+p <- 1:n/n
+beta <- 1:n/n
+beta <- runif(n)*100
+sz <- 1:n/n+10
+input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+input_var
+
+
+random_graph <- function(n, p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = sz, p)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A)
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      A_det  <- det(A)
+      return(c(abs(e2), A_dens))
+}
+
+## TODO this should use pmap.
+Y <- matrix(ncol = 2, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
+
+data <- cbind(input_var, Y)
+
+ggplot(data, aes(x = determinant, y = eigenvalue2, color = size, shape = factor(n))) +
+  geom_point(base_size = 99, aes(size = beta)) +
+  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
+  scale_size_continuous(range = c(0.1,1))
+#+end_src
+
+Maybe this looks like a Chi distribution?
+
+#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density_Chi.png :eval never-export
+chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*6
+index  <- seq(from = 0, to = 2, length.out = 100)
+chidata  <- data.frame(index = index, chi = chival)
+ggplot(data) +
+  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
+  geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
+#+end_src
+
+#+RESULTS[c7a830cfab9be72b1ce3782f148a5dcb92c49f48]:
+[[file:../Media/EigenValue_Density_Chi.png]]
+
+** TODO Model the log transformed data using a linear regression or log(-x) regression
+
+\begin{align}
+    \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
+\end{align}
+
+*** TODO Change the colour of each model by using pivot_longer
+** TODO Import wikipedia data
+- +Import the wikipedia data+
+- +Measure the density+
+- +Use the density to guess the \(p\) of the game+
+  + +Justify the witht the scatterplot matrix+
+- +Measure the affect of different \(\beta\) values on \(\lambda_2\) for graphs ov various sizes given that \(p\) value.+
+  + +Or atleast a range within that prob+
+
+    use a /Barabassi-Albert/ Random Graph through the ~igraph::
+** TODO Look at the Trace of the Matrix as a comparison point
+** TODO Use BA Graphs
+
 * Relating the Power Walk to the Random Surfer
   :PROPERTIES:
   :CUSTOM_ID: relating-terms-in-power-walk-to-random-surfer
   :END:
 ** Introduction
-These are notes relating to [[cite:parkPowerWalkRevisiting2013][\textsection 3.3]]
+These are notes relating to [[cite:parkPowerWalkRevisiting2013][\textsection 3.3]], probably won't put this in the report, just arbitrary notes
 
 So if a term in the Power Walk can be related to $\alpha$ in the random
 surfer, which is in turn $\xi_2$, I'll be able to understand it better. [fn:: Although I'm not quite sure why $\alpha$ is $\xi_{2}$ either]
@@ -1839,6 +2008,8 @@ beta
 
 ## * blah
 #+end_src
+
+
 * Simulating the Structure of the Web
 A graph of the internet is /scale free/, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by [[cite:langvilleGooglePageRankScience2012][\textsection 10.7.2]]:
 
@@ -1848,271 +2019,12 @@ n \propto j^{-k}, \quad \exists k \in \mathbb{R}
 
 The /Erdos Renyi/ game is a random network, a superior approach to model the web is to use a scale free networks cite:barabasiPhysicsWeb2001 such as the Barabasi-Albert graph cite:barabasiScalefreeCharacteristicsRandom2000
 
-* Investigating the Second EigenValue
 
 Maybe I should look at the most appropriate way to simulate social network links, one possibility is [[https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf][this paper ]] cite:zengPracticalSimulationMethod2013.
 
 Actually there is a data set available
  cite:garritanoWikipediaArticleNetworks2019, I should just analyse that, see [[file:~/Dropbox/DataSci/Visual_Analytics/Assessment/the-marvel-universe-social-network/plotly3d_Marvel.r][how
 it was done in Visual Analytics as a reminder]].
-
-Using the Wikipedia ArtYeah I think that's right, thaicle compare density and Determinant.
-
-Is the determinant easily calculated for a large matrix?
-  It appears to diverge
-
-  Will the determinant diverge for large matrices?
-  Will the prob of making edges in the game just be the density?
-
-  Look at comparing the determinant and the density of the wikipedia adjacency matrix.
-
-  What are some ways that we can model the second eigenvalue?
-
-** Plotting Various Values
-
-There is some relationship between the determinant and the density, check out the pairs plot:
-
-
-
-#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Determinant.png :eval never-export
-  library(pacman)
-  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
-n <- 20
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- 1:n/n+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-input_var
-
-
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
-
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_det))
-}
-
-## TODO this should use pmap.
-Y <- matrix(ncol = 2, nrow = nrow(input_var))
-for (i in 1:nrow(input_var)) {
-  X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
-}
-if (sum(abs(Y) != abs(Re(Y))) == 0) {
-  Y <- Re(Y)
-}
-nrow(input_var)
-nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-
-data <- cbind(input_var, Y)
-
-ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  geom_point() +
-  labs(x = "Determinant of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
-  scale_size_continuous(range = c(0.1,1))
-#+end_src
-
-#+RESULTS[08882d661cf5d2410c8335d1850632709c7cf5c5]:
-[[file:../Media/EigenValue_Determinant.png]]
-
-
-#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density.png :eval never-export
-  library(pacman)
-  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
-n <- 100
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- 1:n/n+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-input_var
-
-
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
-
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_dens))
-}
-
-## TODO this should use pmap.
-Y <- matrix(ncol = 2, nrow = nrow(input_var))
-for (i in 1:nrow(input_var)) {
-  X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
-}
-if (sum(abs(Y) != abs(Re(Y))) == 0) {
-  Y <- Re(Y)
-}
-nrow(input_var)
-nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-
-data <- cbind(input_var, Y)
-
-ggplot(data, aes(x = determinant, y = eigenvalue2, color = size, shape = factor(n))) +
-  geom_point(base_size = 99, aes(size = beta)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
-  scale_size_continuous(range = c(0.1,1))
-#+end_src
-
-Maybe this looks like a Chi distribution?
-
-#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density_Chi.png :eval never-export
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*6
-index  <- seq(from = 0, to = 2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-#+end_src
-
-#+RESULTS[c7a830cfab9be72b1ce3782f148a5dcb92c49f48]:
-[[file:../Media/EigenValue_Density_Chi.png]]
-
-** TODO Model the log transformed data using a linear regression or log(-x) regression
-
-\begin{align}
-    \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
-\end{align}
-
-*** TODO Change the colour of each model by using pivot_longer
-** TODO Could I get better performance by also considering the determinant?
-No not really, it terms of accuracy
-
-** TODO Is the determinant faster or slower?
-Significantly slower for large matrices.
-** TODO Import wikipedia data
-- +Import the wikipedia data+
-- +Measure the density+
-- +Use the density to guess the \(p\) of the game+
-  + +Justify the witht the scatterplot matrix+
-- +Measure the affect of different \(\beta\) values on \(\lambda_2\) for graphs ov various sizes given that \(p\) value.+
-  + +Or atleast a range within that prob+
-
-    use a /Barabassi-Albert/ Random Graph through the ~igraph::
-
-* Cauchy Integral Formula
-  :PROPERTIES:
-  :CUSTOM_ID: cauchy-integral-formula
-  :END:
-
-This is from section 54 of the book, isn't it nice that it more or less
-just works hey? cite:zhangMakingEigenvectorBasedReputation2004
-
-\begin{align}
-f\left( a \right) \frac{1}{2\pi i} \oint \frac{f\left( z \right)}{z- a}\mathrm{d}z
-\end{align}
-
-In view of this equation then: cite:zhangMakingEigenvectorBasedReputation2004
-
-$$\begin{aligned}
-\left| \int_C \frac{f\left( z \right)}{z- z_0} \mathrm{d}z - 2 \pi i f\left( z_0 \right) \right|<2 \pi \varepsilon
-\end{aligned}$$
-
-Some Images: cite:ngStableAlgorithmsLink2001
-
-#+NAME: testim
-#+CAPTION: This image is for testing purposes cite:moskowitzLibraryGuidesWikipedia
-#+attr_html: :width 400px
-#+attr_latex: :width 12cm
-[[file:media/my-self-rep-frac.png]]
-
-#+NAME: testtikzins
-#+CAPTION: This is a tikz image inserted as a png from imagemagick
-#+attr_html: :width 400px
-#+attr_latex: :width 12cm
-[[file:media/tikz/Snowflake.png]]
-# @@latex: \includestandalone[]{./media/tikz/Snowflake}
-
-
-#+NAME: testtikzstd
-#+CAPTION: This is an example of embedded tikz
-#+attr_html: :width 400px
-#+attr_latex: :width 12cm
-@@latex: \includestandalone[]{./media/tikz/Snowflake}
-# [[file:media/tikz/Snowflake.png]]
-
-
-
-** Heading 2
-   :PROPERTIES:
-   :CUSTOM_ID: heading-2
-   :END:
-
-*** Heading 3
-    :PROPERTIES:
-    :CUSTOM_ID: heading-3
-    :END:
-
-#+BEGIN_SRC sh
-  echo "Hello World"
-#+END_SRC
-
-
-**** Heading 4
-     :PROPERTIES:
-     :CUSTOM_ID: heading-4
-     :END:
-
-
-***** Heading 5
-      :PROPERTIES:
-      :CUSTOM_ID: heading-5
-      :END:
-
-
-****** Heading 6
-       :PROPERTIES:
-       :CUSTOM_ID: heading-6
-       :END:
-
-Arbitrary Code:
-
-#+BEGIN_SRC sh
-  n/bash
-
-  # Print Help
-  if [ "$1" == "-h" ]; then
-      echo "Usage: `basename $0` <Format> <CSS>"
-      style=~/Dropbox/profiles/Emacs/org-css/github-org.css
-      exit 0
-  fi
-
-  # Make a working File from clipboard
-  filename=lkjdskjjalkjkj392jlkj
-  xclip -o -selection clipboard >> $filename
-  LocalFile=$filename.org
-
-  pandoc -s  -f org -t gfm $filename -o $filename
-
-  echo "
-  This was converted from `org` to `md` using `pandoc -t gfm` at time:
-  $(date --utc +%FT%H-%M-%S)
-  " >> $filename
-
-  cat $filename | xclip -selection clipboard
-  rm $filename
-
-  nv & disown
-  echo "Conversion from Org Successful, MD is in Clipboard"
-
-  exit 0
-#+END_SRC
 * Appendix
 
 #+NAME: r-den_undir_ba
@@ -2146,21 +2058,20 @@ image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
 #+attr_latex: :width 12cm
 #+RESULTS[3daa56daec945adae3bb37c7ee10ad97523db634]: r-den_undir_ba
 [[file:media/DensityUndirectedBA.png]]
-* Graph Diagrams
+** Graph Diagrams
 Graph Diagrams shown in [[#markov]] where produced using ~DOT~ (see cite:DOTLanguage,DOTGraphDescription2020).
-* Extensions to this Report
-Accellerating the Computatoin of Page Rank cite:langvilleGooglePageRankScience2012
-
 * Footnotes
 
 [fn:bvl] NOTE: Similar to a signmoid function, which is a solution to $p \propto p(1-p)$, I wonder if this provides a connection to the exponential nature of the power walk
 `﻿erdos.renyi﻿`﻿erdos.renyi﻿``
 
-* TODO  Is the power Walk transition prob matrix a stochastic because it may contain negatives?
-* TODO Look at the Trace of the Matrix as a comparison point
-* TODO TODO Diamater
+* my to do list
+** TODO Look at the Trace of the Matrix as a comparison point
+** TODO Use BA Graphs
+**
+** TODO TODO Diamater
 Diamater of the web sounds like a fun read cite:albertDiameterWorldWideWeb1999
-* TODO Improving the Performance of Page Rank
+** TODO Improving the Performance of Page Rank
 
 This:
 
@@ -2174,3 +2085,5 @@ cite:langvilleReorderingPageRankProblem2006.
 
 
 There was also a book that I downloaded that mentioned it
+
+Accellerating the Computatoin of Page Rank cite:langvilleGooglePageRankScience2012
