@@ -1,4 +1,4 @@
-% Created 2020-10-12 Mon 16:07
+% Created 2020-10-12 Mon 18:48
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -14,7 +14,7 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
-\usepackage{listings}
+\usepackage{minted}
 \IfFileExists{./resources/style.sty}{\usepackage{./resources/style}}{}
 \IfFileExists{./resources/referencing.sty}{\usepackage{./resources/referencing}}{}
 \addbibresource{./resources/references.bib}
@@ -39,7 +39,7 @@
 
 
 \section{Introduction}
-\label{sec:org367ed99}
+\label{sec:orgf166c7a}
 The centrality score of a graph is a metric that measures the
 importance and popularity of a vertex. \footnote{For a small graph drawn
 in a way to minimise overlapping edges the centremost geometric vertex
@@ -198,7 +198,7 @@ or a smoothing constant (see e.g \cite{koppelMeasuringDirectIndirect2014}).
 \end{description}
 
 \subsection{Random Surfer Model}
-\label{sec:orgaa1ceb1}
+\label{sec:org53757f1}
 \subsubsection{Issues}
 \label{issues}
 The approach in \ref{PageRank-Generally} has the following issues
@@ -261,7 +261,7 @@ This however would not be sufficient to ensure that \eqref{eq:recurrence} would 
 \end{figure}
 
 \paragraph{Irreducible}
-\label{sec:orgb98dfaf}
+\label{sec:orgd90d1de}
 A graph that allows travel from any given vertex to any other vertex is said to be irreducible \cite{langvilleGooglePageRankScience2012}, see for example figure \ref{irreducible-example}, this is important in the context of a random walk because only in an irreducible graph can all vertexes be reached from any initial condition.
 
 \begin{figure}[htbp]
@@ -271,7 +271,7 @@ A graph that allows travel from any given vertex to any other vertex is said to 
 \end{figure}
 
 \paragraph{Aperiodic}
-\label{sec:orge388e95}
+\label{sec:org68ca814}
 An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \mathbf{A} is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative or helpful in this context}
 
 
@@ -305,7 +305,7 @@ The relation ship in \eqref{eq:recurrence} can now be re expressed as:
 \caption{\label{fig:rseg}A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue \emph{teleportation} edges are introduced, these may be followed with a probability of \(1 - \alpha\)}
 \end{figure}
 \subsubsection{Limitations}
-\label{sec:orge43b70d}
+\label{sec:org61250c8}
 The \emph{Random Surfer} Model can only consider positively weighted edges, it cannot
 take into account negatively weighted edges. This limitation is increasingly
 important as techniques of sentiment analysis are developed which could indicate
@@ -420,8 +420,8 @@ With some effort however it is possible to express the algorithms in such a way 
 \label{implement_models}
 To Implement the models, first they'll be implemented using an ordinary matrix and then improved to work with sparse matrices and algorithms, the implementation has been performed with \emph{\textbf{R}} and the preamble is provided in listings \ref{preamble}
 
-\lstset{language=r,label=preamble,caption={Implemented Packages used in this report},captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{listing}[htbp]
+\begin{minted}[]{r}
   if (require("pacman")) {
       library(pacman)
     }else{
@@ -429,23 +429,24 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
       library(pacman)
     }
 
-    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise)
+    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise, corrplot, latex2exp)
 #   options(scipen=20) # Resist Scientific Notation
-\end{lstlisting}
+\end{minted}
+\caption{\label{preamble}Implemented Packages used in this report}
+\end{listing}
 
 \subsection{Implementing the Random Surfer}
-\label{sec:orgdfe9502}
+\label{sec:org48147fc}
 \subsubsection{Small Graph, Ordinary Matrices}
 \label{implementing-page-rank-methods}
 \paragraph{Example Graph}
 \label{example-graph}
 Consider the following graph:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
   plot(g1)
-\end{lstlisting}
+\end{minted}
 
 \begin{figure}[htbp]
 \centering
@@ -457,13 +458,15 @@ g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4
 \label{adjacency-matrix}
 The adjacency Matrix is given by:
 
-\lstset{language=r,label=adj-mat-random-surf,caption={Return the Adjacency Matrix corresponding to figure \ref{example-rs-graph}},captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{listing}[htbp]
+\begin{minted}[]{r}
   A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE)
 
   ## igraph gives back the transpose
   (A <- t(A))
-\end{lstlisting}
+\end{minted}
+\caption{\label{adj-mat-random-surf}Return the Adjacency Matrix corresponding to figure \ref{example-rs-graph}}
+\end{listing}
 
 \begin{verbatim}
    1 2 8 5 7 6 9 3 4 10
@@ -506,11 +509,13 @@ below and in this case there exists corresponding \(\mathbf{T}\) that is
 stochastic and so it is sufficient to use the relationship at
 \eqref{eq:basic-trans-def}, this is shown in listing \ref{basic-trans-def}.
 
-\lstset{language=r,label=basic-trans-def,caption={Solve the Transition Probability Matrix by scaling each column to 1 using matrix multiplication.},captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{listing}[htbp]
+\begin{minted}[]{r}
 (T <- A %*% diag(1/colSums(A)))
 
-\end{lstlisting}
+\end{minted}
+\caption{\label{basic-trans-def}Solve the Transition Probability Matrix by scaling each column to 1 using matrix multiplication.}
+\end{listing}
 
 \begin{verbatim}
    [,1] [,2] [,3] [,4] [,5] [,6]      [,7] [,8] [,9] [,10]
@@ -530,14 +535,13 @@ stochastic and so it is sufficient to use the relationship at
 \begin{enumerate}
 \item Create a Function
 \label{create-a-function}
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
    adj_to_probTrans <- function(A) {
      A %*% diag(1/colSums(A))
    }
 
    (T <- adj_to_probTrans(A)) %>% round(2)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -589,15 +593,17 @@ Recall from \ref{fix} the following variables of the \emph{Random Surfer} model:
 These are
 assigned to \emph{\textbf{R}} variables in listing \ref{r-var-random-surfer}.
 
-\lstset{language=r,label=r-var-random-surfer,caption={Assign Random Surfer Variables, observe the unique value given to \texttt{l}, this will be relevant later.},captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{listing}[htbp]
+\begin{minted}[]{r}
   B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
   l <- 0.8123456789
 
   (S <- l*T+(1-l)*B) %>% round(2)
 
 
-\end{lstlisting}
+\end{minted}
+\caption{\label{r-var-random-surfer}Assign Random Surfer Variables, observe the unique value given to \texttt{l}, this will be relevant later.}
+\end{listing}
 
 \begin{verbatim}
    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -617,11 +623,13 @@ assigned to \emph{\textbf{R}} variables in listing \ref{r-var-random-surfer}.
 The eigenvector corresponding to the the eigenvalue of 1 will be the
 stationary point, this is shown in listing \ref{eigenSol-rand-surf}
 
-\lstset{language=r,label=eigenSol-rand-surf,caption={Solve the Eigen vectors and Eigen values of the transition probability matrix corresponding to the graph.},captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{listing}[htbp]
+\begin{minted}[]{r}
 print(eigen(S, symmetric = FALSE, only.values = TRUE)$values, 9)
 print(eigen(S, symmetric = FALSE)$vectors, 3)
-\end{lstlisting}
+\end{minted}
+\caption{\label{eigenSol-rand-surf}Solve the Eigen vectors and Eigen values of the transition probability matrix corresponding to the graph.}
+\end{listing}
 
 \begin{verbatim}
  [1]  1.00000000e+00+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
@@ -676,20 +684,18 @@ $$
 1 \vec{p} = S\vec{p}
 $$
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
   (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1]) %>% Re() %>%  round(2)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 [1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
 \end{verbatim}
 
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
   (p_new <- S %*% p) %>% Re()  %>% as.vector() %>% round(2)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 [1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
@@ -699,10 +705,9 @@ $$
 However this vector does not sum to 1 so the scale should be adjusted
 (for probabilities the vector should sum to 1):
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
   (p_new <- p_new/sum(p_new)) %>% Re() %>% as.vector() %>% round(2)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 [1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
@@ -712,8 +717,7 @@ However this vector does not sum to 1 so the scale should be adjusted
 \label{power-value-method}
 Using the power method should give the same result as the eigenvalue method, again but for scale:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
   p_new <- p_new *123456789
 
   while (sum(round(p, 9) != round(p_new, 9))) {
@@ -722,7 +726,7 @@ Using the power method should give the same result as the eigenvalue method, aga
   }
 
   round(Re(p_new), 2) %>% as.vector()
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 [1] 26602900 28759738  2316720  2693115  2693115  2693115  2316720 26834105
@@ -733,10 +737,9 @@ Using the power method should give the same result as the eigenvalue method, aga
 If scaled to 1 the
 same value will be returned:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
   (p_new <- p_new/sum(p_new)) %>% Re %>% as.vector() %>% round(2)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 [1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
@@ -747,8 +750,7 @@ same value will be returned:
 If the initial state sums to 1, then the scale of the stationary
 vector will also sum to 1, so this isn't in practice an issue for the power method:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
   p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
   p_new <- S %*% p
 
@@ -758,7 +760,7 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
   }
 
   cbind(p_new, p)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
          [,1]       [,2]
@@ -788,17 +790,16 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
   ## 10 0.0200000 0.0200000
 \end{verbatim}
 \subsubsection{Large Graph, Sparse Matrices using CRS}
-\label{sec:orgbe26842}
+\label{sec:org15593c2}
 \paragraph{Creating the Probability Transition Matrix}
-\label{sec:orgb5b7d25}
+\label{sec:org6d85075}
 Implementing the page rank method on a larger graph requires the use of more
 efficient form of matrix storage as discussed at \ref{sparse-matrix}
 
 A sparse matrix can be created using the following syntax, which will return a
 matrix of the class \texttt{dgCMatrix}:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 library(Matrix)
 ## Create Example Matrix
 n <- 20
@@ -807,7 +808,7 @@ i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 9
 A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 
 summary(A)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
@@ -854,8 +855,8 @@ pracice an error however to create this new matrix, a new \texttt{sparseMatrix} 
 need to be created using the properties of the original matrix, this can be done
 like so:
 
-\lstset{language=r,label=sparse-diag,caption={A function that takes in a column \(\rightarrow\) row adjacency matrix (\(\mathbf{A}\)) and returns a diagonal matrix (\(\mathbf{D}^{-1}_{\mathbf{A}}}\)) such that \(\vec{1}\mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\)},captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{listing}[htbp]
+\begin{minted}[]{r}
  sparse_diag <- function(mat) {
 
   ## Get the Dimensions
@@ -873,15 +874,16 @@ like so:
   ## Return the Diagonal Matrix
   return(D)
 }
-\end{lstlisting}
+\end{minted}
+\caption{\label{sparse-diag}A function that takes in a column \(\rightarrow\) row adjacency matrix (\(\mathbf{A}\)) and returns a diagonal matrix (\(\mathbf{D}^{-1}_{\mathbf{A}}}\)) such that \(\vec{1}\mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\)}
+\end{listing}
 
 Applying this to the previously created sparse matrix:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 D <- sparse_diag(t(A))
 summary(D)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
@@ -910,10 +912,9 @@ summary(D)
 
 and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 summary((T <- t(A) %*% D))
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
@@ -990,8 +991,7 @@ Let \(\mathbf{F}= \mathbf{B}\vec{p}\), consider the value of \(\mathbf{F}\) :
 \end{align}
 So instead the power method can be implemented by performing an algorithm that involves only sparse matrices:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 ## Find Stationary point of random surfer
 N     <- nrow(A)
 alpha <- 0.85
@@ -1010,7 +1010,7 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 }
 
 p %>% head() %>% print()
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 [1] 1
@@ -1026,9 +1026,9 @@ p %>% head() %>% print()
 \end{verbatim}
 
 \subsection{Power Walk Method}
-\label{sec:org6a62cfa}
+\label{sec:orgded791f}
 \subsubsection{Introduction}
-\label{sec:org394b067}
+\label{sec:org8a0fdeb}
 Recall from \ref{pwalk} that the power walk is given by:
 
 \begin{align*}
@@ -1051,12 +1051,11 @@ where:
 \end{itemize}
 
 \subsubsection{Ordinary Matrices}
-\label{sec:org0b699f8}
+\label{sec:org94d10f7}
 Implementing the Power walk using ordinary matrices is very similar to the \emph{Random Surfer} model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 
 Create the Adjacency Matrix
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
   A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE)
 
 ## * Function to create Prob Trans Mat
@@ -1072,7 +1071,7 @@ adj_to_probTrans <- function(A, beta) {
 
 beta <- β <- 0.867
 (W <- adj_to_probTrans(A, beta = β)) %>% round(2)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -1089,11 +1088,10 @@ beta <- β <- 0.867
 \end{verbatim}
 
 Look at the Eigenvalues:
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 eigen(W, only.values = TRUE)$values %>% round(9)
 eigen(W)$vectors/sum(eigen(W)$vectors)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
  [1]  1.000000000+0.000000000i  0.014269902+0.000000000i
@@ -1140,8 +1138,7 @@ Unlike the \emph{Random Surfer} Model in listing \ref{eigenSol-rand-surf} at \re
 
 Use the power method
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 ## * Power Method
 p    <- rep(0, nrow(W))
 p[1] <- 1
@@ -1155,7 +1152,7 @@ while (sum(round(p, 9) != round(p_new, 9))) {
 
 
 p %>% as.vector()
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 [1] 0.10153165 0.10159353 0.09609664 0.09725145 0.10153165 0.10008449
@@ -1165,9 +1162,9 @@ p %>% as.vector()
 
 
 \subsubsection{Sparse Matrices}
-\label{sec:orgc121160}
+\label{sec:org33bb6d4}
 \paragraph{Theory; Simplifying Power Walk to be solved with Sparse Matrices}
-\label{sec:org550d6c3}
+\label{sec:org14d53ce}
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -1346,8 +1343,7 @@ And so the the power method can be implemented using sparse matrices:
 
 in terms of \textbf{\emph{R}}:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 
 # It would also be possible to sum the element-wise product
@@ -1358,7 +1354,7 @@ p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
 # would be true in R but not true generally
 
 (t(δ) %*% p) == (δ %*% p)
-\end{lstlisting}
+\end{minted}
 
 
 \subparagraph{Solving the Background Probability}
@@ -1442,25 +1438,24 @@ Matrices & Vectors\\
 \end{center}
 
 \paragraph{Practical; Implementing the Power Walk on Sparse Matrices}
-\label{sec:org868f000}
+\label{sec:org6c71b40}
 \subparagraph{Inspect the newly created matrix and create constants}
-\label{sec:orgc9a843a}
+\label{sec:orgc3e865c}
 \subparagraph{Setup}
-\label{sec:org5acf571}
+\label{sec:orgc77da2a}
 \begin{enumerate}
 \item Define function to create DiagonalsSparse Diagonal Function
-\label{sec:org6319462}
+\label{sec:org3345c65}
 
 Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the \texttt{sparse\_diag} function in listing \ref{sparse-diag} will still work.
 \end{enumerate}
 
 \subparagraph{Power Walk}
-\label{sec:org3555bf6}
+\label{sec:org12186e5}
 \begin{enumerate}
 \item Define B
-\label{sec:org9639b3a}
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\label{sec:org8657282}
+\begin{minted}[]{r}
 A      <- Matrix::Matrix(A, sparse = TRUE)
 B      <- A
 B@x    <- β^(A@x)
@@ -1476,7 +1471,7 @@ Bo@x   <- β^(A@x) -1   # This in theory would be faster
 
 
  n <- nrow(A)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 10 x 10 sparse Matrix of class "dgCMatrix"
@@ -1494,10 +1489,9 @@ Bo@x   <- β^(A@x) -1   # This in theory would be faster
 10 . . . . . . . 1 1 .
 \end{verbatim}
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 print(round(B, 2))
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 10 x 10 Matrix of class "dgeMatrix"
@@ -1515,10 +1509,9 @@ print(round(B, 2))
 \end{verbatim}
 
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 print(Bo,2)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 10 x 10 sparse Matrix of class "dgCMatrix"
@@ -1537,13 +1530,12 @@ print(Bo,2)
 \end{verbatim}
 
 \item Solve the Scaling Matrix
-\label{sec:org7376d9b}
+\label{sec:org716047e}
 We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 (δB   <- 1/(colSums(Bo)+n))
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
         1         2         8         5         7         6         9         3
@@ -1553,10 +1545,9 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 \end{verbatim}
 
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 (δB   <- 1/(colSums(B)))
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
         1         2         8         5         7         6         9         3
@@ -1567,19 +1558,17 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 
 
 \item Find the Transition Probability Matrix
-\label{sec:orgf8f6a10}
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\label{sec:orgd2583c5}
+\begin{minted}[]{r}
   DB   <- diag(δB)
 ## ** Create the Transition Probability Matrix
 ## Create the Trans Prob Mat using Power Walk
   T <- Bo %*% DB
-\end{lstlisting}
+\end{minted}
 
 \item Implement the Loop
-\label{sec:org0ff132a}
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\label{sec:org529b934}
+\begin{minted}[]{r}
 ## ** Implement the Power Walk
 ## *** Set Initial Values
   p_new  <- rep(1/n, n)  # Uniform
@@ -1595,7 +1584,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 ## ** Report the Values
 print(paste("The stationary point is"))
 print(p)
-\end{lstlisting}
+\end{minted}
 
 \begin{verbatim}
 [1] "The stationary point is"
@@ -1605,14 +1594,14 @@ print(p)
 \end{enumerate}
 
 \section{Creating a Package}
-\label{sec:orgf4d717f}
+\label{create-package}
 In order to investigate the effect of the model parameters on the second
 Eigenvalue it will be necessary to use these functions, in order to document and
 work with them in a modular way they were placed into an \textbf{\emph{R}} package and made
 available on \emph{GitHub} [fn: \url{https://github.com/RyanGreenup/PageRank}], to load this package use the \texttt{devtools} library as shown in listing .
 
-\lstset{language=r,label,caption={Load the \emph{PageRank} package which consists of the functions from \ref{implement_models}},captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{listing}[htbp]
+\begin{minted}[]{r}
 library(devtools)
 library(Matrix)
 library(tidyverse) # Maybe, TODO check if this is used, I don't think it is
@@ -1624,7 +1613,9 @@ library(tidyverse) # Maybe, TODO check if this is used, I don't think it is
       library(PageRank)
     }
 
-\end{lstlisting}
+\end{minted}
+\caption{\label{}Load the \emph{PageRank} package which consists of the functions from \ref{implement_models}}
+\end{listing}
 
 \begin{verbatim}
 Loading required package: usethis
@@ -1634,38 +1625,53 @@ Attaching package: ‘PageRank’
 \end{verbatim}
 
 \section{Investigating the Second EigenValue}
-\label{sec:orgb8e613e}
+\label{sec:orgca8792b}
+\subsection{ER Graphs Plotting Various Values}
+\label{sec:org3684d78}
+
+The \emph{Erdos Renyi} game creates a graph by creating every single edge with some
+constant probability. \cite[IgraphManualPagesa]{IgraphManualPages} Sampling these graphs will provide a broad picture for the
+overall behaviour between the method parameters of the \emph{Power Walk} and the
+second eigenvalue.
 
 
-It appears to diverge
-
-Will the determinant diverge for large matrices?
-Will the prob of making edges in the game just be the density?
-
-Look at comparing the determinant and the density of the wikipedia adjacency matrix.
-
-What are some ways that we can model the second eigenvalue?
-
-\subsection{Plotting Various Values}
-\label{sec:org73ad855}
-
-There is some relationship between the determinant and the density, check out the pairs plot:
+By looping over many random graphs for a variety of probabilities a data set can
+be constructed and a correlation plot generated. To implement this a data frame
+of input values was constructed in listing \ref{input_var}, a function that builds a
+data frame with the second eigenvalue, density, determinant and trace was constructed in listing \ref{output_def} and finally a correlation plot was generated in listing \ref{corrplot} shown in figure .
 
 
-
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
-  library(pacman)
-  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
-n <- 20
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- 1:n/n+10
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+# Generate Constants
+n         <- 20
+p         <- 1:n/n
+beta      <- 1:n/n
+beta      <- runif(n)*100
+#sz       <- 1:n/n+10
+sz        <- (1:n/n)*100+10
 input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-input_var
+
+# Print out a sample of all the rows
+input_var[sample(1:nrow(input_var), 6),]
+\end{minted}
+\caption{\label{input_var}A data frame consisting of input variables to be used to generate \emph{Erdos Renyi} graphs.}
+\end{listing}
+
+\begin{verbatim}
+      n    p       beta size
+7154 20 0.70  0.5872766  100
+4103 20 0.15 82.8545866   65
+133  20 0.65 64.6700020   15
+3887 20 0.35 76.8201442   60
+1725 20 0.25 64.6700020   35
+6071 20 0.55 26.0913073   90
+\end{verbatim}
 
 
+\mathrm{mean}\left(\mathbf{A}\right), \left\lvert A \right\rvert,
+\mathrm{tr}\left( \mathbf{A} \right)\right\(\rangle\)$\backslash$) corresponding to the \emph{Power Walk} method using the \texttt{PageRank} package discussed at \ref{create-package}.
+\begin{minted}[]{r}
 random_graph <- function(n, p, beta, size) {
       g1 <- igraph::erdos.renyi.game(n = sz, p)
       A <- igraph::get.adjacency(g1) # Row to column
@@ -1673,119 +1679,124 @@ random_graph <- function(n, p, beta, size) {
 
       A_dens <- mean(A)
       T      <- PageRank::power_walk_prob_trans(A)
+      T_tr     <- sum(diag(T))
       e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
       A_det  <- det(A)
-      return(c(abs(e2), A_det))
+      T_det  <- det(T)
+      return(c(abs(e2), A_dens, T_det, T_tr)) # A_det and T_tr are uncorrelated
 }
+\end{minted}
 
-## TODO this should use pmap.
-Y <- matrix(ncol = 2, nrow = nrow(input_var))
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+filename <- "erdosData.rds"
+
+if (file.exists(filename)) {
+
+  data <- readRDS(filename)
+
+  } else {
+
+# Loop over the data
+nc <- length(random_graph(1, 1, 1, 1))
+Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+
 for (i in 1:nrow(input_var)) {
   X <- as.vector(input_var[i,])
   Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
 }
+
+## Remove the 0i component
 if (sum(abs(Y) != abs(Re(Y))) == 0) {
   Y <- Re(Y)
 }
-nrow(input_var)
-nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
 
+## Clean up the data frame
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant", "trace")
 data <- cbind(input_var, Y)
+data <- data[data$density!=0,]
 
-ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  geom_point() +
-  labs(x = "Determinant of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
-  scale_size_continuous(range = c(0.1,1))
-\end{lstlisting}
+## Save the data
+saveRDS(data, filename)
+}
+
+corrplot(cor(data), method = "ellipse", type = "lower")
+\end{minted}
+\caption{\label{corrplot}Produce a correlation plot Created from a dataframe constructed from the values assigned in listing \ref{input_var} by using the function defined in listing \ref{output_def}, see figure .}
+\end{listing}
 
 \begin{center}
-\includegraphics[width=.9\linewidth]{../Media/EigenValue_Determinant.png}
+\includegraphics[width=.9\linewidth]{media/corrplot.png}
 \end{center}
 
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
-  library(pacman)
-  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
-n <- 100
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- 1:n/n+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-input_var
+\subsubsection{Density of Adjacency Matrix}
+\label{sec:org3696672}
+There appears to be a strong negative correlation between the eigenvalue and the density of the adjacency matrix.
 
+This relationship is plotted in listing and figure .
 
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
+The relationship appears almost linear and so the data is log transformed in revealing a concave down relationship, this relationship could be parabolic or logarithmic and so two models are fitted and overlayed in listing and shown in figure . The logarithmic model is a significantly better fit and by investigating the coefficients of the fith the following relationship can be determined:
 
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_dens))
-}
-
-## TODO this should use pmap.
-Y <- matrix(ncol = 2, nrow = nrow(input_var))
-for (i in 1:nrow(input_var)) {
-  X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
-}
-if (sum(abs(Y) != abs(Re(Y))) == 0) {
-  Y <- Re(Y)
-}
-nrow(input_var)
-nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-
-data <- cbind(input_var, Y)
-
-ggplot(data, aes(x = determinant, y = eigenvalue2, color = size, shape = factor(n))) +
-  geom_point(base_size = 99, aes(size = beta)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
-  scale_size_continuous(range = c(0.1,1))
-\end{lstlisting}
-
-Maybe this looks like a Chi distribution?
-
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*6
-index  <- seq(from = 0, to = 2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-\end{lstlisting}
-
-\begin{center}
-\includegraphics[width=.9\linewidth]{../Media/EigenValue_Density_Chi.png}
-\end{center}
-
-\subsection{Model the log transformed data using a linear regression or log(-x) regression}
-\label{sec:org427a59f}
 
 \begin{align}
     \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
 \end{align}
 
-\subsubsection{Change the colour of each model by using pivot\textsubscript{longer}}
-\label{sec:org91979e7}
-\subsection{Could I get better performance by also considering the determinant?}
-\label{sec:org546cd17}
-No not really, it terms of accuracy
+This suggests that a more interlinked network will converge faster when using the \emph{Power Walk} method.
 
-\subsection{Is the determinant faster or slower?}
-\label{sec:org95171ca}
-Significantly slower for large matrices.
+
+\subsubsection{Trace of Transition Probability Matrix}
+\label{sec:org0951e0c}
+The correlation plot suggests that there is some positive relationship between
+the trace of the transition probability matrix and the second eigenvalue, these
+values are plotted in listing \ref{trace_plot_er} and figure \ref{fig:trace_plot_er}, this
+relationship appears to be heteroskedastic and so it is log transformed in
+listing \ref{trace_plot_log_er} and figure \ref{fig:trace_plot_log_er}. This plot is still appears to have a non constant variance but this could be due to less data corresponding to lower trace values.
+
+The plot suggests an exponential or hyperbolic model may be a good fit, this is performed in listing and  
+
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+ggplot(data, aes(x = trace , y = log(eigenvalue2))) +
+  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
+#  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1.5)) +
+  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
+\end{minted}
+\caption{\label{trace_plot_log_er}Plot \(\xi_{2}\) against the trace of the matrix of the \emph{Power Walk} Transition Probability Matrix, see figure \ref{fig:trace_plot_log_er}}
+\end{listing}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/trace_plot_log_er.png}
+\caption{\label{fig:trace_plot_log_er}Log transformed plot of the trace of the \emph{Power Walk} probability transition matrix}
+\end{figure}
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+ggplot(data, aes(x = trace , y = eigenvalue2)) +
+  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
+#  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1.5)) +
+  labs(x = "Trace of Transition Matrix", y = TeX("$ \\xi_2 $ of $\\mathbf{W}$"))
+\end{minted}
+\caption{\label{trace_plot_er}Plot \(\xi_{2}\) against the trace of the matrix of the \emph{Power Walk} Transition Probability Matrix}
+\end{listing}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/trace_plot_er.png}
+\caption{\label{fig:trace_plot_er}Plot of \(\xi_{2}\) against the trace of the \emph{Power Walk} probability transition matrix}
+\end{figure}
+
+\subsection{Model the log transformed data using a linear regression or log(-x) regression}
+\label{sec:org03589e5}
+\subsubsection{Change the colour of each model by using pivot\textsubscript{longer}}
+\label{sec:org24aa92d}
 \subsection{Import wikipedia data}
-\label{sec:org57129fa}
+\label{sec:org7bbae52}
 \begin{itemize}
 \item \sout{Import the wikipedia data}
 \item \sout{Measure the density}
@@ -1800,11 +1811,31 @@ Significantly slower for large matrices.
 use a \emph{Barabassi-Albert} Random Graph through the \textasciitilde{}igraph::
 \end{itemize}
 \end{itemize}
+\subsection{Look at the Trace of the Matrix as a comparison point}
+\label{sec:orga643dbe}
+\subsection{Use BA Graphs}
+\label{sec:orgeb655c1}
 
+\section{Simulating the Structure of the Web}
+\label{sec:org42cb594}
+A graph of the internet is \emph{scale free}, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by \cite[\textsection 10.7.2]{langvilleGooglePageRankScience2012}:
+
+\begin{align}
+n \propto j^{-k}, \quad \exists k \in \mathbb{R}
+\end{align}
+
+The \emph{Erdos Renyi} game is a random network, a superior approach to model the web is to use a scale free networks \cite{barabasiPhysicsWeb2001} such as the Barabasi-Albert graph \cite{barabasiScalefreeCharacteristicsRandom2000}
+
+
+Maybe I should look at the most appropriate way to simulate social network links, one possibility is \href{https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf}{this paper } \cite{zengPracticalSimulationMethod2013}.
+
+Actually there is a data set available
+ \cite{garritanoWikipediaArticleNetworks2019}, I should just analyse that, see \href{file:///home/ryan/Dropbox/DataSci/Visual\_Analytics/Assessment/the-marvel-universe-social-network/plotly3d\_Marvel.r}{how
+it was done in Visual Analytics as a reminder}.
 \section{Relating the Power Walk to the Random Surfer}
 \label{relating-terms-in-power-walk-to-random-surfer}
 \subsection{Introduction}
-\label{sec:orgbb248aa}
+\label{sec:orgffb3cc6}
 These are notes relating to \cite[\textsection 3.3]{parkPowerWalkRevisiting2013}, probably won't put this in the report, just arbitrary notes
 
 So if a term in the Power Walk can be related to \(\alpha\) in the random
@@ -1942,7 +1973,7 @@ But the next step requires showing that:
 \end{align*}
 
 \subsection{Equate the Power Walk to the Random Surfer}
-\label{sec:org4b51d5c}
+\label{sec:orgcf4d6b3}
 Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
 
 \begin{align}
@@ -2028,19 +2059,19 @@ And setting \(\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}\)  from \eqre
 Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}  \eqref{eq:bgVal2}
 
 \subsection{Conclusion}
-\label{sec:org74ee64a}
+\label{sec:org86c526d}
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
 
 \subsection{The Second Eigenvalue}
-\label{sec:org2ca8fe0}
+\label{sec:org3df98b7}
 \subsubsection{The Random Surfer}
-\label{sec:org2cec17a}
+\label{sec:orgca72c64}
 The Second eigenvalue \(\xi_2\) of the Power Surfer is less than \(\alpha\) (\href{Proposal/Propsal.org}{See 3.2; Stability and Concvergence, of proposal}).
 \subsubsection{Power Walk}
-\label{sec:org524980b}
+\label{sec:org8e44ea5}
 Because the Power Walk relates to the random surfer as demonstrated in section \ref{relating-terms-in-power-walk-to-random-surfer}, what can be said about \(\xi_{2}\)
 \paragraph{Applying this to Power Walk}
-\label{sec:org6975d20}
+\label{sec:org50bafd0}
 Let \(\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2\) return the second value of a transition, probability Matrix, then observe that:
 
 
@@ -2055,7 +2086,7 @@ where:
 \item \(\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)\) refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
 \end{itemize}
 \subparagraph{My attempt}
-\label{sec:orgcefd57c}
+\label{sec:orgba3782b}
 \begin{align}
     \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
 %    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
@@ -2070,8 +2101,7 @@ So I thought maybe if I could find a value of \(\beta\) that satisfied \eqref{eq
 
 Seemingly it's only satisfied where \(\beta = 1\) though, using this simulation:
 
-\lstset{language=r,label= ,caption= ,captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{minted}[]{r}
 g1 <- igraph::erdos.renyi.game(n = 9, 0.2)
 A <- igraph::get.adjacency(g1) # Row to column
 A <- t(A)
@@ -2126,30 +2156,13 @@ beta
 
 
 ## * blah
-\end{lstlisting}
+\end{minted}
 
-
-\section{Simulating the Structure of the Web}
-\label{sec:org77ab8f4}
-A graph of the internet is \emph{scale free}, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by \cite[\textsection 10.7.2]{langvilleGooglePageRankScience2012}:
-
-\begin{align}
-n \propto j^{-k}, \quad \exists k \in \mathbb{R}
-\end{align}
-
-The \emph{Erdos Renyi} game is a random network, a superior approach to model the web is to use a scale free networks \cite{barabasiPhysicsWeb2001} such as the Barabasi-Albert graph \cite{barabasiScalefreeCharacteristicsRandom2000}
-
-
-Maybe I should look at the most appropriate way to simulate social network links, one possibility is \href{https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf}{this paper } \cite{zengPracticalSimulationMethod2013}.
-
-Actually there is a data set available
- \cite{garritanoWikipediaArticleNetworks2019}, I should just analyse that, see \href{file:///home/ryan/Dropbox/DataSci/Visual\_Analytics/Assessment/the-marvel-universe-social-network/plotly3d\_Marvel.r}{how
-it was done in Visual Analytics as a reminder}.
 \section{Appendix}
-\label{sec:org6f6507f}
+\label{sec:org9180665}
 
-\lstset{language=r,label=r-den_undir_ba,caption={\textbf{\emph{R}} code to produce an image illustrating the density of a simulated Barabasi-Albert graph, the \emph{Barabasi-Albert} graph is a good analouge for the link structure of the internet \cite{langvilleGooglePageRankScience2012,barabasiPhysicsWeb2001,barabasiScalefreeCharacteristicsRandom2000} see the output in figure \ref{fig:den_undir_ba}},captionpos=b,numbers=none}
-\begin{lstlisting}
+\begin{listing}[htbp]
+\begin{minted}[]{r}
 library(Matrix)
 library(igraph)
 n <- 200
@@ -2170,7 +2183,9 @@ par(pty = "s", mai = c(0.1, 0.1, 0.4, 0.1))
 
 title=paste0("Undirected Barabassi Albert Graph with parameters:\n Power = ", power, "; size = ", n, "; Edges/step = ", round(m))
 image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
-\end{lstlisting}
+\end{minted}
+\caption{\label{r-den_undir_ba}\textbf{\emph{R}} code to produce an image illustrating the density of a simulated Barabasi-Albert graph, the \emph{Barabasi-Albert} graph is a good analouge for the link structure of the internet \cite{langvilleGooglePageRankScience2012,barabasiPhysicsWeb2001,barabasiScalefreeCharacteristicsRandom2000} see the output in figure \ref{fig:den_undir_ba}}
+\end{listing}
 
 \begin{figure}[htbp]
 \centering
@@ -2178,17 +2193,20 @@ image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
 \caption{\label{fig:den_undir_ba}Plot of the adjacency matrix corresponding to a Barabassi-Albert (i.e. \emph{Scale Free}) Graph produced by listing \ref{r-den_undir_ba}, observe the matrix is quite sparse.}
 \end{figure}
 \subsection{Graph Diagrams}
-\label{sec:orgc62fccd}
+\label{sec:org5508eaa}
 Graph Diagrams shown in \ref{markov} where produced using \texttt{DOT} (see \cite{DOTLanguage,DOTGraphDescription2020}).
 \section{my to do list}
-\label{sec:org05b49fb}
+\label{sec:orge7ff0a9}
 \subsection{Look at the Trace of the Matrix as a comparison point}
-\label{sec:orgb535d89}
+\label{sec:org2334c3c}
+\subsection{Use BA Graphs}
+\label{sec:org26151f2}
+**
 \subsection{TODO Diamater}
-\label{sec:org41caea2}
+\label{sec:org619986b}
 Diamater of the web sounds like a fun read \cite{albertDiameterWorldWideWeb1999}
 \subsection{Improving the Performance of Page Rank}
-\label{sec:orga519d26}
+\label{sec:orgdce40ee}
 
 This:
 

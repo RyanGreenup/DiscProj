@@ -740,6 +740,25 @@
       \endverb
       \keyw{graph processing,hadoop,link prediction}
     \endentry
+    \entry{IgraphManualPages}{online}{}
+      \field{sortinit}{I}
+      \field{sortinithash}{9417e9a1288a9371e2691d999083ed39}
+      \field{labeltitlesource}{title}
+      \field{title}{Igraph {{R}} Manual Pages}
+      \field{urlday}{6}
+      \field{urlmonth}{10}
+      \field{urlyear}{2020}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/ZVZ8RDTQ/sample_pa.html
+      \endverb
+      \verb{urlraw}
+      \verb https://igraph.org/r/doc/sample_pa.html
+      \endverb
+      \verb{url}
+      \verb https://igraph.org/r/doc/sample_pa.html
+      \endverb
+    \endentry
     \entry{kamvarAdaptiveMethodsComputation2004b}{article}{}
       \name{author}{3}{}{%
         {{hash=73c55e74069152b3ac7680b13ebdd7b4}{%

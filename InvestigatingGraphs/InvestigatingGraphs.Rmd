@@ -6,6 +6,13 @@ output: html_notebook
 # Investigating Second Eigenvalue
 
 ```{r}
+  if (require("PageRank")) {
+      library(PageRank)
+    }else{
+      devtools::install_github("ryangreenup/PageRank")
+      library(PageRank)
+    }
+
   library(pacman)
   pacman::p_load(PageRank, devtools, Matrix, igraph, mise, tidyverse, rgl, latex2exp)
 #  mise()
@@ -40,9 +47,10 @@ random_graph <- function(n, p, beta, size) {
 
       A_dens <- mean(A)
       T      <- PageRank::power_walk_prob_trans(A)
+      tr     <- sum(diag(T))
       e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_dens, A_det))
+      A_det  <- det(T)
+      return(c(abs(e2), A_dens, A_det, tr))
 }
 ```
 
@@ -62,10 +70,9 @@ if (sum(abs(Y) != abs(Re(Y))) == 0) {
 }
 nrow(input_var)
 nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant")
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant", "trace_w")
 (data <- cbind(input_var, Y)) %>% head()
 data <- data[data$density!=0,]
-
 
 ```
 
@@ -97,6 +104,10 @@ This is interesting, lets look at a snapshot of it:
 
 ```{r}
 pairs(data)
+cor(data)
+library(corrplot)
+corrplot(cor(data), method = "ellipse", type = "lower")
+names(data)
 ```
 
 ```{r}
@@ -133,11 +144,9 @@ fig
 
 OK so nothing great, well the spread is heteroskedastic so let's log transform it:
 
-```{r}
 
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
-index  <- seq(from = 0, to = 2.2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
+
+```{r}
 ggplot(data, aes(x = density, y = log(eigenvalue2))) +
   geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
 #  stat_smooth() +
@@ -198,6 +207,50 @@ ggplot(data, aes(x = density, y = log(eigenvalue2))) +
 
 
 ```
+#### Look at the Trace of T
+
+```{r}
+ggplot(data, aes(x = trace_w , y = log(eigenvalue2))) +
+  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
+#  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1.5)) +
+  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
+```
+
+```{r}
+mod_df <- data
+
+mod_hyp <- lm(log(eigenvalue2) ~ I(trace_w^(-1)), data = data)
+mod_df$hyp <- predict(mod_hyp)
+
+mod_log <- lm(log(eigenvalue2) ~ log(trace_w), data = data)
+mod_df$log <- predict(mod_log)
+
+```
+
+```{r}
+ggplot(mod_df, aes(x = trace_w, y = log(eigenvalue2))) +
+  geom_point(mapping = aes(size = size, alpha = 0.01,  color = size, shape = factor(n))) +
+#  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1.5)) +
+  labs(x = "Trace of A", y = TeX("$\\log\\left( \\xi_2 \\right)$ of T")) +
+  geom_line(aes(x = trace_w, y = hyp, lwd = 2)) +
+  geom_line(aes(x = trace_w, y = log, lwd = 2))
+```
+
+```{r}
+mod_df_long <- pivot_longer(mod_df, cols = c(hyp, log), names_to = "Model_Type", values_to = "eigenvalue2_mod")
+mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
+
+ggplot(mod_df_long, aes(x = trace_w)) +
+  geom_point(shape = 23, aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.7, alpha = 0.4) +
+  geom_line(aes(y = eigenvalue2_mod, col = Model_Type), size = 1) +
+  labs(col = c("Model \nType")) +
+  scale_color_manual(labels = c("Hyperbolic", "Logarithmic"),
+                     values = c("indianred", "royalblue")) +
+  theme_linedraw()
+```
+
 
 
 

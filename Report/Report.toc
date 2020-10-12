@@ -1,0 +1,135 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}1\nobreakspace {}}Introduction}{2}{section.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}2\nobreakspace {}}Implementing PageRank Generally}{2}{section.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}2.1\nobreakspace {}}Definitions}{3}{subsection.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}2.1.1\nobreakspace {}}Notation}{4}{subsubsection.2.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}2.2\nobreakspace {}}Random Surfer Model}{5}{subsection.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}2.2.1\nobreakspace {}}Issues}{5}{subsubsection.2.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}2.2.2\nobreakspace {}}Markov Chains}{5}{subsubsection.2.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Stochastic}{6}{subsubsection.2.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Irreducible}{6}{figure.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Aperiodic}{6}{figure.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{The Fix}{8}{figure.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}2.2.3\nobreakspace {}}Limitations}{8}{subsubsection.2.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}2.3\nobreakspace {}}Power walk}{8}{subsection.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}3\nobreakspace {}}Sparse Matrices}{9}{section.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}3.1\nobreakspace {}}Solving the Stationary Distribution}{10}{subsection.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}4\nobreakspace {}}Implementing the Models}{10}{section.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}4.1\nobreakspace {}}Implementing the Random Surfer}{10}{subsection.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}4.1.1\nobreakspace {}}Small Graph, Ordinary Matrices}{10}{subsubsection.4.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Example Graph}{10}{subsubsection.4.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Adjacency Matrix}{11}{figure.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Probability Transition Matrix}{12}{listing.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Page Rank Random Surfer}{13}{Item.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Eigen Value Method}{14}{listing.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Power Value Method}{16}{listing.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Scaling}{16}{listing.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}4.1.2\nobreakspace {}}Large Graph, Sparse Matrices using CRS}{17}{subsubsection.4.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Creating the Probability Transition Matrix}{17}{subsubsection.4.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Solving the Random Surfer via the Power Method}{20}{listing.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}4.2\nobreakspace {}}Power Walk Method}{22}{subsection.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}4.2.1\nobreakspace {}}Introduction}{22}{subsubsection.4.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}4.2.2\nobreakspace {}}Ordinary Matrices}{22}{subsubsection.4.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}4.2.3\nobreakspace {}}Sparse Matrices}{24}{subsubsection.4.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Theory; Simplifying Power Walk to be solved with Sparse Matrices}{24}{subsubsection.4.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Solving the Background Probability}{27}{equation.4.46}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Practical; Implementing the Power Walk on Sparse Matrices}{28}{equation.4.46}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Inspect the newly created matrix and create constants}{28}{equation.4.46}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Setup}{28}{equation.4.46}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{Power Walk}{29}{Item.14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}5\nobreakspace {}}Creating a Package}{31}{section.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}6\nobreakspace {}}Investigating the Second EigenValue}{32}{section.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}6.1\nobreakspace {}}ER Graphs Plotting Various Values}{32}{subsection.6.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}6.1.1\nobreakspace {}}Density of Adjacency Matrix}{35}{subsubsection.6.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}6.1.2\nobreakspace {}}Trace of Transition Probability Matrix}{36}{subsubsection.6.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}6.2\nobreakspace {}}Model the log transformed data using a linear regression or log(-x) regression}{36}{subsection.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}6.2.1\nobreakspace {}}Change the colour of each model by using pivot\textsubscript {longer}}{36}{subsubsection.6.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}6.3\nobreakspace {}}Import wikipedia data}{36}{subsection.6.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}6.4\nobreakspace {}}Look at the Trace of the Matrix as a comparison point}{39}{subsection.6.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}6.5\nobreakspace {}}Use BA Graphs}{39}{subsection.6.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}7\nobreakspace {}}Simulating the Structure of the Web}{39}{section.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}8\nobreakspace {}}Relating the Power Walk to the Random Surfer}{39}{section.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}8.1\nobreakspace {}}Introduction}{39}{subsection.8.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}8.2\nobreakspace {}}Value of [1st Term]}{40}{subsection.8.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}8.3\nobreakspace {}}Value of \{2nd Term\}}{40}{subsection.8.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}8.4\nobreakspace {}}Equate the Power Walk to the Random Surfer}{41}{subsection.8.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}8.5\nobreakspace {}}Conclusion}{43}{subsection.8.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}8.6\nobreakspace {}}The Second Eigenvalue}{43}{subsection.8.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}8.6.1\nobreakspace {}}The Random Surfer}{43}{subsubsection.8.6.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}8.6.2\nobreakspace {}}Power Walk}{43}{subsubsection.8.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{Applying this to Power Walk}{43}{subsubsection.8.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subparagraph}{My attempt}{43}{equation.8.61}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}9\nobreakspace {}}Appendix}{46}{section.9}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}9.1\nobreakspace {}}Graph Diagrams}{46}{subsection.9.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {\nobreakspace {}10\nobreakspace {}}my to do list}{46}{section.10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}10.1\nobreakspace {}}Look at the Trace of the Matrix as a comparison point}{46}{subsection.10.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}10.2\nobreakspace {}}Use BA Graphs}{46}{subsection.10.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}10.3\nobreakspace {}}TODO Diamater}{46}{subsection.10.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {\nobreakspace {}10.4\nobreakspace {}}Improving the Performance of Page Rank}{48}{subsection.10.4}%

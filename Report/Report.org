@@ -387,7 +387,7 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
       library(pacman)
     }
 
-    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise, corrplot)
+    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise, corrplot, latex2exp)
 #   options(scipen=20) # Resist Scientific Notation
 #+END_SRC
 
@@ -1557,8 +1557,6 @@ library(tidyverse) # Maybe, TODO check if this is used, I don't think it is
 : Attaching package: ‘PageRank’
 
 * Investigating the Second EigenValue
-
-
 ** ER Graphs Plotting Various Values
 
 The /Erdos Renyi/ game creates a graph by creating every single edge with some
@@ -1660,133 +1658,122 @@ corrplot(cor(data), method = "ellipse", type = "lower")
 #+RESULTS: corrplot
 [[file:media/corrplot.png]]
 
-There is some relationship between the determinant and the density, check out the pairs plot:
 
+*** Density of Adjacency Matrix
 There appears to be a strong negative correlation between the eigenvalue and the density of the adjacency matrix.
 
 This relationship is plotted in listing [[dens_plot_er]] and figure [[fig:dens_plot_er]].
 
 The relationship appears almost linear and so the data is log transformed in [[fig:dens_plot_er]] revealing a concave down relationship, this relationship could be parabolic or logarithmic and so two models are fitted and overlayed in listing [[test_models]] and shown in figure [[fig:test_models]]. The logarithmic model is a significantly better fit and by investigating the coefficients of the fith the following relationship can be determined:
 
-Easier to calculate the trace than \(\xi_{2}\) so this is an easy way to tell how quickly a solution will be found.
-
-
-#+BEGIN_SRC R :exports both :results output graphics file :file media/EigenValue_Determinant.png :eval never-export
-  library(pacman)
-  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
-n <- 20
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- 1:n/n+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-input_var
-
-
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
-
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_det))
-}
-
-## TODO this should use pmap.
-Y <- matrix(ncol = 2, nrow = nrow(input_var))
-for (i in 1:nrow(input_var)) {
-  X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
-}
-if (sum(abs(Y) != abs(Re(Y))) == 0) {
-  Y <- Re(Y)
-}
-nrow(input_var)
-nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-
-data <- cbind(input_var, Y)
-
-ggplot(data, aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  geom_point() +
-  labs(x = "Determinant of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
-  scale_size_continuous(range = c(0.1,1))
-#+end_src
-
-#+RESULTS[08882d661cf5d2410c8335d1850632709c7cf5c5]:
-[[file:media/EigenValue_Determinant.png]]
-
-
-#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density.png :eval never-export
-  library(pacman)
-  pacman::p_load(PageRank, devtools, Matrix, igraph, tidyverse)
-n <- 100
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- 1:n/n+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-input_var
-
-
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
-
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_dens))
-}
-
-## TODO this should use pmap.
-Y <- matrix(ncol = 2, nrow = nrow(input_var))
-for (i in 1:nrow(input_var)) {
-  X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
-}
-if (sum(abs(Y) != abs(Re(Y))) == 0) {
-  Y <- Re(Y)
-}
-nrow(input_var)
-nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-
-data <- cbind(input_var, Y)
-
-ggplot(data, aes(x = determinant, y = eigenvalue2, color = size, shape = factor(n))) +
-  geom_point(base_size = 99, aes(size = beta)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix") +
-  scale_size_continuous(range = c(0.1,1))
-#+end_src
-
-Maybe this looks like a Chi distribution?
-
-#+BEGIN_SRC R :exports both :results output graphics file :file Media/EigenValue_Density_Chi.png :eval never-export
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*6
-index  <- seq(from = 0, to = 2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-#+end_src
-
-#+RESULTS[c7a830cfab9be72b1ce3782f148a5dcb92c49f48]:
-[[file:../Media/EigenValue_Density_Chi.png]]
-
-** TODO Model the log transformed data using a linear regression or log(-x) regression
 
 \begin{align}
     \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
 \end{align}
 
+This suggests that a more interlinked network will converge faster when using the /Power Walk/ method.
+
+
+*** Trace of Transition Probability Matrix
+The correlation plot suggests that there is some positive relationship between
+the trace of the transition probability matrix and the second eigenvalue, these
+values are plotted in listing [[trace_plot_er]] and figure [[fig:trace_plot_er]], this
+relationship appears to be heteroskedastic and so it is log transformed in
+listing [[trace_plot_log_er]] and figure [[fig:trace_plot_log_er]]. This plot is still appears to have a non constant variance but this could be due to less data corresponding to lower trace values.
+
+The plot suggests an exponential or hyperbolic model may be a good fit, this is performed in listing [[mod_trace]], [[mod_trace_plot]]and  [[fig:mod_trace_plot]]
+
+
+
+
+
+#+NAME: trace_plot_log_er
+#+CAPTION: Plot \(\xi_{2}\) against the trace of the matrix of the /Power Walk/ Transition Probability Matrix, see figure [[fig:trace_plot_log_er]]
+#+BEGIN_SRC R :exports both :results output graphics file :file media/trace_plot_log_er.png
+ggplot(data, aes(x = trace , y = log(eigenvalue2))) +
+  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
+#  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1.5)) +
+  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
+  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
+#+end_src
+
+
+#+NAME: trace_plot_er
+#+CAPTION: Plot \(\xi_{2}\) against the trace of the matrix of the /Power Walk/ Transition Probability Matrix
+#+BEGIN_SRC R :exports both :results output graphics file :file media/trace_plot_er.png
+ggplot(data, aes(x = trace , y = eigenvalue2)) +
+  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
+#  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1.5)) +
+  labs(x = "Trace of Transition Matrix", y = TeX("$ \\xi_2 $ of $\\mathbf{W}$"))
+#+end_src
+
+#+NAME: fig:trace_plot_er
+#+CAPTION: Plot of \(\xi_{2}\) against the trace of the /Power Walk/ probability transition matrix
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+#+RESULTS: trace_plot_er
+[[file:media/trace_plot_er.png]]
+
+
+#+NAME: fig:trace_plot_log_er
+#+CAPTION: Log transformed plot of the trace of the /Power Walk/ probability transition matrix
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+#+RESULTS: trace_plot_log_er
+[[file:media/trace_plot_log_er.png]]
+
+#+NAME: mod_trace
+#+CAPTION: Fit a Hyperbolic and Logarithmic model to the data, observe that a 0 intercept is set to fix the intercept as it would be expected that a 0 trace would correspond to a 0 eigenvector, the hyperbolic model has a slightly lower mean /MSE/.
+#+begin_src R
+mod_df <- data
+
+mod_hyp <- lm(log(eigenvalue2) ~ 0 + I(trace^(-1)), data = data)
+mod_df$hyp <- predict(mod_hyp)
+
+mod_log <- lm(log(eigenvalue2) ~ 0 + log(trace), data = data)
+mod_df$log <- predict(mod_log)
+
+
+mod_df_long <- pivot_longer(mod_df, cols = c(hyp, log), names_to = "Model_Type", values_to = "eigenvalue2_mod")
+mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
+
+
+print(c("MSE Hyperbolic"  = mean(mod_hyp$residuals^2),
+        "MSE Logarithmic" = mean(mod_log$residuals^2)), 2)
+cat("\n")
+print(summary(mod_hyp)$coefficients)
+
+#+end_src
+
+#+RESULTS: mod_trace
+:  MSE Hyperbolic MSE Logarithmic
+:           0.081           0.127
+:
+:                 Estimate   Std. Error   t value Pr(>|t|)
+: I(trace^(-1)) -0.1992157 0.0005471191 -364.1176        0
+
+#+NAME: mod_trace_plot
+#+BEGIN_SRC R :exports both :results output graphics file :file media/trace_models_fitted.png
+ggplot(mod_df_long, aes(x = trace)) +
+  geom_point(shape = 23, aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.7, alpha = 0.4) +
+  geom_line(aes(y = eigenvalue2_mod, col = Model_Type), size = 1) +
+  labs(col = c("Model \nType")) +
+  scale_color_manual(labels = c("Hyperbolic", "Logarithmic"),
+                     values = c("indianred", "royalblue"))  +
+  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"), title = TeX("Models Fitted to Logarithmically scaled $\\xi_{2}$ given Matrix Trace")) +
+  theme_linedraw()
+#+end_src
+
+#+NAME: fig:mod_trace_plot
+#+CAPTION: Plot of the second eigenvalue logarithmically scaled across the trace of a corresponding probability transition matrix created using the /Power Walk/ method. The graphs were randomly generated using the /Erdos Renyi/ game.
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+#+RESULTS:
+[[file:media/trace_models_fitted.png]]
+
+** TODO Model the log transformed data using a linear regression or log(-x) regression
 *** TODO Change the colour of each model by using pivot_longer
 ** TODO Import wikipedia data
 - +Import the wikipedia data+
@@ -1800,6 +1787,21 @@ ggplot(data) +
 ** TODO Look at the Trace of the Matrix as a comparison point
 ** TODO Use BA Graphs
 
+* Simulating the Structure of the Web
+A graph of the internet is /scale free/, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by [[cite:langvilleGooglePageRankScience2012][\textsection 10.7.2]]:
+
+\begin{align}
+n \propto j^{-k}, \quad \exists k \in \mathbb{R}
+\end{align}
+
+The /Erdos Renyi/ game is a random network, a superior approach to model the web is to use a scale free networks cite:barabasiPhysicsWeb2001 such as the Barabasi-Albert graph cite:barabasiScalefreeCharacteristicsRandom2000
+
+
+Maybe I should look at the most appropriate way to simulate social network links, one possibility is [[https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf][this paper ]] cite:zengPracticalSimulationMethod2013.
+
+Actually there is a data set available
+ cite:garritanoWikipediaArticleNetworks2019, I should just analyse that, see [[file:~/Dropbox/DataSci/Visual_Analytics/Assessment/the-marvel-universe-social-network/plotly3d_Marvel.r][how
+it was done in Visual Analytics as a reminder]].
 * Relating the Power Walk to the Random Surfer
   :PROPERTIES:
   :CUSTOM_ID: relating-terms-in-power-walk-to-random-surfer
@@ -2118,22 +2120,6 @@ beta
 ## * blah
 #+end_src
 
-
-* Simulating the Structure of the Web
-A graph of the internet is /scale free/, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by [[cite:langvilleGooglePageRankScience2012][\textsection 10.7.2]]:
-
-\begin{align}
-n \propto j^{-k}, \quad \exists k \in \mathbb{R}
-\end{align}
-
-The /Erdos Renyi/ game is a random network, a superior approach to model the web is to use a scale free networks cite:barabasiPhysicsWeb2001 such as the Barabasi-Albert graph cite:barabasiScalefreeCharacteristicsRandom2000
-
-
-Maybe I should look at the most appropriate way to simulate social network links, one possibility is [[https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf][this paper ]] cite:zengPracticalSimulationMethod2013.
-
-Actually there is a data set available
- cite:garritanoWikipediaArticleNetworks2019, I should just analyse that, see [[file:~/Dropbox/DataSci/Visual_Analytics/Assessment/the-marvel-universe-social-network/plotly3d_Marvel.r][how
-it was done in Visual Analytics as a reminder]].
 * Appendix
 
 #+NAME: r-den_undir_ba
