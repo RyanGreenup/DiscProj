@@ -28,3 +28,12 @@ latexmk -c
 ## vim:fdm=expr:fdl=0
 ## vim:fde=getline(v\:lnum)=~'^##'?'>'.(matchend(getline(v\:lnum),'##*')-2)\:'='
 
+
+
+# Wrapping the code blocks in tcolorobx will require working in TeX, you simply won't be to make it work from org-mode.
+# This will atleast mean the fix merely involves reaarranging lines:
+
+# sd \
+#     '(\\\begin.*\{.*minted.*\}.*)' '$1 \n \\\begin{tcolorbox}' |\
+#     sd '(\\\end.*\{.*minted.*\}.*)' '\\\end{tcolorbox}\n$1' \
+#     Report.tex
