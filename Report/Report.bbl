@@ -623,44 +623,6 @@
       \verb https://kaggle.com/andreagarritano/wikipedia-article-networks
       \endverb
     \endentry
-    \entry{golubMatrixComputations1996}{book}{}
-      \name{author}{2}{}{%
-        {{hash=8b856da92ad549d323acc679ecf7f474}{%
-           family={Golub},
-           familyi={G\bibinitperiod},
-           given={Gene\bibnamedelima H.},
-           giveni={G\bibinitperiod\bibinitdelim H\bibinitperiod}}}%
-        {{hash=4ed2d13e66ef340bd8d892c23333c87b}{%
-           family={Van\bibnamedelima Loan},
-           familyi={V\bibinitperiod\bibinitdelim L\bibinitperiod},
-           given={Charles\bibnamedelima F.},
-           giveni={C\bibinitperiod\bibinitdelim F\bibinitperiod}}}%
-      }
-      \list{location}{1}{%
-        {Baltimore}%
-      }
-      \list{publisher}{1}{%
-        {Johns Hopkins University Press}%
-      }
-      \strng{namehash}{315525c1558db03561c0e8a8b605758b}
-      \strng{fullhash}{315525c1558db03561c0e8a8b605758b}
-      \strng{bibnamehash}{315525c1558db03561c0e8a8b605758b}
-      \strng{authorbibnamehash}{315525c1558db03561c0e8a8b605758b}
-      \strng{authornamehash}{315525c1558db03561c0e8a8b605758b}
-      \strng{authorfullhash}{315525c1558db03561c0e8a8b605758b}
-      \field{sortinit}{G}
-      \field{sortinithash}{62eb2aa29549e4fdbd3cb154ec5711cb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{edition}{3rd ed}
-      \field{isbn}{978-0-8018-5413-2 978-0-8018-5414-9}
-      \field{pagetotal}{694}
-      \field{series}{Johns {{Hopkins}} Studies in the Mathematical Sciences}
-      \field{title}{Matrix Computations}
-      \field{year}{1996}
-      \field{dateera}{ce}
-      \keyw{Data processing,Matrices}
-    \endentry
     \entry{guptaWTFWhoFollow2013}{inproceedings}{}
       \name{author}{6}{}{%
         {{hash=67f9f7afd2e23a7b841fed71274ab7da}{%
@@ -1295,7 +1257,6 @@
     \endentry
   \enddatalist
   \missing{AdjacencyMatrix2020a}
-  \missing{foussAlgorithmsModelsNetwork2016}
 \endrefsection
 \endinput
 

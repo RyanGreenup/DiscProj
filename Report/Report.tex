@@ -1,4 +1,4 @@
-% Created 2020-10-12 Mon 18:48
+% Created 2020-10-15 Thu 16:52
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -39,20 +39,77 @@
 
 
 \section{Introduction}
-\label{sec:orgf166c7a}
-The centrality score of a graph is a metric that measures the
-importance and popularity of a vertex. \footnote{For a small graph drawn
-in a way to minimise overlapping edges the centremost geometric vertex
-will coincide with the highest centrality score, for example in figure
-\ref{irreducible-example} vertex \(D\) is the vertex with the highest
-frequency during a random walk}
+\label{sec:orga0ead4e}
+Any collection of interconnected information can form a network structure,
+consider for example citations, webpages, wikis, encyclopedias and interpersonal
+relationships. The analysis of these networks can be used to draw insights about
+the behaviour of such networks.
 
+One important form of analysis is \emph{netowork centrality}, a concept concerned with
+the measure of the importance, popularity and relevance of a node. In a
+relatively small graph, visualised in such a way so as to minimise the
+overlapping of edges, a general expectation would be that the centrality score
+would be correlated with geometric-centrality, this is demonstrated in figure
+\ref{example-rs-graph} where the 2nd vertex has the highest \emph{PageRank} score and
+is geometrically very central.
 
-The \emph{PageRank} method asserts that the centrality of a vertex can be
+\subsection{The PageRank Method}
+\label{sec:org164dc0f}
+
+There are multiple ways to measure network centrality but this report is concerned with the \emph{PageRank} method, this method asserts that the centrality of a vertex can be
 measured by the frequency of incidence with that vertex during a
 random walk.
 
-TODO: Talk about convergence and the second Eigenvalue to provide motivation for the report.
+This approach only makes sense if the random walk can:
+
+\begin{enumerate}
+\item Traverse the entire network
+\item Escape dead ends on a directed graph
+\end{enumerate}
+
+
+and so the \emph{PageRank} method involves:
+
+\begin{itemize}
+\item Altering a corresponding transition probability matrix such that it corresponds to a stochastic primitive \emph{Markov Chain}.
+\item Considering the stationary distribution of this new graph.
+\end{itemize}
+
+\subsection{Power Walk and the Random Surfer}
+\label{sec:orgf63a020}
+The typical method to adjust the transition probability matrix is the \emph{Random
+Surfer}, introduced by Page and Brin in 1998
+ \cite{larrypageAnatomyLargescaleHypertextual1998} as a distinguishing feature of
+the \emph{Google} search engine, this aproach essentially introduces some probability
+of teleporting to other nodes during a random walk, this is illustrated in
+figure \ref{fig:rseg}.
+
+A shortcoming of this approach is that it assumes all edges are positively weighted. This
+menas that the model treats any link as an endorsement of the destination
+node, this may not necessarily always be true (consider for exmple burned-in
+advertisements or negative reviews). In the past attributing weights to links was not particularly feasible, recent developments in sentiment analysis has however made this possible meaning that this limitation is more significant.
+
+The \emph{Power Walk} approach, introduced by Park and Simoff in 2013 \cite{parkPowerWalkRevisiting2013} is an alternative way to create a transition
+probability matrix that is defined for real weighted edges and could be used with sentiment analysis to more effectively measure network centrality.
+
+These individual appraches are discussed in more detail at \ref{PageRank-Generally}.
+
+\subsection{Stability and Convergence}
+\label{sec:orgd811fe4}
+
+The rate at which the algorithm for \emph{PageRank} converges to a solution and the stability of that solution can both be measured by the second eigenvalue of the corresponding transition probability matrix (The details of this are discussed at \ref{second-eigenvalue}).
+
+It is not clear how the second eigenvalue is related to the method parameters of the \emph{Power Walk} algorithm \cite[\textsection 3.4]{parkPowerWalkRevisiting2013} and this report aims to:
+
+\begin{enumerate}
+\item Implement methods to perform \emph{PageRank} analysis using:
+\begin{enumerate}
+\item The \emph{Random Surfer} model
+\item The \emph{Power Walk} model
+\end{enumerate}
+\item Investigate the Relationship between the parameters of the \emph{Power Walk}
+transition probability matrix and the second eigenvalue
+\end{enumerate}
 
 \section{Implementing PageRank Generally}
 \label{PageRank-Generally}
@@ -109,7 +166,7 @@ centrality of vertices.
 The following definitions are used in this report \footnote{see generally \cite[Ch. 15]{langvilleGooglePageRankScience2012} for further reading} :
 
 \begin{description}
-\item[{Markov Chains}] are discrete mathematical model such that future values depend only on current values \cite[\textsection 1.5]{foussAlgorithmsModelsNetwork2016}
+\item[{Markov Chains}] are discrete mathematical model such that future values depend only on current values \cite[\textsection 1.5]{larsonElementaryLinearAlgebra1991}
 \item[{Stochastic Matrices}] contain only positive values where each column sums to 1 \cite{langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991} (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
 \begin{itemize}
 \item some authors use rows (see e.g. \cite[\textsection 15.3]{langvilleGooglePageRankScience2012}), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
@@ -147,58 +204,62 @@ the scope of this report (see e.g.
 \item In the literature (see e.g. \cite{guptaWTFWhoFollow2013,langvilleGooglePageRankScience2012}) the Random Surfer model is usually used to refer to the introduction of a probability of travelling to any other node, this is discussed in CROSSREF
 \end{itemize}
 \end{description}
-
 \subsubsection{Notation}
 \label{notation}
-\begin{description}
-\item[{\(\mathbf{A}\)}] Is the adjacency matrix of a graph
-\begin{description}
-\item[{\(\mathbf{A}_{i,j} = 1\)}] Indicates that \(j\) and \(i\) are adjacent vertices.
-\end{description}
-\item[{\(\mathbf{A}\left[:,j\right]\)}] Refers to the \(j^{\mathrm{th}}\) column vector of \(\mathrm{A}\)
 \begin{itemize}
-\item This syntax is much like \emph{Julia} or \emph{Python} but also occurs in the literature, see e.g. \cite[\textsection 1.1.8]{golubMatrixComputations1996}
+\item \(\mathbf{A}\)
+\begin{itemize}
+\item Is the adjacency matrix of a graph such that \(\mathbf{A}_{i,j} = 1\) Indicates travel from \(j\) to \(i\) is possible.
 \end{itemize}
-\item[{\(\mathbf{T}\)}] Is the transition probability matrix of a graph
+\item \(\mathbf{T}\)
 \begin{itemize}
-\item \(\mathf{T}_{i,j}\) is equal to the probability of travelling \(j \rightarrow  i\) during a random walk.
+\item Indicates the probability of a movement during a random walk, such that \(\mathf{T}_{i,j}\) is equal to the probability of travelling \(j \rightarrow  i\) during a random walk.
+\end{itemize}
+\item \(\mathbf{D}_{\mathbf{A}}=\mathrm{diag}\left(\vec{1}\mathbf{A}\right)\)
+\item \(\mathbf{D}_{\mathbf{A}}^{- 1}  =
+   \begin{cases}
+   0 ,& \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i = 0 \\
+   \left[ \frac{1}{\mathbf{D}_{\mathbf{A}}} \right] ,& \enspace \enspace \left[ \mathbf{D}_{\mathbf{A}} \right]_i \neq 0
+   \end{cases}\)
 \begin{itemize}
-\item \(\mathbf{T} = \mathbf{A} \mathbf{D}_{\mathbf{A}}^{-1}\)
+\item A diagonal scaling matrix such that \(\mathbf{T} = \mathbf{A} \mathbf{D}_{\mathbf{A}}^{-1}\), the piecewise definition is such that \(\mathbf{D}^{-1}_{\mathbf{A}}\) is still defined even if \(\mathbf{A}\) is a reducible graph.
 \begin{itemize}
 \item Where \(\mathbf{D}^{-1}\) is a matrix such that multiplication with which scales each column of \(\mathbf{A}\) to 1.
-\begin{itemize}
 \item \(\mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\mathbf{D}^{-1}_{\mathbf{A}} = \frac{1}{\vec{1}\mathbf{D}_{\mathbf{A}}}\) for some stochastic matrix \(\mathbf{A}\)
 \end{itemize}
 \end{itemize}
-\end{itemize}
-\end{itemize}
-\item[{\(n\)}] Refers to the number of vertices in a graph elements of a matrix
+\item \(n\)
 \begin{itemize}
-\item \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
+\item Refers to the number of vertices in a graph, \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
 \end{itemize}
-\item[{\(\mathbf{B}_{i,j} = \frac{1}{n}\)}] Is a matrix of size \(n\times n\) representing the background probability of uniformly selecting any vertex of a graph.
-\item[{\(\vec{1}\)}] is a vector of length \(n\) containing only the value 1.
+\item \(\mathbf{E}_{i,j} = \frac{1}{n}\)
+\begin{itemize}
+\item A matrix of size \(n\times n\) representing the background probability of jumping to any vertex of a graph.
+\end{itemize}
+\item \(\vec{1}\)
+\begin{itemize}
+\item a vector of length \(n\) containing only the value 1.
 \begin{itemize}
 \item The convention that a vector behaves as a vertical \(n \times 1\) matrix will be used here.
 \item Some authors use \(\mathbf{e}\), see e.g. \cite{langvilleGooglePageRankScience2012}
 \end{itemize}
-\item[{\(\mathbf{J} = \vec{1}\cdot \vec{1}^{\mathrm{T}} \iff \mathbf{J}_{i,j} = 1\)}] Is a completely dense \(n \times n\) matrix.
-\begin{itemize}
-\item It's worth noting that \(\mathbf{E}, \mathbf{J}\) are common choices for this matrix.
 \end{itemize}
-\item[{\(\alpha\)}] The probability of teleporting from one vertex to another during a random walk.
+\item \(\mathbf{J} = \vec{1}\cdot \vec{1}^{\mathrm{T}} \iff \mathbf{J}_{i,j} = 1\)
+\begin{itemize}
+\item A completely dense \(n \times n\) matrix containing only 1
+\end{itemize}
+\item \(\alpha\)
+\begin{itemize}
+\item The probability of teleporting from one vertex to another during a random walk.
 \begin{itemize}
 \item In the literature \(\alpha\) is often referred to as a damping factor (see e.g.  \cite{berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005})
 \end{itemize}
-or a smoothing constant (see e.g \cite{koppelMeasuringDirectIndirect2014}).
-\item \(\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}\)
-\begin{itemize}
-\item \(\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]\)
 \end{itemize}
-\end{description}
+or a smoothing constant (see e.g \cite{koppelMeasuringDirectIndirect2014}).
+\end{itemize}
 
 \subsection{Random Surfer Model}
-\label{sec:org53757f1}
+\label{sec:org6771252}
 \subsubsection{Issues}
 \label{issues}
 The approach in \ref{PageRank-Generally} has the following issues
@@ -261,7 +322,7 @@ This however would not be sufficient to ensure that \eqref{eq:recurrence} would 
 \end{figure}
 
 \paragraph{Irreducible}
-\label{sec:orgd90d1de}
+\label{sec:orgbe8634d}
 A graph that allows travel from any given vertex to any other vertex is said to be irreducible \cite{langvilleGooglePageRankScience2012}, see for example figure \ref{irreducible-example}, this is important in the context of a random walk because only in an irreducible graph can all vertexes be reached from any initial condition.
 
 \begin{figure}[htbp]
@@ -271,7 +332,7 @@ A graph that allows travel from any given vertex to any other vertex is said to 
 \end{figure}
 
 \paragraph{Aperiodic}
-\label{sec:org68ca814}
+\label{sec:orgd9ca06c}
 An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \mathbf{A} is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative or helpful in this context}
 
 
@@ -305,7 +366,7 @@ The relation ship in \eqref{eq:recurrence} can now be re expressed as:
 \caption{\label{fig:rseg}A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue \emph{teleportation} edges are introduced, these may be followed with a probability of \(1 - \alpha\)}
 \end{figure}
 \subsubsection{Limitations}
-\label{sec:org61250c8}
+\label{sec:org1c72733}
 The \emph{Random Surfer} Model can only consider positively weighted edges, it cannot
 take into account negatively weighted edges. This limitation is increasingly
 important as techniques of sentiment analysis are developed which could indicate
@@ -420,6 +481,7 @@ With some effort however it is possible to express the algorithms in such a way 
 \label{implement_models}
 To Implement the models, first they'll be implemented using an ordinary matrix and then improved to work with sparse matrices and algorithms, the implementation has been performed with \emph{\textbf{R}} and the preamble is provided in listings \ref{preamble}
 
+
 \begin{listing}[htbp]
 \begin{minted}[]{r}
   if (require("pacman")) {
@@ -434,25 +496,38 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
 \end{minted}
 \caption{\label{preamble}Implemented Packages used in this report}
 \end{listing}
+\begin{verbatim}
+..
+\end{verbatim}
 
 \subsection{Implementing the Random Surfer}
-\label{sec:org48147fc}
+\label{sec:org275c480}
 \subsubsection{Small Graph, Ordinary Matrices}
 \label{implementing-page-rank-methods}
 \paragraph{Example Graph}
 \label{example-graph}
 Consider the following graph:
 
+
+\begin{listing}[htbp]
 \begin{minted}[]{r}
-g1 <- igraph::graph.formula(1++2, 1+-8, 1+-5, 2+-5, 2+-7, 2+-8, 2+-6, 2+-9, 3++4, 3+-5, 3+-6, 3+-9, 3+-10, 4+-9, 4+-10, 4+-5, 5+-8, 6+-8, 7+-8)
-  plot(g1)
+g1 <- igraph::graph.formula(
+                1++2, 1+-8, 1+-5,
+                2+-5, 2+-7, 2+-8, 2+-6, 2+-9,
+                3++4, 3+-5, 3+-6, 3+-9, 3+-10,
+                4+-9, 4+-10, 4+-5,
+                5+-8, 6+-8, 7+-8)
+plot(g1)
 \end{minted}
+\caption{\label{ex-fig-r}Produce exemplar graph in figure \ref{example-rs-graph}}
+\end{listing}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=12cm]{media/example-graph-power-walk.png}
-\caption{\label{example-rs-graph}Exemplar graph to solve Random Surfer Model with}
+\caption{\label{example-rs-graph}Exemplar graph for \emph{PageRank} examples, produced in listing \ref{ex-fig-r}}
 \end{figure}
+
 
 \subparagraph{Adjacency Matrix}
 \label{adjacency-matrix}
@@ -790,9 +865,9 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
   ## 10 0.0200000 0.0200000
 \end{verbatim}
 \subsubsection{Large Graph, Sparse Matrices using CRS}
-\label{sec:org15593c2}
+\label{sec:orgb8f8fe1}
 \paragraph{Creating the Probability Transition Matrix}
-\label{sec:org6d85075}
+\label{sec:org31cf321}
 Implementing the page rank method on a larger graph requires the use of more
 efficient form of matrix storage as discussed at \ref{sparse-matrix}
 
@@ -1026,9 +1101,9 @@ p %>% head() %>% print()
 \end{verbatim}
 
 \subsection{Power Walk Method}
-\label{sec:orgded791f}
+\label{sec:orgf9ac4c7}
 \subsubsection{Introduction}
-\label{sec:org8a0fdeb}
+\label{sec:orgbd07096}
 Recall from \ref{pwalk} that the power walk is given by:
 
 \begin{align*}
@@ -1051,7 +1126,7 @@ where:
 \end{itemize}
 
 \subsubsection{Ordinary Matrices}
-\label{sec:org94d10f7}
+\label{sec:org039907b}
 Implementing the Power walk using ordinary matrices is very similar to the \emph{Random Surfer} model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 
 Create the Adjacency Matrix
@@ -1162,9 +1237,9 @@ p %>% as.vector()
 
 
 \subsubsection{Sparse Matrices}
-\label{sec:org33bb6d4}
+\label{sec:orgde47f4a}
 \paragraph{Theory; Simplifying Power Walk to be solved with Sparse Matrices}
-\label{sec:org14d53ce}
+\label{sec:org9c11e6a}
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -1438,23 +1513,23 @@ Matrices & Vectors\\
 \end{center}
 
 \paragraph{Practical; Implementing the Power Walk on Sparse Matrices}
-\label{sec:org6c71b40}
+\label{sec:org3bbddf3}
 \subparagraph{Inspect the newly created matrix and create constants}
-\label{sec:orgc3e865c}
+\label{sec:org40af05e}
 \subparagraph{Setup}
-\label{sec:orgc77da2a}
+\label{sec:orgd677252}
 \begin{enumerate}
 \item Define function to create DiagonalsSparse Diagonal Function
-\label{sec:org3345c65}
+\label{sec:orgef06978}
 
 Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the \texttt{sparse\_diag} function in listing \ref{sparse-diag} will still work.
 \end{enumerate}
 
 \subparagraph{Power Walk}
-\label{sec:org12186e5}
+\label{sec:org65989fa}
 \begin{enumerate}
 \item Define B
-\label{sec:org8657282}
+\label{sec:org902b988}
 \begin{minted}[]{r}
 A      <- Matrix::Matrix(A, sparse = TRUE)
 B      <- A
@@ -1530,7 +1605,7 @@ print(Bo,2)
 \end{verbatim}
 
 \item Solve the Scaling Matrix
-\label{sec:org716047e}
+\label{sec:org2110c3f}
 We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 
 \begin{minted}[]{r}
@@ -1558,7 +1633,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 
 
 \item Find the Transition Probability Matrix
-\label{sec:orgd2583c5}
+\label{sec:org193c8ad}
 \begin{minted}[]{r}
   DB   <- diag(δB)
 ## ** Create the Transition Probability Matrix
@@ -1567,7 +1642,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 \end{minted}
 
 \item Implement the Loop
-\label{sec:org529b934}
+\label{sec:org64bfaae}
 \begin{minted}[]{r}
 ## ** Implement the Power Walk
 ## *** Set Initial Values
@@ -1625,15 +1700,18 @@ Attaching package: ‘PageRank’
 \end{verbatim}
 
 \section{Investigating the Second EigenValue}
-\label{sec:orgca8792b}
+\label{second-eigenvalue}
 \subsection{ER Graphs Plotting Various Values}
-\label{sec:org3684d78}
-
+\label{sec:orgdd7b2cd}
+\subsubsection{Erdos Reny Game}
+\label{sec:org3d4bf2b}
 The \emph{Erdos Renyi} game creates a graph by creating every single edge with some
 constant probability. \cite[IgraphManualPagesa]{IgraphManualPages} Sampling these graphs will provide a broad picture for the
 overall behaviour between the method parameters of the \emph{Power Walk} and the
 second eigenvalue.
 
+\subsubsection{Correlation Plot}
+\label{sec:org2fcf2a4}
 
 By looping over many random graphs for a variety of probabilities a data set can
 be constructed and a correlation plot generated. To implement this a data frame
@@ -1729,33 +1807,128 @@ corrplot(cor(data), method = "ellipse", type = "lower")
 \includegraphics[width=.9\linewidth]{media/corrplot.png}
 \end{center}
 
-
 \subsubsection{Density of Adjacency Matrix}
-\label{sec:org3696672}
+\label{sec:org6ac2c08}
 There appears to be a strong negative correlation between the eigenvalue and the density of the adjacency matrix.
 
-This relationship is plotted in listing and figure .
+This relationship is plotted in listing \ref{dens_plot_er} and figure \ref{fig:dens_plot_er}.
 
-The relationship appears almost linear and so the data is log transformed in revealing a concave down relationship, this relationship could be parabolic or logarithmic and so two models are fitted and overlayed in listing and shown in figure . The logarithmic model is a significantly better fit and by investigating the coefficients of the fith the following relationship can be determined:
+The relationship appears almost linear and so the data is log transformed and
+modelled against that in listing \ref{dens_plot_er_mod} with a corresponding plot
+generated in listing \ref{fig:dens_plot_er_log} and shown in figure
+\ref{fig:dens_plot_er_log} revealing a concave down relationship. The quartic model
+fits the data well and has the lowest \emph{MSE}, however the logarithmic model is
+visually a good fit, significantly simpler and still has a low \emph{MSE}, for this
+reason the logarithmic model will be used.
+
+The coefficients of the logarithmic model, shown in listing \ref{dens_plot_er_mod}, imply the following relationship:
 
 
 \begin{align}
     \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
 \end{align}
 
+The maximum residual is given as 0.37 and so \(\Delta = 0.4\) would provide a
+good indication for the value of the second eigenvalue by considering only the
+interconnectivity of the adjacency matrix.
+
 This suggests that a more interlinked network will converge faster when using the \emph{Power Walk} method.
 
 
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+ggplot(data) +
+  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size )) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Density of Adjacency Matrix", y = TeX("$\\xi_2$ of $T_{PW}$"), title = TeX("$\\xi_2$ of $T_{PW}$ given the Density of the Adjacency Matrix") ) +
+  guides(size = FALSE, col = FALSE)
+
+\end{minted}
+\caption{\label{dens_plot_er}Create a Plot of \(\xi_{2}\) given Adjacency Matrix, see plot in figure \ref{fig:dens_plot_er}}
+\end{listing}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/density_plot.png}
+\caption{\label{fig:dens_plot_er}Plot of \(\xi_{2}\) given Adjacency Matrix, see listing \ref{dens_plot_er}}
+\end{figure}
+
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+mod_x1 <- lm(log(eigenvalue2) ~ poly(density, 1), data = data)
+data$x1 <- predict(mod_x1)
+
+mod_x2 <- lm(log(eigenvalue2) ~ poly(density, 2), data = data)
+data$x2 <- predict(mod_x2)
+
+mod_x4 <- lm(log(eigenvalue2) ~ poly(density, 4), data = data)
+data$x4 <- predict(mod_x4)
+
+mod_xl <- lm(log(eigenvalue2) ~ log(1-density), data = data)
+data$xl <- predict(mod_xl)
+
+mod_df <- data
+mod_df_long <- pivot_longer(mod_df, cols = c(x1, x2, x4, xl), names_to = "Model_Type", values_to = "eigenvalue2_mod")
+mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
+
+
+print(c("MSE Linear"  = mean(mod_x1$residuals^2),
+        "MSE Quadratic" = mean(mod_x2$residuals^2),
+        "MSE Quartic" = mean(mod_x4$residuals^2),
+        "MSE Logarithmic" = mean(mod_xl$residuals^2)
+        ), 2)
+cat("\n")
+print(mod_xl$coefficients)
+cat("\n")
+print(c("Max Residual", max(mod_xl$residuals)))
+\end{minted}
+\caption{\label{dens_plot_er_mod}Fit Models to log transofmred Density Comparison}
+\end{listing}
+
+\begin{verbatim}
+     MSE Linear   MSE Quadratic     MSE Quartic MSE Logarithmic
+          0.078           0.031           0.013           0.023
+
+     (Intercept) log(1 - density)
+      -0.4798300        0.6738175
+
+[1] "Max Residual"      "0.371075096908937"
+\end{verbatim}
+
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+ggplot(mod_df_long, aes(x = density)) +
+  geom_point(aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.1, alpha = 0.2) +
+  geom_smooth(aes(y = eigenvalue2_mod, col = Model_Type), size = 0.9) +
+  labs(col = c("Model \nType")) +
+  scale_color_discrete(labels = c("Linear", "Quadratic", "Quartic", "Logarithmic")) +
+  labs(x = "Density of A", y = TeX("$ \\xi_2 $ of $\\mathbf{W}$")) +
+  theme_linedraw()
+\end{minted}
+\caption{\label{fig:dens_plot_er_log}Plot of Log Transformed \(\xi_{2}\) against density of Adjacency matrix, using the \emph{Power Walk} algorithm applied to graphs randomly generated with the \emph{Erdos-Renyi} game.}
+\end{listing}
+
+\begin{center}
+\includegraphics[width=.9\linewidth]{media/dens_plot_er_log.png}
+\end{center}
+
 \subsubsection{Trace of Transition Probability Matrix}
-\label{sec:org0951e0c}
+\label{sec:orgd5960fb}
 The correlation plot suggests that there is some positive relationship between
 the trace of the transition probability matrix and the second eigenvalue, these
 values are plotted in listing \ref{trace_plot_er} and figure \ref{fig:trace_plot_er}, this
 relationship appears to be heteroskedastic and so it is log transformed in
 listing \ref{trace_plot_log_er} and figure \ref{fig:trace_plot_log_er}. This plot is still appears to have a non constant variance but this could be due to less data corresponding to lower trace values.
 
-The plot suggests an exponential or hyperbolic model may be a good fit, this is performed in listing and  
+The plot suggests an exponential or hyperbolic model may be a good fit, this is performed in listing \ref{mod_trace}, \ref{mod_trace_plot} and  \ref{fig:mod_trace_plot}. The hyperbolic model appears to be a reasonable fit for trace values less than half, giving the following relationship:
 
+
+\begin{align}
+\xi_{2} &\approx \mathrm{exp}\left( \frac{0.2}{\mathrm{tr}\left(\mathbf{T}\right)} \right) \\
+	&\approx  \mathrm{exp} \left( \frac{0.2}{\mathrm{tr}\left( \mathbf{B}\mathbf{D}_{\mathbf{B}}^{- 1} \right)} \right) \label{eq:trace_lim}
+\end{align}
 
 \begin{listing}[htbp]
 \begin{minted}[]{r}
@@ -1764,15 +1937,11 @@ ggplot(data, aes(x = trace , y = log(eigenvalue2))) +
 #  stat_smooth() +
   scale_size_continuous(range = c(0.1,1.5)) +
   labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
+  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
 \end{minted}
 \caption{\label{trace_plot_log_er}Plot \(\xi_{2}\) against the trace of the matrix of the \emph{Power Walk} Transition Probability Matrix, see figure \ref{fig:trace_plot_log_er}}
 \end{listing}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=12cm]{media/trace_plot_log_er.png}
-\caption{\label{fig:trace_plot_log_er}Log transformed plot of the trace of the \emph{Power Walk} probability transition matrix}
-\end{figure}
 
 \begin{listing}[htbp]
 \begin{minted}[]{r}
@@ -1791,12 +1960,84 @@ ggplot(data, aes(x = trace , y = eigenvalue2)) +
 \caption{\label{fig:trace_plot_er}Plot of \(\xi_{2}\) against the trace of the \emph{Power Walk} probability transition matrix}
 \end{figure}
 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/trace_plot_log_er.png}
+\caption{\label{fig:trace_plot_log_er}Log transformed plot of the trace of the \emph{Power Walk} probability transition matrix}
+\end{figure}
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+mod_df <- data
+
+mod_hyp <- lm(log(eigenvalue2) ~ 0 + I(trace^(-1)), data = data)
+mod_df$hyp <- predict(mod_hyp)
+
+mod_log <- lm(log(eigenvalue2) ~ 0 + log(trace), data = data)
+mod_df$log <- predict(mod_log)
+
+
+mod_df_long <- pivot_longer(mod_df, cols = c(hyp, log), names_to = "Model_Type", values_to = "eigenvalue2_mod")
+mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
+
+
+print(c("MSE Hyperbolic"  = mean(mod_hyp$residuals^2),
+        "MSE Logarithmic" = mean(mod_log$residuals^2)), 2)
+cat("\n")
+print(summary(mod_hyp)$coefficients)
+
+\end{minted}
+\caption{\label{mod_trace}Fit a Hyperbolic and Logarithmic model to the data, observe that a 0 intercept is set to fix the intercept as it would be expected that a 0 trace would correspond to a 0 eigenvector, the hyperbolic model has a slightly lower mean \emph{MSE}.}
+\end{listing}
+
+\begin{verbatim}
+ MSE Hyperbolic MSE Logarithmic
+          0.081           0.127
+
+                Estimate   Std. Error   t value Pr(>|t|)
+I(trace^(-1)) -0.1992157 0.0005471191 -364.1176        0
+\end{verbatim}
+
+
+\begin{minted}[]{r}
+ggplot(mod_df_long, aes(x = trace)) +
+  geom_point(shape = 23, aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.7, alpha = 0.4) +
+  geom_line(aes(y = eigenvalue2_mod, col = Model_Type), size = 1) +
+  labs(col = c("Model \nType")) +
+  scale_color_manual(labels = c("Hyperbolic", "Logarithmic"),
+                     values = c("indianred", "royalblue"))  +
+  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"), title = TeX("Models Fitted to Logarithmically scaled $\\xi_{2}$ given Matrix Trace")) +
+  theme_linedraw()
+\end{minted}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/trace_models_fitted.png}
+\caption{\label{fig:mod_trace_plot}Plot of the second eigenvalue logarithmically scaled across the trace of a corresponding probability transition matrix created using the \emph{Power Walk} method. The graphs were randomly generated using the \emph{Erdos Renyi} game.}
+\end{figure}
+\subsubsection{Conclusion}
+\label{sec:org561c0c6}
+The \emph{Erdos Renyi} game produces a wide variety of all possible graphs, this provides two insights into the value of the second eigenvalue of the probability transition matrix corresponding to the power walk method:
+
+
+\begin{align}
+\xi_{2} &\approx  \mathrm{exp} \left( \frac{0.2}{\mathrm{tr}\left( \mathbf{B}\mathbf{D}_{\mathbf{B}}^{- 1} \right)} \right) \\
+    \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm 0.4
+\end{align}
+
+These can be used to evaluate broadly the value of \(\xi_{2}\) and in turn the
+rate of convergence of the \emph{Power Walk} method corresponding to a given graph
+given only the method parameters and the adjacency matrix.
+
+These are not however insightful of any direct relationships between the method parameters and \(\xi_{2}\), this will be considered at \ref{relate-to-random-surfer} by trying to find a relationship between the \emph{Power Walk} and the \emph{Random Surfer} models.
+
 \subsection{Model the log transformed data using a linear regression or log(-x) regression}
-\label{sec:org03589e5}
+\label{sec:org7e71215}
 \subsubsection{Change the colour of each model by using pivot\textsubscript{longer}}
-\label{sec:org24aa92d}
+\label{sec:org4505c34}
 \subsection{Import wikipedia data}
-\label{sec:org7bbae52}
+\label{sec:org017197d}
 \begin{itemize}
 \item \sout{Import the wikipedia data}
 \item \sout{Measure the density}
@@ -1812,12 +2053,12 @@ use a \emph{Barabassi-Albert} Random Graph through the \textasciitilde{}igraph::
 \end{itemize}
 \end{itemize}
 \subsection{Look at the Trace of the Matrix as a comparison point}
-\label{sec:orga643dbe}
+\label{sec:orgc43d48e}
 \subsection{Use BA Graphs}
-\label{sec:orgeb655c1}
+\label{sec:orgcfc9b23}
 
 \section{Simulating the Structure of the Web}
-\label{sec:org42cb594}
+\label{sec:orgbab0f56}
 A graph of the internet is \emph{scale free}, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by \cite[\textsection 10.7.2]{langvilleGooglePageRankScience2012}:
 
 \begin{align}
@@ -1833,9 +2074,9 @@ Actually there is a data set available
  \cite{garritanoWikipediaArticleNetworks2019}, I should just analyse that, see \href{file:///home/ryan/Dropbox/DataSci/Visual\_Analytics/Assessment/the-marvel-universe-social-network/plotly3d\_Marvel.r}{how
 it was done in Visual Analytics as a reminder}.
 \section{Relating the Power Walk to the Random Surfer}
-\label{relating-terms-in-power-walk-to-random-surfer}
+\label{relate-to-random-surfer}
 \subsection{Introduction}
-\label{sec:orgffb3cc6}
+\label{sec:orgfbb017e}
 These are notes relating to \cite[\textsection 3.3]{parkPowerWalkRevisiting2013}, probably won't put this in the report, just arbitrary notes
 
 So if a term in the Power Walk can be related to \(\alpha\) in the random
@@ -1973,7 +2214,7 @@ But the next step requires showing that:
 \end{align*}
 
 \subsection{Equate the Power Walk to the Random Surfer}
-\label{sec:orgcf4d6b3}
+\label{sec:org62dbc78}
 Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
 
 \begin{align}
@@ -2059,19 +2300,19 @@ And setting \(\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}\)  from \eqre
 Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}  \eqref{eq:bgVal2}
 
 \subsection{Conclusion}
-\label{sec:org86c526d}
+\label{sec:orgfebaece}
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
 
 \subsection{The Second Eigenvalue}
-\label{sec:org3df98b7}
+\label{sec:org1a67aaf}
 \subsubsection{The Random Surfer}
-\label{sec:orgca72c64}
+\label{sec:org7462fb1}
 The Second eigenvalue \(\xi_2\) of the Power Surfer is less than \(\alpha\) (\href{Proposal/Propsal.org}{See 3.2; Stability and Concvergence, of proposal}).
 \subsubsection{Power Walk}
-\label{sec:org8e44ea5}
-Because the Power Walk relates to the random surfer as demonstrated in section \ref{relating-terms-in-power-walk-to-random-surfer}, what can be said about \(\xi_{2}\)
+\label{sec:org686af83}
+Because the Power Walk relates to the random surfer as demonstrated in section , what can be said about \(\xi_{2}\)
 \paragraph{Applying this to Power Walk}
-\label{sec:org50bafd0}
+\label{sec:orgb93413b}
 Let \(\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2\) return the second value of a transition, probability Matrix, then observe that:
 
 
@@ -2086,7 +2327,7 @@ where:
 \item \(\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)\) refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
 \end{itemize}
 \subparagraph{My attempt}
-\label{sec:orgba3782b}
+\label{sec:orgb05b176}
 \begin{align}
     \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
 %    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
@@ -2159,7 +2400,7 @@ beta
 \end{minted}
 
 \section{Appendix}
-\label{sec:org9180665}
+\label{sec:org2bf701e}
 
 \begin{listing}[htbp]
 \begin{minted}[]{r}
@@ -2193,20 +2434,20 @@ image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
 \caption{\label{fig:den_undir_ba}Plot of the adjacency matrix corresponding to a Barabassi-Albert (i.e. \emph{Scale Free}) Graph produced by listing \ref{r-den_undir_ba}, observe the matrix is quite sparse.}
 \end{figure}
 \subsection{Graph Diagrams}
-\label{sec:org5508eaa}
+\label{sec:org2ea9202}
 Graph Diagrams shown in \ref{markov} where produced using \texttt{DOT} (see \cite{DOTLanguage,DOTGraphDescription2020}).
 \section{my to do list}
-\label{sec:orge7ff0a9}
+\label{sec:orgafd35bb}
 \subsection{Look at the Trace of the Matrix as a comparison point}
-\label{sec:org2334c3c}
+\label{sec:orgfe286a6}
 \subsection{Use BA Graphs}
-\label{sec:org26151f2}
+\label{sec:org0b8916f}
 **
 \subsection{TODO Diamater}
-\label{sec:org619986b}
+\label{sec:orgf3e78cb}
 Diamater of the web sounds like a fun read \cite{albertDiameterWorldWideWeb1999}
 \subsection{Improving the Performance of Page Rank}
-\label{sec:orgdce40ee}
+\label{sec:orgce9b0f2}
 
 This:
 

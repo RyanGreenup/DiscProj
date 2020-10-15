@@ -70,7 +70,7 @@ if (sum(abs(Y) != abs(Re(Y))) == 0) {
 }
 nrow(input_var)
 nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant", "trace_w")
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant", "trace")
 (data <- cbind(input_var, Y)) %>% head()
 data <- data[data$density!=0,]
 
@@ -79,17 +79,6 @@ data <- data[data$density!=0,]
 
 ### Plot Results
 
-
-```{r}
-
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
-index  <- seq(from = 0, to = 2.2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = TeX("$\\xi_2$ of $T_{PW}$"))
-```
 
 ```{r}
 mod <- lm(eigenvalue2 ~ poly(density, 1), data = data)
@@ -141,8 +130,16 @@ fig
 
 
 
+```{r}
+ggplot(data) +
+  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size )) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Density of Adjacency Matrix", y = TeX("$\\xi_2$ of $T_{PW}$"), title = TeX("$\\xi_2$ of $T_{PW}$") ) +
+  guides(size = FALSE, col = FALSE)
+```
 
-OK so nothing great, well the spread is heteroskedastic so let's log transform it:
+
+well the spread is heteroskedastic so let's log transform it:
 
 
 
@@ -163,26 +160,39 @@ data$x1 <- predict(mod_x1)
 mod_x2 <- lm(log(eigenvalue2) ~ poly(density, 2), data = data)
 data$x2 <- predict(mod_x2)
 
-mod_x3 <- lm(log(eigenvalue2) ~ poly(density, 3), data = data)
-data$x3 <- predict(mod_x3)
-
 mod_x4 <- lm(log(eigenvalue2) ~ poly(density, 4), data = data)
 data$x4 <- predict(mod_x4)
 
-mod_x5 <- lm(log(eigenvalue2) ~ poly(density, 5), data = data)
-data$x5 <- predict(mod_x5)
-
-mod_x5 <- lm(log(eigenvalue2) ~ poly(density, 5), data = data)
-data$x5 <- predict(mod_x5)
-
-mod_x6 <- lm(log(eigenvalue2) ~ poly(density, 6), data = data)
-data$x6 <- predict(mod_x6)
-
-
 mod_xl <- lm(log(eigenvalue2) ~ log(1-density), data = data)
 data$xl <- predict(mod_xl)
-max(mod_xl$residuals)*2
+
+mod_df <- data
+mod_df_long <- pivot_longer(mod_df, cols = c(x1, x2, x4, xl), names_to = "Model_Type", values_to = "eigenvalue2_mod")
+mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
+
+
+print(c("MSE Linear"  = mean(mod_x1$residuals^2),
+        "MSE Quadratic" = mean(mod_x2$residuals^2),
+        "MSE Quartic" = mean(mod_x4$residuals^2),
+        "MSE Logarithmic" = mean(mod_xl$residuals^2)
+        ), 2)
 ```
+
+```{r}
+ggplot(mod_df_long, aes(x = density)) +
+  geom_point(aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.1, alpha = 0.2) +
+  geom_smooth(aes(y = eigenvalue2_mod, col = Model_Type), size = 0.9) +
+  labs(col = c("Model \nType")) +
+  scale_color_discrete(labels = c("Linear", "Quadratic", "Quartic", "Logarithmic")) +
+  labs(x = "Density of A", y = TeX("$\\log \\left( \\xi_2 \\right$ of $\\mathbf{T}$")) +
+  theme_linedraw()
+```
+
+```{r}
+data.frame("Model" = c("Linear", "Logarithmic"))
+ggplot()
+```
+
 
 ```{r}
 # TODO Change the colour of each model by using pivot_longer
@@ -210,7 +220,7 @@ ggplot(data, aes(x = density, y = log(eigenvalue2))) +
 #### Look at the Trace of T
 
 ```{r}
-ggplot(data, aes(x = trace_w , y = log(eigenvalue2))) +
+ggplot(data, aes(x = trace , y = log(eigenvalue2))) +
   geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
 #  stat_smooth() +
   scale_size_continuous(range = c(0.1,1.5)) +
@@ -220,34 +230,54 @@ ggplot(data, aes(x = trace_w , y = log(eigenvalue2))) +
 ```{r}
 mod_df <- data
 
-mod_hyp <- lm(log(eigenvalue2) ~ I(trace_w^(-1)), data = data)
+mod_hyp <- lm(log(eigenvalue2) ~ I(trace^(-1)), data = data)
 mod_df$hyp <- predict(mod_hyp)
 
-mod_log <- lm(log(eigenvalue2) ~ log(trace_w), data = data)
+mod_log <- lm(log(eigenvalue2) ~ log(trace), data = data)
 mod_df$log <- predict(mod_log)
 
 ```
 
 ```{r}
-ggplot(mod_df, aes(x = trace_w, y = log(eigenvalue2))) +
+ggplot(mod_df, aes(x = trace, y = log(eigenvalue2))) +
   geom_point(mapping = aes(size = size, alpha = 0.01,  color = size, shape = factor(n))) +
 #  stat_smooth() +
   scale_size_continuous(range = c(0.1,1.5)) +
   labs(x = "Trace of A", y = TeX("$\\log\\left( \\xi_2 \\right)$ of T")) +
-  geom_line(aes(x = trace_w, y = hyp, lwd = 2)) +
-  geom_line(aes(x = trace_w, y = log, lwd = 2))
+  geom_line(aes(x = trace, y = hyp, lwd = 2)) +
+  geom_line(aes(x = trace, y = log, lwd = 2))
 ```
 
 ```{r}
+
+mod_df <- data
+
+mod_hyp <- lm(log(eigenvalue2) ~ 0 + I(trace^(-1)), data = data)
+mod_df$hyp <- predict(mod_hyp)
+
+mod_log <- lm(log(eigenvalue2) ~ 0 + log(trace), data = data)
+mod_df$log <- predict(mod_log)
+
+
 mod_df_long <- pivot_longer(mod_df, cols = c(hyp, log), names_to = "Model_Type", values_to = "eigenvalue2_mod")
 mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
 
-ggplot(mod_df_long, aes(x = trace_w)) +
+
+print(c("MSE Hyperbolic"  = mean(mod_hyp$residuals^2),
+        "MSE Logarithmic" = mean(mod_log$residuals^2)), 2)
+```
+
+
+
+```{r}
+
+ggplot(mod_df_long, aes(x = trace)) +
   geom_point(shape = 23, aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.7, alpha = 0.4) +
   geom_line(aes(y = eigenvalue2_mod, col = Model_Type), size = 1) +
   labs(col = c("Model \nType")) +
   scale_color_manual(labels = c("Hyperbolic", "Logarithmic"),
                      values = c("indianred", "royalblue")) +
+  labs(x = "Trace of A", y = TeX("$\\log \\left( \\xi_2 \\right$ of $\\mathbf{T}$"))
   theme_linedraw()
 ```
 
