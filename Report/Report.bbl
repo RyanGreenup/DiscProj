@@ -110,6 +110,39 @@
       \verb http://www.nature.com/articles/43601
       \endverb
     \endentry
+    \entry{barabasiLinkedNewScience2002}{book}{}
+      \name{author}{1}{}{%
+        {{hash=15bacd7ddfc866c5dd96976d4b0244d5}{%
+           family={Barabási},
+           familyi={B\bibinitperiod},
+           given={Albert-László},
+           giveni={A\bibinithyphendelim L\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {Cambridge, Mass}%
+      }
+      \list{publisher}{1}{%
+        {Perseus Pub}%
+      }
+      \strng{namehash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{fullhash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{bibnamehash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{authorbibnamehash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{authornamehash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \strng{authorfullhash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \field{extraname}{1}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{isbn}{978-0-7382-0667-7}
+      \field{pagetotal}{280}
+      \field{shorttitle}{Linked}
+      \field{title}{Linked: The New Science of Networks}
+      \field{year}{2002}
+      \field{dateera}{ce}
+      \keyw{Computer networks,Economics,Miscellanea,Philosophy,Science,Social networks,System theory,World Wide Web}
+    \endentry
     \entry{barabasiPhysicsWeb2001}{article}{}
       \name{author}{1}{}{%
         {{hash=15bacd7ddfc866c5dd96976d4b0244d5}{%
@@ -124,6 +157,7 @@
       \strng{authorbibnamehash}{15bacd7ddfc866c5dd96976d4b0244d5}
       \strng{authornamehash}{15bacd7ddfc866c5dd96976d4b0244d5}
       \strng{authorfullhash}{15bacd7ddfc866c5dd96976d4b0244d5}
+      \field{extraname}{2}
       \field{sortinit}{B}
       \field{sortinithash}{8de16967003c7207dae369d874f1456e}
       \field{labelnamesource}{author}
@@ -242,7 +276,6 @@
       \field{journaltitle}{Discrete Event Dyn Syst}
       \field{langid}{english}
       \field{month}{3}
-      \field{note}{The choice of damping factor of Googles page rank might have a large impact on the values given to vertices. \par This suggests an approach that uses structural network dynatims to provide an appropriate score distribution. \par The method implemented is not something I have come yet to understand, but it could be very interesting to see: \par - how it relates to the power walk method\\ - whether or not it could offer insightts into the convergence and stability of the power walk method\\ - Whether or not the method would be compatible with negatively weighted edges.}
       \field{number}{1}
       \field{shorttitle}{Ranking Nodes in General Networks}
       \field{title}{Ranking Nodes in General Networks: A {{Markov}} Multi-Chain Approach}
@@ -302,7 +335,6 @@
       \field{journaltitle}{ACM Trans. Inter. Tech.}
       \field{langid}{english}
       \field{month}{2}
-      \field{note}{This is a discussion on the stability, complexity and critical role of parameters involved in the computation.}
       \field{number}{1}
       \field{title}{Inside {{PageRank}}}
       \field{urlday}{18}
@@ -1016,7 +1048,6 @@
       \field{labeltitlesource}{title}
       \field{edition}{2nd ed}
       \field{isbn}{978-0-669-24592-9}
-      \field{note}{Includes index}
       \field{pagetotal}{592}
       \field{title}{Elementary Linear Algebra}
       \field{year}{1991}
@@ -1153,6 +1184,45 @@
       \verb http://doi.org/10.1145/2537734.2537749
       \endverb
       \keyw{graph centrality,PageRank,random surfer,sentiment}
+    \endentry
+    \entry{renyiRandomGraphs1959}{article}{}
+      \name{author}{2}{}{%
+        {{hash=79cb6e4dc79030455cf1fb9769079453}{%
+           family={Renyi},
+           familyi={R\bibinitperiod},
+           given={Alfred},
+           giveni={A\bibinitperiod}}}%
+        {{hash=102d6bd458919c425306e1da2af63a90}{%
+           family={Paul},
+           familyi={P\bibinitperiod},
+           given={Erdos},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{717460075669bcbc912cfbdddbe0a8bc}
+      \strng{fullhash}{717460075669bcbc912cfbdddbe0a8bc}
+      \strng{bibnamehash}{717460075669bcbc912cfbdddbe0a8bc}
+      \strng{authorbibnamehash}{717460075669bcbc912cfbdddbe0a8bc}
+      \strng{authornamehash}{717460075669bcbc912cfbdddbe0a8bc}
+      \strng{authorfullhash}{717460075669bcbc912cfbdddbe0a8bc}
+      \field{sortinit}{R}
+      \field{sortinithash}{b9c68a358aea118dfa887b6e902414a7}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{(I; possible graphs which can be formed from N, the n (labelled) vertices PI, P?,..., P,, by selecting N edges from the i); possible edges Px (1 5 i{$<$} j 5 n), Thus the effective number of vertices of C,,, l-may be less than n, as some points Pi may be not connected in r,, X with any other point P,; we shall call such points Pi isolafed points. We consider the isolated points also as belonging to Z’7,,\textasciitilde{} Xy. r,,, X is called completely connected if it effectively contains all points PI, Pt,..., P,,(i, e. if it has no isolated points) and is connected in the ordinary sense. In the present paper we consider asymptotic statistical properties of random graphs for 11++ 30. We shall deal with the following questions: 1. What is the probability of r,,. T being completely connected? 2. What is the probability that the greatest connected component (subgraph) of r,,, s should have effectively nk points?(k= O, 1,...). 3. What is the probability that rp, N should consist of exactly kf I connected components?(k= 0, 1,.+.).}
+      \field{journaltitle}{Publ. math. debrecen}
+      \field{number}{290-297}
+      \field{title}{On Random Graphs {{I}}}
+      \field{volume}{6}
+      \field{year}{1959}
+      \field{dateera}{ce}
+      \field{pages}{18}
+      \range{pages}{1}
+      \verb{urlraw}
+      \verb http://www.leonidzhukov.net/hse/2016/networks/papers/erdos-1959-11.pdf
+      \endverb
+      \verb{url}
+      \verb http://www.leonidzhukov.net/hse/2016/networks/papers/erdos-1959-11.pdf
+      \endverb
     \endentry
     \entry{sazProbabilityTheoryThis}{online}{}
       \name{author}{1}{}{%

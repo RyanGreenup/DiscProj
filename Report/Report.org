@@ -20,7 +20,6 @@
 # results: table (or output or whatever)
 :END:
 :LATEX:
-
 #+LATEX_HEADER: \IfFileExists{./resources/style.sty}{\usepackage{./resources/style}}{}
 #+LATEX_HEADER: \IfFileExists{./resources/referencing.sty}{\usepackage{./resources/referencing}}{}
 #+LATEX_HEADER: \addbibresource{./resources/references.bib}
@@ -30,9 +29,11 @@
 #+LATEX_HEADER: \usetikzlibrary{decorations.fractals}
 #+LATEX_HEADER: \usetikzlibrary{lindenmayersystems}
 :END:
+
+
 * Introduction
 Any collection of interconnected information can form a network structure,
-consider for example citations, webpages, wikis, encyclopedias and interpersonal
+consider for example citations, webpages, wikis, power grids, wiring diagrams, encyclopedias and interpersonal
 relationships. The analysis of these networks can be used to draw insights about
 the behaviour of such networks.
 
@@ -91,10 +92,12 @@ It is not clear how the second eigenvalue is related to the method parameters of
 2. Investigate the Relationship between the parameters of the /Power Walk/
    transition probability matrix and the second eigenvalue
 
-* Implementing PageRank Generally
+#+LATEX: \part{Implementing PageRank}
+* Mathematics of Page Rank
    :PROPERTIES:
    :CUSTOM_ID: PageRank-Generally
    :END:
+** The Stationary Distribution of a Probability Transition Matrix
 A graph can be expressed as an adjacency matrix \(\mathbf{A}\):
 
 \[
@@ -143,69 +146,8 @@ Finding the Stationary point for this relationship will give a
 frequency distribution for the nodes and a metric to measure the
 centrality of vertices.
 
-** Definitions
-:PROPERTIES:
-:CUSTOM_ID: definitions
-:END:
-The following definitions are used in this report [fn:: see generally [[cite:langvilleGooglePageRankScience2012][Ch. 15]] for further reading] :
-
-- Markov Chains :: are discrete mathematical model such that future values depend only on current values [[cite:larsonElementaryLinearAlgebra1991][\textsection 1.5]]
-- Stochastic Matrices :: contain only positive values where each column sums to 1 cite:langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991 (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
-  + some authors use rows (see e.g. [[cite:langvilleGooglePageRankScience2012][\textsection 15.3]]), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
-    - /Column Stochastic/ and /Row Stochastic/ can be used to more clearly distinguish between which type of stochastic matrix is being used.
-  + Many programming languages return /unit-eigenvectors/ \(\vec{x}\) such that \(\left\lvert \left\lvert \vec{x} \right\rvert \right\rvert = 1 \) as opposed to \(\mathtt{sum} \left( \vec{\mathtt{x}}\right) = 1\), so when solving for a stationary vector it can be necessary to perform \(\vec{\mathtt{p}} \leftarrow \frac{\vec{\mathtt{p}}}{\sum \vec{p}}\)
-- Irreducible :: graphs have a path from from any given vertex to another vertex. [[cite:langvilleGooglePageRankScience2012][\textsection 15.2]]
-  + Ergodic :: graphs are irreducible graphs with further constraints outside
-    the scope of this report (see e.g.
-    cite:nathanaelackermancameronfreeralexkruckmanandrehanapatelProperlyErodicStructures2017,chenEigenvaluesInequalitiesErgodic2005)
-    - It is a necessary but not a sufficient condition of ergodic graphs that all vertices be reachable from any other vertices (see cite:sazProbabilityTheoryThis for a counter example.)
-- Primitive Matrices :: are non-negative irreducible matrices that have only one eigenvalue on the unit circle.
-  + If a matrix is primitive it will approach a limit under exponentiation [[cite:langvilleGooglePageRankScience2012][\textsection 15.2]]
-- Transition Probability Matrix :: is a stochastic matrix where each column is a vector of probabilities such that \(\mathbf{T}_{i,j}\) represents the probability of travelling from vertex \(j\) to vertex \(i\) during a random walk.
-  + Some Authors consider the transpose (see e.g. cite:langvilleGooglePageRankScience2012).
-- Aperiodic :: Markov chains are markov chains with an irreducible and primitive transition probability matrix.
-  + If the transition probability matrix is irreducible and imprimitive it is said to be a periodic Markov chain.
-- Regular :: Markov Chains are regular irreducible and aperiodic.
-- Sparse :: Matrices contain a majority of elements with values equal to 0 [[cite:langvilleGooglePageRankScience2012][\textsection 4.2]]
-- Sparse :: Iterating the
-- PageRank :: A process of measuring graph centrality by using a random walk algorithm and measuring the most frequent node
-  + In the literature (see e.g. cite:guptaWTFWhoFollow2013,langvilleGooglePageRankScience2012) the Random Surfer model is usually used to refer to the introduction of a probability of travelling to any other node, this is discussed in CROSSREF
-*** Notation
-:PROPERTIES:
-:CUSTOM_ID: notation
-:END:
-- \(\mathbf{A}\)
-  - Is the adjacency matrix of a graph such that \(\mathbf{A}_{i,j} = 1 \) Indicates travel from \(j\) to \(i\) is possible.
-- \(\mathbf{T}\)
-  - Indicates the probability of a movement during a random walk, such that \(\mathf{T}_{i,j}\) is equal to the probability of travelling \(j \rightarrow  i \) during a random walk.
-- \(\mathbf{D}_{\mathbf{A}}=\mathrm{diag}\left(\vec{1}\mathbf{A}\right)\)
-- \(\mathbf{D}_{\mathbf{A}}^{- 1}  =
-   \begin{cases}
-   0 ,& \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i = 0 \\
-   \left[ \frac{1}{\mathbf{D}_{\mathbf{A}}} \right] ,& \enspace \enspace \left[ \mathbf{D}_{\mathbf{A}} \right]_i \neq 0
-   \end{cases}\)
-  - A diagonal scaling matrix such that \(\mathbf{T} = \mathbf{A} \mathbf{D}_{\mathbf{A}}^{-1} \), the piecewise definition is such that \(\mathbf{D}^{-1}_{\mathbf{A}}\) is still defined even if \(\mathbf{A}\) is a reducible graph.
-    + Where \(\mathbf{D}^{-1}\) is a matrix such that multiplication with which scales each column of \(\mathbf{A}\) to 1.
-    + \(\mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\mathbf{D}^{-1}_{\mathbf{A}} = \frac{1}{\vec{1}\mathbf{D}_{\mathbf{A}}} \) for some stochastic matrix \(\mathbf{A}\)
-- \(n\)
-  - Refers to the number of vertices in a graph, \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
-- \(\mathbf{E}_{i,j} = \frac{1}{n}\)
-  - A matrix of size \(n\times n\) representing the background probability of jumping to any vertex of a graph.
-- \(\vec{1}\)
-  - a vector of length \(n\) containing only the value 1.
-    + The convention that a vector behaves as a vertical \(n \times 1 \) matrix will be used here.
-    + Some authors use \(\mathbf{e}\), see e.g. cite:langvilleGooglePageRankScience2012
-- \(\mathbf{J} = \vec{1}\cdot \vec{1}^{\mathrm{T}} \iff \mathbf{J}_{i,j} = 1\)
-  - A completely dense \(n \times n \) matrix containing only 1
-- \(\alpha\)
-  - The probability of teleporting from one vertex to another during a random walk.
-    + In the literature $\alpha$ is often referred to as a damping factor (see e.g.  cite:berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005)
-  or a smoothing constant (see e.g cite:koppelMeasuringDirectIndirect2014).
-# - $\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}$; Probability :: of travelling to a
-#   + $\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]$
-
 ** Random Surfer Model
-*** Issues
+*** Problems with the Stationary Distribution
 :PROPERTIES:
 :CUSTOM_ID: issues
 :END:
@@ -447,12 +389,7 @@ To Implement the models, first they'll be implemented using an ordinary matrix a
 ..
 #+end_example
 
-** Implementing the Random Surfer
-*** Small Graph, Ordinary Matrices
-  :PROPERTIES:
-  :CUSTOM_ID: implementing-page-rank-methods
-  :END:
-**** Example Graph
+*** Example Graph
    :PROPERTIES:
    :CUSTOM_ID: example-graph
    :END:
@@ -472,6 +409,9 @@ g1 <- igraph::graph.formula(
 plot(g1)
 #+END_SRC
 
+#+RESULTS: ex-fig-r
+[[file:media/example-graph-power-walk.png]]
+
 #+NAME: example-rs-graph
 #+CAPTION: Exemplar graph for /PageRank/ examples, produced in listing ref:ex-fig-r
 #+attr_html: :width 400px
@@ -479,8 +419,12 @@ plot(g1)
 #+RESULTS[7de5d25f92fb5d3fdc637f7e5e9390e4492faabe]:
 [[file:media/example-graph-power-walk.png]]
 
-
-***** Adjacency Matrix
+** Implementing the Random Surfer
+*** Ordinary Matrices
+  :PROPERTIES:
+  :CUSTOM_ID: implementing-page-rank-methods
+  :END:
+**** Adjacency Matrix
     :PROPERTIES:
     :CUSTOM_ID: adjacency-matrix
     :END:
@@ -526,7 +470,7 @@ The adjacency Matrix is given by:
 10 0 0 0 0 0 0 0 0 0  0
 #+end_example
 
-***** Probability Transition Matrix
+**** Probability Transition Matrix
     :PROPERTIES:
     :CUSTOM_ID: probability-transition-matrix
     :END:
@@ -564,7 +508,7 @@ eqref:eq:basic-trans-def, this is shown in listing [[basic-trans-def]].
 #+end_example
 
 
-****** Create a Function
+***** Create a Function
      :PROPERTIES:
      :CUSTOM_ID: create-a-function
      :END:
@@ -815,20 +759,7 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
 10 0.01876543 0.01876543
 #+end_example
 
-#+BEGIN_EXAMPLE
-  ##         [,1]      [,2]
-  ## 1  0.2129185 0.2129185
-  ## 2  0.2313481 0.2313481
-  ## 3  0.2156444 0.2156444
-  ## 4  0.2104889 0.2104889
-  ## 5  0.0232000 0.0232000
-  ## 6  0.0232000 0.0232000
-  ## 7  0.0232000 0.0232000
-  ## 8  0.0200000 0.0200000
-  ## 9  0.0200000 0.0200000
-  ## 10 0.0200000 0.0200000
-#+END_EXAMPLE
-*** Large Graph, Sparse Matrices using CRS
+*** Sparse Matrices
 **** Creating the Probability Transition Matrix
 Implementing the page rank method on a larger graph requires the use of more
 efficient form of matrix storage as discussed at [[#sparse-matrix]]
@@ -1068,24 +999,11 @@ p %>% head() %>% print()
 #+end_example
 
 ** Power Walk Method
-*** Introduction
 Recall from [[#pwalk]] that the power walk is given by:
 
 \begin{align*}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B}
 \end{align*}
-
-
-
-where:
-
-- $\mathbf{B}= \beta^{\mathbf{A}}$
-  - $x\beta^{1}$  :: probability of following an edge of weight 1
-  - $x\beta^{0}$  :: probability of following an edge of weight 0
-  - $x\beta^{-1}$ :: probability of following an edge of weight -
-- $\mathbf{D}_{\mathbf{B}} = \mathtt{colsums}(\mathbf{B})$
-- $\mathbf{A}$ :: The Adjacency Matrix
-
 *** Ordinary Matrices
 Implementing the Power walk using ordinary matrices is very similar to the /Random Surfer/ model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 
@@ -1194,8 +1112,6 @@ p %>% as.vector()
 #+RESULTS:
 :  [1] 0.10153165 0.10159353 0.09609664 0.09725145 0.10153165 0.10008449
 :  [7] 0.09865794 0.10157348 0.10155286 0.10012631
-
-
 
 *** Sparse Matrices
 **** Theory; Simplifying Power Walk to be solved with Sparse Matrices
@@ -1585,11 +1501,6 @@ print(paste("The stationary point is"))
 print(p)
 #+end_src
 
-#+RESULTS[95b35a53d822393ea1522a4e5bc714a0cd0834e2]:
-: [1] "The stationary point is"
-:  [1] 0.10153165 0.10159353 0.09609664 0.09725146 0.10153165 0.10008449
-:  [7] 0.09865795 0.10157347 0.10155286 0.10012631
-
 * Creating a Package
 :PROPERTIES:
 :CUSTOM_ID: create-package
@@ -1621,17 +1532,22 @@ library(tidyverse) # Maybe, TODO check if this is used, I don't think it is
 :
 : Attaching package: ‘PageRank’
 
-* Investigating the Second EigenValue
+#+LATEX: \part{Investigating \(\xi_{2}\)}
+* Erdos Renyi Graphs
 :PROPERTIES:
 :CUSTOM_ID: second-eigenvalue
 :END:
 
 ** ER Graphs Plotting Various Values
 *** Erdos Reny Game
-The /Erdos Renyi/ game creates a graph by creating every single edge with some
-constant probability. [[cite:IgraphManualPages][IgraphManualPagesa]] Sampling these graphs will provide a broad picture for the
-overall behaviour between the method parameters of the /Power Walk/ and the
-second eigenvalue.
+The /Erdos Renyi/ game, first published in 1959 cite:renyiRandomGraphs1959 creates a graph by assuming that the number of nodes is constant and the probability of interlinking these nodes is equal.
+
+This is implemented in */R/* [[cite:IgraphManualPages][IgraphManualPagesa]]
+
+The Erdos Renyi game does not produce graphs consistent with networks such as
+the web (see [[#barabassi-albert]]) or wikis, however, Sampling these graphs will
+provide a broader picture for the overall behaviour of \(\xi_{2}\) over a broad
+range of graphs with respect to the parameters of the /Power Walk/ method.
 
 *** Correlation Plot
 
@@ -1960,21 +1876,85 @@ These are not however insightful of any direct relationships between the method 
 ** TODO Look at the Trace of the Matrix as a comparison point
 ** TODO Use BA Graphs
 
-* Simulating the Structure of the Web
-A graph of the internet is /scale free/, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by [[cite:langvilleGooglePageRankScience2012][\textsection 10.7.2]]:
+* Barabasi Albert Graphs
+:PROPERTIES:
+:CUSTOM_ID: barabassi-albert
+:END:
+A graph of the internet is /scale free/, this means that the number of nodes of
+a graph (\(n\)), having \(j\) edges is given by
+ [[cite:langvilleGooglePageRankScience2012][\textsection 10.7.2]]:
 
 \begin{align}
 n \propto j^{-k}, \quad \exists k \in \mathbb{R}
 \end{align}
 
-The /Erdos Renyi/ game is a random network, a superior approach to model the web is to use a scale free networks cite:barabasiPhysicsWeb2001 such as the Barabasi-Albert graph cite:barabasiScalefreeCharacteristicsRandom2000
+The /Erdos Renyi/ game is a random network, a superior approach to model the web
+is to use a scale free networks cite:barabasiPhysicsWeb2001 such as the
+Barabasi-Albert graph cite:barabasiScalefreeCharacteristicsRandom2000
 
+The Erdos Renyi game assumes that the number of nodes is constant from beginning
+to end, clearly this is not true for networks such as the web. Consider a graph
+constructed node by node where each time a new node is introduced it is randomly
+connected to another with a constant probability. Despite the probability of
+connecting to any given node being constant as in the Erdos Renyi game, such a
+graph will favour nodes introduced earlier with respect to the number edges.
+This shows that the precense of network growth is an import feature in modelling
+networks.
 
-Maybe I should look at the most appropriate way to simulate social network links, one possibility is [[https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf][this paper ]] cite:zengPracticalSimulationMethod2013.
+Simply considering growth however is not sufficient to simulate graphs with a
+degree distribution consistent with the web
+[[cite:zengPracticalSimulationMethod2013][Ch. 7]] (see figure ).
 
+When introducing a new node, the probability of linking to any other node is not
+uniformly random. When adding links to from one node to another it would be
+expected that links to more popular websited would be made (for example if
+somebody added a link to a personal website they might be more likely to link to
+/Wikipedia/ than to the /Encyclopedia of Britannica/ simply because it is more
+common). A simple approach is to presume that the probability of linking from
+one node to another is proportional to the number of links, i.e. a node with
+twice as many links will be twice as likely to receive a link from a new node.
+
+These two distinguishing features departing from the /Erdos Renyi/ model, known as /Growth/ and /Preferrential Attachment/, are what set the Barabassi-Albert model apart from the Erdos-Renyi model and why it is better suited to modelling networks such as the web. [[cite:barabasiLinkedNewScience2002][Ch. 7]]
+
+A practical Simulation method for social networks simulate social network links,
+one possibility is [[https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf][this paper ]] cite:zengPracticalSimulationMethod2013.
+/home/ryan/Sync/Studies/2020Spring/DiscProj/Report/Report.org
 Actually there is a data set available
  cite:garritanoWikipediaArticleNetworks2019, I should just analyse that, see [[file:~/Dropbox/DataSci/Visual_Analytics/Assessment/the-marvel-universe-social-network/plotly3d_Marvel.r][how
 it was done in Visual Analytics as a reminder]].
+
+
+#+NAME: degree-distribution-hist
+#+CAPTION: Simulate Erdos-Renyi and Barabassi-Albert graphs in order to measure the degree distribution,  shown in ref:fig:degree-distribution-hist
+#+BEGIN_SRC R :exports both :results output graphics file :file media/degree_dist_er_ba.png :session ReportDiscProj
+layout(matrix(1:2, nrow = 2))
+col  <- "Mediumpurple"
+n <- 1000
+hist(
+  igraph::degree(igraph::sample_pa(n, 0.2)),
+  binwidth = 0.3,
+  xlab = "",
+  main = "Barabassi-Albert Degree Distribution",
+  col = col, freq = FALSE
+)
+
+hist(igraph::degree(igraph::erdos.renyi.game(n, 0.2)),
+     main= "Erdos-Renyi Degree Distribution",
+     col = col,
+     binwidth = 0.3,
+     xlab = "",
+     freq = FALSE )
+#+end_src
+
+
+#+NAME: fig:degree-distribution-hist
+#+CAPTION: histograms of degree distribution of Erdos-Renyi and Barabassi-Albert graphs produced in listing ref:degree-distribution-hist
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+#+RESULTS: degree-distribution-hist
+[[file:media/degree_dist_er_ba.png]]
+
+
 * Relating the Power Walk to the Random Surfer
   :PROPERTIES:
   :CUSTOM_ID: relate-to-random-surfer
@@ -2328,6 +2308,67 @@ image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
 [[file:media/DensityUndirectedBA.png]]
 ** Graph Diagrams
 Graph Diagrams shown in [[#markov]] where produced using ~DOT~ (see cite:DOTLanguage,DOTGraphDescription2020).
+** Definitions
+:PROPERTIES:
+:CUSTOM_ID: definitions
+:END:
+The following definitions are used in this report [fn:: see generally [[cite:langvilleGooglePageRankScience2012][Ch. 15]] for further reading] :
+
+- Markov Chains :: are discrete mathematical model such that future values depend only on current values [[cite:larsonElementaryLinearAlgebra1991][\textsection 1.5]]
+- Stochastic Matrices :: contain only positive values where each column sums to 1 cite:langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991 (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
+  + some authors use rows (see e.g. [[cite:langvilleGooglePageRankScience2012][\textsection 15.3]]), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
+    - /Column Stochastic/ and /Row Stochastic/ can be used to more clearly distinguish between which type of stochastic matrix is being used.
+  + Many programming languages return /unit-eigenvectors/ \(\vec{x}\) such that \(\left\lvert \left\lvert \vec{x} \right\rvert \right\rvert = 1 \) as opposed to \(\mathtt{sum} \left( \vec{\mathtt{x}}\right) = 1\), so when solving for a stationary vector it can be necessary to perform \(\vec{\mathtt{p}} \leftarrow \frac{\vec{\mathtt{p}}}{\sum \vec{p}}\)
+- Irreducible :: graphs have a path from from any given vertex to another vertex. [[cite:langvilleGooglePageRankScience2012][\textsection 15.2]]
+  + Ergodic :: graphs are irreducible graphs with further constraints outside
+    the scope of this report (see e.g.
+    cite:nathanaelackermancameronfreeralexkruckmanandrehanapatelProperlyErodicStructures2017,chenEigenvaluesInequalitiesErgodic2005)
+    - It is a necessary but not a sufficient condition of ergodic graphs that all vertices be reachable from any other vertices (see cite:sazProbabilityTheoryThis for a counter example.)
+- Primitive Matrices :: are non-negative irreducible matrices that have only one eigenvalue on the unit circle.
+  + If a matrix is primitive it will approach a limit under exponentiation [[cite:langvilleGooglePageRankScience2012][\textsection 15.2]]
+- Transition Probability Matrix :: is a stochastic matrix where each column is a vector of probabilities such that \(\mathbf{T}_{i,j}\) represents the probability of travelling from vertex \(j\) to vertex \(i\) during a random walk.
+  + Some Authors consider the transpose (see e.g. cite:langvilleGooglePageRankScience2012).
+- Aperiodic :: Markov chains are markov chains with an irreducible and primitive transition probability matrix.
+  + If the transition probability matrix is irreducible and imprimitive it is said to be a periodic Markov chain.
+- Regular :: Markov Chains are regular irreducible and aperiodic.
+- Sparse :: Matrices contain a majority of elements with values equal to 0 [[cite:langvilleGooglePageRankScience2012][\textsection 4.2]]
+- Sparse :: Iterating the
+- PageRank :: A process of measuring graph centrality by using a random walk algorithm and measuring the most frequent node
+  + In the literature (see e.g. cite:guptaWTFWhoFollow2013,langvilleGooglePageRankScience2012) the Random Surfer model is usually used to refer to the introduction of a probability of travelling to any other node, this is discussed in CROSSREF
+*** Notation
+:PROPERTIES:
+:CUSTOM_ID: notation
+:END:
+- \(\mathbf{A}\)
+  - Is the adjacency matrix of a graph such that \(\mathbf{A}_{i,j} = 1 \) Indicates travel from \(j\) to \(i\) is possible.
+- \(\mathbf{T}\)
+  - Indicates the probability of a movement during a random walk, such that \(\mathf{T}_{i,j}\) is equal to the probability of travelling \(j \rightarrow  i \) during a random walk.
+- \(\mathbf{D}_{\mathbf{A}}=\mathrm{diag}\left(\vec{1}\mathbf{A}\right)\)
+- \(\mathbf{D}_{\mathbf{A}}^{- 1}  =
+   \begin{cases}
+   0 ,& \quad \left[ \mathbf{D}_{\mathbf{A}} \right]_i = 0 \\
+   \left[ \frac{1}{\mathbf{D}_{\mathbf{A}}} \right] ,& \enspace \enspace \left[ \mathbf{D}_{\mathbf{A}} \right]_i \neq 0
+   \end{cases}\)
+  - A diagonal scaling matrix such that \(\mathbf{T} = \mathbf{A} \mathbf{D}_{\mathbf{A}}^{-1} \), the piecewise definition is such that \(\mathbf{D}^{-1}_{\mathbf{A}}\) is still defined even if \(\mathbf{A}\) is a reducible graph.
+    + Where \(\mathbf{D}^{-1}\) is a matrix such that multiplication with which scales each column of \(\mathbf{A}\) to 1.
+    + \(\mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\mathbf{D}^{-1}_{\mathbf{A}} = \frac{1}{\vec{1}\mathbf{D}_{\mathbf{A}}} \) for some stochastic matrix \(\mathbf{A}\)
+- \(n\)
+  - Refers to the number of vertices in a graph, \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
+- \(\mathbf{E}_{i,j} = \frac{1}{n}\)
+  - A matrix of size \(n\times n\) representing the background probability of jumping to any vertex of a graph.
+- \(\vec{1}\)
+  - a vector of length \(n\) containing only the value 1.
+    + The convention that a vector behaves as a vertical \(n \times 1 \) matrix will be used here.
+    + Some authors use \(\mathbf{e}\), see e.g. cite:langvilleGooglePageRankScience2012
+- \(\mathbf{J} = \vec{1}\cdot \vec{1}^{\mathrm{T}} \iff \mathbf{J}_{i,j} = 1\)
+  - A completely dense \(n \times n \) matrix containing only 1
+- \(\alpha\)
+  - The probability of teleporting from one vertex to another during a random walk.
+    + In the literature $\alpha$ is often referred to as a damping factor (see e.g.  cite:berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005)
+  or a smoothing constant (see e.g cite:koppelMeasuringDirectIndirect2014).
+# - $\vec{p}_{i} = \frac{\mathrm{deg}(v_{1})}{\mathrm{vol}(G)}$; Probability :: of travelling to a
+#   + $\mathrm{vol}(G) = \sum^{n}_{i = 1} \left[ \mathrm{indeg}(v) \right] = \sum^{n}_{i = 1} \left[ \mathrm{outdeg}(v) \right ] = \sum^{n}_{i = 1} \left[ \mathrm{deg}(v) \right]$
+
 * Footnotes
 
 [fn:bvl] NOTE: Similar to a signmoid function, which is a solution to $p \propto p(1-p)$, I wonder if this provides a connection to the exponential nature of the power walk
