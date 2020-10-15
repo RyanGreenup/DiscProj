@@ -123,7 +123,7 @@
 \definecolor{colspg}{RGB}{218, 168, 224}
 \definecolor{coltit}{RGB}{84, 65, 86}
 \definecolor{colname}{RGB}{236, 66 ,255}
-		
+
 % * Code Blocks
 % ** Listings Package
 
@@ -186,19 +186,19 @@
 % \surroundwithmdframed{minted}
  \RequirePackage{etoolbox}
 
-
 \RequirePackage{tcolorbox}
-\tcbuselibrary{skins,breakable} % Without this it will not break
-\tcbuselibrary{listings} % Without this no listings
-\tcbuselibrary{minted} % Without this no Minted??? Not sure here?
-%\tcbset{listing engine={listings}} % This must go after loading libraries
-
-\tcbuselibrary{shadows, decorations.pathmorphing}
-\tcbset{colback=red!5!white,colframe=red!75!black,
-  fonttitle=\bfseries}
 % Use tcolorbox, even though it breaks html conversion, it makes it way easier,
   %if you need to fix the html conversion just remove the box by commenting this out.
- 
+\BeforeBeginEnvironment{minted}{\begin{tcolorbox}[
+    breakable, enhanced jigsaw,
+    colback=blue!1!white,colframe=blue!75!black,colbacktitle=red!20!blue!8,
+    coltitle=blue, enhanced jigsaw, breakable,
+%		title=\textbf{\textit{R}}\ ,fonttitle=\it,
+    left=0.8cm, %Indent for the line numbers, % use line numbers because line-breaks
+      /tcb/left skip=0.5 cm %Indent the whole box
+      ]}%
+%  \AfterEndEnvironment{verbatim}{\end{tcolorbox}}%
+ \AfterEndEnvironment{minted}{\end{tcolorbox}}%
 
 
 
