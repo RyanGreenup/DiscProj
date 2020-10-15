@@ -196,7 +196,8 @@
     coltitle=blue, enhanced jigsaw, breakable,
 %		title=\textbf{\textit{R}}\ ,fonttitle=\it,
      %Indent for the line numbers, % use line numbers because line-breaks
-      /tcb/left skip=0.5 cm %Indent the whole box
+      /tcb/left skip=0.5 cm, %Indent the whole box
+      width=41em % make width about 80ish tt char
 }
 % Add Line Colour Strip
 \RequirePackage{tcolorbox}
@@ -207,6 +208,11 @@
      \begin{tcbclipinterior}\fill[red!20!blue!20!white] (frame.south west) rectangle ([xshift=5mm]frame.north west); \end{tcbclipinterior}
    }
  }
+% Make verbatim smaller to fit inside box
+\patchcmd{\@verbatim}
+  {\verbatim@font}
+  {\verbatim@font\footnotesize}
+   {}{}                          %
 \BeforeBeginEnvironment{minted}{\begin{tcolorbox}[]}%
 %  \AfterEndEnvironment{verbatim}{\end{tcolorbox}}%
  \AfterEndEnvironment{minted}{\end{tcolorbox}}%
