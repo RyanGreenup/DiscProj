@@ -96,7 +96,6 @@ Let's look at a 3d Output
 names(data)
 library(plotly)
 
-d <- data[sample(1:nrow(data), 1000),]
 d <- data
 # d$beta <- log(d$beta)
 
@@ -115,7 +114,8 @@ fig
 names(data)
 library(plotly)
 
-d <- data[sample(1:nrow(data), 1000),]
+#d <- data[sample(1:nrow(data), 1000),]
+d <- data
 
 fig <- plot_ly(d, x = ~A_dens, y = ~trace, z = ~eigenvalue2)
 fig <- fig %>% add_markers(size = 1)
@@ -223,3 +223,79 @@ ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = log(beta*p), y
 It seems for very low densities that it is linear and then logarithmic for
 moderate densities. BA models have density~=m/n so for the BA model we'll
 just use beta.
+
+
+```{r}
+
+p       <- seq(from = 0.1, to = 0.95, length.out = 5)
+size    <- seq(from = 100, to = 1000, length.out = 30)
+beta <- seq(from = 1, to = 10, length.out = 1000)
+beta <- 5
+input_var <- expand.grid("p" = p, "beta" = beta, "size" = size)
+input_var
+
+nc <- length(random_graph(1, 1, 1))
+Y <- matrix(ncol = nc, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$p, X$beta, X$size)
+  print(i/nrow(input_var))
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+(data2 <- cbind(input_var, Y)) %>% head()
+data2$p <- factor(data2$p)
+
+
+
+ggplot(data2, mapping = aes(col = factor(p), x = log(size), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+#  stat_smooth() +
+#  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "size", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Link Density"))  +
+  theme_bw()
+```
+
+
+
+
+```{r}
+p       <- seq(from = 0.1, to = 0.95, length.out = 40)
+size    <- seq(from = 100, to = 1000, length.out = 5)
+beta <- seq(from = 1, to = 10, length.out = 1000)
+beta <- 5
+input_var <- expand.grid("p" = p, "beta" = beta, "size" = size)
+input_var
+
+nc <- length(random_graph(1, 1, 1))
+Y <- matrix(ncol = nc, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$p, X$beta, X$size)
+  print(i/nrow(input_var))
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+(data2 <- cbind(input_var, Y)) %>% head()
+data2$p <- factor(data2$p)
+
+
+
+ggplot(data2, mapping = aes(col = factor(p), x = log(size), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+#  stat_smooth() +
+#  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "P", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Size"))  +
+  theme_bw()
+```
+

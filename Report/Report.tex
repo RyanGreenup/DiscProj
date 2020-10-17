@@ -1,4 +1,4 @@
-% Created 2020-10-17 Sat 12:36
+% Created 2020-10-18 Sun 10:13
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -40,7 +40,7 @@
 
 
 \section{Introduction}
-\label{sec:orgcdab434}
+\label{sec:orge15e24b}
 Any collection of interconnected information can form a network structure,
 consider for example citations, webpages, wikis, power grids, wiring diagrams, encyclopedias and interpersonal
 relationships. The analysis of these networks can be used to draw insights about
@@ -55,7 +55,7 @@ would be correlated with geometric-centrality, this is demonstrated in figure
 is geometrically very central.
 
 \subsection{The PageRank Method}
-\label{sec:orgd1ea9f1}
+\label{sec:org65fcbb4}
 
 There are multiple ways to measure network centrality but this report is
 concerned with the \emph{PageRank} method, this method asserts that the centrality of
@@ -74,7 +74,7 @@ these assumptions, specifically by modifying the corresponding probability
 transition matrix to be stochastic and primitive.
 
 \subsection{Power Walk and the Random Surfer}
-\label{sec:org3e7935f}
+\label{sec:org071d604}
 The typical method to adjust the transition probability matrix is the \emph{Random
 Surfer}, introduced by Page and Brin in 1998
  \cite{larrypageAnatomyLargescaleHypertextual1998} as a distinguishing feature of
@@ -93,7 +93,7 @@ probability matrix that is defined for real weighted edges and could be used wit
 These individual approaches are discussed in more detail at \S \ref{PageRank-Generally}.
 
 \subsection{Stability and Convergence}
-\label{sec:orgd828f22}
+\label{sec:org6f465f0}
 
 The rate at which the algorithm for \emph{PageRank} converges to a solution and the stability of that solution can both be measured by the second eigenvalue of the corresponding transition probability matrix (The details of this are discussed at \ref{implement_models} )
 
@@ -262,7 +262,7 @@ distribution for the nodes and a metric to measure the centrality of vertices.
 
 
 \subsection{Random Surfer Model}
-\label{sec:org9dd521e}
+\label{sec:orgcff69a9}
 \subsubsection{Problems with the Stationary Distribution}
 \label{issues}
 The approach to measuring centrality using a stationary distrubition in \S\ref{stationary-distribution-of-t} has the following issues
@@ -333,7 +333,7 @@ This however would not be sufficient to ensure that \eqref{eq:recurrence} would 
 \end{figure}
 
 \paragraph{Irreducible}
-\label{sec:org28a256a}
+\label{sec:org00c7009}
 A graph that allows travel from any given vertex to any other vertex is said to be irreducible \cite{langvilleGooglePageRankScience2012}, see for example figure \ref{irreducible-example}, this is important in the context of a random walk because only in an irreducible graph can all vertices be reached from any initial condition.
 
 \begin{figure}[htbp]
@@ -343,7 +343,7 @@ A graph that allows travel from any given vertex to any other vertex is said to 
 \end{figure}
 
 \paragraph{Aperiodic}
-\label{sec:orge7c4a93}
+\label{sec:org4d9d5a0}
 An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \(\mathbf{A}\) is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative (or helpful in this context because the graph may still be reducible or non-stochastic)}
 
 
@@ -381,7 +381,7 @@ expressed as:
 \caption{\label{fig:rseg}A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue \emph{teleportation} edges are introduced, these may be followed with a probability of \(1 - \alpha\)}
 \end{figure}
 \subsubsection{Limitations}
-\label{sec:org1ce33ff}
+\label{sec:org5db95a2}
 The \emph{Random Surfer} Model can only consider positively weighted edges, it cannot
 take into account negatively weighted edges which might indicate that
 links promote aversion rather than endorsement.
@@ -503,7 +503,7 @@ provided in listing \ref{preamble}, an exemplar graph was created in listing \re
       library(pacman)
     }
 
-    pacman::p_load(tidyverse, Matrix, igraph, plotly, mise, docstring, mise, corrplot, latex2exp)
+    pacman::p_load(tidyverse, Matrix, igraph, plotly, plot3d, mise, docstring, mise, corrplot, latex2exp)
 #   options(scipen=20) # Resist Scientific Notation
 \end{minted}
 \caption{\label{preamble}Implemented Packages used in this report}
@@ -557,7 +557,7 @@ plot(g1)
 
 
 \subsection{Implementing the Random Surfer}
-\label{sec:orge7b9ccb}
+\label{sec:org010e3f9}
 \subsubsection{Ordinary Matrices}
 \label{implementing-page-rank-methods}
 \paragraph{Adjacency Matrix}
@@ -610,18 +610,16 @@ stochastic and so it is sufficient to use the relationship at
 \end{minted}
 
 \begin{verbatim}
-   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-1     0    1  0.2 0.25    0  0.0 0.00    0    0   0.0
-2     1    0  0.2 0.25    1  0.5 0.33    0    0   0.0
-8     0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
-5     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
-7     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
-6     0    0  0.2 0.00    0  0.0 0.00    0    0   0.0
-9     0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
-3     0    0  0.0 0.25    0  0.5 0.33    0    1   0.5
-4     0    0  0.0 0.25    0  0.0 0.33    1    0   0.5
-10    0    0  0.0 0.00    0  0.0 0.00    0    0   0.0
+Loading required package: usethis
+Loading required package: PageRank
+
+Attaching package: ‘PageRank’
+
+The following object is masked _by_ ‘.GlobalEnv’:
+
+    adj_to_probTrans
 \end{verbatim}
+
 
 \begin{verbatim}
   ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
@@ -842,9 +840,9 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
 \end{verbatim}
 
 \subsubsection{Sparse Matrices}
-\label{sec:org4926eba}
+\label{sec:org9f8f787}
 \paragraph{Creating the Probability Transition Matrix}
-\label{sec:org7a06095}
+\label{sec:orgf566266}
 Implementing the page rank method on a larger graph requires the use of more
 efficient form of matrix storage as discussed at \ref{sparse-matrix}
 
@@ -865,26 +863,26 @@ summary(A)
 \begin{verbatim}
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j   x
-1  832961  14530  77
-2  410264  57606  97
-3  782033 111998  86
-4   82383 176945  93
-5  110039 239517 103
-6  713327 249015  98
-7    3377 387382  87
-8  183673 466594  90
-9  459326 509037  98
-10 360156 554024  91
-11 697837 573216 106
-12 460554 582729  80
-13 353957 654474  87
-14 941579 683010 108
-15 955791 763690 104
-16 726278 790608  85
-17 317527 867693  90
-18  71267 949427  81
-19 126551 992218  96
-20 723320 992960  84
+1  141572  65888  92
+2  547799  69135  87
+3  368656 123865  87
+4  881320 129763 111
+5   53637 154979  92
+6  193808 192238 100
+7  467415 260074  86
+8   28105 276311  79
+9  481097 316591 102
+10 559159 319674  93
+11 927895 322174  77
+12 562619 372818  82
+13 123000 391022  80
+14  75909 417462  70
+15 309593 457917  78
+16 434992 521070 101
+17 617821 769436  93
+18 673173 811478 103
+19 860284 841473 104
+20 734100 852938  83
 \end{verbatim}
 
 As before in section \ref{probability-transition-matrix}, the probability transition matrix can be found by:
@@ -940,26 +938,26 @@ summary(D)
 \begin{verbatim}
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j           x
-1    3377   3377 0.011494253
-2   71267  71267 0.012345679
-3   82383  82383 0.010752688
-4  110039 110039 0.009708738
-5  126551 126551 0.010416667
-6  183673 183673 0.011111111
-7  317527 317527 0.011111111
-8  353957 353957 0.011494253
-9  360156 360156 0.010989011
-10 410264 410264 0.010309278
-11 459326 459326 0.010204082
-12 460554 460554 0.012500000
-13 697837 697837 0.009433962
-14 713327 713327 0.010204082
-15 723320 723320 0.011904762
-16 726278 726278 0.011764706
-17 782033 782033 0.011627907
-18 832961 832961 0.012987013
-19 941579 941579 0.009259259
-20 955791 955791 0.009615385
+1   28105  28105 0.012658228
+2   53637  53637 0.010869565
+3   75909  75909 0.014285714
+4  123000 123000 0.012500000
+5  141572 141572 0.010869565
+6  193808 193808 0.010000000
+7  309593 309593 0.012820513
+8  368656 368656 0.011494253
+9  434992 434992 0.009900990
+10 467415 467415 0.011627907
+11 481097 481097 0.009803922
+12 547799 547799 0.011494253
+13 559159 559159 0.010752688
+14 562619 562619 0.012195122
+15 617821 617821 0.010752688
+16 673173 673173 0.009708738
+17 734100 734100 0.012048193
+18 860284 860284 0.009615385
+19 881320 881320 0.009009009
+20 927895 927895 0.012987013
 \end{verbatim}
 
 and hence the probability transition matrix may be implemented by performing matrix multiplication accordingly:
@@ -971,26 +969,26 @@ summary((T <- t(A) %*% D))
 \begin{verbatim}
 1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
         i      j x
-1  387382   3377 1
-2  949427  71267 1
-3  176945  82383 1
-4  239517 110039 1
-5  992218 126551 1
-6  466594 183673 1
-7  867693 317527 1
-8  654474 353957 1
-9  554024 360156 1
-10  57606 410264 1
-11 509037 459326 1
-12 582729 460554 1
-13 573216 697837 1
-14 249015 713327 1
-15 992960 723320 1
-16 790608 726278 1
-17 111998 782033 1
-18  14530 832961 1
-19 683010 941579 1
-20 763690 955791 1
+1  276311  28105 1
+2  154979  53637 1
+3  417462  75909 1
+4  391022 123000 1
+5   65888 141572 1
+6  192238 193808 1
+7  457917 309593 1
+8  123865 368656 1
+9  521070 434992 1
+10 260074 467415 1
+11 316591 481097 1
+12  69135 547799 1
+13 319674 559159 1
+14 372818 562619 1
+15 769436 617821 1
+16 811478 673173 1
+17 852938 734100 1
+18 841473 860284 1
+19 129763 881320 1
+20 322174 927895 1
 \end{verbatim}
 
 \paragraph{Solving the Random Surfer via the Power Method}
@@ -1078,14 +1076,14 @@ p %>% head() %>% print()
 \end{verbatim}
 
 \subsection{Power Walk Method}
-\label{sec:org0e875ca}
+\label{sec:org667f5b0}
 Recall from \ref{pwalk} that the power walk is given by:
 
 \begin{align*}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B}
 \end{align*}
 \subsubsection{Ordinary Matrices}
-\label{sec:org88917d2}
+\label{sec:org407648a}
 Implementing the Power walk using ordinary matrices is very similar to the \emph{Random Surfer} model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 
 Create the Adjacency Matrix
@@ -1194,9 +1192,9 @@ p %>% as.vector()
 \end{verbatim}
 
 \subsubsection{Sparse Matrices}
-\label{sec:org16122e5}
+\label{sec:orgc9c1fee}
 \paragraph{Theory; Simplifying Power Walk to be solved with Sparse Matrices}
-\label{sec:orgb5a195a}
+\label{sec:org5719f66}
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -1470,23 +1468,23 @@ Matrices & Vectors\\
 \end{center}
 
 \paragraph{Practical; Implementing the Power Walk on Sparse Matrices}
-\label{sec:org3da58f7}
+\label{sec:org624b55c}
 \subparagraph{Inspect the newly created matrix and create constants}
-\label{sec:org6a2eb1c}
+\label{sec:org844829d}
 \subparagraph{Setup}
-\label{sec:org9baf781}
+\label{sec:org14f9cec}
 \begin{enumerate}
 \item Define function to create DiagonalsSparse Diagonal Function
-\label{sec:org9bdea40}
+\label{sec:orgbe9e6c3}
 
 Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the \texttt{sparse\_diag} function in listing \ref{sparse-diag} will still work.
 \end{enumerate}
 
 \subparagraph{Power Walk}
-\label{sec:org8778cbe}
+\label{sec:orgbbc9f4e}
 \begin{enumerate}
 \item Define B
-\label{sec:orge62c654}
+\label{sec:orge10047c}
 \begin{minted}[]{r}
 A      <- Matrix::Matrix(A, sparse = TRUE)
 B      <- A
@@ -1504,22 +1502,6 @@ Bo@x   <- β^(A@x) -1   # This in theory would be faster
 
  n <- nrow(A)
 \end{minted}
-
-\begin{verbatim}
-10 x 10 sparse Matrix of class "dgCMatrix"
-   [[ suppressing 10 column names ‘1’, ‘2’, ‘8’ ... ]]
-
-1  . 1 . . . . . . . .
-2  1 . . . . . . . . .
-8  1 1 . 1 1 1 . . . .
-5  1 1 . . . . . 1 1 .
-7  . 1 . . . . . . . .
-6  . 1 . . . . . 1 . .
-9  . 1 . . . . . 1 1 .
-3  . . . . . . . . 1 .
-4  . . . . . . . 1 . .
-10 . . . . . . . 1 1 .
-\end{verbatim}
 
 \begin{minted}[]{r}
 print(round(B, 2))
@@ -1562,7 +1544,7 @@ print(Bo,2)
 \end{verbatim}
 
 \item Solve the Scaling Matrix
-\label{sec:orge7eaa54}
+\label{sec:orgf58538d}
 We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 
 \begin{minted}[]{r}
@@ -1590,7 +1572,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 
 
 \item Find the Transition Probability Matrix
-\label{sec:org5ec884b}
+\label{sec:org06e6667}
 \begin{minted}[]{r}
   DB   <- diag(δB)
 ## ** Create the Transition Probability Matrix
@@ -1599,7 +1581,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 \end{minted}
 
 \item Implement the Loop
-\label{sec:orgace1179}
+\label{sec:orgf5dae87}
 \begin{minted}[]{r}
 ## ** Implement the Power Walk
 ## *** Set Initial Values
@@ -1617,6 +1599,12 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 print(paste("The stationary point is"))
 print(p)
 \end{minted}
+
+\begin{verbatim}
+[1] "The stationary point is"
+ [1] 0.10153165 0.10159353 0.09609664 0.09725146 0.10153165 0.10008449
+ [7] 0.09865795 0.10157347 0.10155286 0.10012631
+\end{verbatim}
 \end{enumerate}
 
 \section{Creating a Package}
@@ -1654,10 +1642,8 @@ Attaching package: ‘PageRank’
 \part{Investigating \(\xi_{2}\)}
 \section{Erdos Renyi Graphs}
 \label{second-eigenvalue}
-\subsection{ER Graphs Plotting Various Values}
-\label{sec:orgadc0d25}
-\subsubsection{Erdos Reny Game}
-\label{sec:org5dd8c1f}
+\subsection{Introduction}
+\label{sec:org0512b1b}
 The \emph{Erdos Renyi} game, first published in 1959 \cite{renyiRandomGraphs1959} creates a graph by assuming that the number of nodes is constant and the probability of interlinking these nodes is equal.
 
 This is implemented in \textbf{\emph{R}} \cite[IgraphManualPagesa]{IgraphManualPages}
@@ -1667,8 +1653,8 @@ the web (see \ref{barabassi-albert}) or wikis, however, Sampling these graphs wi
 provide a broader picture for the overall behaviour of \(\xi_{2}\) over a broad
 range of graphs with respect to the parameters of the \emph{Power Walk} method.
 
-\subsubsection{Correlation Plot}
-\label{sec:org13f7d4f}
+\subsection{Correlation Plot}
+\label{sec:orgd2c71fc}
 
 By looping over many random graphs for a variety of probabilities a data set can
 be constructed and a correlation plot generated. To implement this a data frame
@@ -1679,13 +1665,10 @@ data frame with the second eigenvalue, density, determinant and trace was constr
 \begin{listing}[htbp]
 \begin{minted}[]{r}
 # Generate Constants
-n         <- 20
-p         <- 1:n/n
-beta      <- 1:n/n
-beta      <- runif(n)*100
-#sz       <- 1:n/n+10
-sz        <- (1:n/n)*100+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+p         <- seq(from = 0.01, to = 0.99, length.out = 5)
+beta      <- seq(from = 1   , to = 20  , length.out = 20)
+sz        <- seq(from = 100 , to = 1000, length.out = 5) %>% rev()
+input_var <- expand.grid("p" = p , "beta" = beta, "size" = sz)
 
 # Print out a sample of all the rows
 input_var[sample(1:nrow(input_var), 6),]
@@ -1694,68 +1677,63 @@ input_var[sample(1:nrow(input_var), 6),]
 \end{listing}
 
 \begin{verbatim}
-      n    p       beta size
-7154 20 0.70  0.5872766  100
-4103 20 0.15 82.8545866   65
-133  20 0.65 64.6700020   15
-3887 20 0.35 76.8201442   60
-1725 20 0.25 64.6700020   35
-6071 20 0.55 26.0913073   90
+        p beta size
+47  0.255   10 1000
+175 0.990   15  775
+33  0.500    7 1000
+361 0.010   13  325
+72  0.255   15 1000
+414 0.745    3  100
 \end{verbatim}
 
 
 \mathrm{mean}\left(\mathbf{A}\right), \left\lvert A \right\rvert,
 \mathrm{tr}\left( \mathbf{A} \right)\right\(\rangle\)$\backslash$) corresponding to the \emph{Power Walk} method using the \texttt{PageRank} package discussed at \ref{create-package}.
 \begin{minted}[]{r}
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
+random_graph <- function(p, beta, size) {
+    g1     <- igraph::erdos.renyi.game(n = size, p)
+    A      <- igraph::get.adjacency(g1) # Row to column
+    A      <- Matrix::t(A)
 
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      T_tr     <- sum(diag(T))
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      T_det  <- det(T)
-      return(c(abs(e2), A_dens, T_det, T_tr)) # A_det and T_tr are uncorrelated
+#    A_dens <- mean(A) # Very Slow, equal to p
+    T      <- PageRank::power_walk_prob_trans(A, beta = beta)
+    tr     <- sum(diag(T))
+    e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+    return(c(abs(e2), tr))
 }
 \end{minted}
 
 \begin{listing}[htbp]
 \begin{minted}[]{r}
-filename <- "erdosData.rds"
+filename <- "resources/erdosData.rds"
 
 if (file.exists(filename)) {
 
-  data <- readRDS(filename)
+    data <- readRDS(filename)
 
   } else {
-
-# Loop over the data
-nc <- length(random_graph(1, 1, 1, 1))
-Y  <- matrix(ncol = nc, nrow = nrow(input_var))
-
-for (i in 1:nrow(input_var)) {
-  X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+    nc    <- length(random_graph(1, 1, 1))
+    Y     <- matrix(ncol = nc, nrow = nrow(input_var))
+    for (i in 1:nrow(input_var)) {
+        X     <- as.vector(input_var[i,])
+        Y[i,] <-  random_graph(X$p, X$beta, X$size)
+        print(i/nrow(input_var))
+    }
+    if (sum(abs(Y) != abs(Re(Y))) == 0) {
+        Y     <- Re(Y)
+    }
+    nrow(input_var)
+    nrow(Y)
+    Y     <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+    (data <- cbind(input_var, Y)) %>% head()
+    saveRDS(data, file = filename)
 }
-
-## Remove the 0i component
-if (sum(abs(Y) != abs(Re(Y))) == 0) {
-  Y <- Re(Y)
-}
-
-## Clean up the data frame
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant", "trace")
-data <- cbind(input_var, Y)
-data <- data[data$density!=0,]
-
-## Save the data
-saveRDS(data, filename)
-}
-
-corrplot(cor(data), method = "ellipse", type = "lower")
+head(data)
+# cormat = cor(data, method = 'spearman')
+# colnames(cormat)
+#
+# rownames(cormat) <- colnames(cormat) <- c("Prob\nEdges", "β", "Size", "ξ₂", "Trace", "")
+# corrplot(cormat, method = "ellipse", type = "lower")
 \end{minted}
 \caption{\label{corrplot}Produce a correlation plot Created from a dataframe constructed from the values assigned in listing \ref{input_var} by using the function defined in listing \ref{output_def}, see figure .}
 \end{listing}
@@ -1764,233 +1742,215 @@ corrplot(cor(data), method = "ellipse", type = "lower")
 \includegraphics[width=.9\linewidth]{media/corrplot.png}
 \end{center}
 
-\subsubsection{Density of Adjacency Matrix}
-\label{sec:org4e3effc}
-There appears to be a strong negative correlation between the eigenvalue and the density of the adjacency matrix.
+This shows a clear relationship between the average number of edges, \(\beta\) and \(\xi\)\textsubscript{2}.
 
-This relationship is plotted in listing \ref{dens_plot_er} and figure \ref{fig:dens_plot_er}.
+The average number of edges is equal to the \(p\) parameter.
 
-The relationship appears almost linear and so the data is log transformed and
-modelled against that in listing \ref{dens_plot_er_mod} with a corresponding plot
-generated in listing \ref{fig:dens_plot_er_log} and shown in figure
-\ref{fig:dens_plot_er_log} revealing a concave down relationship. The quartic model
-fits the data well and has the lowest \emph{MSE}, however the logarithmic model is
-visually a good fit, significantly simpler and still has a low \emph{MSE}, for this
-reason the logarithmic model will be used.
-
-The coefficients of the logarithmic model, shown in listing \ref{dens_plot_er_mod}, imply the following relationship:
-
-
-\begin{align}
-    \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm \Delta
-\end{align}
-
-The maximum residual is given as 0.37 and so \(\Delta = 0.4\) would provide a
-good indication for the value of the second eigenvalue by considering only the
-interconnectivity of the adjacency matrix.
-
-This suggests that a more interlinked network will converge faster when using the \emph{Power Walk} method.
-
+To inspect this, let's hold size constant and have alook :
 
 \begin{listing}[htbp]
 \begin{minted}[]{r}
-ggplot(data) +
-  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size )) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = TeX("$\\xi_2$ of $T_{PW}$"), title = TeX("$\\xi_2$ of $T_{PW}$ given the Density of the Adjacency Matrix") ) +
-  guides(size = FALSE, col = FALSE)
-
+plot(data, labels = c("Mean\nEdges", "β", "Size", "ξ₂", "Trace"))
 \end{minted}
-\caption{\label{dens_plot_er}Create a Plot of \(\xi_{2}\) given Adjacency Matrix, see plot in figure \ref{fig:dens_plot_er}}
+\caption{\label{plotly_dens}Density of Plot or something, see \ref{fig:plotly_dens}}
 \end{listing}
+
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=12cm]{media/density_plot.png}
-\caption{\label{fig:dens_plot_er}Plot of \(\xi_{2}\) given Adjacency Matrix, see listing \ref{dens_plot_er}}
+\includegraphics[width=12cm]{media/cor_matrix-er.png}
+\caption{\label{fig:plotly_dens}Density of Plot or something, see \ref{fig:plotly_dens} Plot of the Density of the Adjacency Matrix, Beta Value of the Power Walk method with \(\xi_{2}\) represented by the vertical \(z\) axis.}
+\end{figure}
+
+There appears also to be a relationship with the trace, I'm actually waiting to generate the data on this one.
+
+TODO make plot of trace
+
+Although the trace may be interesting with which to plot with, it requires first solving the power walk method, so, it might not be insightful.
+
+Density will be dependent on \(p\) in the Erdos Renyi model, so, let's look at a few different values.
+
+Size did not appear to have any effect on the eigenvalue, so we'll fix
+
+\begin{minted}[]{r}
+filename <- "resources/erdosData_constant_size.rds"
+
+if (file.exists(filename)) {
+    data2 <- readRDS(filename)
+} else {
+    p    <- seq(from = 0.01, to = 0.5, length.out = 5   )
+    beta <- seq(from = 1  , to = 10  , length.out = 1000)
+    size <- 1000
+
+    input_var <- expand.grid("p" = p, "beta" = beta, "size" = size)
+
+    nc <- length(random_graph(1, 1, 1))
+    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+    for (i in 1:nrow(input_var)) {
+        X     <- as.vector(input_var[i,])
+        Y[i,] <-  random_graph(X$p, X$beta, X$size)
+        print(i/nrow(input_var))
+    }
+    if (sum(abs(Y) != abs(Re(Y))) == 0) {
+        Y <- Re(Y)
+    }
+    d <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+    (data2 <- cbind(input_var, Y)) %>% head()
+    saveRDS(data2, filename)
+}
+\end{minted}
+
+\begin{minted}[]{r}
+ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = beta, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density for 100 vertices") ) +
+  guides(col = guide_legend("Link Density"))  +
+  theme_bw()
+\end{minted}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/constant_size_erdos_density.png}
+\caption{\label{constant_size_erdos_density}Constant Size Erdos Density}
+\end{figure}
+
+It appears that for low densities the relationship becomes more and more linear, we may be able to drop a sqrt transform for network graphs with an outdegree (m) significantly smaller than there size (i.e. p \textasciitilde{}= m/n)
+
+The noise is from the fact that setting \(p\) is probabilitsitc, this would be reduced if the simulated graphs were larger, but then calculating the eigenvalue of W becomes prohibitive.
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = sqrt(beta), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "sqrt(β)", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density for 100 vertices") ) +
+  guides(col = guide_legend("Link Density"))  +
+  theme_bw()
+\end{minted}
+\caption{\label{constant_size_erdos_density_sqrt}listing:constant\textsubscript{size}\textsubscript{erdos}\textsubscript{density}\textsubscript{sqrt}}
+\end{listing}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/constant_size_erdos_density_sqrt.png}
+\caption{\label{fig:constant_size_erdos_density_sqrt}fig:constant\textsubscript{size}\textsubscript{erdos}\textsubscript{density}\textsubscript{sqrt}}
+\end{figure}
+
+So there's a strong positive relationship for \(\xi_{2} ~ sqrt(beta)\), at low link densities, nearly positive does this persist over many sizes?
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+filename <- "resources/erdosData_constant_dens.rds"
+
+if (file.exists(filename)) {
+    data2 <- readRDS(filename)
+} else {
+    p    <- 5/100
+    beta <- seq(from = 1  , to = 10  , length.out = 1000)
+    size <- seq(from = 100, to = 1000, length.out = 5   )
+
+    input_var <- expand.grid("p" = p, "beta" = beta, "size" = size)
+
+    nc <- length(random_graph(1, 1, 1))
+    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+    for (i in 1:nrow(input_var)) {
+        X     <- as.vector(input_var[i,])
+        Y[i,] <-  random_graph(X$p, X$beta, X$size)
+        print(i/nrow(input_var)) # Only in inferior buffer
+    }
+    if (sum(abs(Y) != abs(Re(Y))) == 0) {
+        Y <- Re(Y)
+    }
+    d <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+    (data2 <- cbind(input_var, Y)) %>% head()
+    saveRDS(data2, filename)
+}
+\end{minted}
+\label{l:gen_erdos_data_constant_dens}
+\end{listing}
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+ggplot(data2, mapping = aes(col = factor(size), x = (beta), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "β", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue for uniform degree"), subtitle = "mean degree ÷ size = 5%" ) +
+  guides(col = guide_legend("Size"))  +
+  theme_bw()
+\end{minted}
+\caption{\label{constant_dens_erdos_density}listing:constant\textsubscript{size}\textsubscript{erdos}\textsubscript{density}}
+\end{listing}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/constant_dens_erdos_density.png}
+\caption{\label{fig:constant_dens_erdos_density}fig:constant\textsubscript{dens}\textsubscript{erdos}\textsubscript{density}}
+\end{figure}
+
+So \(p\) is mean(degree)/size, prob of one node to any other.
+
+This appears to have a slight curvature, it's less than log so let's transform it:
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+ggplot(data2, mapping = aes(col = factor(size), x = sqrt(beta), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = TeX("\\sqrt{β}"), y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue for uniform degree"), subtitle = "mean degree ÷ size = 5%" ) +
+  guides(col = guide_legend("Size"))  +
+  theme_bw()
+\end{minted}
+\caption{\label{l:constant_dens_erdos_density_sqrt}listing:constant\textsubscript{size}\textsubscript{erdos}\textsubscript{density}\textsubscript{sqrt}}
+\end{listing}
+
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/constant_dens_erdos_density_sqrt.png}
+\caption{\label{fig:constant_dens_erdos_density_sqrt}fig:constant\textsubscript{dens}\textsubscript{erdos}\textsubscript{density}\textsubscript{sqrt}}
 \end{figure}
 
 
-\begin{listing}[htbp]
+So this seems to suggest that we have a relationship of \(\xi_{2} \sim \sqrt\{\beta\}\)
+
+non constant variance is a worry.
+
+
 \begin{minted}[]{r}
-mod_x1 <- lm(log(eigenvalue2) ~ poly(density, 1), data = data)
-data$x1 <- predict(mod_x1)
+filename <- "resources/erdosData.rds"
+data <- readRDS(filename)
 
-mod_x2 <- lm(log(eigenvalue2) ~ poly(density, 2), data = data)
-data$x2 <- predict(mod_x2)
-
-mod_x4 <- lm(log(eigenvalue2) ~ poly(density, 4), data = data)
-data$x4 <- predict(mod_x4)
-
-mod_xl <- lm(log(eigenvalue2) ~ log(1-density), data = data)
-data$xl <- predict(mod_xl)
-
-mod_df <- data
-mod_df_long <- pivot_longer(mod_df, cols = c(x1, x2, x4, xl), names_to = "Model_Type", values_to = "eigenvalue2_mod")
-mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
-
-
-print(c("MSE Linear"  = mean(mod_x1$residuals^2),
-        "MSE Quadratic" = mean(mod_x2$residuals^2),
-        "MSE Quartic" = mean(mod_x4$residuals^2),
-        "MSE Logarithmic" = mean(mod_xl$residuals^2)
-        ), 2)
-cat("\n")
-print(mod_xl$coefficients)
-cat("\n")
-print(c("Max Residual", max(mod_xl$residuals)))
+ggplot(data2, mapping = aes(col = factor(size), x = sqrt(beta), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = TeX("\\sqrt{β}"), y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue for uniform degree"), subtitle = "mean degree ÷ size = 5%" ) +
+  guides(col = guide_legend("Size"))  +
+  theme_bw()
 \end{minted}
-\caption{\label{dens_plot_er_mod}Fit Models to log transofmred Density Comparison}
-\end{listing}
-
-\begin{verbatim}
-     MSE Linear   MSE Quadratic     MSE Quartic MSE Logarithmic
-          0.078           0.031           0.013           0.023
-
-     (Intercept) log(1 - density)
-      -0.4798300        0.6738175
-
-[1] "Max Residual"      "0.371075096908937"
-\end{verbatim}
-
-
-\begin{listing}[htbp]
-\begin{minted}[]{r}
-ggplot(mod_df_long, aes(x = density)) +
-  geom_point(aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.1, alpha = 0.2) +
-  geom_smooth(aes(y = eigenvalue2_mod, col = Model_Type), size = 0.9) +
-  labs(col = c("Model \nType")) +
-  scale_color_discrete(labels = c("Linear", "Quadratic", "Quartic", "Logarithmic")) +
-  labs(x = "Density of A", y = TeX("$ \\xi_2 $ of $\\mathbf{W}$")) +
-  theme_linedraw()
-\end{minted}
-\caption{\label{fig:dens_plot_er_log}Plot of Log Transformed \(\xi_{2}\) against density of Adjacency matrix, using the \emph{Power Walk} algorithm applied to graphs randomly generated with the \emph{Erdos-Renyi} game.}
-\end{listing}
 
 \begin{center}
-\includegraphics[width=.9\linewidth]{media/dens_plot_er_log.png}
+\includegraphics[width=.9\linewidth]{media/both_sqrt.png}
 \end{center}
 
-\subsubsection{Trace of Transition Probability Matrix}
-\label{sec:orgc214bbb}
-The correlation plot suggests that there is some positive relationship between
-the trace of the transition probability matrix and the second eigenvalue, these
-values are plotted in listing \ref{trace_plot_er} and figure \ref{fig:trace_plot_er}, this
-relationship appears to be heteroskedastic and so it is log transformed in
-listing \ref{trace_plot_log_er} and figure \ref{fig:trace_plot_log_er}. This plot is still appears to have a non constant variance but this could be due to less data corresponding to lower trace values.
+This suggests that a model that considers the size, average value of the weighted adjacency matrix and sqrt beta we'd have something.
 
-The plot suggests an exponential or hyperbolic model may be a good fit, this is performed in listing \ref{mod_trace}, \ref{mod_trace_plot} and  \ref{fig:mod_trace_plot}. The hyperbolic model appears to be a reasonable fit for trace values less than half, giving the following relationship:
+A linear model looks promisint.
 
-
-\begin{align}
-\xi_{2} &\approx \mathrm{exp}\left( \frac{0.2}{\mathrm{tr}\left(\mathbf{T}\right)} \right) \\
-	&\approx  \mathrm{exp} \left( \frac{0.2}{\mathrm{tr}\left( \mathbf{B}\mathbf{D}_{\mathbf{B}}^{- 1} \right)} \right) \label{eq:trace_lim}
-\end{align}
-
-\begin{listing}[htbp]
-\begin{minted}[]{r}
-ggplot(data, aes(x = trace , y = log(eigenvalue2))) +
-  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
-#  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1.5)) +
-  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
-  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
-\end{minted}
-\caption{\label{trace_plot_log_er}Plot \(\xi_{2}\) against the trace of the matrix of the \emph{Power Walk} Transition Probability Matrix, see figure \ref{fig:trace_plot_log_er}}
-\end{listing}
-
-
-\begin{listing}[htbp]
-\begin{minted}[]{r}
-ggplot(data, aes(x = trace , y = eigenvalue2)) +
-  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
-#  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1.5)) +
-  labs(x = "Trace of Transition Matrix", y = TeX("$ \\xi_2 $ of $\\mathbf{W}$"))
-\end{minted}
-\caption{\label{trace_plot_er}Plot \(\xi_{2}\) against the trace of the matrix of the \emph{Power Walk} Transition Probability Matrix}
-\end{listing}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=12cm]{media/trace_plot_er.png}
-\caption{\label{fig:trace_plot_er}Plot of \(\xi_{2}\) against the trace of the \emph{Power Walk} probability transition matrix}
-\end{figure}
-
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=12cm]{media/trace_plot_log_er.png}
-\caption{\label{fig:trace_plot_log_er}Log transformed plot of the trace of the \emph{Power Walk} probability transition matrix}
-\end{figure}
-
-\begin{listing}[htbp]
-\begin{minted}[]{r}
-mod_df <- data
-
-mod_hyp <- lm(log(eigenvalue2) ~ 0 + I(trace^(-1)), data = data)
-mod_df$hyp <- predict(mod_hyp)
-
-mod_log <- lm(log(eigenvalue2) ~ 0 + log(trace), data = data)
-mod_df$log <- predict(mod_log)
-
-
-mod_df_long <- pivot_longer(mod_df, cols = c(hyp, log), names_to = "Model_Type", values_to = "eigenvalue2_mod")
-mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
-
-
-print(c("MSE Hyperbolic"  = mean(mod_hyp$residuals^2),
-        "MSE Logarithmic" = mean(mod_log$residuals^2)), 2)
-cat("\n")
-print(summary(mod_hyp)$coefficients)
-
-\end{minted}
-\caption{\label{mod_trace}Fit a Hyperbolic and Logarithmic model to the data, observe that a 0 intercept is set to fix the intercept as it would be expected that a 0 trace would correspond to a 0 eigenvector, the hyperbolic model has a slightly lower mean \emph{MSE}.}
-\end{listing}
-
-\begin{verbatim}
- MSE Hyperbolic MSE Logarithmic
-          0.081           0.127
-
-                Estimate   Std. Error   t value Pr(>|t|)
-I(trace^(-1)) -0.1992157 0.0005471191 -364.1176        0
-\end{verbatim}
-
-
-\begin{minted}[]{r}
-ggplot(mod_df_long, aes(x = trace)) +
-  geom_point(shape = 23, aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.7, alpha = 0.4) +
-  geom_line(aes(y = eigenvalue2_mod, col = Model_Type), size = 1) +
-  labs(col = c("Model \nType")) +
-  scale_color_manual(labels = c("Hyperbolic", "Logarithmic"),
-                     values = c("indianred", "royalblue"))  +
-  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"), title = TeX("Models Fitted to Logarithmically scaled $\\xi_{2}$ given Matrix Trace")) +
-  theme_linedraw()
-\end{minted}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=12cm]{media/trace_models_fitted.png}
-\caption{\label{fig:mod_trace_plot}Plot of the second eigenvalue logarithmically scaled across the trace of a corresponding probability transition matrix created using the \emph{Power Walk} method. The graphs were randomly generated using the \emph{Erdos Renyi} game.}
-\end{figure}
-\subsubsection{Conclusion}
-\label{sec:orgf29a3bd}
-The \emph{Erdos Renyi} game produces a wide variety of all possible graphs, this provides two insights into the value of the second eigenvalue of the probability transition matrix corresponding to the power walk method:
-
-
-\begin{align}
-\xi_{2} &\approx  \mathrm{exp} \left( \frac{0.2}{\mathrm{tr}\left( \mathbf{B}\mathbf{D}_{\mathbf{B}}^{- 1} \right)} \right) \\
-    \xi_2 &= \left( 1-  \frac{\sum^{n}_{i= 1} \sum^{n}_{j= 1}   \mathbf{A}_{i,j}  }{n^{2}} \right)^{0.6} \cdot  e^{- 0.48} \pm 0.4
-\end{align}
-
-These can be used to evaluate broadly the value of \(\xi_{2}\) and in turn the
-rate of convergence of the \emph{Power Walk} method corresponding to a given graph
-given only the method parameters and the adjacency matrix.
-
-These are not however insightful of any direct relationships between the method parameters and \(\xi_{2}\), this will be considered at \ref{relate-to-random-surfer} by trying to find a relationship between the \emph{Power Walk} and the \emph{Random Surfer} models.
 
 \section{Barabasi Albert Graphs}
 \label{barabassi-albert}
+\subsection{Theory}
+\label{sec:org24cf63c}
+
 The \emph{Erdos Renyi} game is a random network, a superior approach to model the web
 is to use a scale free networks \cite{barabasiPhysicsWeb2001} such as the
 Barabasi-Albert graph \cite{barabasiScalefreeCharacteristicsRandom2000}
@@ -2073,10 +2033,254 @@ hist(igraph::degree(igraph::erdos.renyi.game(n, 0.2)),
 \caption{\label{fig:degree-distribution-hist}histograms of degree distribution of Erdos-Renyi and Barabassi-Albert graphs produced in listing \ref{degree-distribution-hist}}
 \end{figure}
 
+\subsection{Modelling}
+\label{sec:org779d18b}
+At each step of the Barabassi-Albert algorithm, one node is added and linked to \(m\) other nodes with a probability proportional to the degree of that vertex.
+
+This means that the average of the unweighted adjacency matrix would be \(\mathrm{mean}\left(\mathbf{A}\right) \in \left[ \frac{m}{n}, \frac{m+1}{n} \right]\).
+
+calculating the mean of a matrix is expensive, so to generate many matrices we'll just use this for the moment.
+
+in practice though measuring \(m\) (as the mean out degree) will be imprecise and the adjacency matrix will be wieghted any way, so taking the mean of the matrix will still be necessary.
+
+plot(data2\$m/data2\$size, data2\$A\textsubscript{dens})
+
+Using this knowledge we'll create a dataset with 9 different density values and confirm that the trend holds:
+
+\begin{minted}[]{r}
+random_graph_pa <- function(m, beta, size) {
+      g1 <- igraph::sample_pa(n = size, power = 3, m = m)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+#      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A, beta = beta)
+      tr     <- sum(diag(T))
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      return(c(abs(e2), tr))
+}
+\end{minted}
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+filename <- "resources/BAData.rds"
+
+if (file.exists(filename)) {
+    data2 <- readRDS(filename)
+} else {
+    m    <- seq(from = 1, to = 9, length.out = 3)
+    beta <- seq(from = 1, to = 6, length.out = 30)
+    sz   <- seq(from = 100, to = 500, length.out = 3) %>% rev() # Big numbers first
+
+    input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+
+    nc <- length(random_graph_pa(1, 1, 1))
+    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+    for (i in 1:nrow(input_var)) {
+        X     <- as.vector(input_var[i,])
+        Y[i,] <-  random_graph_pa(X$m, X$beta, X$size)
+        print(i/nrow(input_var))
+    }
+    if (sum(abs(Y) != abs(Re(Y))) == 0) {
+        Y <- Re(Y)
+    }
+    Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+    (data2 <- cbind(input_var, Y)) %>% head()
+    saveRDS(data2, filename)
+}
+\end{minted}
+\label{l:gen_ba_data}
+\end{listing}
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+data2$p <- round((data2$m/data2$size), 2)
+
+ggplot(data2, mapping = aes(col = factor(p), x = beta, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth(method = 'lm', size = 0.4) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Link Density (by m/n)"))  +
+  theme_bw()
+\end{minted}
+\caption{\label{l:ba_data_plot}l:ba\textsubscript{data}\textsubscript{plot}}
+\end{listing}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/constant_dens_erdos_density_sqrt.png}
+\caption{\label{fig:ba_data_plot}fig:ba\textsubscript{data}\textsubscript{plot}}
+\end{figure}
+
+Due to the relationship between size and density this seems to work even better for BA graphs, which is precisely where we might anticipate the use of the power walk method.
+
+because the densities are so low there is also no need for a log transform either.
+
+let's look at a constant beta value, say 6, how does \(\xi_{2}\) change in response to p?
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+filename <- "resources/BAData_constant_size.rds"
+
+if (file.exists(filename)) {
+    data2 <- readRDS(filename)
+} else {
+    m    <- seq(from = 1, to = 9, length.out = 15)
+    beta <- 5
+    sz    <- seq(from = 100, to = 500, length.out = 7)
+
+    input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+
+    nc <- length(random_graph_pa(1, 1, 1))
+    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+    for (i in 1:nrow(input_var)) {
+        X     <- as.vector(input_var[i,])
+        Y[i,] <-  random_graph_pa(X$m, X$beta, X$size)
+        print(i/nrow(input_var))
+    }
+    if (sum(abs(Y) != abs(Re(Y))) == 0) {
+        Y <- Re(Y)
+    }
+    Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+    (data2 <- cbind(input_var, Y)) %>% head()
+    saveRDS(data2, filename)
+}
+\end{minted}
+\caption{\label{l:baData_constant_size}l:baData\textsubscript{constant}\textsubscript{size}}
+\end{listing}
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+data2$p <- round((data2$m/data2$size), 2)
+
+names(data2)
+ggplot(data2, mapping = aes(col = factor(size), x = p, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth(method = 'lm', size = 0.4, se = FALSE) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "p", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Size"))  +
+  theme_bw()
+\end{minted}
+\caption{\label{l:ba_data_constant_size_plot}l:ba\textsubscript{data}\textsubscript{constant}\textsubscript{size}\textsubscript{plot}}
+\end{listing}
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/ba_constant_size_plot.png}
+\caption{\label{fig:ba_data_constant_size_plot}fig:ba\textsubscript{data}\textsubscript{constant}\textsubscript{size}\textsubscript{plot}}
+\end{figure}
+
+
+OK so clearly the effect on the eigenvalue that \(p\) has depends on the size of the graph, so \(p\) and size interact.
+
+I should gen more data for this bit if possible.
+
+a good model might then incorparte p*size+p:
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+filename <- "resources/BAData.rds"
+data2 <- readRDS(filename)
+data2$p <- data2$m/data2$size
+
+q <- quantile(mod$residuals, c(0.025, 0.975))
+ci1 <- q[1]
+ci2 <- q[2]
+
+mod <- lm(eigenvalue2 ~ 0 + p*size + p + beta, data2)
+hist(mod$residuals, breaks = 50, xlab = "Residuals",
+     title = "Histogram of Residuals for MLM")
+abline(v = c(ci1, ci2))
+
+\end{minted}
+\caption{\label{l:mlm_hist_ba}l:mlm\textsubscript{hist}\textsubscript{ba}}
+\end{listing}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=12cm]{media/ba_hist_mlm_mod.png}
+\caption{\label{fig:mlm_hist_ba}fig:mlm\textsubscript{hist}\textsubscript{ba}}
+\end{figure}
+
+So the residuals are normal ish, except for that spike just before 0, that's fairly concerning, this might be an acceptable model though, let's get it in written form.
+
+\begin{minted}[]{r}
+summary(mod)
+\end{minted}
+
+\begin{verbatim}
+
+Call:
+lm(formula = eigenvalue2 ~ 0 + p * size + p + beta, data = data2)
+
+Residuals:
+      Min        1Q    Median        3Q       Max
+-0.030751 -0.004571 -0.001238  0.004179  0.029725
+
+Coefficients:
+         Estimate Std. Error t value Pr(>|t|)
+p       3.404e-01  1.761e-02  19.332   <2e-16 ***
+size   -3.957e-05  1.925e-06 -20.555   <2e-16 ***
+beta    6.568e-03  1.545e-04  42.502   <2e-16 ***
+p:size -2.777e-04  1.334e-04  -2.083   0.0376 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.008223 on 896 degrees of freedom
+Multiple R-squared:  0.9018,	Adjusted R-squared:  0.9014
+F-statistic:  2058 on 4 and 896 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+So we have :
+
+\begin{align}
+\xi_{2} &= 0.34 p +  \frac{3n}{10^{5}} + \frac{6\beta}{10^{3}} - \frac{2.8 p n}{10^{4}} \\
+        &p = \mathrm{mean}\left( \mathbf{A}\right)
+\end{align}
+
+For an unweighted adjacency matrix from the internet we may expect:
+
+\[
+p \approx \frac{\mathrm{mean}\left(\mathrm{outdegree}\right)}{n}
+\]
+
+for larger graphs we get \(p \rightarrow 0\) so the eigenvalue will be reduced for smaller graphs.
+
+OK so lets test this by predicting the value of the eigenvalue on a large BA graph:
+
+\begin{minted}[]{r}
+m    <- 3
+n    <- 500
+beta <- 3
+
+
+g <- igraph::sample_pa(power = 3, n = n, m = m)
+A <- t(as.matrix(igraph::get.adjacency(g)))
+W <- PageRank::power_walk_prob_trans(A, beta = beta)
+
+p <- mean(A)
+(e2 <- abs(eigen(W, only.values = TRUE)$values[2]) )
+(e2_pred  <- 0.34*p + 3*n/10^5 + 6*beta/10^3-2.8*p*n/10^4)
+\end{minted}
+
+\begin{verbatim}
+[1] 0.004271481
+[1] 0.0341952
+\end{verbatim}
+
+
+That's actually pretty close.
+
+Alright well what if I weight the adj mat?
+
 \section{Relating the Power Walk to the Random Surfer}
 \label{relate-to-random-surfer}
 \subsection{Introduction}
-\label{sec:orgccbe72c}
+\label{sec:orgae33e66}
 These are notes relating to \cite[\textsection 3.3]{parkPowerWalkRevisiting2013}, probably won't put this in the report, just arbitrary notes
 
 So if a term in the Power Walk can be related to \(\alpha\) in the random
@@ -2214,7 +2418,7 @@ But the next step requires showing that:
 \end{align*}
 
 \subsection{Equate the Power Walk to the Random Surfer}
-\label{sec:orgf068e3e}
+\label{sec:orgecc09d2}
 Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
 
 \begin{align}
@@ -2300,19 +2504,19 @@ And setting \(\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}\)  from \eqre
 Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}  \eqref{eq:bgVal2}
 
 \subsection{Conclusion}
-\label{sec:orgb6226ed}
+\label{sec:orgd318b9b}
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
 
 \subsection{The Second Eigenvalue}
-\label{sec:org3d38cb6}
+\label{sec:org4c01a55}
 \subsubsection{The Random Surfer}
-\label{sec:org59e64b3}
+\label{sec:org4d8610c}
 The Second eigenvalue \(\xi_2\) of the Power Surfer is less than \(\alpha\) (\href{Proposal/Propsal.org}{See 3.2; Stability and Concvergence, of proposal}).
 \subsubsection{Power Walk}
-\label{sec:orge7af8d3}
+\label{sec:org1cde9ca}
 Because the Power Walk relates to the random surfer as demonstrated in section , what can be said about \(\xi_{2}\)
 \paragraph{Applying this to Power Walk}
-\label{sec:org23113bf}
+\label{sec:orgf6e24b5}
 Let \(\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2\) return the second value of a transition, probability Matrix, then observe that:
 
 
@@ -2327,7 +2531,7 @@ where:
 \item \(\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)\) refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
 \end{itemize}
 \subparagraph{My attempt}
-\label{sec:org0c3a5a5}
+\label{sec:org423a60c}
 \begin{align}
     \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
 %    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
@@ -2400,7 +2604,7 @@ beta
 \end{minted}
 
 \section{Appendix}
-\label{sec:org1acf70e}
+\label{sec:org82d3d47}
 
 \begin{listing}[htbp]
 \begin{minted}[]{r}
@@ -2434,42 +2638,42 @@ image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
 \caption{\label{fig:den_undir_ba}Plot of the adjacency matrix corresponding to a Barabassi-Albert (i.e. \emph{Scale Free}) Graph produced by listing \ref{r-den_undir_ba}, observe the matrix is quite sparse.}
 \end{figure}
 \subsection{Graph Diagrams}
-\label{sec:org811cd11}
+\label{sec:org97501cf}
 Graph Diagrams shown in \ref{markov} where produced using \texttt{DOT} (see \cite{DOTLanguage,DOTGraphDescription2020}).
 \section{my to do list}
-\label{sec:org9f5cbab}
+\label{sec:orgb3f911e}
 \subsection{Use BA Graphs}
-\label{sec:orga905459}
+\label{sec:orgf4a1a32}
 \subsection{Look at the ScatterPlot Matrix}
-\label{sec:orgb50ef5e}
+\label{sec:org3492e69}
 \subsection{Compare eigenvalue2 and iterations}
-\label{sec:org932f522}
+\label{sec:orgef5a76f}
 
 \subsection{Look at using an SVM/logReg or other classifier}
-\label{sec:org7e927cf}
+\label{sec:org4352bc7}
 Use a ROC curve to find which threshold of e2 predicts a below average number of iterations.
 
 Predict that e2 value?
 \subsubsection{Measure Iterations and E2 values}
-\label{sec:org8270cf6}
+\label{sec:org5480ee2}
 \subsubsection{Are any values indicative of E2 Values?}
-\label{sec:org1903b89}
+\label{sec:orgd0e7058}
 \subsubsection{Use Method Parameters with a log reg to predict a number of iterations}
-\label{sec:org79dbcf9}
+\label{sec:orgf1d747c}
 \subsubsection{Use a ROC Curve to set a threshold}
-\label{sec:org2415050}
+\label{sec:orgb22242b}
 \subsubsection{Discuss the results.}
-\label{sec:org30532f1}
+\label{sec:org2bbf951}
 \subsection{Tie the Report together.}
-\label{sec:org669bff5}
+\label{sec:org08d691b}
 \subsection{Typeset the Report}
-\label{sec:org44948ef}
+\label{sec:org252ddc5}
 
 \subsection{TODO Diamater}
-\label{sec:org3aea802}
+\label{sec:orgd42c052}
 Diamater of the web sounds like a fun read \cite{albertDiameterWorldWideWeb1999}
 \subsection{Improving the Performance of Page Rank}
-\label{sec:org5c5608f}
+\label{sec:org4ec047f}
 
 This:
 

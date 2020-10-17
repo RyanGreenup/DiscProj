@@ -1631,16 +1631,14 @@ random_graph <- function(p, beta, size) {
 
 #+RESULTS:
 
-#+NAME: corrplot
-#+CAPTION: Produce a correlation plot Created from a dataframe constructed from the values assigned in listing [[input_var]] by using the function defined in listing [[output_def]], see figure [[fig:corrplot]].
-#+BEGIN_SRC R :exports both :results output graphics file :file media/corrplot.png :eval never-export
-filename <- "resources/erdosData.rds"
 
-if (file.exists(filename)) {
+Now a function to return a data frame of results:
 
-    data <- readRDS(filename)
+#+begin_src R
+sim_graphs(filename, p, beta, size) {
 
-  } else {
+    input_var <- expand.grid("p" = p , "beta" = beta, "size" = size)
+
     nc    <- length(random_graph(1, 1, 1))
     Y     <- matrix(ncol = nc, nrow = nrow(input_var))
     for (i in 1:nrow(input_var)) {
@@ -1651,11 +1649,25 @@ if (file.exists(filename)) {
     if (sum(abs(Y) != abs(Re(Y))) == 0) {
         Y     <- Re(Y)
     }
-    nrow(input_var)
-    nrow(Y)
     Y     <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
-    (data <- cbind(input_var, Y)) %>% head()
+    data <- cbind(input_var, Y)
     saveRDS(data, file = filename)
+    return(data)
+}
+#+end_src
+
+
+#+NAME: corrplot
+#+CAPTION: Produce a correlation plot Created from a dataframe constructed from the values assigned in listing [[input_var]] by using the function defined in listing [[output_def]], see figure [[fig:corrplot]].
+#+BEGIN_SRC R :exports both :results output graphics file :file media/corrplot.png :eval never-export
+filename <- "resources/erdosData.rds"
+
+if (file.exists(filename)) {
+
+    data <- readRDS(filename)
+
+  } else {
+    sim_graphs(filename, p, beta, size)
 }
 head(data)
 # cormat = cor(data, method = 'spearman')
@@ -1706,9 +1718,9 @@ filename <- "resources/erdosData_constant_size.rds"
 if (file.exists(filename)) {
     data2 <- readRDS(filename)
 } else {
-    p    <- seq(from = 0.1, to = 0.95, length.out = 5   )
+    p    <- seq(from = 0.01, to = 0.5, length.out = 5   )
     beta <- seq(from = 1  , to = 10  , length.out = 1000)
-    size <- 100
+    size <- 1000
 
     input_var <- expand.grid("p" = p, "beta" = beta, "size" = size)
 
@@ -1747,29 +1759,31 @@ ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = beta, y = eige
 #+RESULTS:
 [[file:media/constant_size_erdos_density.png]]
 
-It appears that for low densities the relationship becomes more and more linear, we may be able to drop a log transform for network graphs with an outdegree (m) significantly smaller than there size (i.e. p ~= m/n)
+It appears that for low densities the relationship becomes more and more linear, we may be able to drop a sqrt transform for network graphs with an outdegree (m) significantly smaller than there size (i.e. p ~= m/n)
 
-#+NAME: constant_size_erdos_density_log
-#+CAPTION: listing:constant_size_erdos_density_log
-#+BEGIN_SRC R :exports both :results output graphics file :file media/constant_size_erdos_density_log.png :eval never-export
-ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = log(beta), y = eigenvalue2)) +
+The noise is from the fact that setting \(p\) is probabilitsitc, this would be reduced if the simulated graphs were larger, but then calculating the eigenvalue of W becomes prohibitive.
+
+#+NAME: constant_size_erdos_density_sqrt
+#+CAPTION: listing:constant_size_erdos_density_sqrt
+#+BEGIN_SRC R :exports both :results output graphics file :file media/constant_size_erdos_density_sqrt.png :eval never-export
+ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = sqrt(beta), y = eigenvalue2)) +
   geom_point(size = 0.5) +
   stat_smooth() +
   scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "log(β)", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density for 100 vertices") ) +
+  labs(x = "sqrt(β)", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density for 100 vertices") ) +
   guides(col = guide_legend("Link Density"))  +
   theme_bw()
 #+end_src
 
 
-#+NAME: fig:constant_size_erdos_density_log
-#+CAPTION: fig:constant_size_erdos_density_log
+#+NAME: fig:constant_size_erdos_density_sqrt
+#+CAPTION: fig:constant_size_erdos_density_sqrt
 #+attr_html: :width 400px
 #+attr_latex: :width 12cm
-#+RESULTS: constant_size_erdos_density_log
-[[file:media/constant_size_erdos_density_log.png]]
+#+RESULTS: constant_size_erdos_density_sqrt
+[[file:media/constant_size_erdos_density_sqrt.png]]
 
-So there's a good relationship for \(\xi_{2} ~ log(beta)\), at low link densities, does this persist over many sizes?
+So there's a strong positive relationship for \(\xi_{2} ~ sqrt(beta)\), at low link densities, nearly positive does this persist over many sizes?
 
 #+NAME: l:gen_erdos_data_constant_dens
 #+CAPTION:
@@ -1851,12 +1865,38 @@ ggplot(data2, mapping = aes(col = factor(size), x = sqrt(beta), y = eigenvalue2)
 [[file:media/constant_dens_erdos_density_sqrt.png]]
 
 
-So this seems to suggest that we have a relationship of
+So this seems to suggest that we have a relationship of \(\xi_{2} \sim \sqrt\{\beta\} \)
+
+non constant variance is a worry.
+
+
+#+BEGIN_SRC R :exports both :results output graphics file :file media/both_sqrt.png :eval never-export
+filename <- "resources/erdosData.rds"
+data <- readRDS(filename)
+
+ggplot(data2, mapping = aes(col = factor(size), x = sqrt(beta), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = TeX("\\sqrt{β}"), y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue for uniform degree"), subtitle = "mean degree ÷ size = 5%" ) +
+  guides(col = guide_legend("Size"))  +
+  theme_bw()
+#+end_src
+
+#+RESULTS:
+[[file:media/both_sqrt.png]]
+
+This suggests that a model that considers the size, average value of the weighted adjacency matrix and sqrt beta we'd have something.
+
+A linear model looks promisint.
+
 
 * Barabasi Albert Graphs
 :PROPERTIES:
 :CUSTOM_ID: barabassi-albert
 :END:
+
+** Theory
 
 The /Erdos Renyi/ game is a random network, a superior approach to model the web
 is to use a scale free networks cite:barabasiPhysicsWeb2001 such as the
@@ -1939,6 +1979,255 @@ hist(igraph::degree(igraph::erdos.renyi.game(n, 0.2)),
 #+attr_latex: :width 12cm
 #+RESULTS: degree-distribution-hist
 [[file:media/degree_dist_er_ba.png]]
+
+** Modelling
+At each step of the Barabassi-Albert algorithm, one node is added and linked to \(m\) other nodes with a probability proportional to the degree of that vertex.
+
+This means that the average of the unweighted adjacency matrix would be \(\mathrm{mean}\left(\mathbf{A}\right) \in \left[ \frac{m}{n}, \frac{m+1}{n} \right]\).
+
+calculating the mean of a matrix is expensive, so to generate many matrices we'll just use this for the moment.
+
+in practice though measuring \(m\) (as the mean out degree) will be imprecise and the adjacency matrix will be wieghted any way, so taking the mean of the matrix will still be necessary.
+
+plot(data2$m/data2$size, data2$A_dens)
+
+Using this knowledge we'll create a dataset with 9 different density values and confirm that the trend holds:
+
+#+begin_src R
+random_graph_pa <- function(m, beta, size) {
+      g1 <- igraph::sample_pa(n = size, power = 3, m = m)
+      A <- igraph::get.adjacency(g1) # Row to column
+      A <- Matrix::t(A)
+
+#      A_dens <- mean(A)
+      T      <- PageRank::power_walk_prob_trans(A, beta = beta)
+      tr     <- sum(diag(T))
+      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
+      return(c(abs(e2), tr))
+}
+#+end_src
+
+#+RESULTS:
+
+#+NAME: l:gen_ba_data
+#+CAPTION:
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+#+begin_src R
+filename <- "resources/BAData.rds"
+
+if (file.exists(filename)) {
+    data2 <- readRDS(filename)
+} else {
+    m    <- seq(from = 1, to = 9, length.out = 3)
+    beta <- seq(from = 1, to = 6, length.out = 30)
+    sz   <- seq(from = 100, to = 500, length.out = 3) %>% rev() # Big numbers first
+
+    input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+
+    nc <- length(random_graph_pa(1, 1, 1))
+    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+    for (i in 1:nrow(input_var)) {
+        X     <- as.vector(input_var[i,])
+        Y[i,] <-  random_graph_pa(X$m, X$beta, X$size)
+        print(i/nrow(input_var))
+    }
+    if (sum(abs(Y) != abs(Re(Y))) == 0) {
+        Y <- Re(Y)
+    }
+    Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+    (data2 <- cbind(input_var, Y)) %>% head()
+    saveRDS(data2, filename)
+}
+#+end_src
+
+#+RESULTS: l:gen_ba_data
+
+#+NAME: l:ba_data_plot
+#+CAPTION: l:ba_data_plot
+#+BEGIN_SRC R :exports both :results output graphics file :file media/constant_dens_erdos_density_sqrt.png :eval never-export
+data2$p <- round((data2$m/data2$size), 2)
+
+ggplot(data2, mapping = aes(col = factor(p), x = beta, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth(method = 'lm', size = 0.4) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Link Density (by m/n)"))  +
+  theme_bw()
+  #+end_src
+
+
+#+NAME: fig:ba_data_plot
+#+CAPTION: fig:ba_data_plot
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+  #+RESULTS: l:ba_data_plot
+  [[file:media/constant_dens_erdos_density_sqrt.png]]
+
+Due to the relationship between size and density this seems to work even better for BA graphs, which is precisely where we might anticipate the use of the power walk method.
+
+because the densities are so low there is also no need for a log transform either.
+
+let's look at a constant beta value, say 6, how does \(\xi_{2}\) change in response to p?
+
+#+NAME: l:baData_constant_size
+#+CAPTION: l:baData_constant_size
+#+begin_src R
+filename <- "resources/BAData_constant_size.rds"
+
+if (file.exists(filename)) {
+    data2 <- readRDS(filename)
+} else {
+    m    <- seq(from = 1, to = 9, length.out = 15)
+    beta <- 5
+    sz    <- seq(from = 100, to = 500, length.out = 7)
+
+    input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+
+    nc <- length(random_graph_pa(1, 1, 1))
+    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+    for (i in 1:nrow(input_var)) {
+        X     <- as.vector(input_var[i,])
+        Y[i,] <-  random_graph_pa(X$m, X$beta, X$size)
+        print(i/nrow(input_var))
+    }
+    if (sum(abs(Y) != abs(Re(Y))) == 0) {
+        Y <- Re(Y)
+    }
+    Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+    (data2 <- cbind(input_var, Y)) %>% head()
+    saveRDS(data2, filename)
+}
+#+end_src
+
+#+RESULTS: l:baData_constant_size
+
+
+#+NAME: l:ba_data_constant_size_plot
+#+CAPTION: l:ba_data_constant_size_plot
+#+BEGIN_SRC R :exports both :results output graphics file :file media/ba_constant_size_plot.png :eval never-export
+data2$p <- round((data2$m/data2$size), 2)
+
+names(data2)
+ggplot(data2, mapping = aes(col = factor(size), x = p, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth(method = 'lm', size = 0.4, se = FALSE) +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "p", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Size"))  +
+  theme_bw()
+  #+end_src
+
+
+#+NAME: fig:ba_data_constant_size_plot
+#+CAPTION: fig:ba_data_constant_size_plot
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+  #+RESULTS: l:ba_data_constant_size_plot
+  [[file:media/ba_constant_size_plot.png]]
+
+
+OK so clearly the effect on the eigenvalue that \(p\) has depends on the size of the graph, so \(p\) and size interact.
+
+I should gen more data for this bit if possible.
+
+a good model might then incorparte p*size+p:
+
+#+NAME: l:mlm_hist_ba
+#+CAPTION: l:mlm_hist_ba
+#+BEGIN_SRC R :exports both :results output graphics file :file media/ba_hist_mlm_mod.png :eval never-export
+filename <- "resources/BAData.rds"
+data2 <- readRDS(filename)
+data2$p <- data2$m/data2$size
+
+q <- quantile(mod$residuals, c(0.025, 0.975))
+ci1 <- q[1]
+ci2 <- q[2]
+
+mod <- lm(eigenvalue2 ~ 0 + p*size + p + beta, data2)
+hist(mod$residuals, breaks = 50, xlab = "Residuals",
+     title = "Histogram of Residuals for MLM")
+abline(v = c(ci1, ci2))
+
+#+end_src
+
+#+NAME: fig:mlm_hist_ba
+#+CAPTION: fig:mlm_hist_ba
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
+#+RESULTS: l:mlm_hist_ba
+[[file:media/ba_hist_mlm_mod.png]]
+
+So the residuals are normal ish, except for that spike just before 0, that's fairly concerning, this might be an acceptable model though, let's get it in written form.
+
+#+begin_src R
+summary(mod)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+
+Call:
+lm(formula = eigenvalue2 ~ 0 + p * size + p + beta, data = data2)
+
+Residuals:
+      Min        1Q    Median        3Q       Max
+-0.030751 -0.004571 -0.001238  0.004179  0.029725
+
+Coefficients:
+         Estimate Std. Error t value Pr(>|t|)
+p       3.404e-01  1.761e-02  19.332   <2e-16 ***
+size   -3.957e-05  1.925e-06 -20.555   <2e-16 ***
+beta    6.568e-03  1.545e-04  42.502   <2e-16 ***
+p:size -2.777e-04  1.334e-04  -2.083   0.0376 *
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.008223 on 896 degrees of freedom
+Multiple R-squared:  0.9018,	Adjusted R-squared:  0.9014
+F-statistic:  2058 on 4 and 896 DF,  p-value: < 2.2e-16
+#+end_example
+
+So we have :
+
+\begin{align}
+\xi_{2} &= 0.34 p +  \frac{3n}{10^{5}} + \frac{6\beta}{10^{3}} - \frac{2.8 p n}{10^{4}} \\
+        &p = \mathrm{mean}\left( \mathbf{A}\right)
+\end{align}
+
+For an unweighted adjacency matrix from the internet we may expect:
+
+\[
+p \approx \frac{\mathrm{mean}\left(\mathrm{outdegree}\right)}{n}
+\]
+
+for larger graphs we get \(p \rightarrow 0\) so the eigenvalue will be reduced for smaller graphs.
+
+OK so lets test this by predicting the value of the eigenvalue on a large BA graph:
+
+#+begin_src R
+m    <- 3
+n    <- 500
+beta <- 3
+
+
+g <- igraph::sample_pa(power = 3, n = n, m = m)
+A <- t(as.matrix(igraph::get.adjacency(g)))
+W <- PageRank::power_walk_prob_trans(A, beta = beta)
+
+p <- mean(A)
+(e2 <- abs(eigen(W, only.values = TRUE)$values[2]) )
+(e2_pred  <- 0.34*p + 3*n/10^5 + 6*beta/10^3-2.8*p*n/10^4)
+#+end_src
+
+#+RESULTS:
+: [1] 0.004271481
+: [1] 0.0341952
+
+That's actually pretty close.
+
+Alright well what if I weight the adj mat?
 
 * Relating the Power Walk to the Random Surfer
   :PROPERTIES:

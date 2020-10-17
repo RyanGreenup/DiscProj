@@ -91,9 +91,10 @@ Let's look at a 3d Output
 names(data)
 library(plotly)
 
-# d <- data[sample(1:nrow(data), 100),]
+ d <- data[sample(1:nrow(data), 100),]
+ d <- data
 
-fig <- plot_ly(d, x = ~A_dens, y = ~beta, z = ~eigenvalue2)
+fig <- plot_ly(d, x = ~p, y = ~beta, z = ~eigenvalue2)
 fig <- fig %>% add_markers(size = 1)
 fig <- fig %>% layout(scene = list(xaxis = list(title = 'size'),
                      yaxis = list(title = 'Beta'),
@@ -109,6 +110,7 @@ names(data)
 library(plotly)
 
 # d <- data[sample(1:nrow(data), 1000),]
+d <- data
 
 fig <- plot_ly(d, x = ~A_dens, y = ~trace, z = ~eigenvalue2)
 fig <- fig %>% add_markers(size = 1)
@@ -129,9 +131,9 @@ A_dens is dependent on p, so I'll just use different ps
 
 
 ```{r}
-m    <- seq(from = 1, to = 9, length.out = 2)
-beta <- seq(from = 1, to = 6, length.out = 10)
-sz <- seq(from = 100, to = 1000, length.out = 4) %>% rev() # Big numbers first 
+m    <- seq(from = 1, to = 9, length.out = 3)
+beta <- seq(from = 1, to = 6, length.out = 100)
+sz <- seq(from = 100, to = 1000, length.out = 3) %>% rev() # Big numbers first 
 
 input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
 input_var
