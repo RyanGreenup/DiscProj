@@ -1595,8 +1595,8 @@ data frame with the second eigenvalue, density, determinant and trace was constr
 # Generate Constants
 p         <- seq(from = 0.01, to = 0.99, length.out = 5)
 beta      <- seq(from = 1   , to = 20  , length.out = 20)
-sz        <- seq(from = 100 , to = 1000, length.out = 5) %>% rev()
-input_var <- expand.grid("p" = p , "beta" = beta, "size" = sz)
+size      <- seq(from = 100 , to = 1000, length.out = 5) %>% rev()
+input_var <- expand.grid("p" = p , "beta" = beta, "size" = size)
 
 # Print out a sample of all the rows
 input_var[sample(1:nrow(input_var), 6),]
@@ -1604,12 +1604,12 @@ input_var[sample(1:nrow(input_var), 6),]
 
 #+RESULTS: input_var
 :         p beta size
-: 47  0.255   10 1000
-: 175 0.990   15  775
-: 33  0.500    7 1000
-: 361 0.010   13  325
-: 72  0.255   15 1000
-: 414 0.745    3  100
+: 53  0.500   11 1000
+: 398 0.500   20  325
+: 303 0.500    1  325
+: 347 0.255   10  325
+: 330 0.990    6  325
+: 162 0.255   13  775
 
 #+NAME: output_def
 #+CAPTION: Function to return a vector \(\left\langle \left\lvert \xi_2 \right\rvert,
@@ -1635,7 +1635,7 @@ random_graph <- function(p, beta, size) {
 Now a function to return a data frame of results:
 
 #+begin_src R
-sim_graphs(filename, p, beta, size) {
+sim_graphs <- function(filename, p, beta, size) {
 
     input_var <- expand.grid("p" = p , "beta" = beta, "size" = size)
 
@@ -1656,6 +1656,8 @@ sim_graphs(filename, p, beta, size) {
 }
 #+end_src
 
+#+RESULTS:
+
 
 #+NAME: corrplot
 #+CAPTION: Produce a correlation plot Created from a dataframe constructed from the values assigned in listing [[input_var]] by using the function defined in listing [[output_def]], see figure [[fig:corrplot]].
@@ -1667,14 +1669,14 @@ if (file.exists(filename)) {
     data <- readRDS(filename)
 
   } else {
+    data <- sim_graphs(filename, p, beta, size)
     sim_graphs(filename, p, beta, size)
+
 }
 head(data)
-# cormat = cor(data, method = 'spearman')
-# colnames(cormat)
-#
-# rownames(cormat) <- colnames(cormat) <- c("Prob\nEdges", "β", "Size", "ξ₂", "Trace", "")
-# corrplot(cormat, method = "ellipse", type = "lower")
+cormat = cor(data, method = 'spearman')
+rownames(cormat) <- colnames(cormat) <- c("Prob\nEdges", "β", "Size", "ξ₂", "Trace")
+corrplot(cormat, method = "ellipse", type = "lower")
 #+end_src
 
 #+RESULTS: corrplot

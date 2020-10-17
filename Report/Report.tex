@@ -1,4 +1,4 @@
-% Created 2020-10-18 Sun 10:13
+% Created 2020-10-18 Sun 10:40
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -40,7 +40,7 @@
 
 
 \section{Introduction}
-\label{sec:orge15e24b}
+\label{sec:org7ccb021}
 Any collection of interconnected information can form a network structure,
 consider for example citations, webpages, wikis, power grids, wiring diagrams, encyclopedias and interpersonal
 relationships. The analysis of these networks can be used to draw insights about
@@ -55,7 +55,7 @@ would be correlated with geometric-centrality, this is demonstrated in figure
 is geometrically very central.
 
 \subsection{The PageRank Method}
-\label{sec:org65fcbb4}
+\label{sec:orgb2a5533}
 
 There are multiple ways to measure network centrality but this report is
 concerned with the \emph{PageRank} method, this method asserts that the centrality of
@@ -74,7 +74,7 @@ these assumptions, specifically by modifying the corresponding probability
 transition matrix to be stochastic and primitive.
 
 \subsection{Power Walk and the Random Surfer}
-\label{sec:org071d604}
+\label{sec:orgcb8ebf2}
 The typical method to adjust the transition probability matrix is the \emph{Random
 Surfer}, introduced by Page and Brin in 1998
  \cite{larrypageAnatomyLargescaleHypertextual1998} as a distinguishing feature of
@@ -93,7 +93,7 @@ probability matrix that is defined for real weighted edges and could be used wit
 These individual approaches are discussed in more detail at \S \ref{PageRank-Generally}.
 
 \subsection{Stability and Convergence}
-\label{sec:org6f465f0}
+\label{sec:orgd071a00}
 
 The rate at which the algorithm for \emph{PageRank} converges to a solution and the stability of that solution can both be measured by the second eigenvalue of the corresponding transition probability matrix (The details of this are discussed at \ref{implement_models} )
 
@@ -262,7 +262,7 @@ distribution for the nodes and a metric to measure the centrality of vertices.
 
 
 \subsection{Random Surfer Model}
-\label{sec:orgcff69a9}
+\label{sec:org2c609fb}
 \subsubsection{Problems with the Stationary Distribution}
 \label{issues}
 The approach to measuring centrality using a stationary distrubition in \S\ref{stationary-distribution-of-t} has the following issues
@@ -333,7 +333,7 @@ This however would not be sufficient to ensure that \eqref{eq:recurrence} would 
 \end{figure}
 
 \paragraph{Irreducible}
-\label{sec:org00c7009}
+\label{sec:org6a693a7}
 A graph that allows travel from any given vertex to any other vertex is said to be irreducible \cite{langvilleGooglePageRankScience2012}, see for example figure \ref{irreducible-example}, this is important in the context of a random walk because only in an irreducible graph can all vertices be reached from any initial condition.
 
 \begin{figure}[htbp]
@@ -343,7 +343,7 @@ A graph that allows travel from any given vertex to any other vertex is said to 
 \end{figure}
 
 \paragraph{Aperiodic}
-\label{sec:org4d9d5a0}
+\label{sec:org4241cb4}
 An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \(\mathbf{A}\) is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative (or helpful in this context because the graph may still be reducible or non-stochastic)}
 
 
@@ -381,7 +381,7 @@ expressed as:
 \caption{\label{fig:rseg}A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue \emph{teleportation} edges are introduced, these may be followed with a probability of \(1 - \alpha\)}
 \end{figure}
 \subsubsection{Limitations}
-\label{sec:org5db95a2}
+\label{sec:orgbb25724}
 The \emph{Random Surfer} Model can only consider positively weighted edges, it cannot
 take into account negatively weighted edges which might indicate that
 links promote aversion rather than endorsement.
@@ -557,7 +557,7 @@ plot(g1)
 
 
 \subsection{Implementing the Random Surfer}
-\label{sec:org010e3f9}
+\label{sec:org1de8fad}
 \subsubsection{Ordinary Matrices}
 \label{implementing-page-rank-methods}
 \paragraph{Adjacency Matrix}
@@ -840,9 +840,9 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
 \end{verbatim}
 
 \subsubsection{Sparse Matrices}
-\label{sec:org9f8f787}
+\label{sec:org432bfb1}
 \paragraph{Creating the Probability Transition Matrix}
-\label{sec:orgf566266}
+\label{sec:org2f53154}
 Implementing the page rank method on a larger graph requires the use of more
 efficient form of matrix storage as discussed at \ref{sparse-matrix}
 
@@ -1076,14 +1076,14 @@ p %>% head() %>% print()
 \end{verbatim}
 
 \subsection{Power Walk Method}
-\label{sec:org667f5b0}
+\label{sec:org6679645}
 Recall from \ref{pwalk} that the power walk is given by:
 
 \begin{align*}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B}
 \end{align*}
 \subsubsection{Ordinary Matrices}
-\label{sec:org407648a}
+\label{sec:org7abc25a}
 Implementing the Power walk using ordinary matrices is very similar to the \emph{Random Surfer} model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 
 Create the Adjacency Matrix
@@ -1192,9 +1192,9 @@ p %>% as.vector()
 \end{verbatim}
 
 \subsubsection{Sparse Matrices}
-\label{sec:orgc9c1fee}
+\label{sec:orga65d308}
 \paragraph{Theory; Simplifying Power Walk to be solved with Sparse Matrices}
-\label{sec:org5719f66}
+\label{sec:org70406a9}
 The Random Surfer model is:
 
 $$\begin{aligned}
@@ -1468,23 +1468,23 @@ Matrices & Vectors\\
 \end{center}
 
 \paragraph{Practical; Implementing the Power Walk on Sparse Matrices}
-\label{sec:org624b55c}
+\label{sec:org2dc806e}
 \subparagraph{Inspect the newly created matrix and create constants}
-\label{sec:org844829d}
+\label{sec:org5413969}
 \subparagraph{Setup}
-\label{sec:org14f9cec}
+\label{sec:orga3e254d}
 \begin{enumerate}
 \item Define function to create DiagonalsSparse Diagonal Function
-\label{sec:orgbe9e6c3}
+\label{sec:orgfd1a016}
 
 Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the \texttt{sparse\_diag} function in listing \ref{sparse-diag} will still work.
 \end{enumerate}
 
 \subparagraph{Power Walk}
-\label{sec:orgbbc9f4e}
+\label{sec:org4dffcf4}
 \begin{enumerate}
 \item Define B
-\label{sec:orge10047c}
+\label{sec:orgbf0c6cf}
 \begin{minted}[]{r}
 A      <- Matrix::Matrix(A, sparse = TRUE)
 B      <- A
@@ -1544,7 +1544,7 @@ print(Bo,2)
 \end{verbatim}
 
 \item Solve the Scaling Matrix
-\label{sec:orgf58538d}
+\label{sec:org45a0b2f}
 We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 
 \begin{minted}[]{r}
@@ -1572,7 +1572,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 
 
 \item Find the Transition Probability Matrix
-\label{sec:org06e6667}
+\label{sec:org45c3fa4}
 \begin{minted}[]{r}
   DB   <- diag(δB)
 ## ** Create the Transition Probability Matrix
@@ -1581,7 +1581,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 \end{minted}
 
 \item Implement the Loop
-\label{sec:orgf5dae87}
+\label{sec:org626fd96}
 \begin{minted}[]{r}
 ## ** Implement the Power Walk
 ## *** Set Initial Values
@@ -1643,7 +1643,7 @@ Attaching package: ‘PageRank’
 \section{Erdos Renyi Graphs}
 \label{second-eigenvalue}
 \subsection{Introduction}
-\label{sec:org0512b1b}
+\label{sec:org0cafc36}
 The \emph{Erdos Renyi} game, first published in 1959 \cite{renyiRandomGraphs1959} creates a graph by assuming that the number of nodes is constant and the probability of interlinking these nodes is equal.
 
 This is implemented in \textbf{\emph{R}} \cite[IgraphManualPagesa]{IgraphManualPages}
@@ -1654,7 +1654,7 @@ provide a broader picture for the overall behaviour of \(\xi_{2}\) over a broad
 range of graphs with respect to the parameters of the \emph{Power Walk} method.
 
 \subsection{Correlation Plot}
-\label{sec:orgd2c71fc}
+\label{sec:orgb6a6d94}
 
 By looping over many random graphs for a variety of probabilities a data set can
 be constructed and a correlation plot generated. To implement this a data frame
@@ -1667,8 +1667,8 @@ data frame with the second eigenvalue, density, determinant and trace was constr
 # Generate Constants
 p         <- seq(from = 0.01, to = 0.99, length.out = 5)
 beta      <- seq(from = 1   , to = 20  , length.out = 20)
-sz        <- seq(from = 100 , to = 1000, length.out = 5) %>% rev()
-input_var <- expand.grid("p" = p , "beta" = beta, "size" = sz)
+size      <- seq(from = 100 , to = 1000, length.out = 5) %>% rev()
+input_var <- expand.grid("p" = p , "beta" = beta, "size" = size)
 
 # Print out a sample of all the rows
 input_var[sample(1:nrow(input_var), 6),]
@@ -1678,12 +1678,12 @@ input_var[sample(1:nrow(input_var), 6),]
 
 \begin{verbatim}
         p beta size
-47  0.255   10 1000
-175 0.990   15  775
-33  0.500    7 1000
-361 0.010   13  325
-72  0.255   15 1000
-414 0.745    3  100
+53  0.500   11 1000
+398 0.500   20  325
+303 0.500    1  325
+347 0.255   10  325
+330 0.990    6  325
+162 0.255   13  775
 \end{verbatim}
 
 
@@ -1703,15 +1703,13 @@ random_graph <- function(p, beta, size) {
 }
 \end{minted}
 
-\begin{listing}[htbp]
+Now a function to return a data frame of results:
+
 \begin{minted}[]{r}
-filename <- "resources/erdosData.rds"
+sim_graphs <- function(filename, p, beta, size) {
 
-if (file.exists(filename)) {
+    input_var <- expand.grid("p" = p , "beta" = beta, "size" = size)
 
-    data <- readRDS(filename)
-
-  } else {
     nc    <- length(random_graph(1, 1, 1))
     Y     <- matrix(ncol = nc, nrow = nrow(input_var))
     for (i in 1:nrow(input_var)) {
@@ -1722,18 +1720,30 @@ if (file.exists(filename)) {
     if (sum(abs(Y) != abs(Re(Y))) == 0) {
         Y     <- Re(Y)
     }
-    nrow(input_var)
-    nrow(Y)
     Y     <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
-    (data <- cbind(input_var, Y)) %>% head()
+    data <- cbind(input_var, Y)
     saveRDS(data, file = filename)
+    return(data)
+}
+\end{minted}
+
+\begin{listing}[htbp]
+\begin{minted}[]{r}
+filename <- "resources/erdosData.rds"
+
+if (file.exists(filename)) {
+
+    data <- readRDS(filename)
+
+  } else {
+    data <- sim_graphs(filename, p, beta, size)
+    sim_graphs(filename, p, beta, size)
+
 }
 head(data)
-# cormat = cor(data, method = 'spearman')
-# colnames(cormat)
-#
-# rownames(cormat) <- colnames(cormat) <- c("Prob\nEdges", "β", "Size", "ξ₂", "Trace", "")
-# corrplot(cormat, method = "ellipse", type = "lower")
+cormat = cor(data, method = 'spearman')
+rownames(cormat) <- colnames(cormat) <- c("Prob\nEdges", "β", "Size", "ξ₂", "Trace")
+corrplot(cormat, method = "ellipse", type = "lower")
 \end{minted}
 \caption{\label{corrplot}Produce a correlation plot Created from a dataframe constructed from the values assigned in listing \ref{input_var} by using the function defined in listing \ref{output_def}, see figure .}
 \end{listing}
@@ -1949,7 +1959,7 @@ A linear model looks promisint.
 \section{Barabasi Albert Graphs}
 \label{barabassi-albert}
 \subsection{Theory}
-\label{sec:org24cf63c}
+\label{sec:org5cea7b9}
 
 The \emph{Erdos Renyi} game is a random network, a superior approach to model the web
 is to use a scale free networks \cite{barabasiPhysicsWeb2001} such as the
@@ -2034,7 +2044,7 @@ hist(igraph::degree(igraph::erdos.renyi.game(n, 0.2)),
 \end{figure}
 
 \subsection{Modelling}
-\label{sec:org779d18b}
+\label{sec:org41690d6}
 At each step of the Barabassi-Albert algorithm, one node is added and linked to \(m\) other nodes with a probability proportional to the degree of that vertex.
 
 This means that the average of the unweighted adjacency matrix would be \(\mathrm{mean}\left(\mathbf{A}\right) \in \left[ \frac{m}{n}, \frac{m+1}{n} \right]\).
@@ -2280,7 +2290,7 @@ Alright well what if I weight the adj mat?
 \section{Relating the Power Walk to the Random Surfer}
 \label{relate-to-random-surfer}
 \subsection{Introduction}
-\label{sec:orgae33e66}
+\label{sec:org6c67307}
 These are notes relating to \cite[\textsection 3.3]{parkPowerWalkRevisiting2013}, probably won't put this in the report, just arbitrary notes
 
 So if a term in the Power Walk can be related to \(\alpha\) in the random
@@ -2418,7 +2428,7 @@ But the next step requires showing that:
 \end{align*}
 
 \subsection{Equate the Power Walk to the Random Surfer}
-\label{sec:orgecc09d2}
+\label{sec:orgbd13550}
 Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
 
 \begin{align}
@@ -2504,19 +2514,19 @@ And setting \(\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}\)  from \eqre
 Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}  \eqref{eq:bgVal2}
 
 \subsection{Conclusion}
-\label{sec:orgd318b9b}
+\label{sec:org3c197f2}
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
 
 \subsection{The Second Eigenvalue}
-\label{sec:org4c01a55}
+\label{sec:org401559a}
 \subsubsection{The Random Surfer}
-\label{sec:org4d8610c}
+\label{sec:org9f8c2e4}
 The Second eigenvalue \(\xi_2\) of the Power Surfer is less than \(\alpha\) (\href{Proposal/Propsal.org}{See 3.2; Stability and Concvergence, of proposal}).
 \subsubsection{Power Walk}
-\label{sec:org1cde9ca}
+\label{sec:orgad12883}
 Because the Power Walk relates to the random surfer as demonstrated in section , what can be said about \(\xi_{2}\)
 \paragraph{Applying this to Power Walk}
-\label{sec:orgf6e24b5}
+\label{sec:orgefc13d8}
 Let \(\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2\) return the second value of a transition, probability Matrix, then observe that:
 
 
@@ -2531,7 +2541,7 @@ where:
 \item \(\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)\) refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
 \end{itemize}
 \subparagraph{My attempt}
-\label{sec:org423a60c}
+\label{sec:org61f3eaf}
 \begin{align}
     \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
 %    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
@@ -2604,7 +2614,7 @@ beta
 \end{minted}
 
 \section{Appendix}
-\label{sec:org82d3d47}
+\label{sec:org4d38c48}
 
 \begin{listing}[htbp]
 \begin{minted}[]{r}
@@ -2638,42 +2648,42 @@ image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
 \caption{\label{fig:den_undir_ba}Plot of the adjacency matrix corresponding to a Barabassi-Albert (i.e. \emph{Scale Free}) Graph produced by listing \ref{r-den_undir_ba}, observe the matrix is quite sparse.}
 \end{figure}
 \subsection{Graph Diagrams}
-\label{sec:org97501cf}
+\label{sec:org30d3179}
 Graph Diagrams shown in \ref{markov} where produced using \texttt{DOT} (see \cite{DOTLanguage,DOTGraphDescription2020}).
 \section{my to do list}
-\label{sec:orgb3f911e}
+\label{sec:orgb07a5b1}
 \subsection{Use BA Graphs}
-\label{sec:orgf4a1a32}
+\label{sec:org8745b3e}
 \subsection{Look at the ScatterPlot Matrix}
-\label{sec:org3492e69}
+\label{sec:orgecf6a09}
 \subsection{Compare eigenvalue2 and iterations}
-\label{sec:orgef5a76f}
+\label{sec:org755d943}
 
 \subsection{Look at using an SVM/logReg or other classifier}
-\label{sec:org4352bc7}
+\label{sec:org710ca15}
 Use a ROC curve to find which threshold of e2 predicts a below average number of iterations.
 
 Predict that e2 value?
 \subsubsection{Measure Iterations and E2 values}
-\label{sec:org5480ee2}
+\label{sec:org96a2e7c}
 \subsubsection{Are any values indicative of E2 Values?}
-\label{sec:orgd0e7058}
+\label{sec:orgf6bb33f}
 \subsubsection{Use Method Parameters with a log reg to predict a number of iterations}
-\label{sec:orgf1d747c}
+\label{sec:org0dc84b8}
 \subsubsection{Use a ROC Curve to set a threshold}
-\label{sec:orgb22242b}
+\label{sec:org3ce2527}
 \subsubsection{Discuss the results.}
-\label{sec:org2bbf951}
+\label{sec:orgd82dd2b}
 \subsection{Tie the Report together.}
-\label{sec:org08d691b}
+\label{sec:orgfa9110a}
 \subsection{Typeset the Report}
-\label{sec:org252ddc5}
+\label{sec:orga7befcf}
 
 \subsection{TODO Diamater}
-\label{sec:orgd42c052}
+\label{sec:orgf6b04dc}
 Diamater of the web sounds like a fun read \cite{albertDiameterWorldWideWeb1999}
 \subsection{Improving the Performance of Page Rank}
-\label{sec:org4ec047f}
+\label{sec:org6cab819}
 
 This:
 
