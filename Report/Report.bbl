@@ -54,62 +54,6 @@
       \verb https://en.wikipedia.org/w/index.php?title=Adjacency_matrix&oldid=979433676
       \endverb
     \endentry
-    \entry{albertDiameterWorldWideWeb1999}{article}{}
-      \name{author}{3}{}{%
-        {{hash=d85e8d2b76e8626b1a45373f4e027914}{%
-           family={Albert},
-           familyi={A\bibinitperiod},
-           given={Réka},
-           giveni={R\bibinitperiod}}}%
-        {{hash=f0f51cd5afc669d57dbff9b8e913c55c}{%
-           family={Jeong},
-           familyi={J\bibinitperiod},
-           given={Hawoong},
-           giveni={H\bibinitperiod}}}%
-        {{hash=15bacd7ddfc866c5dd96976d4b0244d5}{%
-           family={Barabási},
-           familyi={B\bibinitperiod},
-           given={Albert-László},
-           giveni={A\bibinithyphendelim L\bibinitperiod}}}%
-      }
-      \strng{namehash}{bf79a88c4a5a18ebb3c929448cd04193}
-      \strng{fullhash}{bf79a88c4a5a18ebb3c929448cd04193}
-      \strng{bibnamehash}{bf79a88c4a5a18ebb3c929448cd04193}
-      \strng{authorbibnamehash}{bf79a88c4a5a18ebb3c929448cd04193}
-      \strng{authornamehash}{bf79a88c4a5a18ebb3c929448cd04193}
-      \strng{authorfullhash}{bf79a88c4a5a18ebb3c929448cd04193}
-      \field{sortinit}{A}
-      \field{sortinithash}{a3dcedd53b04d1adfd5ac303ecd5e6fa}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{issn}{0028-0836, 1476-4687}
-      \field{journaltitle}{Nature}
-      \field{langid}{english}
-      \field{month}{9}
-      \field{number}{6749}
-      \field{title}{Diameter of the {{World}}-{{Wide Web}}}
-      \field{urlday}{11}
-      \field{urlmonth}{10}
-      \field{urlyear}{2020}
-      \field{volume}{401}
-      \field{year}{1999}
-      \field{dateera}{ce}
-      \field{urldateera}{ce}
-      \field{pages}{130\bibrangedash 131}
-      \range{pages}{2}
-      \verb{doi}
-      \verb 10.1038/43601
-      \endverb
-      \verb{file}
-      \verb /home/ryan/Zotero/storage/REPEQYB6/albertDiameterWorldWideWeb1999.pdf
-      \endverb
-      \verb{urlraw}
-      \verb http://www.nature.com/articles/43601
-      \endverb
-      \verb{url}
-      \verb http://www.nature.com/articles/43601
-      \endverb
-    \endentry
     \entry{barabasiLinkedNewScience2002}{book}{}
       \name{author}{1}{}{%
         {{hash=15bacd7ddfc866c5dd96976d4b0244d5}{%
@@ -472,6 +416,45 @@
       \verb{url}
       \verb https://en.wikipedia.org/w/index.php?title=DOT_(graph_description_language)&oldid=961944797
       \endverb
+    \endentry
+    \entry{douglasbatesMatrixSparseDense2019}{software}{useprefix=true}
+      \name{author}{2}{}{%
+        {{hash=251ae23b46ec68e7ceea567f82286317}{%
+           family={{Douglas Bates}},
+           familyi={D\bibinitperiod}}}%
+        {{hash=a9892a063b02b4173d6a06448de413dc}{%
+           family={{Martin Maechler}},
+           familyi={M\bibinitperiod}}}%
+      }
+      \strng{namehash}{882f0e4e6f87a03caa2e9746356d4e46}
+      \strng{fullhash}{882f0e4e6f87a03caa2e9746356d4e46}
+      \strng{bibnamehash}{882f0e4e6f87a03caa2e9746356d4e46}
+      \strng{authorbibnamehash}{882f0e4e6f87a03caa2e9746356d4e46}
+      \strng{authornamehash}{882f0e4e6f87a03caa2e9746356d4e46}
+      \strng{authorfullhash}{882f0e4e6f87a03caa2e9746356d4e46}
+      \field{sortinit}{D}
+      \field{sortinithash}{c438b3d5d027251ba63f5ed538d98af5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{A rich hierarchy of matrix classes, including triangular, symmetric, and diagonal matrices, both dense and sparse and with pattern, logical and numeric entries. Numerous methods for and operations on these matrices, using 'LAPACK' and 'SuiteSparse' libraries.}
+      \field{day}{27}
+      \field{month}{11}
+      \field{shorttitle}{Matrix}
+      \field{title}{Matrix: {{Sparse}} and {{Dense Matrix Classes}} and {{Methods}}}
+      \field{urlday}{17}
+      \field{urlmonth}{10}
+      \field{urlyear}{2020}
+      \field{version}{1.2-18}
+      \field{year}{2019}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \verb{urlraw}
+      \verb https://CRAN.R-project.org/package=Matrix
+      \endverb
+      \verb{url}
+      \verb https://CRAN.R-project.org/package=Matrix
+      \endverb
+      \keyw{Econometrics,Multivariate,NumericalMathematics}
     \endentry
     \entry{larsonElementaryLinearAlgebra1991}{book}{}
       \name{author}{3}{}{%
@@ -1326,7 +1309,7 @@
       \endverb
     \endentry
   \enddatalist
-  \missing{AdjacencyMatrix2020a}
+  \missing{albertDiameterWorldWideWeb1999}
 \endrefsection
 \endinput
 

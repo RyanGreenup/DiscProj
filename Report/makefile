@@ -28,7 +28,9 @@ clear:
 # * Rules
 
 # Report.tex : Report.org
-# 	@ emacs -l ~/.emacs.d/init.el Report.org --batch -f org-latex-export-to-latex --kill
+# It seems to only work if it exports from emacs as well.
+# I wonder if there is a way to make the init file more portable?
+	@ emacs -l ~/.emacs.d/init.el Report.org --batch -f org-latex-export-to-latex --kill
 
 Report.pdf : Report.tex
 # there was a reason I didn't use latexmk, I just can't remember

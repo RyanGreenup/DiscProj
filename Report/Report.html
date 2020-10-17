@@ -3,7 +3,7 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2020-10-15 Thu 17:04 -->
+<!-- 2020-10-15 Thu 23:18 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Page Rank</title>
@@ -269,14 +269,33 @@ org_html_manager.setup();  // activate after the parameters are set
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#orge19ba3a">1. Introduction</a>
+<li><a href="#orgfb37531">1. Introduction</a>
 <ul>
-<li><a href="#org9aa60e9">1.1. The PageRank Method</a></li>
-<li><a href="#orgaa4bb52">1.2. Power Walk and the Random Surfer</a></li>
-<li><a href="#org34a8a53">1.3. Stability and Convergence</a></li>
+<li><a href="#org6f298b2">1.1. The PageRank Method</a></li>
+<li><a href="#orgd66f12e">1.2. Power Walk and the Random Surfer</a></li>
+<li><a href="#org2c61d38">1.3. Stability and Convergence</a></li>
 </ul>
 </li>
-<li><a href="#PageRank-Generally">2. Implementing PageRank Generally</a></li>
+<li><a href="#PageRank-Generally">2. Mathematics of Page Rank</a>
+<ul>
+<li><a href="#orgcaa566e">2.1. The Stationary Distribution of a Probability Transition Matrix</a></li>
+<li><a href="#org921f4c7">2.2. Random Surfer Model</a>
+<ul>
+<li><a href="#issues">2.2.1. Problems with the Stationary Distribution</a></li>
+<li><a href="#markov">2.2.2. Markov Chains</a>
+<ul>
+<li><a href="#stochastic">2.2.2.1. Stochastic</a></li>
+<li><a href="#org4519fa9">2.2.2.2. Irreducible</a></li>
+<li><a href="#orgc91d98e">2.2.2.3. Aperiodic</a></li>
+<li><a href="#fix">2.2.2.4. The Fix</a></li>
+</ul>
+</li>
+<li><a href="#orgba396a7">2.2.3. Limitations</a></li>
+</ul>
+</li>
+<li><a href="#pwalk">2.3. Power walk</a></li>
+</ul>
+</li>
 <li><a href="#sparse-matrix">3. Sparse Matrices</a>
 <ul>
 <li><a href="#solving-stationary-dist">3.1. Solving the Stationary Distribution</a></li>
@@ -284,62 +303,62 @@ org_html_manager.setup();  // activate after the parameters are set
 </li>
 <li><a href="#implement_models">4. Implementing the Models</a>
 <ul>
-<li><a href="#org3902466">4.1. Implementing the Random Surfer</a>
+<li>
 <ul>
-<li><a href="#implementing-page-rank-methods">4.1.1. Small Graph, Ordinary Matrices</a>
+<li><a href="#example-graph">4.0.1. Example Graph</a></li>
+</ul>
+</li>
+<li><a href="#org56f73f2">4.1. Implementing the Random Surfer</a>
 <ul>
-<li><a href="#example-graph">4.1.1.1. Example Graph</a>
+<li><a href="#implementing-page-rank-methods">4.1.1. Ordinary Matrices</a>
 <ul>
-<li><a href="#adjacency-matrix">4.1.1.1.1. Adjacency Matrix</a></li>
-<li><a href="#probability-transition-matrix">4.1.1.1.2. Probability Transition Matrix</a>
+<li><a href="#adjacency-matrix">4.1.1.1. Adjacency Matrix</a></li>
+<li><a href="#probability-transition-matrix">4.1.1.2. Probability Transition Matrix</a>
 <ul>
-<li><a href="#create-a-function">4.1.1.1.2.1. Create a Function</a></li>
+<li><a href="#create-a-function">4.1.1.2.1. Create a Function</a></li>
+</ul>
+</li>
+<li><a href="#page-rank-random-surfer">4.1.1.3. Page Rank Random Surfer</a>
+<ul>
+<li><a href="#eigen-value-method">4.1.1.3.1. Eigen Value Method</a></li>
+<li><a href="#power-value-method">4.1.1.3.2. Power Value Method</a></li>
+<li><a href="#scaling">4.1.1.3.3. Scaling</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#page-rank-random-surfer">4.1.1.2. Page Rank Random Surfer</a>
+<li><a href="#org0c97d57">4.1.2. Sparse Matrices</a>
 <ul>
-<li><a href="#eigen-value-method">4.1.1.2.1. Eigen Value Method</a></li>
-<li><a href="#power-value-method">4.1.1.2.2. Power Value Method</a></li>
-<li><a href="#scaling">4.1.1.2.3. Scaling</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#org392b2cd">4.1.2. Large Graph, Sparse Matrices using CRS</a>
-<ul>
-<li><a href="#orgfd7830d">4.1.2.1. Creating the Probability Transition Matrix</a></li>
+<li><a href="#org18a0a8d">4.1.2.1. Creating the Probability Transition Matrix</a></li>
 <li><a href="#random-surfer-sparse-fix">4.1.2.2. Solving the Random Surfer via the Power Method</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#org8aad916">4.2. Power Walk Method</a>
+<li><a href="#orgc1278ed">4.2. Power Walk Method</a>
 <ul>
-<li><a href="#orgf5e0b6d">4.2.1. Introduction</a></li>
-<li><a href="#orgfc0fc38">4.2.2. Ordinary Matrices</a></li>
-<li><a href="#org4437d79">4.2.3. Sparse Matrices</a>
+<li><a href="#orge5d069a">4.2.1. Ordinary Matrices</a></li>
+<li><a href="#org15f2f8c">4.2.2. Sparse Matrices</a>
 <ul>
-<li><a href="#orge4d6ca5">4.2.3.1. Theory; Simplifying Power Walk to be solved with Sparse Matrices</a>
+<li><a href="#orga54d073">4.2.2.1. Theory; Simplifying Power Walk to be solved with Sparse Matrices</a>
 <ul>
-<li><a href="#solve-background-prob-power-walk-sparse">4.2.3.1.1. Solving the Background Probability</a></li>
+<li><a href="#solve-background-prob-power-walk-sparse">4.2.2.1.1. Solving the Background Probability</a></li>
 </ul>
 </li>
-<li><a href="#orgf11d36c">4.2.3.2. Practical; Implementing the Power Walk on Sparse Matrices</a>
+<li><a href="#org9a511e4">4.2.2.2. Practical; Implementing the Power Walk on Sparse Matrices</a>
 <ul>
-<li><a href="#org76dbfa2">4.2.3.2.1. Inspect the newly created matrix and create constants</a></li>
-<li><a href="#orge025639">4.2.3.2.2. Setup</a>
+<li><a href="#orgd1750ac">4.2.2.2.1. Inspect the newly created matrix and create constants</a></li>
+<li><a href="#orgea074bd">4.2.2.2.2. Setup</a>
 <ul>
-<li><a href="#org25dda2f">4.2.3.2.2.1. Define function to create DiagonalsSparse Diagonal Function</a></li>
+<li><a href="#orgb436276">4.2.2.2.2.1. Define function to create DiagonalsSparse Diagonal Function</a></li>
 </ul>
 </li>
-<li><a href="#orgd299000">4.2.3.2.3. Power Walk</a>
+<li><a href="#org0881e09">4.2.2.2.3. Power Walk</a>
 <ul>
-<li><a href="#org5003bc6">4.2.3.2.3.1. Define B</a></li>
-<li><a href="#org918c0d8">4.2.3.2.3.2. Solve the Scaling Matrix</a></li>
-<li><a href="#orgc166ef9">4.2.3.2.3.3. Find the Transition Probability Matrix</a></li>
-<li><a href="#org9537591">4.2.3.2.3.4. Implement the Loop</a></li>
+<li><a href="#org8be25c3">4.2.2.2.3.1. Define B</a></li>
+<li><a href="#org5388c55">4.2.2.2.3.2. Solve the Scaling Matrix</a></li>
+<li><a href="#orgdb830ce">4.2.2.2.3.3. Find the Transition Probability Matrix</a></li>
+<li><a href="#org8cafc20">4.2.2.2.3.4. Implement the Loop</a></li>
 </ul>
 </li>
 </ul>
@@ -351,43 +370,43 @@ org_html_manager.setup();  // activate after the parameters are set
 </ul>
 </li>
 <li><a href="#create-package">5. Creating a Package</a></li>
-<li><a href="#second-eigenvalue">6. Investigating the Second EigenValue</a>
+<li><a href="#second-eigenvalue">6. Erdos Renyi Graphs</a>
 <ul>
-<li><a href="#org3332ce1">6.1. ER Graphs Plotting Various Values</a>
+<li><a href="#orgb8c431d">6.1. ER Graphs Plotting Various Values</a>
 <ul>
-<li><a href="#org7cc720b">6.1.1. Erdos Reny Game</a></li>
-<li><a href="#orgff284ce">6.1.2. Correlation Plot</a></li>
-<li><a href="#org6e91672">6.1.3. Density of Adjacency Matrix</a></li>
-<li><a href="#orgaa105b8">6.1.4. Trace of Transition Probability Matrix</a></li>
-<li><a href="#org49a4a7b">6.1.5. Conclusion</a></li>
+<li><a href="#org7d7edc6">6.1.1. Erdos Reny Game</a></li>
+<li><a href="#org9038aa1">6.1.2. Correlation Plot</a></li>
+<li><a href="#orgf740b4b">6.1.3. Density of Adjacency Matrix</a></li>
+<li><a href="#org1109c32">6.1.4. Trace of Transition Probability Matrix</a></li>
+<li><a href="#orgea24a54">6.1.5. Conclusion</a></li>
 </ul>
 </li>
-<li><a href="#orgbdb089d">6.2. Model the log transformed data using a linear regression or log(-x) regression</a>
+<li><a href="#org84fd02e">6.2. Model the log transformed data using a linear regression or log(-x) regression</a>
 <ul>
-<li><a href="#org814d8ef">6.2.1. Change the colour of each model by using pivot<sub>longer</sub></a></li>
+<li><a href="#org1e323dc">6.2.1. Change the colour of each model by using pivot<sub>longer</sub></a></li>
 </ul>
 </li>
-<li><a href="#orgce3edd4">6.3. Import wikipedia data</a></li>
-<li><a href="#orgad7cc42">6.4. Look at the Trace of the Matrix as a comparison point</a></li>
-<li><a href="#org7e89e82">6.5. Use BA Graphs</a></li>
+<li><a href="#org3381b85">6.3. Import wikipedia data</a></li>
+<li><a href="#org852687d">6.4. Look at the Trace of the Matrix as a comparison point</a></li>
+<li><a href="#orgc55a33f">6.5. Use BA Graphs</a></li>
 </ul>
 </li>
-<li><a href="#org99bb337">7. Simulating the Structure of the Web</a></li>
+<li><a href="#barabassi-albert">7. Barabasi Albert Graphs</a></li>
 <li><a href="#relate-to-random-surfer">8. Relating the Power Walk to the Random Surfer</a>
 <ul>
-<li><a href="#org68b90a0">8.1. Introduction</a></li>
+<li><a href="#org6a127ec">8.1. Introduction</a></li>
 <li><a href="#value-of-1st-term">8.2. Value of [1st Term]</a></li>
 <li><a href="#value-of-2nd-term">8.3. Value of {2nd Term}</a></li>
-<li><a href="#org255895d">8.4. Equate the Power Walk to the Random Surfer</a></li>
-<li><a href="#org46382c7">8.5. Conclusion</a></li>
-<li><a href="#org834a268">8.6. The Second Eigenvalue</a>
+<li><a href="#org4bbb075">8.4. Equate the Power Walk to the Random Surfer</a></li>
+<li><a href="#org29c3100">8.5. Conclusion</a></li>
+<li><a href="#org944d9a6">8.6. The Second Eigenvalue</a>
 <ul>
-<li><a href="#org0788f9f">8.6.1. The Random Surfer</a></li>
-<li><a href="#org4bdc1a7">8.6.2. Power Walk</a>
+<li><a href="#org7400555">8.6.1. The Random Surfer</a></li>
+<li><a href="#org32b31a0">8.6.2. Power Walk</a>
 <ul>
-<li><a href="#org681a2f2">8.6.2.1. Applying this to Power Walk</a>
+<li><a href="#org2e3e9f6">8.6.2.1. Applying this to Power Walk</a>
 <ul>
-<li><a href="#org613b471">8.6.2.1.1. My attempt</a></li>
+<li><a href="#orgf8369ce">8.6.2.1.1. My attempt</a></li>
 </ul>
 </li>
 </ul>
@@ -396,51 +415,35 @@ org_html_manager.setup();  // activate after the parameters are set
 </li>
 </ul>
 </li>
-<li><a href="#org40a1647">9. Appendix</a>
+<li><a href="#orge515952">9. Appendix</a>
 <ul>
-<li><a href="#orgaf3db3e">9.1. Graph Diagrams</a></li>
+<li><a href="#orgfe36992">9.1. Graph Diagrams</a></li>
 <li><a href="#definitions">9.2. Definitions</a>
 <ul>
 <li><a href="#notation">9.2.1. Notation</a></li>
 </ul>
 </li>
-<li><a href="#orgd674af0">9.3. Random Surfer Model</a>
-<ul>
-<li><a href="#issues">9.3.1. Issues</a></li>
-<li><a href="#markov">9.3.2. Markov Chains</a>
-<ul>
-<li><a href="#stochastic">9.3.2.1. Stochastic</a></li>
-<li><a href="#org2bc1ec9">9.3.2.2. Irreducible</a></li>
-<li><a href="#org8d20545">9.3.2.3. Aperiodic</a></li>
-<li><a href="#fix">9.3.2.4. The Fix</a></li>
 </ul>
 </li>
-<li><a href="#org61d6953">9.3.3. Limitations</a></li>
-</ul>
-</li>
-<li><a href="#pwalk">9.4. Power walk</a></li>
-</ul>
-</li>
-<li><a href="#org0a3843c">10. my to do list</a>
+<li><a href="#org31dedc7">10. my to do list</a>
 <ul>
-<li><a href="#org64fb035">10.1. Look at the Trace of the Matrix as a comparison point</a></li>
-<li><a href="#orgc05d486">10.2. Use BA Graphs</a></li>
-<li><a href="#orgb8c4306">10.3. TODO Diamater</a></li>
-<li><a href="#orgff95a68">10.4. Improving the Performance of Page Rank</a></li>
+<li><a href="#org08d8b86">10.1. Look at the Trace of the Matrix as a comparison point</a></li>
+<li><a href="#org222a573">10.2. Use BA Graphs</a></li>
+<li><a href="#orgb443b0e">10.3. TODO Diamater</a></li>
+<li><a href="#org26b2851">10.4. Improving the Performance of Page Rank</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
-<p>
 
-</p>
-<div id="outline-container-orge19ba3a" class="outline-2">
-<h2 id="orge19ba3a"><span class="section-number-2">1</span> Introduction</h2>
+
+<div id="outline-container-orgfb37531" class="outline-2">
+<h2 id="orgfb37531"><span class="section-number-2">1</span> Introduction</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Any collection of interconnected information can form a network structure,
-consider for example citations, webpages, wikis, encyclopedias and interpersonal
+consider for example citations, webpages, wikis, power grids, wiring diagrams, encyclopedias and interpersonal
 relationships. The analysis of these networks can be used to draw insights about
 the behaviour of such networks.
 </p>
@@ -456,8 +459,8 @@ is geometrically very central.
 </p>
 </div>
 
-<div id="outline-container-org9aa60e9" class="outline-3">
-<h3 id="org9aa60e9"><span class="section-number-3">1.1</span> The PageRank Method</h3>
+<div id="outline-container-org6f298b2" class="outline-3">
+<h3 id="org6f298b2"><span class="section-number-3">1.1</span> The PageRank Method</h3>
 <div class="outline-text-3" id="text-1-1">
 <p>
 There are multiple ways to measure network centrality but this report is concerned with the <i>PageRank</i> method, this method asserts that the centrality of a vertex can be
@@ -486,13 +489,13 @@ and so the <i>PageRank</i> method involves:
 </div>
 </div>
 
-<div id="outline-container-orgaa4bb52" class="outline-3">
-<h3 id="orgaa4bb52"><span class="section-number-3">1.2</span> Power Walk and the Random Surfer</h3>
+<div id="outline-container-orgd66f12e" class="outline-3">
+<h3 id="orgd66f12e"><span class="section-number-3">1.2</span> Power Walk and the Random Surfer</h3>
 <div class="outline-text-3" id="text-1-2">
 <p>
 The typical method to adjust the transition probability matrix is the <i>Random
 Surfer</i>, introduced by Page and Brin in 1998
- (<a href="#citeproc_bib_item_18">Page and Brin, n.d.</a>) as a distinguishing feature of
+ (<a href="#citeproc_bib_item_19">Page and Brin, n.d.</a>) as a distinguishing feature of
 the <i>Google</i> search engine, this aproach essentially introduces some probability
 of teleporting to other nodes during a random walk, this is illustrated in
 figure <a href="#fig:rseg">fig:rseg</a>.
@@ -506,7 +509,7 @@ advertisements or negative reviews). In the past attributing weights to links wa
 </p>
 
 <p>
-The <i>Power Walk</i> approach, introduced by Park and Simoff in 2013 (<a href="#citeproc_bib_item_19">Park and Simoff, n.d.</a>) is an alternative way to create a transition
+The <i>Power Walk</i> approach, introduced by Park and Simoff in 2013 (<a href="#citeproc_bib_item_20">Park and Simoff, n.d.</a>) is an alternative way to create a transition
 probability matrix that is defined for real weighted edges and could be used with sentiment analysis to more effectively measure network centrality.
 </p>
 
@@ -516,15 +519,15 @@ These individual appraches are discussed in more detail at <a href="#PageRank-Ge
 </div>
 </div>
 
-<div id="outline-container-org34a8a53" class="outline-3">
-<h3 id="org34a8a53"><span class="section-number-3">1.3</span> Stability and Convergence</h3>
+<div id="outline-container-org2c61d38" class="outline-3">
+<h3 id="org2c61d38"><span class="section-number-3">1.3</span> Stability and Convergence</h3>
 <div class="outline-text-3" id="text-1-3">
 <p>
 The rate at which the algorithm for <i>PageRank</i> converges to a solution and the stability of that solution can both be measured by the second eigenvalue of the corresponding transition probability matrix (The details of this are discussed at <a href="#second-eigenvalue">second-eigenvalue</a>).
 </p>
 
 <p>
-It is not clear how the second eigenvalue is related to the method parameters of the <i>Power Walk</i> algorithm (\textsection <a href="#citeproc_bib_item_19">Park and Simoff, n.d., 3.4</a>) and this report aims to:
+It is not clear how the second eigenvalue is related to the method parameters of the <i>Power Walk</i> algorithm (\textsection <a href="#citeproc_bib_item_20">Park and Simoff, n.d., 3.4</a>) and this report aims to:
 </p>
 
 <ol class="org-ol">
@@ -539,10 +542,13 @@ transition probability matrix and the second eigenvalue</li>
 </div>
 </div>
 </div>
-
 <div id="outline-container-PageRank-Generally" class="outline-2">
-<h2 id="PageRank-Generally"><span class="section-number-2">2</span> Implementing PageRank Generally</h2>
+<h2 id="PageRank-Generally"><span class="section-number-2">2</span> Mathematics of Page Rank</h2>
 <div class="outline-text-2" id="text-PageRank-Generally">
+</div>
+<div id="outline-container-orgcaa566e" class="outline-3">
+<h3 id="orgcaa566e"><span class="section-number-3">2.1</span> The Stationary Distribution of a Probability Transition Matrix</h3>
+<div class="outline-text-3" id="text-2-1">
 <p>
 A graph can be expressed as an adjacency matrix \(\mathbf{A}\):
 </p>
@@ -592,7 +598,7 @@ multiplication:
 <p>
 This relationship is a linear recurrence relation, more importantly
 however it is a <i>Markov Chain</i>
-(\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 4.4</a>).
+(\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 4.4</a>).
 </p>
 
 <p>
@@ -603,15 +609,233 @@ centrality of vertices.
 </div>
 </div>
 
+<div id="outline-container-org921f4c7" class="outline-3">
+<h3 id="org921f4c7"><span class="section-number-3">2.2</span> Random Surfer Model</h3>
+<div class="outline-text-3" id="text-2-2">
+</div>
+<div id="outline-container-issues" class="outline-4">
+<h4 id="issues"><span class="section-number-4">2.2.1</span> Problems with the Stationary Distribution</h4>
+<div class="outline-text-4" id="text-issues">
+<p>
+The approach in <a href="#PageRank-Generally">2</a> has the following issues
+</p>
+
+<ol class="org-ol">
+<li>Convergence of \eqref{eq:recurrence}
+<ol class="org-ol">
+<li>Will this relationship converge or diverge?</li>
+<li>How quickly will it converge?</li>
+<li>Will it converge uniquely?</li>
+</ol></li>
+<li>Reducible graphs
+<ol class="org-ol">
+<li>If it is not possible to perform a random walk across an entire graph for all initial conditions, this approach doesn&rsquo;t have a clear analogue.</li>
+</ol></li>
+<li>Cycles
+<ol class="org-ol">
+<li>A graph that is cyclical may not converge uniquely
+<ol class="org-ol">
+<li>Consider for example the graph \(A\rightarrow B\).</li>
+</ol></li>
+</ol></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-markov" class="outline-4">
+<h4 id="markov"><span class="section-number-4">2.2.2</span> Markov Chains</h4>
+<div class="outline-text-4" id="text-markov">
+<p>
+The relationship in \eqref{eq:recurrence} is a <i>Markov Chain</i>  and it is known
+that the power method will converge: <sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup>
+</p>
+
+<ul class="org-ul">
+<li>for a stochastic irreducible markov chain (\textsection <a href="#citeproc_bib_item_9">Fouss, Saerens, and Shimbo, n.d., 1.5.5</a>),</li>
+<li>regardless of the initial condition of the process for an <i>aperiodic</i> Markov chain (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 4.4</a>)</li>
+</ul>
+</div>
+
+<div id="outline-container-stochastic" class="outline-5">
+<h5 id="stochastic"><span class="section-number-5">2.2.2.1</span> Stochastic</h5>
+<div class="outline-text-5" id="text-stochastic">
+<p>
+If a vertex had a 0 outdegree the corresponding column sum for the adjacency
+matrix describing that graph would also be zero and the matrix non-stochastic,
+this could occur in the context of a random walk where a link to a page with no
+outgoing links was followed (e.g. an image), this would be the end of the
+walk.
+</p>
+
+<p>
+So to ensure that \eqref{eq:recurrence} will converge, the probability transition
+matrix must be made stochastic, to acheive this a uniform probability of teleporing from a dead end to any other vertex can be introduced:
+</p>
+
+\begin{align}
+\mathrm{S} = \mathrm{T}+ \frac{\vec{a} \cdot \vec{1}^{\mathrm{T}} }{n} \label{eq:nearly-random-surfer}
+\end{align}
+
+<p>
+This however would not be sufficient to ensure that \eqref{eq:recurrence} would converge, in addition the transition probability matrix must be made irreducible and aperiodic (i.e. primitive). (<a href="#citeproc_bib_item_15">Langville and Meyer, n.d.</a>)
+</p>
+
+
+<div id="org3a6498f" class="figure">
+<p><img src="media/dot/stochastic_graph_example.dot.png" alt="stochastic_graph_example.dot.png" width="400px" />
+</p>
+<p><span class="figure-number">Figure 1: </span>\(D\) is a <i>dangling node</i>, a dead end during a random walk, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other vertex as per \eqref{eq:nearly-random-surfer} (denoted in red) will cause \(\mathbf{T}\) to be stochastic.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org4519fa9" class="outline-5">
+<h5 id="org4519fa9"><span class="section-number-5">2.2.2.2</span> Irreducible</h5>
+<div class="outline-text-5" id="text-2-2-2-2">
+<p>
+A graph that allows travel from any given vertex to any other vertex is said to be irreducible (<a href="#citeproc_bib_item_15">Langville and Meyer, n.d.</a>), see for example figure <a href="#org12759dc">2</a>, this is important in the context of a random walk because only in an irreducible graph can all vertexes be reached from any initial condition.
+</p>
+
+
+<div id="org12759dc" class="figure">
+<p><img src="media/dot/reducible_graph_example.dot.png" alt="reducible_graph_example.dot.png" width="400px" />
+</p>
+<p><span class="figure-number">Figure 2: </span>Example of a reducible graph, observe that although \(C\) is not a dead end as discussed in <a href="#stochastic">2.2.2.1</a>, there is no way to travel from \(C\) to \(A\), by adding an edge such an edge in the resulting graph is irreducible. The resulting graph is also aperiodic (due to the loop on \(B\)) and stochastic, so there will be a stationary distribution corresponding to \eqref{eq:recurrence}.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgc91d98e" class="outline-5">
+<h5 id="orgc91d98e"><span class="section-number-5">2.2.2.3</span> Aperiodic</h5>
+<div class="outline-text-5" id="text-2-2-2-3">
+<p>
+An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right) \) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \mathbf{A} is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes <sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup>
+</p>
+
+
+
+<div id="orgb55eff0" class="figure">
+<p><img src="media/dot/aperiodic.dot.png" alt="aperiodic.dot.png" width="400px" />
+</p>
+<p><span class="figure-number">Figure 3: </span>A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic, this does not represent the random surfer model, which would in theory connect every vertex but with some probability.</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-fix" class="outline-5">
+<h5 id="fix"><span class="section-number-5">2.2.2.4</span> The Fix</h5>
+<div class="outline-text-5" id="text-fix">
+<p>
+To ensure that the transition probability matrix is primitive (i.e. irreducible and aperiodic) as well as stochastic, instead of introducing the possible to teleport out of dead ends, introduce a probability of teleporting to any node at any time (\(\alpha \)), this approach is known as the <i>Random Surfer</i> model and the transition probability matrix is given by (<a href="#citeproc_bib_item_19">Page and Brin, n.d.</a>) :
+</p>
+
+\begin{align}
+\mathbf{S} = \alpha \mathbf{T} + \frac{(1- \alpha)}{n} \mathbf{J} \label{eq:random-surfer}
+\end{align}
+
+<p>
+This matrix is primitive and stochastic and so will converge (it is also unfourtunately completely dense, see <a href="#solving-stationary-dist">3.1</a> (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 4.5</a>).
+</p>
+
+<p>
+The relation ship in \eqref{eq:recurrence} can now be re expressed as:
+</p>
+
+\begin{align}
+\vec{p_{i+1}} \rightarrow \mathbf{T} \vec{p}_{i} \label{eq:random-surfer-recurrence}
+\end{align}
+
+
+
+
+<div id="org495e55d" class="figure">
+<p><img src="media/dot/random_surfer.dot.png" alt="random_surfer.dot.png" width="400px" />
+</p>
+<p><span class="figure-number">Figure 4: </span>A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue <i>teleportation</i> edges are introduced, these may be followed with a probability of \(1 - \alpha \)</p>
+</div>
+</div>
+</div>
+</div>
+<div id="outline-container-orgba396a7" class="outline-4">
+<h4 id="orgba396a7"><span class="section-number-4">2.2.3</span> Limitations</h4>
+<div class="outline-text-4" id="text-2-2-3">
+<p>
+The <i>Random Surfer</i> Model can only consider positively weighted edges, it cannot
+take into account negatively weighted edges. This limitation is increasingly
+important as techniques of sentiment analysis are developed which could indicate
+that links promote aversion rather than endorsement (e.g. a negative review or
+an innapropriate advertisement).
+</p>
+</div>
+</div>
+</div>
+<div id="outline-container-pwalk" class="outline-3">
+<h3 id="pwalk"><span class="section-number-3">2.3</span> Power walk</h3>
+<div class="outline-text-3" id="text-pwalk">
+<p>
+The <i>Power Walk</i> method is an alternative approach to develop a probability
+transition matrix to use in place of \eqref{eq:recurrence}.
+</p>
+
+<p>
+Let the probability of travelling to a non-adjacent vertex be some value \(x\)
+and \(\beta\) be the ratio of probability between following an edge or
+teleporting to another vertex.
+</p>
+
+<p>
+This transition probability matrix would be such that the probability of
+travelling some vertex \(j \rightarrow i\) would be :
+</p>
+
+\begin{align}
+\mathbf{W}_{i, j} = x\beta^{\mathbf{A_{i,j}}} \label{eq:prob-power-walk}
+\end{align}
+
+<p>
+Where \(\mathbf{W}\) denotes the power walk probability transition matrix.
+</p>
+
+<p>
+Whe probability of travelling to any given vertex must be 1 and so:
+</p>
+
+
+\begin{align}
+      1 &= \sum^{n}_{j= 1}   \left[ x \beta^{\mathbf{A_{i,j}}} \right] \\
+       \implies  x&= \left( \sum^{n}_{j= 1}   \beta^{\mathbf{A_{i,j}}}
+       \right)^{-1} \label{eq:powerwalk-x-val}
+\end{align}
+
+<p>
+Substituting the value of \(x\) from \eqref{eq:powerwalk-x-val} into \eqref{prob-power-walk} gives the probability as:
+</p>
+
+\begin{align}
+      \mathbf{W}_{i,j} &= \frac{\beta^{\mathbf{A}__i,j}}{\sum^{n}_{i=j}
+      \left[ \beta^{\mathbf{A}_{i,j}} \right] }
+\end{align}
+
+<p>
+In this model all vertices are interconnected by some probability of jumping to
+another vertex, so much like the random surfer model \eqref{eq:random-surfer} discussed
+at <a href="#fix">2.2.2.4</a> \(\mathbf{W}\) will be a primitive stochastic matrix and so if
+\(\mathbf{W}\) was used in place of \(\mathbf{T}\) in \eqref{eq:recurrence} a solution
+would exist.
+</p>
+</div>
+</div>
+</div>
+
 <div id="outline-container-sparse-matrix" class="outline-2">
 <h2 id="sparse-matrix"><span class="section-number-2">3</span> Sparse Matrices</h2>
 <div class="outline-text-2" id="text-sparse-matrix">
 <p>
 Most Adjacency matrices resulting from webpages and analagous networks
-result in sparse adjacency matrices (see figure <a href="#orge0bef3c">8</a>),
+result in sparse adjacency matrices (see figure <a href="#orgd93841d">14</a>),
 this is a good thing because it requires far less computational
 resources to work with a sparse matrix than a dense matrix
- (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 4.2</a>) .
+ (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 4.2</a>) .
 </p>
 
 <p>
@@ -648,9 +872,9 @@ This is implemented in <b><i>R</i></b> with the <code>Matrix</code> package
 <h3 id="solving-stationary-dist"><span class="section-number-3">3.1</span> Solving the Stationary Distribution</h3>
 <div class="outline-text-3" id="text-solving-stationary-dist">
 <p>
-The relationship in \eqref{eq:recurrence} <sup><a id="fnr.3" class="footref" href="#fn.3">3</a></sup> is equivelant to the eigenvalue value problem, where
+The relationship in \eqref{eq:recurrence} <sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup> is equivelant to the eigenvalue value problem, where
 \(\vec{p} = \lim_{i \rightarrow \infty} \left( \vec{p_{i}}\right)\) is the
-eigenvector <sup><a id="fnr.4" class="footref" href="#fn.4">4</a></sup> \( \vec{x} \) that corresponds to the
+eigenvector <sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup> \( \vec{x} \) that corresponds to the
 eigenvalue \(\xi=1\):
 </p>
 
@@ -665,15 +889,15 @@ this approach isn&rsquo;t suitable for analysing large networks.
 
 <p>
 Upon iteration \eqref{eq:recurrence} will converge to stable stationary point, as discussed
-in <a href="#fix">9.3.2.4</a>, this approach is known as the power method
-(<a href="#citeproc_bib_item_15">Larson and Edwards, n.d.</a>) and is what in practice must be
+in <a href="#fix">2.2.2.4</a>, this approach is known as the power method
+(<a href="#citeproc_bib_item_16">Larson and Edwards, n.d.</a>) and is what in practice must be
 implemented to solve the stationary distribution of
 \eqref{eq:random-surfer-recurrence} and \eqref{eq:recurrence}.
 </p>
 
 
 <p>
-As mentioned in <a href="#fix">9.3.2.4</a> and <a href="#pwalk">9.4</a>, the <i>Random Surfer</i> and <i>Power Walk</i>
+As mentioned in <a href="#fix">2.2.2.4</a> and <a href="#pwalk">2.3</a>, the <i>Random Surfer</i> and <i>Power Walk</i>
 transtition probability matrices are completely dense, that means applying the
 power method will not be able to take advantage of using sparse matrix
 algorithms.
@@ -690,12 +914,12 @@ With some effort however it is possible to express the algorithms in such a way 
 <h2 id="implement_models"><span class="section-number-2">4</span> Implementing the Models</h2>
 <div class="outline-text-2" id="text-implement_models">
 <p>
-To Implement the models, first they&rsquo;ll be implemented using an ordinary matrix and then improved to work with sparse matrices and algorithms, the implementation has been performed with <i><b>R</b></i> and the preamble is provided in listings <a href="#org0baec63">1</a>
+To Implement the models, first they&rsquo;ll be implemented using an ordinary matrix and then improved to work with sparse matrices and algorithms, the implementation has been performed with <i><b>R</b></i> and the preamble is provided in listings <a href="#org42f0d1a">1</a>
 </p>
 
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 1: </span>Implemented Packages used in this report</label><pre class="src src-R" id="org0baec63">  <span style="color: #0000FF;">if</span> (<span style="color: #D0372D;">require</span>(<span style="color: #008000;">"pacman"</span>)) {
+<label class="org-src-name"><span class="listing-number">Listing 1: </span>Implemented Packages used in this report</label><pre class="src src-R" id="org42f0d1a">  <span style="color: #0000FF;">if</span> (<span style="color: #D0372D;">require</span>(<span style="color: #008000;">"pacman"</span>)) {
       <span style="color: #D0372D;">library</span>(pacman)
     }<span style="color: #0000FF;">else</span>{
       install.packages(<span style="color: #008000;">"pacman"</span>)
@@ -711,24 +935,16 @@ To Implement the models, first they&rsquo;ll be implemented using an ordinary ma
 </pre>
 </div>
 
-<div id="outline-container-org3902466" class="outline-3">
-<h3 id="org3902466"><span class="section-number-3">4.1</span> Implementing the Random Surfer</h3>
-<div class="outline-text-3" id="text-4-1">
-</div>
-<div id="outline-container-implementing-page-rank-methods" class="outline-4">
-<h4 id="implementing-page-rank-methods"><span class="section-number-4">4.1.1</span> Small Graph, Ordinary Matrices</h4>
-<div class="outline-text-4" id="text-implementing-page-rank-methods">
-</div>
-<div id="outline-container-example-graph" class="outline-5">
-<h5 id="example-graph"><span class="section-number-5">4.1.1.1</span> Example Graph</h5>
-<div class="outline-text-5" id="text-example-graph">
+<div id="outline-container-example-graph" class="outline-4">
+<h4 id="example-graph"><span class="section-number-4">4.0.1</span> Example Graph</h4>
+<div class="outline-text-4" id="text-example-graph">
 <p>
 Consider the following graph:
 </p>
 
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 2: </span>Produce exemplar graph in figure <a href="#example-rs-graph">example-rs-graph</a></label><pre class="src src-R" id="org2ed96e1">g1 <span style="color: #D0372D;">&lt;-</span> igraph::graph.formula(
+<label class="org-src-name"><span class="listing-number">Listing 2: </span>Produce exemplar graph in figure <a href="#example-rs-graph">example-rs-graph</a></label><pre class="src src-R" id="org216ff9c">g1 <span style="color: #D0372D;">&lt;-</span> igraph::graph.formula(
                 <span style="color: #D0372D;">1</span>++<span style="color: #D0372D;">2</span>, <span style="color: #D0372D;">1</span>+-<span style="color: #D0372D;">8</span>, <span style="color: #D0372D;">1</span>+-<span style="color: #D0372D;">5</span>,
                 <span style="color: #D0372D;">2</span>+-<span style="color: #D0372D;">5</span>, <span style="color: #D0372D;">2</span>+-<span style="color: #D0372D;">7</span>, <span style="color: #D0372D;">2</span>+-<span style="color: #D0372D;">8</span>, <span style="color: #D0372D;">2</span>+-<span style="color: #D0372D;">6</span>, <span style="color: #D0372D;">2</span>+-<span style="color: #D0372D;">9</span>,
                 <span style="color: #D0372D;">3</span>++<span style="color: #D0372D;">4</span>, <span style="color: #D0372D;">3</span>+-<span style="color: #D0372D;">5</span>, <span style="color: #D0372D;">3</span>+-<span style="color: #D0372D;">6</span>, <span style="color: #D0372D;">3</span>+-<span style="color: #D0372D;">9</span>, <span style="color: #D0372D;">3</span>+-<span style="color: #D0372D;">10</span>,
@@ -739,23 +955,37 @@ plot(g1)
 </div>
 
 
-<div id="orge89a3f9" class="figure">
+<div class="figure">
+<p><img src="media/example-graph-power-walk.png" alt="example-graph-power-walk.png" />
+</p>
+</div>
+
+
+<div id="org67a956f" class="figure">
 <p><img src="media/example-graph-power-walk.png" alt="example-graph-power-walk.png" width="400px" />
 </p>
-<p><span class="figure-number">Figure 1: </span>Exemplar graph for <i>PageRank</i> examples, produced in listing <a href="#ex-fig-r">ex-fig-r</a></p>
+<p><span class="figure-number">Figure 6: </span>Exemplar graph for <i>PageRank</i> examples, produced in listing <a href="#ex-fig-r">ex-fig-r</a></p>
+</div>
 </div>
 </div>
 
-
-<div id="outline-container-adjacency-matrix" class="outline-6">
-<h6 id="adjacency-matrix"><span class="section-number-6">4.1.1.1.1</span> Adjacency Matrix</h6>
-<div class="outline-text-6" id="text-adjacency-matrix">
+<div id="outline-container-org56f73f2" class="outline-3">
+<h3 id="org56f73f2"><span class="section-number-3">4.1</span> Implementing the Random Surfer</h3>
+<div class="outline-text-3" id="text-4-1">
+</div>
+<div id="outline-container-implementing-page-rank-methods" class="outline-4">
+<h4 id="implementing-page-rank-methods"><span class="section-number-4">4.1.1</span> Ordinary Matrices</h4>
+<div class="outline-text-4" id="text-implementing-page-rank-methods">
+</div>
+<div id="outline-container-adjacency-matrix" class="outline-5">
+<h5 id="adjacency-matrix"><span class="section-number-5">4.1.1.1</span> Adjacency Matrix</h5>
+<div class="outline-text-5" id="text-adjacency-matrix">
 <p>
 The adjacency Matrix is given by:
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 3: </span>Return the Adjacency Matrix corresponding to figure <a href="#orge89a3f9">1</a></label><pre class="src src-R" id="org5353b3a">  A <span style="color: #D0372D;">&lt;-</span> igraph::get.adjacency(g1, names = <span style="color: #6434A3;">TRUE</span>, sparse = <span style="color: #6434A3;">FALSE</span>)
+<label class="org-src-name"><span class="listing-number">Listing 3: </span>Return the Adjacency Matrix corresponding to figure <a href="#org67a956f">6</a></label><pre class="src src-R" id="org3eeaeeb">  A <span style="color: #D0372D;">&lt;-</span> igraph::get.adjacency(g1, names = <span style="color: #6434A3;">TRUE</span>, sparse = <span style="color: #6434A3;">FALSE</span>)
 
   <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">igraph gives back the transpose</span>
   (A <span style="color: #D0372D;">&lt;-</span> t(A))
@@ -792,9 +1022,9 @@ The adjacency Matrix is given by:
 </div>
 </div>
 
-<div id="outline-container-probability-transition-matrix" class="outline-6">
-<h6 id="probability-transition-matrix"><span class="section-number-6">4.1.1.1.2</span> Probability Transition Matrix</h6>
-<div class="outline-text-6" id="text-probability-transition-matrix">
+<div id="outline-container-probability-transition-matrix" class="outline-5">
+<h5 id="probability-transition-matrix"><span class="section-number-5">4.1.1.2</span> Probability Transition Matrix</h5>
+<div class="outline-text-5" id="text-probability-transition-matrix">
 <p>
 The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
@@ -807,11 +1037,11 @@ need to be left while all other columns be divided by the column sum to get
 \(\mathbf{T}\). An alternative approach using sparse matrices will be presented
 below and in this case there exists corresponding \(\mathbf{T}\) that is
 stochastic and so it is sufficient to use the relationship at
-\eqref{eq:basic-trans-def}, this is shown in listing <a href="#orgebae9ce">4</a>.
+\eqref{eq:basic-trans-def}, this is shown in listing <a href="#org36bbd8a">4</a>.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 4: </span>Solve the Transition Probability Matrix by scaling each column to 1 using matrix multiplication.</label><pre class="src src-R" id="orgebae9ce">(T <span style="color: #D0372D;">&lt;-</span> A <span style="color: #D0372D;">%*%</span> diag(<span style="color: #D0372D;">1</span>/colSums(A)))
+<label class="org-src-name"><span class="listing-number">Listing 4: </span>Solve the Transition Probability Matrix by scaling each column to 1 using matrix multiplication.</label><pre class="src src-R" id="org36bbd8a">(T <span style="color: #D0372D;">&lt;-</span> A <span style="color: #D0372D;">%*%</span> diag(<span style="color: #D0372D;">1</span>/colSums(A)))
 
 </pre>
 </div>
@@ -832,9 +1062,9 @@ stochastic and so it is sufficient to use the relationship at
 </div>
 
 
-<div id="outline-container-create-a-function" class="outline-7">
-<h7 id="create-a-function"><span class="section-number-7">4.1.1.1.2.1</span> Create a Function</h7>
-<div class="outline-text-7" id="text-create-a-function">
+<div id="outline-container-create-a-function" class="outline-6">
+<h6 id="create-a-function"><span class="section-number-6">4.1.1.2.1</span> Create a Function</h6>
+<div class="outline-text-6" id="text-create-a-function">
 <div class="org-src-container">
 <pre class="src src-R">   <span style="color: #006699;">adj_to_probTrans</span> <span style="color: #D0372D;">&lt;-</span> <span style="color: #0000FF;">function</span>(A) {
      A <span style="color: #D0372D;">%*%</span> diag(<span style="color: #D0372D;">1</span>/colSums(A))
@@ -874,13 +1104,12 @@ stochastic and so it is sufficient to use the relationship at
 </div>
 </div>
 </div>
-</div>
 
 <div id="outline-container-page-rank-random-surfer" class="outline-5">
-<h5 id="page-rank-random-surfer"><span class="section-number-5">4.1.1.2</span> Page Rank Random Surfer</h5>
+<h5 id="page-rank-random-surfer"><span class="section-number-5">4.1.1.3</span> Page Rank Random Surfer</h5>
 <div class="outline-text-5" id="text-page-rank-random-surfer">
 <p>
-Recall from <a href="#fix">9.3.2.4</a> the following variables of the <i>Random Surfer</i> model:
+Recall from <a href="#fix">2.2.2.4</a> the following variables of the <i>Random Surfer</i> model:
 </p>
 
 
@@ -899,11 +1128,11 @@ Recall from <a href="#fix">9.3.2.4</a> the following variables of the <i>Random 
 
 <p>
 These are
-assigned to <i><b>R</b></i> variables in listing <a href="#org2a62a55">5</a>.
+assigned to <i><b>R</b></i> variables in listing <a href="#org3884378">5</a>.
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 5: </span>Assign Random Surfer Variables, observe the unique value given to <code>l</code>, this will be relevant later.</label><pre class="src src-R" id="org2a62a55">  B <span style="color: #D0372D;">&lt;-</span> matrix(rep(<span style="color: #D0372D;">1</span>/nrow(T), length.out = nrow(T)**<span style="color: #D0372D;">2</span>), nrow = nrow(T))
+<label class="org-src-name"><span class="listing-number">Listing 5: </span>Assign Random Surfer Variables, observe the unique value given to <code>l</code>, this will be relevant later.</label><pre class="src src-R" id="org3884378">  B <span style="color: #D0372D;">&lt;-</span> matrix(rep(<span style="color: #D0372D;">1</span>/nrow(T), length.out = nrow(T)**<span style="color: #D0372D;">2</span>), nrow = nrow(T))
   l <span style="color: #D0372D;">&lt;-</span> <span style="color: #D0372D;">0.8123456789</span>
 
   (S <span style="color: #D0372D;">&lt;-</span> l*T+(<span style="color: #D0372D;">1</span>-l)*B) <span style="color: #D0372D;">%&gt;%</span> round(<span style="color: #D0372D;">2</span>)
@@ -927,15 +1156,15 @@ assigned to <i><b>R</b></i> variables in listing <a href="#org2a62a55">5</a>.
 </pre>
 </div>
 <div id="outline-container-eigen-value-method" class="outline-6">
-<h6 id="eigen-value-method"><span class="section-number-6">4.1.1.2.1</span> Eigen Value Method</h6>
+<h6 id="eigen-value-method"><span class="section-number-6">4.1.1.3.1</span> Eigen Value Method</h6>
 <div class="outline-text-6" id="text-eigen-value-method">
 <p>
 The eigenvector corresponding to the the eigenvalue of 1 will be the
-stationary point, this is shown in listing <a href="#org2fd6d21">6</a>
+stationary point, this is shown in listing <a href="#orge7d3d56">6</a>
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 6: </span>Solve the Eigen vectors and Eigen values of the transition probability matrix corresponding to the graph.</label><pre class="src src-R" id="org2fd6d21">print(eigen(S, symmetric = <span style="color: #6434A3;">FALSE</span>, only.values = <span style="color: #6434A3;">TRUE</span>)$values, <span style="color: #D0372D;">9</span>)
+<label class="org-src-name"><span class="listing-number">Listing 6: </span>Solve the Eigen vectors and Eigen values of the transition probability matrix corresponding to the graph.</label><pre class="src src-R" id="orge7d3d56">print(eigen(S, symmetric = <span style="color: #6434A3;">FALSE</span>, only.values = <span style="color: #6434A3;">TRUE</span>)$values, <span style="color: #D0372D;">9</span>)
 print(eigen(S, symmetric = <span style="color: #6434A3;">FALSE</span>)$vectors, <span style="color: #D0372D;">3</span>)
 </pre>
 </div>
@@ -1036,7 +1265,7 @@ However this vector does not sum to 1 so the scale should be adjusted
 </div>
 
 <div id="outline-container-power-value-method" class="outline-6">
-<h6 id="power-value-method"><span class="section-number-6">4.1.1.2.2</span> Power Value Method</h6>
+<h6 id="power-value-method"><span class="section-number-6">4.1.1.3.2</span> Power Value Method</h6>
 <div class="outline-text-6" id="text-power-value-method">
 <p>
 Using the power method should give the same result as the eigenvalue method, again but for scale:
@@ -1077,7 +1306,7 @@ same value will be returned:
 </div>
 
 <div id="outline-container-scaling" class="outline-6">
-<h6 id="scaling"><span class="section-number-6">4.1.1.2.3</span> Scaling</h6>
+<h6 id="scaling"><span class="section-number-6">4.1.1.3.3</span> Scaling</h6>
 <div class="outline-text-6" id="text-scaling">
 <p>
 If the initial state sums to 1, then the scale of the stationary
@@ -1110,30 +1339,17 @@ vector will also sum to 1, so this isn&rsquo;t in practice an issue for the powe
 4  0.21246737 0.21246737
 10 0.01876543 0.01876543
 </pre>
+</div>
+</div>
+</div>
+</div>
 
-<pre class="example">
-  ##         [,1]      [,2]
-  ## 1  0.2129185 0.2129185
-  ## 2  0.2313481 0.2313481
-  ## 3  0.2156444 0.2156444
-  ## 4  0.2104889 0.2104889
-  ## 5  0.0232000 0.0232000
-  ## 6  0.0232000 0.0232000
-  ## 7  0.0232000 0.0232000
-  ## 8  0.0200000 0.0200000
-  ## 9  0.0200000 0.0200000
-  ## 10 0.0200000 0.0200000
-</pre>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-org392b2cd" class="outline-4">
-<h4 id="org392b2cd"><span class="section-number-4">4.1.2</span> Large Graph, Sparse Matrices using CRS</h4>
+<div id="outline-container-org0c97d57" class="outline-4">
+<h4 id="org0c97d57"><span class="section-number-4">4.1.2</span> Sparse Matrices</h4>
 <div class="outline-text-4" id="text-4-1-2">
 </div>
-<div id="outline-container-orgfd7830d" class="outline-5">
-<h5 id="orgfd7830d"><span class="section-number-5">4.1.2.1</span> Creating the Probability Transition Matrix</h5>
+<div id="outline-container-org18a0a8d" class="outline-5">
+<h5 id="org18a0a8d"><span class="section-number-5">4.1.2.1</span> Creating the Probability Transition Matrix</h5>
 <div class="outline-text-5" id="text-4-1-2-1">
 <p>
 Implementing the page rank method on a larger graph requires the use of more
@@ -1183,7 +1399,7 @@ summary(A)
 </pre>
 
 <p>
-As before in section <a href="#probability-transition-matrix">4.1.1.1.2</a>, the probability transition matrix can be found by:
+As before in section <a href="#probability-transition-matrix">4.1.1.2</a>, the probability transition matrix can be found by:
 </p>
 
 <ol class="org-ol">
@@ -1199,14 +1415,14 @@ To implement this for a sparseMatrix of the class <code>dgCMatrix</code>, the sa
 technique of multiplying by a diagonalised matrix as in \eqref{eq:diagScaleDef} may be
 implemented, using sparse matrices has the advantage however that only non-zero
 elements will be operated on, meaning that columns that some to zero can still
-be used to create a probability transition matrix <sup><a id="fnr.5" class="footref" href="#fn.5">5</a></sup>
+be used to create a probability transition matrix <sup><a id="fnr.7" class="footref" href="#fn.7">7</a></sup>
 pracice an error however to create this new matrix, a new <code>sparseMatrix</code> will
 need to be created using the properties of the original matrix, this can be done
 like so:
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 7: </span>A function that takes in a column \(\rightarrow \) row adjacency matrix (\(\mathbf{A}\)) and returns a diagonal matrix (\(\mathbf{D}^{-1}_{\mathbf{A}}}\)) such that \(\vec{1}\mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\)</label><pre class="src src-R" id="orgf76d782"> <span style="color: #006699;">sparse_diag</span> <span style="color: #D0372D;">&lt;-</span> <span style="color: #0000FF;">function</span>(mat) {
+<label class="org-src-name"><span class="listing-number">Listing 7: </span>A function that takes in a column \(\rightarrow \) row adjacency matrix (\(\mathbf{A}\)) and returns a diagonal matrix (\(\mathbf{D}^{-1}_{\mathbf{A}}}\)) such that \(\vec{1}\mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\)</label><pre class="src src-R" id="orgbf8c8f5"> <span style="color: #006699;">sparse_diag</span> <span style="color: #D0372D;">&lt;-</span> <span style="color: #0000FF;">function</span>(mat) {
 
   <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Get the Dimensions</span>
   n <span style="color: #D0372D;">&lt;-</span> nrow(mat)
@@ -1305,7 +1521,7 @@ Solving the eigenvalues for such a large matrix will not feasible, instead the p
 </p>
 
 <p>
-However, creating a matrix of background probabilites (denoted by <code>B</code> in section <a href="#page-rank-random-surfer">4.1.1.2</a>) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
+However, creating a matrix of background probabilites (denoted by <code>B</code> in section <a href="#page-rank-random-surfer">4.1.1.3</a>) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
 </p>
 
 <p>
@@ -1399,43 +1615,20 @@ p <span style="color: #D0372D;">%&gt;%</span> head() <span style="color: #D0372D
 </div>
 </div>
 
-<div id="outline-container-org8aad916" class="outline-3">
-<h3 id="org8aad916"><span class="section-number-3">4.2</span> Power Walk Method</h3>
+<div id="outline-container-orgc1278ed" class="outline-3">
+<h3 id="orgc1278ed"><span class="section-number-3">4.2</span> Power Walk Method</h3>
 <div class="outline-text-3" id="text-4-2">
-</div>
-<div id="outline-container-orgf5e0b6d" class="outline-4">
-<h4 id="orgf5e0b6d"><span class="section-number-4">4.2.1</span> Introduction</h4>
-<div class="outline-text-4" id="text-4-2-1">
 <p>
-Recall from <a href="#pwalk">9.4</a> that the power walk is given by:
+Recall from <a href="#pwalk">2.3</a> that the power walk is given by:
 </p>
 
 \begin{align*}
 \mathbf{T} &= \mathbf{B} \mathbf{D}^{-1}_{B}
 \end{align*}
-
-
-
-<p>
-where:
-</p>
-
-<ul class="org-ul">
-<li>\(\mathbf{B}= \beta^{\mathbf{A}}\)
-<dl class="org-dl">
-<dt>\(x\beta^{1}\) </dt><dd>probability of following an edge of weight 1</dd>
-<dt>\(x\beta^{0}\) </dt><dd>probability of following an edge of weight 0</dd>
-<dt>\(x\beta^{-1}\)</dt><dd>probability of following an edge of weight -</dd>
-</dl></li>
-<li>\(\mathbf{D}_{\mathbf{B}} = \mathtt{colsums}(\mathbf{B})\)</li>
-<li id="\(\mathbf{A}\)">The Adjacency Matrix</li>
-</ul>
 </div>
-</div>
-
-<div id="outline-container-orgfc0fc38" class="outline-4">
-<h4 id="orgfc0fc38"><span class="section-number-4">4.2.2</span> Ordinary Matrices</h4>
-<div class="outline-text-4" id="text-4-2-2">
+<div id="outline-container-orge5d069a" class="outline-4">
+<h4 id="orge5d069a"><span class="section-number-4">4.2.1</span> Ordinary Matrices</h4>
+<div class="outline-text-4" id="text-4-2-1">
 <p>
 Implementing the Power walk using ordinary matrices is very similar to the <i>Random Surfer</i> model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 </p>
@@ -1527,7 +1720,7 @@ eigen(W)$vectors/sum(eigen(W)$vectors)
 </pre>
 
 <p>
-Unlike the <i>Random Surfer</i> Model in listing <a href="#org2fd6d21">6</a> at <a href="#eigen-value-method">4.1.1.2.1</a> the relationship between the second eigenvalue and the model parameters is not as clear, this provides that the
+Unlike the <i>Random Surfer</i> Model in listing <a href="#orge7d3d56">6</a> at <a href="#eigen-value-method">4.1.1.3.1</a> the relationship between the second eigenvalue and the model parameters is not as clear, this provides that the
 </p>
 
 <p>
@@ -1558,15 +1751,13 @@ p <span style="color: #D0372D;">%&gt;%</span> as.vector()
 </div>
 </div>
 
-
-
-<div id="outline-container-org4437d79" class="outline-4">
-<h4 id="org4437d79"><span class="section-number-4">4.2.3</span> Sparse Matrices</h4>
-<div class="outline-text-4" id="text-4-2-3">
+<div id="outline-container-org15f2f8c" class="outline-4">
+<h4 id="org15f2f8c"><span class="section-number-4">4.2.2</span> Sparse Matrices</h4>
+<div class="outline-text-4" id="text-4-2-2">
 </div>
-<div id="outline-container-orge4d6ca5" class="outline-5">
-<h5 id="orge4d6ca5"><span class="section-number-5">4.2.3.1</span> Theory; Simplifying Power Walk to be solved with Sparse Matrices</h5>
-<div class="outline-text-5" id="text-4-2-3-1">
+<div id="outline-container-orga54d073" class="outline-5">
+<h5 id="orga54d073"><span class="section-number-5">4.2.2.1</span> Theory; Simplifying Power Walk to be solved with Sparse Matrices</h5>
+<div class="outline-text-5" id="text-4-2-2-1">
 <p>
 The Random Surfer model is:
 </p>
@@ -1669,7 +1860,7 @@ So if I have:
 </ul>
 
 <p>
-Then It can be shown (see \eqref{eq:sparse-power-walk} at <a href="#solve-background-prob-power-walk-sparse">4.2.3.1.1</a>):
+Then It can be shown (see \eqref{eq:sparse-power-walk} at <a href="#solve-background-prob-power-walk-sparse">4.2.2.1.1</a>):
 </p>
 
 \begin{align}
@@ -1804,7 +1995,7 @@ in terms of <b><i>R</i></b>:
 
 
 <div id="outline-container-solve-background-prob-power-walk-sparse" class="outline-6">
-<h6 id="solve-background-prob-power-walk-sparse"><span class="section-number-6">4.2.3.1.1</span> Solving the Background Probability</h6>
+<h6 id="solve-background-prob-power-walk-sparse"><span class="section-number-6">4.2.2.1.1</span> Solving the Background Probability</h6>
 <div class="outline-text-6" id="text-solve-background-prob-power-walk-sparse">
 <p>
 In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the <i>Kronecker Product</i>):
@@ -1908,34 +2099,34 @@ vectors, this can also be expressed as a dot product:
 </div>
 </div>
 
-<div id="outline-container-orgf11d36c" class="outline-5">
-<h5 id="orgf11d36c"><span class="section-number-5">4.2.3.2</span> Practical; Implementing the Power Walk on Sparse Matrices</h5>
-<div class="outline-text-5" id="text-4-2-3-2">
+<div id="outline-container-org9a511e4" class="outline-5">
+<h5 id="org9a511e4"><span class="section-number-5">4.2.2.2</span> Practical; Implementing the Power Walk on Sparse Matrices</h5>
+<div class="outline-text-5" id="text-4-2-2-2">
 </div>
-<div id="outline-container-org76dbfa2" class="outline-6">
-<h6 id="org76dbfa2"><span class="section-number-6">4.2.3.2.1</span> Inspect the newly created matrix and create constants</h6>
+<div id="outline-container-orgd1750ac" class="outline-6">
+<h6 id="orgd1750ac"><span class="section-number-6">4.2.2.2.1</span> Inspect the newly created matrix and create constants</h6>
 </div>
-<div id="outline-container-orge025639" class="outline-6">
-<h6 id="orge025639"><span class="section-number-6">4.2.3.2.2</span> Setup</h6>
-<div class="outline-text-6" id="text-4-2-3-2-2">
+<div id="outline-container-orgea074bd" class="outline-6">
+<h6 id="orgea074bd"><span class="section-number-6">4.2.2.2.2</span> Setup</h6>
+<div class="outline-text-6" id="text-4-2-2-2-2">
 </div>
-<div id="outline-container-org25dda2f" class="outline-7">
-<h7 id="org25dda2f"><span class="section-number-7">4.2.3.2.2.1</span> Define function to create DiagonalsSparse Diagonal Function</h7>
-<div class="outline-text-7" id="text-4-2-3-2-2-1">
+<div id="outline-container-orgb436276" class="outline-7">
+<h7 id="orgb436276"><span class="section-number-7">4.2.2.2.2.1</span> Define function to create DiagonalsSparse Diagonal Function</h7>
+<div class="outline-text-7" id="text-4-2-2-2-2-1">
 <p>
-Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the <code>sparse_diag</code> function in listing <a href="#orgf76d782">7</a> will still work.
+Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the <code>sparse_diag</code> function in listing <a href="#orgbf8c8f5">7</a> will still work.
 </p>
 </div>
 </div>
 </div>
 
-<div id="outline-container-orgd299000" class="outline-6">
-<h6 id="orgd299000"><span class="section-number-6">4.2.3.2.3</span> Power Walk</h6>
-<div class="outline-text-6" id="text-4-2-3-2-3">
+<div id="outline-container-org0881e09" class="outline-6">
+<h6 id="org0881e09"><span class="section-number-6">4.2.2.2.3</span> Power Walk</h6>
+<div class="outline-text-6" id="text-4-2-2-2-3">
 </div>
-<div id="outline-container-org5003bc6" class="outline-7">
-<h7 id="org5003bc6"><span class="section-number-7">4.2.3.2.3.1</span> Define B</h7>
-<div class="outline-text-7" id="text-4-2-3-2-3-1">
+<div id="outline-container-org8be25c3" class="outline-7">
+<h7 id="org8be25c3"><span class="section-number-7">4.2.2.2.3.1</span> Define B</h7>
+<div class="outline-text-7" id="text-4-2-2-2-3-1">
 <div class="org-src-container">
 <pre class="src src-R">A      <span style="color: #D0372D;">&lt;-</span> Matrix::Matrix(A, sparse = <span style="color: #6434A3;">TRUE</span>)
 B      <span style="color: #D0372D;">&lt;-</span> A
@@ -2015,9 +2206,9 @@ Bo@x   <span style="color: #D0372D;">&lt;-</span> &#946;^(A@x) -<span style="col
 </div>
 </div>
 
-<div id="outline-container-org918c0d8" class="outline-7">
-<h7 id="org918c0d8"><span class="section-number-7">4.2.3.2.3.2</span> Solve the Scaling Matrix</h7>
-<div class="outline-text-7" id="text-4-2-3-2-3-2">
+<div id="outline-container-org5388c55" class="outline-7">
+<h7 id="org5388c55"><span class="section-number-7">4.2.2.2.3.2</span> Solve the Scaling Matrix</h7>
+<div class="outline-text-7" id="text-4-2-2-2-3-2">
 <p>
 We don&rsquo;t need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsums\left(B\_o\right)+n}\) being 0:
 </p>
@@ -2050,9 +2241,9 @@ We don&rsquo;t need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{
 </div>
 
 
-<div id="outline-container-orgc166ef9" class="outline-7">
-<h7 id="orgc166ef9"><span class="section-number-7">4.2.3.2.3.3</span> Find the Transition Probability Matrix</h7>
-<div class="outline-text-7" id="text-4-2-3-2-3-3">
+<div id="outline-container-orgdb830ce" class="outline-7">
+<h7 id="orgdb830ce"><span class="section-number-7">4.2.2.2.3.3</span> Find the Transition Probability Matrix</h7>
+<div class="outline-text-7" id="text-4-2-2-2-3-3">
 <div class="org-src-container">
 <pre class="src src-R">  DB   <span style="color: #D0372D;">&lt;-</span> diag(&#948;B)
 <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">** </span><span style="color: #123555; background-color: #E5F4FB; font-weight: bold; text-decoration: overline;">Create the Transition Probability Matrix</span>
@@ -2063,9 +2254,9 @@ We don&rsquo;t need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{
 </div>
 </div>
 
-<div id="outline-container-org9537591" class="outline-7">
-<h7 id="org9537591"><span class="section-number-7">4.2.3.2.3.4</span> Implement the Loop</h7>
-<div class="outline-text-7" id="text-4-2-3-2-3-4">
+<div id="outline-container-org8cafc20" class="outline-7">
+<h7 id="org8cafc20"><span class="section-number-7">4.2.2.2.3.4</span> Implement the Loop</h7>
+<div class="outline-text-7" id="text-4-2-2-2-3-4">
 <div class="org-src-container">
 <pre class="src src-R"><span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">** </span><span style="color: #123555; background-color: #E5F4FB; font-weight: bold; text-decoration: overline;">Implement the Power Walk</span>
 <span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">*** </span><span style="color: #005522; background-color: #EFFFEF; font-weight: bold;">Set Initial Values</span>
@@ -2103,7 +2294,7 @@ available on <i>GitHub</i> [fn: <a href="https://github.com/RyanGreenup/PageRank
 </p>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 8: </span>Load the <i>PageRank</i> package which consists of the functions from <a href="#implement_models">4</a></label><pre class="src src-R" id="org5d62e56"><span style="color: #D0372D;">library</span>(devtools)
+<label class="org-src-name"><span class="listing-number">Listing 8: </span>Load the <i>PageRank</i> package which consists of the functions from <a href="#implement_models">4</a></label><pre class="src src-R" id="org85f38d4"><span style="color: #D0372D;">library</span>(devtools)
 <span style="color: #D0372D;">library</span>(Matrix)
 <span style="color: #D0372D;">library</span>(tidyverse) <span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Maybe, </span><span style="color: #ffa500; font-weight: bold;">TODO</span><span style="color: #8D8D84; font-style: italic;"> check if this is used, I don't think it is</span>
 
@@ -2125,41 +2316,43 @@ Attaching package: ‘PageRank’
 </pre>
 </div>
 </div>
-
 <div id="outline-container-second-eigenvalue" class="outline-2">
-<h2 id="second-eigenvalue"><span class="section-number-2">6</span> Investigating the Second EigenValue</h2>
+<h2 id="second-eigenvalue"><span class="section-number-2">6</span> Erdos Renyi Graphs</h2>
 <div class="outline-text-2" id="text-second-eigenvalue">
 </div>
 
-<div id="outline-container-org3332ce1" class="outline-3">
-<h3 id="org3332ce1"><span class="section-number-3">6.1</span> ER Graphs Plotting Various Values</h3>
+<div id="outline-container-orgb8c431d" class="outline-3">
+<h3 id="orgb8c431d"><span class="section-number-3">6.1</span> ER Graphs Plotting Various Values</h3>
 <div class="outline-text-3" id="text-6-1">
 </div>
-<div id="outline-container-org7cc720b" class="outline-4">
-<h4 id="org7cc720b"><span class="section-number-4">6.1.1</span> Erdos Reny Game</h4>
+<div id="outline-container-org7d7edc6" class="outline-4">
+<h4 id="org7d7edc6"><span class="section-number-4">6.1.1</span> Erdos Reny Game</h4>
 <div class="outline-text-4" id="text-6-1-1">
 <p>
-The <i>Erdos Renyi</i> game creates a graph by creating every single edge with some
-constant probability. (IgraphManualPagesa NO_ITEM_DATA:IgraphManualPages) Sampling these graphs will provide a broad picture for the
-overall behaviour between the method parameters of the <i>Power Walk</i> and the
-second eigenvalue.
+The <i>Erdos Renyi game</i>, first published in 1959 (<a href="#citeproc_bib_item_21">Renyi, Paul, and Erdos, n.d.</a>) creates a graph by interlinking an inventory of vertices with a constant probability.
+</p>
+
+<p>
+The Erdos Renyi game does not produce graphs consistent with networks such as
+the web (see &sect; <a href="#barabassi-albert">7</a>), however, Sampling a variety of graphs generally will
+provide a broad picture for the overall behaviour of \(\xi_{2}\)
+with respect to the parameters of the <i>Power Walk</i> method.
 </p>
 </div>
 </div>
-
-<div id="outline-container-orgff284ce" class="outline-4">
-<h4 id="orgff284ce"><span class="section-number-4">6.1.2</span> Correlation Plot</h4>
+<div id="outline-container-org9038aa1" class="outline-4">
+<h4 id="org9038aa1"><span class="section-number-4">6.1.2</span> Correlation Plot</h4>
 <div class="outline-text-4" id="text-6-1-2">
 <p>
 By looping over many random graphs for a variety of probabilities a data set can
 be constructed and a correlation plot generated. To implement this a data frame
-of input values was constructed in listing <a href="#orgfe258b8">9</a>, a function that builds a
-data frame with the second eigenvalue, density, determinant and trace was constructed in listing <a href="#org3c8b2de">2</a> and finally a correlation plot was generated in listing <a href="#org1d430bc">10</a> shown in figure .
+of input values was constructed in listing <a href="#org2e45741">9</a>, a function that builds a
+data frame with the second eigenvalue, density, determinant and trace was constructed in listing <a href="#org0c9f027">6</a> and finally a correlation plot was generated in listing <a href="#org1ff15dc">10</a> shown in figure .
 </p>
 
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 9: </span>A data frame consisting of input variables to be used to generate <i>Erdos Renyi</i> graphs.</label><pre class="src src-R" id="orgfe258b8"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Generate Constants</span>
+<label class="org-src-name"><span class="listing-number">Listing 9: </span>A data frame consisting of input variables to be used to generate <i>Erdos Renyi</i> graphs.</label><pre class="src src-R" id="org2e45741"><span style="color: #8D8D84;"># </span><span style="color: #8D8D84; font-style: italic;">Generate Constants</span>
 n         <span style="color: #D0372D;">&lt;-</span> <span style="color: #D0372D;">20</span>
 p         <span style="color: #D0372D;">&lt;-</span> <span style="color: #D0372D;">1</span>:n/n
 beta      <span style="color: #D0372D;">&lt;-</span> <span style="color: #D0372D;">1</span>:n/n
@@ -2206,7 +2399,7 @@ input_var[sample(<span style="color: #D0372D;">1</span>:nrow(input_var), <span s
 </div>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 10: </span>Produce a correlation plot Created from a dataframe constructed from the values assigned in listing <a href="#orgfe258b8">9</a> by using the function defined in listing <a href="#org3c8b2de">2</a>, see figure .</label><pre class="src src-R" id="org1d430bc">filename <span style="color: #D0372D;">&lt;-</span> <span style="color: #008000;">"erdosData.rds"</span>
+<label class="org-src-name"><span class="listing-number">Listing 10: </span>Produce a correlation plot Created from a dataframe constructed from the values assigned in listing <a href="#org2e45741">9</a> by using the function defined in listing <a href="#org0c9f027">6</a>, see figure .</label><pre class="src src-R" id="org1ff15dc">filename <span style="color: #D0372D;">&lt;-</span> <span style="color: #008000;">"erdosData.rds"</span>
 
 <span style="color: #0000FF;">if</span> (file.exists(filename)) {
 
@@ -2249,29 +2442,29 @@ corrplot(cor(data), method = <span style="color: #008000;">"ellipse"</span>, typ
 </div>
 </div>
 
-<div id="outline-container-org6e91672" class="outline-4">
-<h4 id="org6e91672"><span class="section-number-4">6.1.3</span> Density of Adjacency Matrix</h4>
+<div id="outline-container-orgf740b4b" class="outline-4">
+<h4 id="orgf740b4b"><span class="section-number-4">6.1.3</span> Density of Adjacency Matrix</h4>
 <div class="outline-text-4" id="text-6-1-3">
 <p>
 There appears to be a strong negative correlation between the eigenvalue and the density of the adjacency matrix.
 </p>
 
 <p>
-This relationship is plotted in listing <a href="#orge5e484f">11</a> and figure <a href="#org371ffd8">3</a>.
+This relationship is plotted in listing <a href="#orgdd065b4">11</a> and figure <a href="#orga69371c">8</a>.
 </p>
 
 <p>
 The relationship appears almost linear and so the data is log transformed and
-modelled against that in listing <a href="#org006de6e">12</a> with a corresponding plot
-generated in listing <a href="#orgb15c5b8">13</a> and shown in figure
-<a href="#orgb15c5b8">13</a> revealing a concave down relationship. The quartic model
+modelled against that in listing <a href="#orge9ede6f">12</a> with a corresponding plot
+generated in listing <a href="#orgae91e3c">13</a> and shown in figure
+<a href="#orgae91e3c">13</a> revealing a concave down relationship. The quartic model
 fits the data well and has the lowest <i>MSE</i>, however the logarithmic model is
 visually a good fit, significantly simpler and still has a low <i>MSE</i>, for this
 reason the logarithmic model will be used.
 </p>
 
 <p>
-The coefficients of the logarithmic model, shown in listing <a href="#org006de6e">12</a>, imply the following relationship:
+The coefficients of the logarithmic model, shown in listing <a href="#orge9ede6f">12</a>, imply the following relationship:
 </p>
 
 
@@ -2291,7 +2484,7 @@ This suggests that a more interlinked network will converge faster when using th
 
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 11: </span>Create a Plot of \(\xi_{2}\) given Adjacency Matrix, see plot in figure <a href="#org371ffd8">3</a></label><pre class="src src-R" id="orge5e484f">ggplot(data) +
+<label class="org-src-name"><span class="listing-number">Listing 11: </span>Create a Plot of \(\xi_{2}\) given Adjacency Matrix, see plot in figure <a href="#orga69371c">8</a></label><pre class="src src-R" id="orgdd065b4">ggplot(data) +
   geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size )) +
   scale_size_continuous(range = c(<span style="color: #D0372D;">0.1</span>,<span style="color: #D0372D;">1</span>)) +
   labs(x = <span style="color: #008000;">"Density of Adjacency Matrix"</span>, y = TeX(<span style="color: #008000;">"$\\xi_2$ of $T_{PW}$"</span>), title = TeX(<span style="color: #008000;">"$\\xi_2$ of $T_{PW}$ given the Density of the Adjacency Matrix"</span>) ) +
@@ -2301,15 +2494,15 @@ This suggests that a more interlinked network will converge faster when using th
 </div>
 
 
-<div id="org371ffd8" class="figure">
+<div id="orga69371c" class="figure">
 <p><img src="media/density_plot.png" alt="density_plot.png" width="400px" />
 </p>
-<p><span class="figure-number">Figure 3: </span>Plot of \(\xi_{2}\) given Adjacency Matrix, see listing <a href="#orge5e484f">11</a></p>
+<p><span class="figure-number">Figure 8: </span>Plot of \(\xi_{2}\) given Adjacency Matrix, see listing <a href="#orgdd065b4">11</a></p>
 </div>
 
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 12: </span>Fit Models to log transofmred Density Comparison</label><pre class="src src-R" id="org006de6e">mod_x1 <span style="color: #D0372D;">&lt;-</span> lm(log(eigenvalue2) ~ poly(density, <span style="color: #D0372D;">1</span>), data = data)
+<label class="org-src-name"><span class="listing-number">Listing 12: </span>Fit Models to log transofmred Density Comparison</label><pre class="src src-R" id="orge9ede6f">mod_x1 <span style="color: #D0372D;">&lt;-</span> lm(log(eigenvalue2) ~ poly(density, <span style="color: #D0372D;">1</span>), data = data)
 data$x1 <span style="color: #D0372D;">&lt;-</span> predict(mod_x1)
 
 mod_x2 <span style="color: #D0372D;">&lt;-</span> lm(log(eigenvalue2) ~ poly(density, <span style="color: #D0372D;">2</span>), data = data)
@@ -2350,7 +2543,7 @@ print(c(<span style="color: #008000;">"Max Residual"</span>, max(mod_xl$residual
 
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 13: </span>Plot of Log Transformed \(\xi_{2}\) against density of Adjacency matrix, using the <i>Power Walk</i> algorithm applied to graphs randomly generated with the <i>Erdos-Renyi</i> game.</label><pre class="src src-R" id="orgb15c5b8">ggplot(mod_df_long, aes(x = density)) +
+<label class="org-src-name"><span class="listing-number">Listing 13: </span>Plot of Log Transformed \(\xi_{2}\) against density of Adjacency matrix, using the <i>Power Walk</i> algorithm applied to graphs randomly generated with the <i>Erdos-Renyi</i> game.</label><pre class="src src-R" id="orgae91e3c">ggplot(mod_df_long, aes(x = density)) +
   geom_point(aes(y = eigenvalue2_log), fill = <span style="color: #008000;">"lightblue"</span>, col = <span style="color: #008000;">"black"</span>, size = <span style="color: #D0372D;">0.1</span>, alpha = <span style="color: #D0372D;">0.2</span>) +
   geom_smooth(aes(y = eigenvalue2_mod, col = Model_Type), size = <span style="color: #D0372D;">0.9</span>) +
   labs(col = c(<span style="color: #008000;">"Model \nType"</span>)) +
@@ -2368,19 +2561,19 @@ print(c(<span style="color: #008000;">"Max Residual"</span>, max(mod_xl$residual
 </div>
 </div>
 
-<div id="outline-container-orgaa105b8" class="outline-4">
-<h4 id="orgaa105b8"><span class="section-number-4">6.1.4</span> Trace of Transition Probability Matrix</h4>
+<div id="outline-container-org1109c32" class="outline-4">
+<h4 id="org1109c32"><span class="section-number-4">6.1.4</span> Trace of Transition Probability Matrix</h4>
 <div class="outline-text-4" id="text-6-1-4">
 <p>
 The correlation plot suggests that there is some positive relationship between
 the trace of the transition probability matrix and the second eigenvalue, these
-values are plotted in listing <a href="#orga8d6933">15</a> and figure <a href="#org815452b">5</a>, this
+values are plotted in listing <a href="#orgb7b4589">15</a> and figure <a href="#org995a951">10</a>, this
 relationship appears to be heteroskedastic and so it is log transformed in
-listing <a href="#org2d42ef3">14</a> and figure <a href="#org61f0664">6</a>. This plot is still appears to have a non constant variance but this could be due to less data corresponding to lower trace values.
+listing <a href="#org2d6d3da">14</a> and figure <a href="#org45b659b">11</a>. This plot is still appears to have a non constant variance but this could be due to less data corresponding to lower trace values.
 </p>
 
 <p>
-The plot suggests an exponential or hyperbolic model may be a good fit, this is performed in listing <a href="#org03a4dcf">16</a>, <a href="#org0709554">17</a> and  <a href="#org3ab607d">7</a>. The hyperbolic model appears to be a reasonable fit for trace values less than half, giving the following relationship:
+The plot suggests an exponential or hyperbolic model may be a good fit, this is performed in listing <a href="#org3a7af55">16</a>, <a href="#org52dbff8">17</a> and  <a href="#org3111ba7">12</a>. The hyperbolic model appears to be a reasonable fit for trace values less than half, giving the following relationship:
 </p>
 
 
@@ -2390,7 +2583,7 @@ The plot suggests an exponential or hyperbolic model may be a good fit, this is 
 \end{align}
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 14: </span>Plot \(\xi_{2}\) against the trace of the matrix of the <i>Power Walk</i> Transition Probability Matrix, see figure <a href="#org61f0664">6</a></label><pre class="src src-R" id="org2d42ef3">ggplot(data, aes(x = trace , y = log(eigenvalue2))) +
+<label class="org-src-name"><span class="listing-number">Listing 14: </span>Plot \(\xi_{2}\) against the trace of the matrix of the <i>Power Walk</i> Transition Probability Matrix, see figure <a href="#org45b659b">11</a></label><pre class="src src-R" id="org2d6d3da">ggplot(data, aes(x = trace , y = log(eigenvalue2))) +
   geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
 <span style="color: #8D8D84;">#  </span><span style="color: #8D8D84; font-style: italic;">stat_smooth() +</span>
   scale_size_continuous(range = c(<span style="color: #D0372D;">0.1</span>,<span style="color: #D0372D;">1.5</span>)) +
@@ -2401,7 +2594,7 @@ The plot suggests an exponential or hyperbolic model may be a good fit, this is 
 
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 15: </span>Plot \(\xi_{2}\) against the trace of the matrix of the <i>Power Walk</i> Transition Probability Matrix</label><pre class="src src-R" id="orga8d6933">ggplot(data, aes(x = trace , y = eigenvalue2)) +
+<label class="org-src-name"><span class="listing-number">Listing 15: </span>Plot \(\xi_{2}\) against the trace of the matrix of the <i>Power Walk</i> Transition Probability Matrix</label><pre class="src src-R" id="orgb7b4589">ggplot(data, aes(x = trace , y = eigenvalue2)) +
   geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
 <span style="color: #8D8D84;">#  </span><span style="color: #8D8D84; font-style: italic;">stat_smooth() +</span>
   scale_size_continuous(range = c(<span style="color: #D0372D;">0.1</span>,<span style="color: #D0372D;">1.5</span>)) +
@@ -2410,22 +2603,22 @@ The plot suggests an exponential or hyperbolic model may be a good fit, this is 
 </div>
 
 
-<div id="org815452b" class="figure">
+<div id="org995a951" class="figure">
 <p><img src="media/trace_plot_er.png" alt="trace_plot_er.png" width="400px" />
 </p>
-<p><span class="figure-number">Figure 5: </span>Plot of \(\xi_{2}\) against the trace of the <i>Power Walk</i> probability transition matrix</p>
+<p><span class="figure-number">Figure 10: </span>Plot of \(\xi_{2}\) against the trace of the <i>Power Walk</i> probability transition matrix</p>
 </div>
 
 
 
-<div id="org61f0664" class="figure">
+<div id="org45b659b" class="figure">
 <p><img src="media/trace_plot_log_er.png" alt="trace_plot_log_er.png" width="400px" />
 </p>
-<p><span class="figure-number">Figure 6: </span>Log transformed plot of the trace of the <i>Power Walk</i> probability transition matrix</p>
+<p><span class="figure-number">Figure 11: </span>Log transformed plot of the trace of the <i>Power Walk</i> probability transition matrix</p>
 </div>
 
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 16: </span>Fit a Hyperbolic and Logarithmic model to the data, observe that a 0 intercept is set to fix the intercept as it would be expected that a 0 trace would correspond to a 0 eigenvector, the hyperbolic model has a slightly lower mean <i>MSE</i>.</label><pre class="src src-R" id="org03a4dcf">mod_df <span style="color: #D0372D;">&lt;-</span> data
+<label class="org-src-name"><span class="listing-number">Listing 16: </span>Fit a Hyperbolic and Logarithmic model to the data, observe that a 0 intercept is set to fix the intercept as it would be expected that a 0 trace would correspond to a 0 eigenvector, the hyperbolic model has a slightly lower mean <i>MSE</i>.</label><pre class="src src-R" id="org3a7af55">mod_df <span style="color: #D0372D;">&lt;-</span> data
 
 mod_hyp <span style="color: #D0372D;">&lt;-</span> lm(log(eigenvalue2) ~ <span style="color: #D0372D;">0</span> + I(trace^(-<span style="color: #D0372D;">1</span>)), data = data)
 mod_df$hyp <span style="color: #D0372D;">&lt;-</span> predict(mod_hyp)
@@ -2456,7 +2649,7 @@ I(trace^(-1)) -0.1992157 0.0005471191 -364.1176        0
 
 
 <div class="org-src-container">
-<pre class="src src-R" id="org0709554">ggplot(mod_df_long, aes(x = trace)) +
+<pre class="src src-R" id="org52dbff8">ggplot(mod_df_long, aes(x = trace)) +
   geom_point(shape = <span style="color: #D0372D;">23</span>, aes(y = eigenvalue2_log), fill = <span style="color: #008000;">"lightblue"</span>, col = <span style="color: #008000;">"black"</span>, size = <span style="color: #D0372D;">0.7</span>, alpha = <span style="color: #D0372D;">0.4</span>) +
   geom_line(aes(y = eigenvalue2_mod, col = Model_Type), size = <span style="color: #D0372D;">1</span>) +
   labs(col = c(<span style="color: #008000;">"Model \nType"</span>)) +
@@ -2468,15 +2661,15 @@ I(trace^(-1)) -0.1992157 0.0005471191 -364.1176        0
 </div>
 
 
-<div id="org3ab607d" class="figure">
+<div id="org3111ba7" class="figure">
 <p><img src="media/trace_models_fitted.png" alt="trace_models_fitted.png" width="400px" />
 </p>
-<p><span class="figure-number">Figure 7: </span>Plot of the second eigenvalue logarithmically scaled across the trace of a corresponding probability transition matrix created using the <i>Power Walk</i> method. The graphs were randomly generated using the <i>Erdos Renyi</i> game.</p>
+<p><span class="figure-number">Figure 12: </span>Plot of the second eigenvalue logarithmically scaled across the trace of a corresponding probability transition matrix created using the <i>Power Walk</i> method. The graphs were randomly generated using the <i>Erdos Renyi</i> game.</p>
 </div>
 </div>
 </div>
-<div id="outline-container-org49a4a7b" class="outline-4">
-<h4 id="org49a4a7b"><span class="section-number-4">6.1.5</span> Conclusion</h4>
+<div id="outline-container-orgea24a54" class="outline-4">
+<h4 id="orgea24a54"><span class="section-number-4">6.1.5</span> Conclusion</h4>
 <div class="outline-text-4" id="text-6-1-5">
 <p>
 The <i>Erdos Renyi</i> game produces a wide variety of all possible graphs, this provides two insights into the value of the second eigenvalue of the probability transition matrix corresponding to the power walk method:
@@ -2501,16 +2694,16 @@ These are not however insightful of any direct relationships between the method 
 </div>
 </div>
 
-<div id="outline-container-orgbdb089d" class="outline-3">
-<h3 id="orgbdb089d"><span class="section-number-3">6.2</span> Model the log transformed data using a linear regression or log(-x) regression</h3>
+<div id="outline-container-org84fd02e" class="outline-3">
+<h3 id="org84fd02e"><span class="section-number-3">6.2</span> Model the log transformed data using a linear regression or log(-x) regression</h3>
 <div class="outline-text-3" id="text-6-2">
 </div>
-<div id="outline-container-org814d8ef" class="outline-4">
-<h4 id="org814d8ef"><span class="section-number-4">6.2.1</span> Change the colour of each model by using pivot<sub>longer</sub></h4>
+<div id="outline-container-org1e323dc" class="outline-4">
+<h4 id="org1e323dc"><span class="section-number-4">6.2.1</span> Change the colour of each model by using pivot<sub>longer</sub></h4>
 </div>
 </div>
-<div id="outline-container-orgce3edd4" class="outline-3">
-<h3 id="orgce3edd4"><span class="section-number-3">6.3</span> Import wikipedia data</h3>
+<div id="outline-container-org3381b85" class="outline-3">
+<h3 id="org3381b85"><span class="section-number-3">6.3</span> Import wikipedia data</h3>
 <div class="outline-text-3" id="text-6-3">
 <ul class="org-ul">
 <li><del>Import the wikipedia data</del></li>
@@ -2532,19 +2725,21 @@ use a <i>Barabassi-Albert</i> Random Graph through the ~igraph::
 </ul>
 </div>
 </div>
-<div id="outline-container-orgad7cc42" class="outline-3">
-<h3 id="orgad7cc42"><span class="section-number-3">6.4</span> Look at the Trace of the Matrix as a comparison point</h3>
+<div id="outline-container-org852687d" class="outline-3">
+<h3 id="org852687d"><span class="section-number-3">6.4</span> Look at the Trace of the Matrix as a comparison point</h3>
 </div>
-<div id="outline-container-org7e89e82" class="outline-3">
-<h3 id="org7e89e82"><span class="section-number-3">6.5</span> Use BA Graphs</h3>
+<div id="outline-container-orgc55a33f" class="outline-3">
+<h3 id="orgc55a33f"><span class="section-number-3">6.5</span> Use BA Graphs</h3>
 </div>
 </div>
 
-<div id="outline-container-org99bb337" class="outline-2">
-<h2 id="org99bb337"><span class="section-number-2">7</span> Simulating the Structure of the Web</h2>
-<div class="outline-text-2" id="text-7">
+<div id="outline-container-barabassi-albert" class="outline-2">
+<h2 id="barabassi-albert"><span class="section-number-2">7</span> Barabasi Albert Graphs</h2>
+<div class="outline-text-2" id="text-barabassi-albert">
 <p>
-A graph of the internet is <i>scale free</i>, this means that the number of nodes of a graph (\(n\)), having \(j\) edges is given by (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 10.7.2</a>):
+A graph of the internet is <i>scale free</i>, this means that the number of nodes of
+a graph (\(n\)), having \(j\) edges is given by
+ (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 10.7.2</a>):
 </p>
 
 \begin{align}
@@ -2552,35 +2747,99 @@ n \propto j^{-k}, \quad \exists k \in \mathbb{R}
 \end{align}
 
 <p>
-The <i>Erdos Renyi</i> game is a random network, a superior approach to model the web is to use a scale free networks (<a href="#citeproc_bib_item_2">Barabási, n.d.</a>) such as the Barabasi-Albert graph (<a href="#citeproc_bib_item_3">Barabási, Albert, and Jeong, n.d.</a>)
-</p>
-
-
-<p>
-Maybe I should look at the most appropriate way to simulate social network links, one possibility is <a href="https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf">this paper </a> (<a href="#citeproc_bib_item_20">Zeng et al., n.d.</a>).
+The <i>Erdos Renyi</i> game is a random network, a superior approach to model the web
+is to use a scale free networks (<a href="#citeproc_bib_item_3">Barabási, n.d.</a>) such as the
+Barabasi-Albert graph (<a href="#citeproc_bib_item_4">Barabási, Albert, and Jeong, n.d.</a>)
 </p>
 
 <p>
+The Erdos Renyi game assumes that the number of nodes is constant from beginning
+to end, clearly this is not true for networks such as the web. Consider a graph
+constructed node by node where each time a new node is introduced it is randomly
+connected to another with a constant probability. Despite the probability of
+connecting to any given node being constant as in the Erdos Renyi game, such a
+graph will favour nodes introduced earlier with respect to the number edges.
+This shows that the precense of network growth is an import feature in modelling
+networks.
+</p>
+
+<p>
+Simply considering growth however is not sufficient to simulate graphs with a
+degree distribution consistent with the web
+(Ch. <a href="#citeproc_bib_item_22">Zeng et al., n.d., 7</a>) (see figure ).
+</p>
+
+<p>
+When introducing a new node, the probability of linking to any other node is not
+uniformly random. When adding links to from one node to another it would be
+expected that links to more popular websited would be made (for example if
+somebody added a link to a personal website they might be more likely to link to
+<i>Wikipedia</i> than to the <i>Encyclopedia of Britannica</i> simply because it is more
+common). A simple approach is to presume that the probability of linking from
+one node to another is proportional to the number of links, i.e. a node with
+twice as many links will be twice as likely to receive a link from a new node.
+</p>
+
+<p>
+These two distinguishing features departing from the <i>Erdos Renyi</i> model, known as <i>Growth</i> and <i>Preferrential Attachment</i>, are what set the Barabassi-Albert model apart from the Erdos-Renyi model and why it is better suited to modelling networks such as the web. (Ch. <a href="#citeproc_bib_item_2">Barabási, n.d., 7</a>)
+</p>
+
+<p>
+A practical Simulation method for social networks simulate social network links,
+one possibility is <a href="https://crpit.scem.westernsydney.edu.au/confpapers/CRPITV144Zeng.pdf">this paper </a> (<a href="#citeproc_bib_item_22">Zeng et al., n.d.</a>).
+/home/ryan/Sync/Studies/2020Spring/DiscProj/Report/Report.org
 Actually there is a data set available
  (NO_ITEM_DATA:garritanoWikipediaArticleNetworks2019), I should just analyse that, see <a href="file:///home/ryan/Dropbox/DataSci/Visual_Analytics/Assessment/the-marvel-universe-social-network/plotly3d_Marvel.r">how
 it was done in Visual Analytics as a reminder</a>.
 </p>
+
+
+<div class="org-src-container">
+<label class="org-src-name"><span class="listing-number">Listing 17: </span>Simulate Erdos-Renyi and Barabassi-Albert graphs in order to measure the degree distribution,  shown in <a href="#fig:degree-distribution-hist">fig:degree-distribution-hist</a></label><pre class="src src-R" id="org1ef33ba">layout(matrix(<span style="color: #D0372D;">1</span>:<span style="color: #D0372D;">2</span>, nrow = <span style="color: #D0372D;">2</span>))
+col  <span style="color: #D0372D;">&lt;-</span> <span style="color: #008000;">"Mediumpurple"</span>
+n <span style="color: #D0372D;">&lt;-</span> <span style="color: #D0372D;">1000</span>
+hist(
+  igraph::degree(igraph::sample_pa(n, <span style="color: #D0372D;">0.2</span>)),
+  binwidth = <span style="color: #D0372D;">0.3</span>,
+  xlab = <span style="color: #008000;">""</span>,
+  main = <span style="color: #008000;">"Barabassi-Albert Degree Distribution"</span>,
+  col = col, freq = <span style="color: #6434A3;">FALSE</span>
+)
+
+hist(igraph::degree(igraph::erdos.renyi.game(n, <span style="color: #D0372D;">0.2</span>)),
+     main= <span style="color: #008000;">"Erdos-Renyi Degree Distribution"</span>,
+     col = col,
+     binwidth = <span style="color: #D0372D;">0.3</span>,
+     xlab = <span style="color: #008000;">""</span>,
+     freq = <span style="color: #6434A3;">FALSE</span> )
+</pre>
+</div>
+
+
+
+<div id="org4acb88d" class="figure">
+<p><img src="media/degree_dist_er_ba.png" alt="degree_dist_er_ba.png" width="400px" />
+</p>
+<p><span class="figure-number">Figure 13: </span>histograms of degree distribution of Erdos-Renyi and Barabassi-Albert graphs produced in listing <a href="#degree-distribution-hist">degree-distribution-hist</a></p>
 </div>
 </div>
+</div>
+
+
 <div id="outline-container-relate-to-random-surfer" class="outline-2">
 <h2 id="relate-to-random-surfer"><span class="section-number-2">8</span> Relating the Power Walk to the Random Surfer</h2>
 <div class="outline-text-2" id="text-relate-to-random-surfer">
 </div>
-<div id="outline-container-org68b90a0" class="outline-3">
-<h3 id="org68b90a0"><span class="section-number-3">8.1</span> Introduction</h3>
+<div id="outline-container-org6a127ec" class="outline-3">
+<h3 id="org6a127ec"><span class="section-number-3">8.1</span> Introduction</h3>
 <div class="outline-text-3" id="text-8-1">
 <p>
-These are notes relating to (\textsection <a href="#citeproc_bib_item_19">Park and Simoff, n.d., 3.3</a>), probably won&rsquo;t put this in the report, just arbitrary notes
+These are notes relating to (\textsection <a href="#citeproc_bib_item_20">Park and Simoff, n.d., 3.3</a>), probably won&rsquo;t put this in the report, just arbitrary notes
 </p>
 
 <p>
 So if a term in the Power Walk can be related to \(\alpha\) in the random
-surfer, which is in turn \(\xi_2\), I&rsquo;ll be able to understand it better. <sup><a id="fnr.6" class="footref" href="#fn.6">6</a></sup>
+surfer, which is in turn \(\xi_2\), I&rsquo;ll be able to understand it better. <sup><a id="fnr.8" class="footref" href="#fn.8">8</a></sup>
 </p>
 
 <p>
@@ -2738,8 +2997,8 @@ But the next step requires showing that:
 </div>
 </div>
 
-<div id="outline-container-org255895d" class="outline-3">
-<h3 id="org255895d"><span class="section-number-3">8.4</span> Equate the Power Walk to the Random Surfer</h3>
+<div id="outline-container-org4bbb075" class="outline-3">
+<h3 id="org4bbb075"><span class="section-number-3">8.4</span> Equate the Power Walk to the Random Surfer</h3>
 <div class="outline-text-3" id="text-8-4">
 <p>
 Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
@@ -2807,7 +3066,7 @@ Solving for \(\beta\)  with \eqref{fl} :
 \end{align}
 
 <p>
-where: <sup><a id="fnr.7" class="footref" href="#fn.7">7</a></sup>
+where: <sup><a id="fnr.9" class="footref" href="#fn.9">9</a></sup>
 </p>
 
 <ul class="org-ul">
@@ -2850,8 +3109,8 @@ Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}
 </div>
 </div>
 
-<div id="outline-container-org46382c7" class="outline-3">
-<h3 id="org46382c7"><span class="section-number-3">8.5</span> Conclusion</h3>
+<div id="outline-container-org29c3100" class="outline-3">
+<h3 id="org29c3100"><span class="section-number-3">8.5</span> Conclusion</h3>
 <div class="outline-text-3" id="text-8-5">
 <p>
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
@@ -2859,27 +3118,27 @@ So when the adjacency matrix is stictly boolean, the power walk is equivalent to
 </div>
 </div>
 
-<div id="outline-container-org834a268" class="outline-3">
-<h3 id="org834a268"><span class="section-number-3">8.6</span> The Second Eigenvalue</h3>
+<div id="outline-container-org944d9a6" class="outline-3">
+<h3 id="org944d9a6"><span class="section-number-3">8.6</span> The Second Eigenvalue</h3>
 <div class="outline-text-3" id="text-8-6">
 </div>
-<div id="outline-container-org0788f9f" class="outline-4">
-<h4 id="org0788f9f"><span class="section-number-4">8.6.1</span> The Random Surfer</h4>
+<div id="outline-container-org7400555" class="outline-4">
+<h4 id="org7400555"><span class="section-number-4">8.6.1</span> The Random Surfer</h4>
 <div class="outline-text-4" id="text-8-6-1">
 <p>
 The Second eigenvalue \(\xi_2\) of the Power Surfer is less than \(\alpha\) (<a href="Proposal/Propsal.html#stability-convergence">See 3.2; Stability and Concvergence, of proposal</a>).
 </p>
 </div>
 </div>
-<div id="outline-container-org4bdc1a7" class="outline-4">
-<h4 id="org4bdc1a7"><span class="section-number-4">8.6.2</span> Power Walk</h4>
+<div id="outline-container-org32b31a0" class="outline-4">
+<h4 id="org32b31a0"><span class="section-number-4">8.6.2</span> Power Walk</h4>
 <div class="outline-text-4" id="text-8-6-2">
 <p>
 Because the Power Walk relates to the random surfer as demonstrated in section , what can be said about \(\xi_{2}\)
 </p>
 </div>
-<div id="outline-container-org681a2f2" class="outline-5">
-<h5 id="org681a2f2"><span class="section-number-5">8.6.2.1</span> Applying this to Power Walk</h5>
+<div id="outline-container-org2e3e9f6" class="outline-5">
+<h5 id="org2e3e9f6"><span class="section-number-5">8.6.2.1</span> Applying this to Power Walk</h5>
 <div class="outline-text-5" id="text-8-6-2-1">
 <p>
 Let \(\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2\) return the second value of a transition, probability Matrix, then observe that:
@@ -2899,8 +3158,8 @@ where:
 <li>\(\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)\) refers to the transition probability matrix of the power walk and random surfer approaces as indicated.</li>
 </ul>
 </div>
-<div id="outline-container-org613b471" class="outline-6">
-<h6 id="org613b471"><span class="section-number-6">8.6.2.1.1</span> My attempt</h6>
+<div id="outline-container-orgf8369ce" class="outline-6">
+<h6 id="orgf8369ce"><span class="section-number-6">8.6.2.1.1</span> My attempt</h6>
 <div class="outline-text-6" id="text-8-6-2-1-1">
 \begin{align}
     \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
@@ -2986,11 +3245,11 @@ beta
 </div>
 </div>
 
-<div id="outline-container-org40a1647" class="outline-2">
-<h2 id="org40a1647"><span class="section-number-2">9</span> Appendix</h2>
+<div id="outline-container-orge515952" class="outline-2">
+<h2 id="orge515952"><span class="section-number-2">9</span> Appendix</h2>
 <div class="outline-text-2" id="text-9">
 <div class="org-src-container">
-<label class="org-src-name"><span class="listing-number">Listing 17: </span><b><i>R</i></b> code to produce an image illustrating the density of a simulated Barabasi-Albert graph, the <i>Barabasi-Albert</i> graph is a good analouge for the link structure of the internet <a class='org-ref-reference' href="#langvilleGooglePageRankScience2012">langvilleGooglePageRankScience2012</a>,<a class='org-ref-reference' href="#barabasiPhysicsWeb2001">barabasiPhysicsWeb2001</a>,<a class='org-ref-reference' href="#barabasiScalefreeCharacteristicsRandom2000">barabasiScalefreeCharacteristicsRandom2000</a> see the output in figure <a href="#orge0bef3c">8</a></label><pre class="src src-R" id="org93a99b7"><span style="color: #D0372D;">library</span>(Matrix)
+<label class="org-src-name"><span class="listing-number">Listing 18: </span><b><i>R</i></b> code to produce an image illustrating the density of a simulated Barabasi-Albert graph, the <i>Barabasi-Albert</i> graph is a good analouge for the link structure of the internet <a class='org-ref-reference' href="#langvilleGooglePageRankScience2012">langvilleGooglePageRankScience2012</a>,<a class='org-ref-reference' href="#barabasiPhysicsWeb2001">barabasiPhysicsWeb2001</a>,<a class='org-ref-reference' href="#barabasiScalefreeCharacteristicsRandom2000">barabasiScalefreeCharacteristicsRandom2000</a> see the output in figure <a href="#orgd93841d">14</a></label><pre class="src src-R" id="orga8114c5"><span style="color: #D0372D;">library</span>(Matrix)
 <span style="color: #D0372D;">library</span>(igraph)
 n <span style="color: #D0372D;">&lt;-</span> <span style="color: #D0372D;">200</span>
 m <span style="color: #D0372D;">&lt;-</span> <span style="color: #D0372D;">5</span>
@@ -3014,17 +3273,17 @@ image(A, axes = <span style="color: #6434A3;">FALSE</span>, frame.plot = <span s
 </div>
 
 
-<div id="orge0bef3c" class="figure">
+<div id="orgd93841d" class="figure">
 <p><img src="media/DensityUndirectedBA.png" alt="DensityUndirectedBA.png" width="400px" />
 </p>
-<p><span class="figure-number">Figure 8: </span>Plot of the adjacency matrix corresponding to a Barabassi-Albert (i.e. <i>Scale Free</i>) Graph produced by listing <a href="#org93a99b7">17</a>, observe the matrix is quite sparse.</p>
+<p><span class="figure-number">Figure 14: </span>Plot of the adjacency matrix corresponding to a Barabassi-Albert (i.e. <i>Scale Free</i>) Graph produced by listing <a href="#orga8114c5">18</a>, observe the matrix is quite sparse.</p>
 </div>
 </div>
-<div id="outline-container-orgaf3db3e" class="outline-3">
-<h3 id="orgaf3db3e"><span class="section-number-3">9.1</span> Graph Diagrams</h3>
+<div id="outline-container-orgfe36992" class="outline-3">
+<h3 id="orgfe36992"><span class="section-number-3">9.1</span> Graph Diagrams</h3>
 <div class="outline-text-3" id="text-9-1">
 <p>
-Graph Diagrams shown in <a href="#markov">9.3.2</a> where produced using <code>DOT</code> (see (NO_ITEM_DATA:DOTLanguage, NO_ITEM_DATA:DOTGraphDescription2020)).
+Graph Diagrams shown in <a href="#markov">2.2.2</a> where produced using <code>DOT</code> (see (NO_ITEM_DATA:DOTLanguage, NO_ITEM_DATA:DOTGraphDescription2020)).
 </p>
 </div>
 </div>
@@ -3032,46 +3291,46 @@ Graph Diagrams shown in <a href="#markov">9.3.2</a> where produced using <code>D
 <h3 id="definitions"><span class="section-number-3">9.2</span> Definitions</h3>
 <div class="outline-text-3" id="text-definitions">
 <p>
-The following definitions are used in this report <sup><a id="fnr.8" class="footref" href="#fn.8">8</a></sup> :
+The following definitions are used in this report <sup><a id="fnr.10" class="footref" href="#fn.10">10</a></sup> :
 </p>
 
 <dl class="org-dl">
-<dt>Markov Chains</dt><dd>are discrete mathematical model such that future values depend only on current values (\textsection <a href="#citeproc_bib_item_8">Fouss, Saerens, and Shimbo, n.d., 1.5</a>)</dd>
-<dt>Stochastic Matrices</dt><dd>contain only positive values where each column sums to 1 (<a href="#citeproc_bib_item_14">Langville and Meyer, n.d.</a>; <a href="#citeproc_bib_item_8">Fouss, Saerens, and Shimbo, n.d.</a>) (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
+<dt>Markov Chains</dt><dd>are discrete mathematical model such that future values depend only on current values (\textsection <a href="#citeproc_bib_item_9">Fouss, Saerens, and Shimbo, n.d., 1.5</a>)</dd>
+<dt>Stochastic Matrices</dt><dd>contain only positive values where each column sums to 1 (<a href="#citeproc_bib_item_15">Langville and Meyer, n.d.</a>; <a href="#citeproc_bib_item_9">Fouss, Saerens, and Shimbo, n.d.</a>) (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
 <ul class="org-ul">
-<li>some authors use rows (see e.g. (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 15.3</a>)), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
+<li>some authors use rows (see e.g. (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 15.3</a>)), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
 <ul class="org-ul">
 <li><i>Column Stochastic</i> and <i>Row Stochastic</i> can be used to more clearly distinguish between which type of stochastic matrix is being used.</li>
 </ul></li>
 <li>Many programming languages return <i>unit-eigenvectors</i> \(\vec{x}\) such that \(\left\lvert \left\lvert \vec{x} \right\rvert \right\rvert = 1 \) as opposed to \(\mathtt{sum} \left( \vec{\mathtt{x}}\right) = 1\), so when solving for a stationary vector it can be necessary to perform \(\vec{\mathtt{p}} \leftarrow \frac{\vec{\mathtt{p}}}{\sum \vec{p}}\)</li>
 </ul></dd>
-<dt>Irreducible</dt><dd>graphs have a path from from any given vertex to another vertex. (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 15.2</a>)
+<dt>Irreducible</dt><dd>graphs have a path from from any given vertex to another vertex. (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 15.2</a>)
 <dl class="org-dl">
 <dt>Ergodic</dt><dd>graphs are irreducible graphs with further constraints outside
 the scope of this report (see e.g.
-(<a href="#citeproc_bib_item_17">Nathanael Ackerman and Patel, n.d.</a>; <a href="#citeproc_bib_item_7">Chen, n.d.</a>))
+(<a href="#citeproc_bib_item_18">Nathanael Ackerman and Patel, n.d.</a>; <a href="#citeproc_bib_item_8">Chen, n.d.</a>))
 <ul class="org-ul">
 <li>It is a necessary but not a sufficient condition of ergodic graphs that all vertices be reachable from any other vertices (see (NO_ITEM_DATA:sazProbabilityTheoryThis) for a counter example.)</li>
 </ul></dd>
 </dl></dd>
 <dt>Primitive Matrices</dt><dd>are non-negative irreducible matrices that have only one eigenvalue on the unit circle.
 <ul class="org-ul">
-<li>If a matrix is primitive it will approach a limit under exponentiation (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 15.2</a>)</li>
+<li>If a matrix is primitive it will approach a limit under exponentiation (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 15.2</a>)</li>
 </ul></dd>
 <dt>Transition Probability Matrix</dt><dd>is a stochastic matrix where each column is a vector of probabilities such that \(\mathbf{T}_{i,j}\) represents the probability of travelling from vertex \(j\) to vertex \(i\) during a random walk.
 <ul class="org-ul">
-<li>Some Authors consider the transpose (see e.g. (<a href="#citeproc_bib_item_14">Langville and Meyer, n.d.</a>)).</li>
+<li>Some Authors consider the transpose (see e.g. (<a href="#citeproc_bib_item_15">Langville and Meyer, n.d.</a>)).</li>
 </ul></dd>
 <dt>Aperiodic</dt><dd>Markov chains are markov chains with an irreducible and primitive transition probability matrix.
 <ul class="org-ul">
 <li>If the transition probability matrix is irreducible and imprimitive it is said to be a periodic Markov chain.</li>
 </ul></dd>
 <dt>Regular</dt><dd>Markov Chains are regular irreducible and aperiodic.</dd>
-<dt>Sparse</dt><dd>Matrices contain a majority of elements with values equal to 0 (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 4.2</a>)</dd>
+<dt>Sparse</dt><dd>Matrices contain a majority of elements with values equal to 0 (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 4.2</a>)</dd>
 <dt>Sparse</dt><dd>Iterating the</dd>
 <dt>PageRank</dt><dd>A process of measuring graph centrality by using a random walk algorithm and measuring the most frequent node
 <ul class="org-ul">
-<li>In the literature (see e.g. (<a href="#citeproc_bib_item_10">Gupta et al., n.d.</a>; <a href="#citeproc_bib_item_14">Langville and Meyer, n.d.</a>)) the Random Surfer model is usually used to refer to the introduction of a probability of travelling to any other node, this is discussed in CROSSREF</li>
+<li>In the literature (see e.g. (<a href="#citeproc_bib_item_11">Gupta et al., n.d.</a>; <a href="#citeproc_bib_item_15">Langville and Meyer, n.d.</a>)) the Random Surfer model is usually used to refer to the introduction of a probability of travelling to any other node, this is discussed in CROSSREF</li>
 </ul></dd>
 </dl>
 </div>
@@ -3113,7 +3372,7 @@ the scope of this report (see e.g.
 <li>a vector of length \(n\) containing only the value 1.
 <ul class="org-ul">
 <li>The convention that a vector behaves as a vertical \(n \times 1 \) matrix will be used here.</li>
-<li>Some authors use \(\mathbf{e}\), see e.g. (<a href="#citeproc_bib_item_14">Langville and Meyer, n.d.</a>)</li>
+<li>Some authors use \(\mathbf{e}\), see e.g. (<a href="#citeproc_bib_item_15">Langville and Meyer, n.d.</a>)</li>
 </ul></li>
 </ul></li>
 <li>\(\mathbf{J} = \vec{1}\cdot \vec{1}^{\mathrm{T}} \iff \mathbf{J}_{i,j} = 1\)
@@ -3126,260 +3385,43 @@ the scope of this report (see e.g.
 <ul class="org-ul">
 <li>The probability of teleporting from one vertex to another during a random walk.
 <ul class="org-ul">
-<li>In the literature \(\alpha\) is often referred to as a damping factor (see e.g.  (<a href="#citeproc_bib_item_4">Berkhout and Heidergott, n.d.</a>; <a href="#citeproc_bib_item_6">Brinkmeier, n.d.</a>; <a href="#citeproc_bib_item_9">Fu, Lin, and Tsai, n.d.</a>; <a href="#citeproc_bib_item_11">Kamvar, Haveliwala, and Golub, n.d.</a>; <a href="#citeproc_bib_item_5">Bianchini, Gori, and Scarselli, n.d.</a>))</li>
+<li>In the literature \(\alpha\) is often referred to as a damping factor (see e.g.  (<a href="#citeproc_bib_item_5">Berkhout and Heidergott, n.d.</a>; <a href="#citeproc_bib_item_7">Brinkmeier, n.d.</a>; <a href="#citeproc_bib_item_10">Fu, Lin, and Tsai, n.d.</a>; <a href="#citeproc_bib_item_12">Kamvar, Haveliwala, and Golub, n.d.</a>; <a href="#citeproc_bib_item_6">Bianchini, Gori, and Scarselli, n.d.</a>))</li>
 </ul></li>
 </ul>
 <p>
-or a smoothing constant (see e.g (<a href="#citeproc_bib_item_12">Koppel and Schweitzer, n.d.</a>)).
+or a smoothing constant (see e.g (<a href="#citeproc_bib_item_13">Koppel and Schweitzer, n.d.</a>)).
 </p></li>
 </ul>
 </div>
 </div>
 </div>
-
-<div id="outline-container-orgd674af0" class="outline-3">
-<h3 id="orgd674af0"><span class="section-number-3">9.3</span> Random Surfer Model</h3>
-<div class="outline-text-3" id="text-9-3">
-</div>
-<div id="outline-container-issues" class="outline-4">
-<h4 id="issues"><span class="section-number-4">9.3.1</span> Issues</h4>
-<div class="outline-text-4" id="text-issues">
-<p>
-The approach in <a href="#PageRank-Generally">2</a> has the following issues
-</p>
-
-<ol class="org-ol">
-<li>Convergence of \eqref{eq:recurrence}
-<ol class="org-ol">
-<li>Will this relationship converge or diverge?</li>
-<li>How quickly will it converge?</li>
-<li>Will it converge uniquely?</li>
-</ol></li>
-<li>Reducible graphs
-<ol class="org-ol">
-<li>If it is not possible to perform a random walk across an entire graph for all initial conditions, this approach doesn&rsquo;t have a clear analogue.</li>
-</ol></li>
-<li>Cycles
-<ol class="org-ol">
-<li>A graph that is cyclical may not converge uniquely
-<ol class="org-ol">
-<li>Consider for example the graph \(A\rightarrow B\).</li>
-</ol></li>
-</ol></li>
-</ol>
-</div>
 </div>
 
-<div id="outline-container-markov" class="outline-4">
-<h4 id="markov"><span class="section-number-4">9.3.2</span> Markov Chains</h4>
-<div class="outline-text-4" id="text-markov">
-<p>
-The relationship in \eqref{eq:recurrence} is a <i>Markov Chain</i>  and it is known
-that the power method will converge: <sup><a id="fnr.9" class="footref" href="#fn.9">9</a></sup>
-</p>
-
-<ul class="org-ul">
-<li>for a stochastic irreducible markov chain (\textsection <a href="#citeproc_bib_item_8">Fouss, Saerens, and Shimbo, n.d., 1.5.5</a>),</li>
-<li>regardless of the initial condition of the process for an <i>aperiodic</i> Markov chain (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 4.4</a>)</li>
-</ul>
-</div>
-
-<div id="outline-container-stochastic" class="outline-5">
-<h5 id="stochastic"><span class="section-number-5">9.3.2.1</span> Stochastic</h5>
-<div class="outline-text-5" id="text-stochastic">
-<p>
-If a vertex had a 0 outdegree the corresponding column sum for the adjacency
-matrix describing that graph would also be zero and the matrix non-stochastic,
-this could occur in the context of a random walk where a link to a page with no
-outgoing links was followed (e.g. an image), this would be the end of the
-walk.
-</p>
-
-<p>
-So to ensure that \eqref{eq:recurrence} will converge, the probability transition
-matrix must be made stochastic, to acheive this a uniform probability of teleporing from a dead end to any other vertex can be introduced:
-</p>
-
-\begin{align}
-\mathrm{S} = \mathrm{T}+ \frac{\vec{a} \cdot \vec{1}^{\mathrm{T}} }{n} \label{eq:nearly-random-surfer}
-\end{align}
-
-<p>
-This however would not be sufficient to ensure that \eqref{eq:recurrence} would converge, in addition the transition probability matrix must be made irreducible and aperiodic (i.e. primitive). (<a href="#citeproc_bib_item_14">Langville and Meyer, n.d.</a>)
-</p>
-
-
-<div id="org7b9e7d0" class="figure">
-<p><img src="media/dot/stochastic_graph_example.dot.png" alt="stochastic_graph_example.dot.png" width="400px" />
-</p>
-<p><span class="figure-number">Figure 9: </span>\(D\) is a <i>dangling node</i>, a dead end during a random walk, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other vertex as per \eqref{eq:nearly-random-surfer} (denoted in red) will cause \(\mathbf{T}\) to be stochastic.</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org2bc1ec9" class="outline-5">
-<h5 id="org2bc1ec9"><span class="section-number-5">9.3.2.2</span> Irreducible</h5>
-<div class="outline-text-5" id="text-9-3-2-2">
-<p>
-A graph that allows travel from any given vertex to any other vertex is said to be irreducible (<a href="#citeproc_bib_item_14">Langville and Meyer, n.d.</a>), see for example figure <a href="#orgf919fb0">10</a>, this is important in the context of a random walk because only in an irreducible graph can all vertexes be reached from any initial condition.
-</p>
-
-
-<div id="orgf919fb0" class="figure">
-<p><img src="media/dot/reducible_graph_example.dot.png" alt="reducible_graph_example.dot.png" width="400px" />
-</p>
-<p><span class="figure-number">Figure 10: </span>Example of a reducible graph, observe that although \(C\) is not a dead end as discussed in <a href="#stochastic">9.3.2.1</a>, there is no way to travel from \(C\) to \(A\), by adding an edge such an edge in the resulting graph is irreducible. The resulting graph is also aperiodic (due to the loop on \(B\)) and stochastic, so there will be a stationary distribution corresponding to \eqref{eq:recurrence}.</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org8d20545" class="outline-5">
-<h5 id="org8d20545"><span class="section-number-5">9.3.2.3</span> Aperiodic</h5>
-<div class="outline-text-5" id="text-9-3-2-3">
-<p>
-An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right) \) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \mathbf{A} is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes <sup><a id="fnr.10" class="footref" href="#fn.10">10</a></sup>
-</p>
-
-
-
-<div id="org30fbdf0" class="figure">
-<p><img src="media/dot/aperiodic.dot.png" alt="aperiodic.dot.png" width="400px" />
-</p>
-<p><span class="figure-number">Figure 11: </span>A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic, this does not represent the random surfer model, which would in theory connect every vertex but with some probability.</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-fix" class="outline-5">
-<h5 id="fix"><span class="section-number-5">9.3.2.4</span> The Fix</h5>
-<div class="outline-text-5" id="text-fix">
-<p>
-To ensure that the transition probability matrix is primitive (i.e. irreducible and aperiodic) as well as stochastic, instead of introducing the possible to teleport out of dead ends, introduce a probability of teleporting to any node at any time (\(\alpha \)), this approach is known as the <i>Random Surfer</i> model and the transition probability matrix is given by (<a href="#citeproc_bib_item_18">Page and Brin, n.d.</a>) :
-</p>
-
-\begin{align}
-\mathbf{S} = \alpha \mathbf{T} + \frac{(1- \alpha)}{n} \mathbf{J} \label{eq:random-surfer}
-\end{align}
-
-<p>
-This matrix is primitive and stochastic and so will converge (it is also unfourtunately completely dense, see <a href="#solving-stationary-dist">3.1</a> (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 4.5</a>).
-</p>
-
-<p>
-The relation ship in \eqref{eq:recurrence} can now be re expressed as:
-</p>
-
-\begin{align}
-\vec{p_{i+1}} \rightarrow \mathbf{T} \vec{p}_{i} \label{eq:random-surfer-recurrence}
-\end{align}
-
-
-
-
-<div id="org7fe7a3d" class="figure">
-<p><img src="media/dot/random_surfer.dot.png" alt="random_surfer.dot.png" width="400px" />
-</p>
-<p><span class="figure-number">Figure 12: </span>A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue <i>teleportation</i> edges are introduced, these may be followed with a probability of \(1 - \alpha \)</p>
-</div>
-</div>
-</div>
-</div>
-<div id="outline-container-org61d6953" class="outline-4">
-<h4 id="org61d6953"><span class="section-number-4">9.3.3</span> Limitations</h4>
-<div class="outline-text-4" id="text-9-3-3">
-<p>
-The <i>Random Surfer</i> Model can only consider positively weighted edges, it cannot
-take into account negatively weighted edges. This limitation is increasingly
-important as techniques of sentiment analysis are developed which could indicate
-that links promote aversion rather than endorsement (e.g. a negative review or
-an innapropriate advertisement).
-</p>
-</div>
-</div>
-</div>
-<div id="outline-container-pwalk" class="outline-3">
-<h3 id="pwalk"><span class="section-number-3">9.4</span> Power walk</h3>
-<div class="outline-text-3" id="text-pwalk">
-<p>
-The <i>Power Walk</i> method is an alternative approach to develop a probability
-transition matrix to use in place of \eqref{eq:recurrence}.
-</p>
-
-<p>
-Let the probability of travelling to a non-adjacent vertex be some value \(x\)
-and \(\beta\) be the ratio of probability between following an edge or
-teleporting to another vertex.
-</p>
-
-<p>
-This transition probability matrix would be such that the probability of
-travelling some vertex \(j \rightarrow i\) would be :
-</p>
-
-\begin{align}
-\mathbf{W}_{i, j} = x\beta^{\mathbf{A_{i,j}}} \label{eq:prob-power-walk}
-\end{align}
-
-<p>
-Where \(\mathbf{W}\) denotes the power walk probability transition matrix.
-</p>
-
-<p>
-Whe probability of travelling to any given vertex must be 1 and so:
-</p>
-
-
-\begin{align}
-      1 &= \sum^{n}_{j= 1}   \left[ x \beta^{\mathbf{A_{i,j}}} \right] \\
-       \implies  x&= \left( \sum^{n}_{j= 1}   \beta^{\mathbf{A_{i,j}}}
-       \right)^{-1} \label{eq:powerwalk-x-val}
-\end{align}
-
-<p>
-Substituting the value of \(x\) from \eqref{eq:powerwalk-x-val} into \eqref{prob-power-walk} gives the probability as:
-</p>
-
-\begin{align}
-      \mathbf{W}_{i,j} &= \frac{\beta^{\mathbf{A}__i,j}}{\sum^{n}_{i=j}
-      \left[ \beta^{\mathbf{A}_{i,j}} \right] }
-\end{align}
-
-<p>
-In this model all vertices are interconnected by some probability of jumping to
-another vertex, so much like the random surfer model \eqref{eq:random-surfer} discussed
-at <a href="#fix">9.3.2.4</a> \(\mathbf{W}\) will be a primitive stochastic matrix and so if
-\(\mathbf{W}\) was used in place of \(\mathbf{T}\) in \eqref{eq:recurrence} a solution
-would exist.
-</p>
-</div>
-</div>
-</div>
-
-<div id="outline-container-org0a3843c" class="outline-2">
-<h2 id="org0a3843c"><span class="section-number-2">10</span> my to do list</h2>
+<div id="outline-container-org31dedc7" class="outline-2">
+<h2 id="org31dedc7"><span class="section-number-2">10</span> my to do list</h2>
 <div class="outline-text-2" id="text-10">
 </div>
-<div id="outline-container-org64fb035" class="outline-3">
-<h3 id="org64fb035"><span class="section-number-3">10.1</span> Look at the Trace of the Matrix as a comparison point</h3>
+<div id="outline-container-org08d8b86" class="outline-3">
+<h3 id="org08d8b86"><span class="section-number-3">10.1</span> Look at the Trace of the Matrix as a comparison point</h3>
 </div>
-<div id="outline-container-orgc05d486" class="outline-3">
-<h3 id="orgc05d486"><span class="section-number-3">10.2</span> Use BA Graphs</h3>
+<div id="outline-container-org222a573" class="outline-3">
+<h3 id="org222a573"><span class="section-number-3">10.2</span> Use BA Graphs</h3>
 <div class="outline-text-3" id="text-10-2">
 <p>
 **
 </p>
 </div>
 </div>
-<div id="outline-container-orgb8c4306" class="outline-3">
-<h3 id="orgb8c4306"><span class="section-number-3">10.3</span> TODO Diamater</h3>
+<div id="outline-container-orgb443b0e" class="outline-3">
+<h3 id="orgb443b0e"><span class="section-number-3">10.3</span> TODO Diamater</h3>
 <div class="outline-text-3" id="text-10-3">
 <p>
 Diamater of the web sounds like a fun read (<a href="#citeproc_bib_item_1">Albert, Jeong, and Barabási, n.d.</a>)
 </p>
 </div>
 </div>
-<div id="outline-container-orgff95a68" class="outline-3">
-<h3 id="orgff95a68"><span class="section-number-3">10.4</span> Improving the Performance of Page Rank</h3>
+<div id="outline-container-org26b2851" class="outline-3">
+<h3 id="org26b2851"><span class="section-number-3">10.4</span> Improving the Performance of Page Rank</h3>
 <div class="outline-text-3" id="text-10-4">
 <p>
 This:
@@ -3391,7 +3433,7 @@ Another approach involves involves reordering the problem and taking advantage
 of the fact that the transition probability matrix is sparse  in order
 to produce a new algorithm which cannot perform worse than the <i>power method</i>
 but has been shown to improve the rate of convergence in certain cases.
-(<a href="#citeproc_bib_item_13">Langville and Meyer, n.d.</a>).
+(<a href="#citeproc_bib_item_14">Langville and Meyer, n.d.</a>).
 </p>
 </blockquote>
 
@@ -3401,36 +3443,37 @@ There was also a book that I downloaded that mentioned it
 </p>
 
 <p>
-Accellerating the Computatoin of Page Rank (<a href="#citeproc_bib_item_14">Langville and Meyer, n.d.</a>)
+Accellerating the Computatoin of Page Rank (<a href="#citeproc_bib_item_15">Langville and Meyer, n.d.</a>)
 </p>
 
 <style>.csl-entry{text-indent: -1.5em; margin-left: 1.5em;}</style><h2 class='citeproc-org-bib-h2'>Bibliography</h2>
 <div class="csl-bib-body">
   <div class="csl-entry"><a name="citeproc_bib_item_1"></a>Albert, Réka, Hawoong Jeong, and Albert-László Barabási. n.d. “Diameter of the World-Wide Web” 401 (6749):130–31. <a href="http://www.nature.com/articles/43601">http://www.nature.com/articles/43601</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_2"></a>Barabási, Albert-László. n.d. “The Physics of the Web” 14 (7):33–38. <a href="https://iopscience.iop.org/article/10.1088/2058-7058/14/7/32">https://iopscience.iop.org/article/10.1088/2058-7058/14/7/32</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_3"></a>Barabási, Albert-László, Réka Albert, and Hawoong Jeong. n.d. “Scale-Free Characteristics of Random Networks: The Topology of the World-Wide Web” 281 (1-4):69–77. <a href="https://linkinghub.elsevier.com/retrieve/pii/S0378437100000182">https://linkinghub.elsevier.com/retrieve/pii/S0378437100000182</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_4"></a>Berkhout, Joost, and Bernd F. Heidergott. n.d. “Ranking Nodes in General Networks: A Markov Multi-Chain Approach” 28 (1):3–33. <a href="https://doi.org/10.1007/s10626-017-0248-7">https://doi.org/10.1007/s10626-017-0248-7</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_5"></a>Bianchini, Monica, Marco Gori, and Franco Scarselli. n.d. “Inside PageRank” 5 (1):92–128. <a href="http://portal.acm.org/citation.cfm?doid=1052934.1052938">http://portal.acm.org/citation.cfm?doid=1052934.1052938</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_6"></a>Brinkmeier, Michael. n.d. “PageRank Revisited” 6 (3). Association for Computing Machinery:282–301. <a href="http://ezproxy.uws.edu.au/login?url=http://search.ebscohost.com/login.aspx?direct=true&#38;db=iih&#38;AN=22173011&#38;site=ehost-live&#38;scope=site">http://ezproxy.uws.edu.au/login?url=http://search.ebscohost.com/login.aspx?direct=true&#38;db=iih&#38;AN=22173011&#38;site=ehost-live&#38;scope=site</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_7"></a>Chen, Mufa. n.d. <i>Eigenvalues, Inequalities, and Ergodic Theory</i>. Probability and Its Applications. Springer.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_8"></a>Fouss, François, Marco Saerens, and Masashi Shimbo. n.d. <i>Algorithms and Models for Network Data and Link Analysis</i>. Cambridge University Press.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_9"></a>Fu, Hwai-Hui, Dennis K. J. Lin, and Hsien-Tang Tsai. n.d. “Damping Factor in Google Page Ranking” 22 (5-6):431–44. <a href="http://onlinelibrary.wiley.com/doi/abs/10.1002/asmb.656">http://onlinelibrary.wiley.com/doi/abs/10.1002/asmb.656</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_10"></a>Gupta, Pankaj, Ashish Goel, Jimmy Lin, Aneesh Sharma, Dong Wang, and Reza Zadeh. n.d. “WTF: The Who to Follow Service at Twitter.” In <i>Proceedings of the 22nd International Conference on World Wide Web</i>, 505–14. WWW ’13. Association for Computing Machinery. <a href="http://doi.org/10.1145/2488388.2488433">http://doi.org/10.1145/2488388.2488433</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_11"></a>Kamvar, Sepandar, Taher Haveliwala, and Gene Golub. n.d. “Adaptive Methods for the Computation of PageRank,” Special Issue on the Conference on the Numerical Solution of Markov Chains 2003, 386:51–65. <a href="http://www.sciencedirect.com/science/article/pii/S0024379504000023">http://www.sciencedirect.com/science/article/pii/S0024379504000023</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_12"></a>Koppel, Moshe, and Nadav Schweitzer. n.d. “Measuring Direct and Indirect Authorial Influence in Historical Corpora” 65 (10):2138–44. <a href="https://asistdl.onlinelibrary.wiley.com/doi/abs/10.1002/asi.23118">https://asistdl.onlinelibrary.wiley.com/doi/abs/10.1002/asi.23118</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_13"></a>Langville, Amy N., and Carl D. Meyer. n.d. “A Reordering for the PageRank Problem” 27 (6). Society for Industrial and Applied Mathematics:9. <a href="http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1">http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_14"></a>———. n.d. <i>Google’s PageRank and Beyond: The Science of Search Engine Rankings</i>. Neuaufl. Princeton Univ. Press.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_15"></a>Larson, Ron, and Bruce H. Edwards. n.d. <i>Elementary Linear Algebra</i>. 2nd ed. D.C. Heath.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_16"></a>Meghabghab, George, and Abraham Kandel. n.d. <i>Search Engines, Link Analysis, and User’s Web Behavior: A Unifying Web Mining Approach</i>. Studies in Computational Intelligence. Springer.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_17"></a>Nathanael Ackerman, Alex Kruckman Cameron Freer, and Rehana Patel. n.d. “Properly Erodic Structures.” MIT. <a href="https://math.mit.edu/~freer/papers/properly-ergodic-structures.pdf">https://math.mit.edu/~freer/papers/properly-ergodic-structures.pdf</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_18"></a>Page, Larry, and Sergey Brin. n.d. “The Anatomy of a Large-Scale Hypertextual Web Search Engine” 30 (1-7). Elsevier:107–17. <a href="http://www.sciencedirect.com/science/article/pii/S016975529800110X">http://www.sciencedirect.com/science/article/pii/S016975529800110X</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_19"></a>Park, Laurence A. F., and Simeon Simoff. n.d. “Power Walk: Revisiting the Random Surfer.” In <i>Proceedings of the 18th Australasian Document Computing Symposium</i>, 50–57. ADCS ’13. Association for Computing Machinery. <a href="http://doi.org/10.1145/2537734.2537749">http://doi.org/10.1145/2537734.2537749</a>.</div>
-  <div class="csl-entry"><a name="citeproc_bib_item_20"></a>Zeng, Rui, Quan Z Sheng, Lina Yao, Tianwei Xu, and Dong Xie. n.d. “A Practical Simulation Method for Social Networks” 144:8.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_2"></a>Barabási, Albert-László. n.d. <i>Linked: The New Science of Networks</i>. Perseus Pub.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_3"></a>———. n.d. “The Physics of the Web” 14 (7):33–38. <a href="https://iopscience.iop.org/article/10.1088/2058-7058/14/7/32">https://iopscience.iop.org/article/10.1088/2058-7058/14/7/32</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_4"></a>Barabási, Albert-László, Réka Albert, and Hawoong Jeong. n.d. “Scale-Free Characteristics of Random Networks: The Topology of the World-Wide Web” 281 (1-4):69–77. <a href="https://linkinghub.elsevier.com/retrieve/pii/S0378437100000182">https://linkinghub.elsevier.com/retrieve/pii/S0378437100000182</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_5"></a>Berkhout, Joost, and Bernd F. Heidergott. n.d. “Ranking Nodes in General Networks: A Markov Multi-Chain Approach” 28 (1):3–33. <a href="https://doi.org/10.1007/s10626-017-0248-7">https://doi.org/10.1007/s10626-017-0248-7</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_6"></a>Bianchini, Monica, Marco Gori, and Franco Scarselli. n.d. “Inside PageRank” 5 (1):92–128. <a href="http://portal.acm.org/citation.cfm?doid=1052934.1052938">http://portal.acm.org/citation.cfm?doid=1052934.1052938</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_7"></a>Brinkmeier, Michael. n.d. “PageRank Revisited” 6 (3). Association for Computing Machinery:282–301. <a href="http://ezproxy.uws.edu.au/login?url=http://search.ebscohost.com/login.aspx?direct=true&#38;db=iih&#38;AN=22173011&#38;site=ehost-live&#38;scope=site">http://ezproxy.uws.edu.au/login?url=http://search.ebscohost.com/login.aspx?direct=true&#38;db=iih&#38;AN=22173011&#38;site=ehost-live&#38;scope=site</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_8"></a>Chen, Mufa. n.d. <i>Eigenvalues, Inequalities, and Ergodic Theory</i>. Probability and Its Applications. Springer.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_9"></a>Fouss, François, Marco Saerens, and Masashi Shimbo. n.d. <i>Algorithms and Models for Network Data and Link Analysis</i>. Cambridge University Press.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_10"></a>Fu, Hwai-Hui, Dennis K. J. Lin, and Hsien-Tang Tsai. n.d. “Damping Factor in Google Page Ranking” 22 (5-6):431–44. <a href="http://onlinelibrary.wiley.com/doi/abs/10.1002/asmb.656">http://onlinelibrary.wiley.com/doi/abs/10.1002/asmb.656</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_11"></a>Gupta, Pankaj, Ashish Goel, Jimmy Lin, Aneesh Sharma, Dong Wang, and Reza Zadeh. n.d. “WTF: The Who to Follow Service at Twitter.” In <i>Proceedings of the 22nd International Conference on World Wide Web</i>, 505–14. WWW ’13. Association for Computing Machinery. <a href="http://doi.org/10.1145/2488388.2488433">http://doi.org/10.1145/2488388.2488433</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_12"></a>Kamvar, Sepandar, Taher Haveliwala, and Gene Golub. n.d. “Adaptive Methods for the Computation of PageRank,” Special Issue on the Conference on the Numerical Solution of Markov Chains 2003, 386:51–65. <a href="http://www.sciencedirect.com/science/article/pii/S0024379504000023">http://www.sciencedirect.com/science/article/pii/S0024379504000023</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_13"></a>Koppel, Moshe, and Nadav Schweitzer. n.d. “Measuring Direct and Indirect Authorial Influence in Historical Corpora” 65 (10):2138–44. <a href="https://asistdl.onlinelibrary.wiley.com/doi/abs/10.1002/asi.23118">https://asistdl.onlinelibrary.wiley.com/doi/abs/10.1002/asi.23118</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_14"></a>Langville, Amy N., and Carl D. Meyer. n.d. “A Reordering for the PageRank Problem” 27 (6). Society for Industrial and Applied Mathematics:9. <a href="http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1">http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_15"></a>———. n.d. <i>Google’s PageRank and Beyond: The Science of Search Engine Rankings</i>. Neuaufl. Princeton Univ. Press.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_16"></a>Larson, Ron, and Bruce H. Edwards. n.d. <i>Elementary Linear Algebra</i>. 2nd ed. D.C. Heath.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_17"></a>Meghabghab, George, and Abraham Kandel. n.d. <i>Search Engines, Link Analysis, and User’s Web Behavior: A Unifying Web Mining Approach</i>. Studies in Computational Intelligence. Springer.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_18"></a>Nathanael Ackerman, Alex Kruckman Cameron Freer, and Rehana Patel. n.d. “Properly Erodic Structures.” MIT. <a href="https://math.mit.edu/~freer/papers/properly-ergodic-structures.pdf">https://math.mit.edu/~freer/papers/properly-ergodic-structures.pdf</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_19"></a>Page, Larry, and Sergey Brin. n.d. “The Anatomy of a Large-Scale Hypertextual Web Search Engine” 30 (1-7). Elsevier:107–17. <a href="http://www.sciencedirect.com/science/article/pii/S016975529800110X">http://www.sciencedirect.com/science/article/pii/S016975529800110X</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_20"></a>Park, Laurence A. F., and Simeon Simoff. n.d. “Power Walk: Revisiting the Random Surfer.” In <i>Proceedings of the 18th Australasian Document Computing Symposium</i>, 50–57. ADCS ’13. Association for Computing Machinery. <a href="http://doi.org/10.1145/2537734.2537749">http://doi.org/10.1145/2537734.2537749</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_21"></a>Renyi, Alfred, Erdos Paul, and Paul Erdos. n.d. “On Random Graphs I” 6 (290-297):18. <a href="http://www.leonidzhukov.net/hse/2016/networks/papers/erdos-1959-11.pdf">http://www.leonidzhukov.net/hse/2016/networks/papers/erdos-1959-11.pdf</a>.</div>
+  <div class="csl-entry"><a name="citeproc_bib_item_22"></a>Zeng, Rui, Quan Z Sheng, Lina Yao, Tianwei Xu, and Dong Xie. n.d. “A Practical Simulation Method for Social Networks” 144:8.</div>
   <div class="csl-entry">NO_ITEM_DATA:rosenDiscreteMathematicsIts2007</div>
   <div class="csl-entry">NO_ITEM_DATA:AdjacencyMatrix2020a</div>
   <div class="csl-entry">NO_ITEM_DATA:gaborcsardiIgraphManualPages2019</div>
   <div class="csl-entry">NO_ITEM_DATA:batesMatrixSparseDense2019a</div>
-  <div class="csl-entry">NO_ITEM_DATA:IgraphManualPages</div>
   <div class="csl-entry">NO_ITEM_DATA:garritanoWikipediaArticleNetworks2019</div>
   <div class="csl-entry">NO_ITEM_DATA:DOTLanguage</div>
   <div class="csl-entry">NO_ITEM_DATA:DOTGraphDescription2020</div>
@@ -3445,7 +3488,7 @@ Accellerating the Computatoin of Page Rank (<a href="#citeproc_bib_item_14">Lang
 
 <div class="footdef"><sup><a id="fn.1" class="footnum" href="#fnr.1">1</a></sup> <div class="footpara"><p class="footpara">Some
 authors define an adjacency matrix transposed (see e.g.
-(NO_ITEM_DATA:rosenDiscreteMathematicsIts2007, NO_ITEM_DATA:AdjacencyMatrix2020a; <a href="#citeproc_bib_item_16">Meghabghab and Kandel, n.d.</a>))
+(NO_ITEM_DATA:rosenDiscreteMathematicsIts2007, NO_ITEM_DATA:AdjacencyMatrix2020a; <a href="#citeproc_bib_item_17">Meghabghab and Kandel, n.d.</a>))
 this unfourtunately includes the <code>igraph</code> library
 (NO_ITEM_DATA:gaborcsardiIgraphManualPages2019) but that convention will not be
 followed in this paper</p></div></div>
@@ -3453,40 +3496,40 @@ followed in this paper</p></div></div>
 <div class="footdef"><sup><a id="fn.2" class="footnum" href="#fnr.2">2</a></sup> <div class="footpara"><p class="footpara">In this paper \(\vec{1}\) refers to a vector containing only
 values of 1, the size of which should be clear from the context</p></div></div>
 
-<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">This assumes that the transition
+<div class="footdef"><sup><a id="fn.3" class="footnum" href="#fnr.3">3</a></sup> <div class="footpara"><p class="footpara">A <i>Markov Chain</i> is
+simply any process that evolves depending on it&rsquo;s current condition, it&rsquo;s
+interesting to note however that the theory of <i>Markov Chains</i> is not mentioned in any
+of the original papers by page and brin
+(\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 4.4</a>)</p></div></div>
+
+<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">Actually it would be sufficient to merely link one vertex to itself (\textsection <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 15.2</a>) but this isn&rsquo;t very illustrative or helpful in this context</p></div></div>
+
+<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">This assumes that the transition
 probability matrix is stochastic and primitive as it would be for \(\mathbf{S}\)
 and \(\mathbf{W}\)</p></div></div>
 
-<div class="footdef"><sup><a id="fn.4" class="footnum" href="#fnr.4">4</a></sup> <div class="footpara"><p class="footpara">More accurately the eigenvector specifically scaled
+<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">More accurately the eigenvector specifically scaled
 specifically to 1, so it would be more correct to say the eigenvector
 \(\frac{\vec{x}}{\sum \vec{x}} \)</p></div></div>
 
-<div class="footdef"><sup><a id="fn.5" class="footnum" href="#fnr.5">5</a></sup> <div class="footpara"><p class="footpara">Although this matrix may
+<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7">7</a></sup> <div class="footpara"><p class="footpara">Although this matrix may
 still have columns that sum to zero and will hence be non-stochastic</p></div></div>
 
-<div class="footdef"><sup><a id="fn.6" class="footnum" href="#fnr.6">6</a></sup> <div class="footpara"><p class="footpara">Although I&rsquo;m not quite sure why \(\alpha\) is \(\xi_{2}\) either</p></div></div>
+<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8">8</a></sup> <div class="footpara"><p class="footpara">Although I&rsquo;m not quite sure why \(\alpha\) is \(\xi_{2}\) either</p></div></div>
 
-<div class="footdef"><sup><a id="fn.7" class="footnum" href="#fnr.7">7</a></sup> <div class="footpara"><p class="footpara">
+<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9">9</a></sup> <div class="footpara"><p class="footpara">
 NOTE: Similar to a signmoid function, which is a solution to \(p \propto p(1-p)\), I wonder if this provides a connection to the exponential nature of the power walk
 `﻿erdos.renyi﻿`﻿erdos.renyi﻿``
 </p></div></div>
 
-<div class="footdef"><sup><a id="fn.8" class="footnum" href="#fnr.8">8</a></sup> <div class="footpara"><p class="footpara">see generally (Ch. <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 15</a>) for further reading</p></div></div>
-
-<div class="footdef"><sup><a id="fn.9" class="footnum" href="#fnr.9">9</a></sup> <div class="footpara"><p class="footpara">A <i>Markov Chain</i> is
-simply any process that evolves depending on it&rsquo;s current condition, it&rsquo;s
-interesting to note however that the theory of <i>Markov Chains</i> is not mentioned in any
-of the original papers by page and brin
-(\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 4.4</a>)</p></div></div>
-
-<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10">10</a></sup> <div class="footpara"><p class="footpara">Actually it would be sufficient to merely link one vertex to itself (\textsection <a href="#citeproc_bib_item_14">Langville and Meyer, n.d., 15.2</a>) but this isn&rsquo;t very illustrative or helpful in this context</p></div></div>
+<div class="footdef"><sup><a id="fn.10" class="footnum" href="#fnr.10">10</a></sup> <div class="footpara"><p class="footpara">see generally (Ch. <a href="#citeproc_bib_item_15">Langville and Meyer, n.d., 15</a>) for further reading</p></div></div>
 
 
 </div>
 </div></div>
 <div id="postamble" class="status">
 <p class="author">Author: Ryan Greenup</p>
-<p class="date">Created: 2020-10-15 Thu 17:04</p>
+<p class="date">Created: 2020-10-15 Thu 23:18</p>
 </div>
 </body>
 </html>

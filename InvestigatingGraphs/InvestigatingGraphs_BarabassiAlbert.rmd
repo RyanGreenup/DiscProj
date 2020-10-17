@@ -6,6 +6,13 @@ output: html_notebook
 # Investigating Second Eigenvalue
 
 ```{r}
+  if (require("PageRank")) {
+      library(PageRank)
+    }else{
+      devtools::install_github("ryangreenup/PageRank")
+      library(PageRank)
+    }
+
   library(pacman)
   pacman::p_load(PageRank, devtools, Matrix, igraph, mise, tidyverse, rgl, latex2exp)
 #  mise()
@@ -20,30 +27,27 @@ output: html_notebook
 Define some constants
 
 ```{r}
-n <- 20
-p <- 1:n/n
-m <- 1:10
-beta <- 1:n/n
-beta <- runif(n)*100
-#sz <- 1:n/n+10
-sz <- (1:n/n)*100+10
-input_var <- expand.grid("n" = n, "m" = m, "p" = p, "beta" = beta, "size" = sz)
+m    <- seq(from = 1, to = 10, length.out = 5)
+m <- 5
+beta <- seq(from = 1, to = 20, length.out = 10)
+sz <- seq(from = 10, to = 1000, length.out = 10)
+input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
 input_var
 ```
 
 ### Function to Build Graph
 
 ```{r}
-random_graph <- function(n, power, m, beta, size) {
-      g1 <- igraph::sample_pa(n = size, power = power, m = m, directed = TRUE)
+random_graph <- function(m, beta, size) {
+      g1 <- igraph::sample_pa(n = size, power = 3, m = m)
       A <- igraph::get.adjacency(g1) # Row to column
       A <- Matrix::t(A)
 
       A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
+      T      <- PageRank::power_walk_prob_trans(A, beta = beta)
+      tr     <- sum(diag(T))
       e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_dens, A_det))
+      return(c(abs(e2), mean(A), tr))
 }
 ```
 
@@ -52,22 +56,21 @@ random_graph <- function(n, power, m, beta, size) {
 Map the function
 
 ```{r}
-nc <- length(random_graph(1, 1, 1, 1, 1))
+rm(Y, data)
+nc <- length(random_graph(1, 1, 1))
 Y <- matrix(ncol = nc, nrow = nrow(input_var))
 for (i in 1:nrow(input_var)) {
   X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$m, X$beta, X$size)
+  Y[i,] <-  random_graph(X$m, X$beta, X$size)
+  print(i/nrow(input_var))
 }
 if (sum(abs(Y) != abs(Re(Y))) == 0) {
   Y <- Re(Y)
 }
 nrow(input_var)
 nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant")
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "A_dens", "trace")
 (data <- cbind(input_var, Y)) %>% head()
-data <- data[data$density!=0,]
-
-
 ```
 
 
@@ -75,356 +78,296 @@ data <- data[data$density!=0,]
 
 
 ```{r}
-
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
-index  <- seq(from = 0, to = 2.2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = TeX("$\\xi_2$ of $T_{PW}$"))
-```
-
-```{r}
-mod <- lm(eigenvalue2 ~ poly(density, 1), data = data)
-mod$residuals %>%  hist(breaks = 90)
-hist(rnorm(3000), breaks = 100)
-plot(mod)
-
-```
-
-
-This is interesting, lets look at a snapshot of it:
-
-```{r}
 pairs(data)
+cor(data)
+library(corrplot)
+cormat = cor(data, method = 'spearman')
+corrplot(cormat, method = "ellipse", type = "lower")
+names(data)
 ```
+Let's look at a 3d Output
 
 ```{r}
-library(scatterplot3d)
-shapes = c(16, 17, 18) 
-shapes <- shapes[as.numeric(iris$Species)]
-scatterplot3d(iris[,1:3], pch = shapes)
-```
-```{r}
-d <- data[,names(data) %in% c("eigenvalue2", "density", "determinant")]
-scatterplot3d(d, angle = 10)
-```
-```{r}
+names(data)
 library(plotly)
 
-mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
-mtcars$am[which(mtcars$am == 1)] <- 'Manual'
-mtcars$am <- as.factor(mtcars$am)
+# d <- data[sample(1:nrow(data), 100),]
 
-d <- data[sample(1:nrow(data), 1000),]
-
-fig <- plot_ly(d, x = ~determinant, y = ~density, z = ~eigenvalue2)
+fig <- plot_ly(d, x = ~A_dens, y = ~beta, z = ~eigenvalue2)
 fig <- fig %>% add_markers(size = 1)
-fig <- fig %>% layout(scene = list(xaxis = list(title = 'Weight'),
-                     yaxis = list(title = 'Gross horsepower'),
-                     zaxis = list(title = '1/4 mile time')))
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'size'),
+                     yaxis = list(title = 'Beta'),
+                     zaxis = list(title = 'E2')))
+
+fig
+
+```
+
+```{r}
+
+names(data)
+library(plotly)
+
+# d <- data[sample(1:nrow(data), 1000),]
+
+fig <- plot_ly(d, x = ~A_dens, y = ~trace, z = ~eigenvalue2)
+fig <- fig %>% add_markers(size = 1)
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'Density'),
+                     yaxis = list(title = 'trace'),
+                     zaxis = list(title = 'E2')))
 
 fig
 
 ```
 
 
+Clearly I should be able to model this.
 
+Let's look at density, it's continuous so I should be able to  take splices of A_dens.
 
-OK so nothing great, well the spread is heteroskedastic so let's log transform it:
+A_dens is dependent on p, so I'll just use different ps
+
 
 ```{r}
+m    <- seq(from = 1, to = 9, length.out = 2)
+beta <- seq(from = 1, to = 6, length.out = 10)
+sz <- seq(from = 100, to = 1000, length.out = 4) %>% rev() # Big numbers first 
 
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
-index  <- seq(from = 0, to = 2.2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data, aes(x = density, y = log(eigenvalue2))) +
-  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
-#  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1.5)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-```
-
-We could probably model this with a quadratic:
-
-```{r}
-mod_x1 <- lm(log(eigenvalue2) ~ poly(density, 1), data = data)
-data$x1 <- predict(mod_x1)
-
-mod_x2 <- lm(log(eigenvalue2) ~ poly(density, 2), data = data)
-data$x2 <- predict(mod_x2)
-
-mod_x3 <- lm(log(eigenvalue2) ~ poly(density, 3), data = data)
-data$x3 <- predict(mod_x3)
-
-mod_x4 <- lm(log(eigenvalue2) ~ poly(density, 4), data = data)
-data$x4 <- predict(mod_x4)
-
-mod_x5 <- lm(log(eigenvalue2) ~ poly(density, 5), data = data)
-data$x5 <- predict(mod_x5)
-
-mod_x5 <- lm(log(eigenvalue2) ~ poly(density, 5), data = data)
-data$x5 <- predict(mod_x5)
-
-mod_x6 <- lm(log(eigenvalue2) ~ poly(density, 6), data = data)
-data$x6 <- predict(mod_x6)
+input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+input_var
 
 
-mod_xl <- lm(log(eigenvalue2) ~ log(1-density), data = data)
-data$xl <- predict(mod_xl)
-max(mod_xl$residuals)*2
-```
-
-```{r}
-# TODO Change the colour of each model by using pivot_longer
-# TODO Make a plot of degree vs RSS, comment that the lack of elbo is evidence to regect
-# TODO Try a negative log, any luck? with that
-# TODO Does this vary by beta?
-# TODO Write it up in a report
-# DONE What about a sqrt transform and then a linear model?
-  # Leaves too much variance
-ggplot(data, aes(x = density, y = log(eigenvalue2))) +
-  geom_point(mapping = aes(size = size, alpha = 0.01,  color = size, shape = factor(n))) +
-#  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1.5)) +
-  labs(x = "Density of Adjacency Matrix [ mean(A) ]", y = TeX("$\\log\\left( \\xi_2 \\right)$ of T")) +
-  geom_line(aes(x = density, y = x1, lwd = 2)) +
-  geom_line(aes(x = density, y = xl, lwd = 3)) 
-#  geom_line(aes(x = density, y = x3, lwd = 0.5)) +
-#  geom_line(aes(x = density, y = x4, lwd = 0.5)) +
-#  geom_line(aes(x = density, y = x5, lwd = 0.5)) +
-# geom_line(aes(x = density, y = x6, lwd = 36)) 
-
-
-
-```
-
-
-
-#### Model Chi Distribution
-
-NOPE
-
-```{r}
-
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
-index  <- seq(from = 0, to = 2.2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-
-```
-
-
-
-## Looking at Determinant
-
-
-constants:
-
-```{r}
-n <- 20
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- ((1:n)/n)*100+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-```
-
-functions:
-
-```{r}
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
-
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(abs(e2)-0.4), abs(A_det), A_dens))
-}
-```
-
-Map the function
-
-```{r}
-nc <- length(random_graph(1, 1, 1, 1))
+rm(Y, data)
+nc <- length(random_graph(1, 1, 1))
 Y <- matrix(ncol = nc, nrow = nrow(input_var))
 for (i in 1:nrow(input_var)) {
   X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+  Y[i,] <-  random_graph(X$m, X$beta, X$size)
+  print(i/nrow(input_var))
 }
 if (sum(abs(Y) != abs(Re(Y))) == 0) {
   Y <- Re(Y)
 }
 nrow(input_var)
 nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-data <- cbind(input_var, Y)
-
-
-
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "A_dens", "trace")
+(data2 <- cbind(input_var, Y)) %>% head()
+# save(data2, file = "/home/ryan/Sync/Studies/2020Spring/DiscProj/data2_ba.rdata")
+# load(file = "/home/ryan/Sync/Studies/2020Spring/DiscProj/data2_ba.rdata")
 ```
 
 
-
 ```{r}
-ggplot(data) +
-  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = size, color = beta, shape = factor(n))) +
+data2$p <- (data2$m/data2$size)
+names(data2)
+ggplot(data2, mapping = aes(col = factor(p), x = beta, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth(method = 'lm') +
   scale_size_continuous(range = c(0.1,1)) +
-  labs(y = "||e2|-0.4|", x = TeX("$\\left\\lvert A \\right\\rvert $"))
-
+  labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Link Density (by m/n)"))  +
+  theme_bw()
 ```
+It appears that m/n=density is its own feature, it does not affect E2 linearly so lets hold beta constant and see how it affects E2.
+
+If for instance m/n increases, say quadratically for a constant beta,
+then I should try and fit a linear model to (m/n)^2*beta
 
 ```{r}
-g1 <- igraph::erdos.renyi.game(n = sz, p)
-coords <- layout_with_fr(g1, dim = 3)
-# plot(g1)
-rglplot(g1, layout=coords, size = 0.1)
-```
+m    <- seq(from = 1, to = 9, length.out = 20)
+beta <- seq(from = 1, to = 6, length.out = 10)
+beta <- 25
+sz <- seq(from = 100, to = 1000, length.out = 10) %>% rev() # Big numbers first 
+
+input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+input_var
 
 
-```{r}
-
-## Not run: 
-g <- make_lattice( c(5,5,5) )
-coords <- layout_with_fr(g, dim=3)
-rglplot(g, layout=coords)
-
-## End(Not run)
-
-
-
-```
-
-
-```{r}
-n <- sz <- size <-  10^3
-p <- 0.
-g1 <- igraph::erdos.renyi.game(n = sz, p)
-A <- igraph::get.adjacency(g1) # Row to column
-A <- Matrix::t(A)
-det(A)
-
-```
-
-
-```{r}
-ggplot(data) +
-  geom_point(mapping = aes(x = size, y = determinant, size = size, color = beta, shape = factor(n))) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "size", y = "determinant")
-
-```
-
-
-
-
-
-
-
-
-## Get Different Data
-
-
-constants:
-
-```{r}
-n <- 10
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- 1:n/n+100
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-```
-
-functions:
-
-```{r}
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
-
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_det, A_dens))
-}
-```
-
-Map the function
-
-```{r}
-nc <- length(random_graph(1, 1, 1, 1))
+rm(Y, data)
+nc <- length(random_graph(1, 1, 1))
 Y <- matrix(ncol = nc, nrow = nrow(input_var))
 for (i in 1:nrow(input_var)) {
   X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+  Y[i,] <-  random_graph(X$m, X$beta, X$size)
+  print(i/nrow(input_var))
 }
 if (sum(abs(Y) != abs(Re(Y))) == 0) {
   Y <- Re(Y)
 }
 nrow(input_var)
 nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-data <- cbind(input_var, Y)
-
-
-
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "A_dens", "trace")
+(data2 <- cbind(input_var, Y)) %>% head()
 ```
 
 
 
 ```{r}
-
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
-index  <- seq(from = 0, to = 2.2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = size, color = beta, shape = factor(n))) +
+data2$p <- (data2$m/data2$size)
+names(data2)
+ggplot(data2, mapping = aes(col = factor(size), x = m/size, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth(method = 'lm') +
   scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-
+  labs(x = "m/size", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Size"))  +
+  theme_bw()
 ```
+So what about when I very m, i.e. lets map that to colour now:
 
 ```{r}
-g1 <- igraph::erdos.renyi.game(n = sz, p)
-coords <- layout_with_fr(g1, dim = 3)
-# plot(g1)
-# rglplot(g1, layout=coords, size = 0.1)
+m <- 1:8
+beta <- seq(from = 1, to = 6, length.out = 10)
+beta <- 5
+sz <- seq(from = 100, to = 1000, length.out = 20) %>% rev() # Big numbers first 
+
+input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+input_var
+
+
+rm(Y, data)
+nc <- length(random_graph(1, 1, 1))
+Y <- matrix(ncol = nc, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$m, X$beta, X$size)
+  print(i/nrow(input_var))
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "A_dens", "trace")
+(data2 <- cbind(input_var, Y)) %>% head()
+
+
+
+data2$p <- (data2$m/data2$size)
+names(data2)
+ggplot(data2, mapping = aes(col = factor(m), x = m/size, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "m/size", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Vertices Added\n Each Step"))  +
+  theme_bw()
 ```
+
+
+Even though it's hard to capture the behaviour of m/n, the size of the graph and the average outdegree are going to be constants and so this relationship should persist
+for graphs where m<<n.
+
+
+
+actually if they are all linearly related, maybe I could use a multiple linear regression?
+
+```{r}
+m <- 1:8
+beta <- seq(from = 1, to = 20, length.out = 100)
+sz <- seq(from = 100, to = 1000, length.out = 20) %>% rev() # Big numbers first 
+
+input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+input_var
+
+
+rm(Y, data)
+nc <- length(random_graph(1, 1, 1))
+Y <- matrix(ncol = nc, nrow = nrow(input_var))
+for (i in 1:nrow(input_var)) {
+  X <- as.vector(input_var[i,])
+  Y[i,] <-  random_graph(X$m, X$beta, X$size)
+  print(i/nrow(input_var))
+}
+if (sum(abs(Y) != abs(Re(Y))) == 0) {
+  Y <- Re(Y)
+}
+nrow(input_var)
+nrow(Y)
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "A_dens", "trace")
+(data2 <- cbind(input_var, Y)) %>% head()
+
+
+
+
+
+
+
+mod <- lm(eigenvalue2 ~ m/size + size + m + beta, data2)
+summary(mod)
+plot(mod)
+```
+
+
+
+
+
+```{r}
+mod <- lm(eigenvalue2 ~ m/size + m + size + beta , data = data2)
+max(data2$m/data2$size)
+summary(mod)
+# layout(mat = matrix(1:4, nrow = 2))
+# plot(mod)
+# mean(mod$residuals**2)
+hist(mod$residuals, breaks = 200)
+```
+
+
+
+Clearly non-normal residuals but +-5% is pretty good for a very complicated result.
+
+
+
+
+
+I think I already looked at this but this again shows the relly clear, near linear relationship.
+
+
+```{r}
+ggplot(data2, mapping = aes(col = factor(m), x = beta, y = eigenvalue2)) +
+  geom_smooth(size = 0.5) +
+#  stat_smooth() +
+  scale_size_continuous(range = c(0.1,1)) +
+  labs(x = "beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Vertices Added\n Each Step"))  +
+  theme_bw()
+```
+
+Obviously we can't know m, but, we can know the average out degree, so let's,
+take a graph,
+measure the average out degree,
+use our model,
+measure it's performance.
+
 
 
 ```{r}
 
-## Not run: 
-g <- make_lattice( c(5,5,5) )
-coords <- layout_with_fr(g, dim=3)
-rglplot(g, layout=coords)
-
-## End(Not run)
-
-
-
 ```
 
 
-```{r}
-n <- sz <- size <-  100
-p <- 0.4
-g1 <- igraph::erdos.renyi.game(n = sz, p)
-A <- igraph::get.adjacency(g1) # Row to column
-A <- Matrix::t(A)
-det(A)
-```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

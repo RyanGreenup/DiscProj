@@ -27,30 +27,26 @@ output: html_notebook
 Define some constants
 
 ```{r}
-n <- 20
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-#sz <- 1:n/n+10
-sz <- (1:n/n)*100+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
+p    <- seq(from = 0.01, to = 0.99, length.out = 10)
+beta <- seq(from = 1, to = 20, length.out = 4)
+sz <- seq(from = 100, to = 10, length.out = 5)
+input_var <- expand.grid("p" = p, "beta" = beta, "size" = sz)
 input_var
 ```
 
 ### Function to Build Graph
 
 ```{r}
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
+random_graph <- function(p, beta, size) {
+      g1 <- igraph::erdos.renyi.game(n = size, p)
       A <- igraph::get.adjacency(g1) # Row to column
       A <- Matrix::t(A)
 
       A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
+      T      <- PageRank::power_walk_prob_trans(A, beta = beta)
       tr     <- sum(diag(T))
       e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(T)
-      return(c(abs(e2), A_dens, A_det, tr))
+      return(c(abs(e2), mean(A), tr))
 }
 ```
 
@@ -59,21 +55,20 @@ random_graph <- function(n, p, beta, size) {
 Map the function
 
 ```{r}
-nc <- length(random_graph(1, 1, 1, 1))
+nc <- length(random_graph(1, 1, 1))
 Y <- matrix(ncol = nc, nrow = nrow(input_var))
 for (i in 1:nrow(input_var)) {
   X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+  Y[i,] <-  random_graph(X$p, X$beta, X$size)
+  print(i/nrow(input_var))
 }
 if (sum(abs(Y) != abs(Re(Y))) == 0) {
   Y <- Re(Y)
 }
 nrow(input_var)
 nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "density", "determinant", "trace")
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "A_dens", "trace")
 (data <- cbind(input_var, Y)) %>% head()
-data <- data[data$density!=0,]
-
 ```
 
 
@@ -81,432 +76,150 @@ data <- data[data$density!=0,]
 
 
 ```{r}
-mod <- lm(eigenvalue2 ~ poly(density, 1), data = data)
-mod$residuals %>%  hist(breaks = 90)
-hist(rnorm(3000), breaks = 100)
-plot(mod)
-
-```
-
-
-This is interesting, lets look at a snapshot of it:
-
-```{r}
 pairs(data)
 cor(data)
 library(corrplot)
-corrplot(cor(data), method = "ellipse", type = "lower")
+cormat = cor(data, method = 'spearman')
+corrplot(cormat, method = "ellipse", type = "lower")
 names(data)
 ```
+Let's look at a 3d Output
 
 ```{r}
-library(scatterplot3d)
-shapes = c(16, 17, 18) 
-shapes <- shapes[as.numeric(iris$Species)]
-scatterplot3d(iris[,1:3], pch = shapes)
+# plot3d(data$beta, data$A_dens, data$eigenvalue2, size = 2)
 ```
+
+
+
 ```{r}
-d <- data[,names(data) %in% c("eigenvalue2", "density", "determinant")]
-scatterplot3d(d, angle = 10)
-```
-```{r}
+
+names(data)
 library(plotly)
 
-mtcars$am[which(mtcars$am == 0)] <- 'Automatic'
-mtcars$am[which(mtcars$am == 1)] <- 'Manual'
-mtcars$am <- as.factor(mtcars$am)
+d <- data[sample(1:nrow(data), 1000),]
+d <- data
+# d$beta <- log(d$beta)
+
+fig <- plot_ly(d, x = ~A_dens, y = ~beta, z = ~eigenvalue2)
+fig <- fig %>% add_markers(size = 1)
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'Density'),
+                     yaxis = list(title = 'Beta'),
+                     zaxis = list(title = 'E2')))
+
+fig
+
+```
+
+```{r}
+
+names(data)
+library(plotly)
 
 d <- data[sample(1:nrow(data), 1000),]
 
-fig <- plot_ly(d, x = ~determinant, y = ~density, z = ~eigenvalue2)
+fig <- plot_ly(d, x = ~A_dens, y = ~trace, z = ~eigenvalue2)
 fig <- fig %>% add_markers(size = 1)
-fig <- fig %>% layout(scene = list(xaxis = list(title = 'Weight'),
-                     yaxis = list(title = 'Gross horsepower'),
-                     zaxis = list(title = '1/4 mile time')))
+fig <- fig %>% layout(scene = list(xaxis = list(title = 'Density'),
+                     yaxis = list(title = 'trace'),
+                     zaxis = list(title = 'E2')))
 
 fig
 
 ```
 
 
+Clearly I should be able to model this.
 
-```{r}
-ggplot(data) +
-  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size )) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = TeX("$\\xi_2$ of $T_{PW}$"), title = TeX("$\\xi_2$ of $T_{PW}$") ) +
-  guides(size = FALSE, col = FALSE)
-```
+Let's look at density, it's continuous so I should be able to  take splices of A_dens.
 
-
-well the spread is heteroskedastic so let's log transform it:
-
+A_dens is dependent on p, so I'll just use different ps
 
 
 ```{r}
-ggplot(data, aes(x = density, y = log(eigenvalue2))) +
-  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
-#  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1.5)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-```
+p    <- seq(from = 0.1, to = 0.95, length.out = 5)
+beta <- seq(from = 1, to = 10, length.out = 1000)
+size = 100
+input_var <- expand.grid("p" = p, "beta" = beta, "size" = size)
+input_var
 
-We could probably model this with a quadratic:
-
-```{r}
-mod_x1 <- lm(log(eigenvalue2) ~ poly(density, 1), data = data)
-data$x1 <- predict(mod_x1)
-
-mod_x2 <- lm(log(eigenvalue2) ~ poly(density, 2), data = data)
-data$x2 <- predict(mod_x2)
-
-mod_x4 <- lm(log(eigenvalue2) ~ poly(density, 4), data = data)
-data$x4 <- predict(mod_x4)
-
-mod_xl <- lm(log(eigenvalue2) ~ log(1-density), data = data)
-data$xl <- predict(mod_xl)
-
-mod_df <- data
-mod_df_long <- pivot_longer(mod_df, cols = c(x1, x2, x4, xl), names_to = "Model_Type", values_to = "eigenvalue2_mod")
-mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
-
-
-print(c("MSE Linear"  = mean(mod_x1$residuals^2),
-        "MSE Quadratic" = mean(mod_x2$residuals^2),
-        "MSE Quartic" = mean(mod_x4$residuals^2),
-        "MSE Logarithmic" = mean(mod_xl$residuals^2)
-        ), 2)
-```
-
-```{r}
-ggplot(mod_df_long, aes(x = density)) +
-  geom_point(aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.1, alpha = 0.2) +
-  geom_smooth(aes(y = eigenvalue2_mod, col = Model_Type), size = 0.9) +
-  labs(col = c("Model \nType")) +
-  scale_color_discrete(labels = c("Linear", "Quadratic", "Quartic", "Logarithmic")) +
-  labs(x = "Density of A", y = TeX("$\\log \\left( \\xi_2 \\right$ of $\\mathbf{T}$")) +
-  theme_linedraw()
-```
-
-```{r}
-data.frame("Model" = c("Linear", "Logarithmic"))
-ggplot()
-```
-
-
-```{r}
-# TODO Change the colour of each model by using pivot_longer
-# TODO Make a plot of degree vs RSS, comment that the lack of elbo is evidence to regect
-# TODO Try a negative log, any luck? with that
-# TODO Does this vary by beta?
-# TODO Write it up in a report
-# DONE What about a sqrt transform and then a linear model?
-  # Leaves too much variance
-ggplot(data, aes(x = density, y = log(eigenvalue2))) +
-  geom_point(mapping = aes(size = size, alpha = 0.01,  color = size, shape = factor(n))) +
-#  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1.5)) +
-  labs(x = "Density of Adjacency Matrix [ mean(A) ]", y = TeX("$\\log\\left( \\xi_2 \\right)$ of T")) +
-  geom_line(aes(x = density, y = x1, lwd = 2)) +
-  geom_line(aes(x = density, y = xl, lwd = 3)) 
-#  geom_line(aes(x = density, y = x3, lwd = 0.5)) +
-#  geom_line(aes(x = density, y = x4, lwd = 0.5)) +
-#  geom_line(aes(x = density, y = x5, lwd = 0.5)) +
-# geom_line(aes(x = density, y = x6, lwd = 36)) 
-
-
-
-```
-#### Look at the Trace of T
-
-```{r}
-ggplot(data, aes(x = trace , y = log(eigenvalue2))) +
-  geom_point(mapping = aes(size = size, color = p, shape = factor(n))) +
-#  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1.5)) +
-  labs(x = "Trace of Transition Matrix", y = TeX("$\\log\\left( \\xi_2 \\right)$ of \\mathbf{W}"))
-```
-
-```{r}
-mod_df <- data
-
-mod_hyp <- lm(log(eigenvalue2) ~ I(trace^(-1)), data = data)
-mod_df$hyp <- predict(mod_hyp)
-
-mod_log <- lm(log(eigenvalue2) ~ log(trace), data = data)
-mod_df$log <- predict(mod_log)
-
-```
-
-```{r}
-ggplot(mod_df, aes(x = trace, y = log(eigenvalue2))) +
-  geom_point(mapping = aes(size = size, alpha = 0.01,  color = size, shape = factor(n))) +
-#  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1.5)) +
-  labs(x = "Trace of A", y = TeX("$\\log\\left( \\xi_2 \\right)$ of T")) +
-  geom_line(aes(x = trace, y = hyp, lwd = 2)) +
-  geom_line(aes(x = trace, y = log, lwd = 2))
-```
-
-```{r}
-
-mod_df <- data
-
-mod_hyp <- lm(log(eigenvalue2) ~ 0 + I(trace^(-1)), data = data)
-mod_df$hyp <- predict(mod_hyp)
-
-mod_log <- lm(log(eigenvalue2) ~ 0 + log(trace), data = data)
-mod_df$log <- predict(mod_log)
-
-
-mod_df_long <- pivot_longer(mod_df, cols = c(hyp, log), names_to = "Model_Type", values_to = "eigenvalue2_mod")
-mod_df_long$eigenvalue2_log <- log(mod_df_long$eigenvalue2)
-
-
-print(c("MSE Hyperbolic"  = mean(mod_hyp$residuals^2),
-        "MSE Logarithmic" = mean(mod_log$residuals^2)), 2)
-```
-
-
-
-```{r}
-
-ggplot(mod_df_long, aes(x = trace)) +
-  geom_point(shape = 23, aes(y = eigenvalue2_log), fill = "lightblue", col = "black", size = 0.7, alpha = 0.4) +
-  geom_line(aes(y = eigenvalue2_mod, col = Model_Type), size = 1) +
-  labs(col = c("Model \nType")) +
-  scale_color_manual(labels = c("Hyperbolic", "Logarithmic"),
-                     values = c("indianred", "royalblue")) +
-  labs(x = "Trace of A", y = TeX("$\\log \\left( \\xi_2 \\right$ of $\\mathbf{T}$"))
-  theme_linedraw()
-```
-
-
-
-
-#### Model Chi Distribution
-
-NOPE
-
-```{r}
-
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
-index  <- seq(from = 0, to = 2.2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = density, y = eigenvalue2, size = beta, color = size, shape = factor(n))) +
-  geom_line(data = chidata, mapping = aes(x = index, y = chi)) +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-
-```
-
-
-
-## Looking at Determinant
-
-
-constants:
-
-```{r}
-n <- 20
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- ((1:n)/n)*100+10
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-```
-
-functions:
-
-```{r}
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
-
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(abs(e2)-0.4), abs(A_det), A_dens))
-}
-```
-
-Map the function
-
-```{r}
-nc <- length(random_graph(1, 1, 1, 1))
+nc <- length(random_graph(1, 1, 1))
 Y <- matrix(ncol = nc, nrow = nrow(input_var))
 for (i in 1:nrow(input_var)) {
   X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
+  Y[i,] <-  random_graph(X$p, X$beta, X$size)
+  print(i/nrow(input_var))
 }
 if (sum(abs(Y) != abs(Re(Y))) == 0) {
   Y <- Re(Y)
 }
 nrow(input_var)
 nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-data <- cbind(input_var, Y)
-
-
+Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+(data2 <- cbind(input_var, Y)) %>% head()
+data2$p <- factor(data2$p)
 
 ```
 
 
-
 ```{r}
-ggplot(data) +
-  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = size, color = beta, shape = factor(n))) +
+ggplot(data2[30:nrow(data2),], mapping = aes(col = p, x = beta, y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
   scale_size_continuous(range = c(0.1,1)) +
-  labs(y = "||e2|-0.4|", x = TeX("$\\left\\lvert A \\right\\rvert $"))
-
+  labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Link Density"))  +
+  theme_bw()
 ```
 
-```{r}
-g1 <- igraph::erdos.renyi.game(n = sz, p)
-coords <- layout_with_fr(g1, dim = 3)
-# plot(g1)
-rglplot(g1, layout=coords, size = 0.1)
-```
-
+These look logarithmic, let's do a log transform:
 
 ```{r}
 
-## Not run: 
-g <- make_lattice( c(5,5,5) )
-coords <- layout_with_fr(g, dim=3)
-rglplot(g, layout=coords)
-
-## End(Not run)
-
-
-
-```
-
-
-```{r}
-n <- sz <- size <-  10^3
-p <- 0.
-g1 <- igraph::erdos.renyi.game(n = sz, p)
-A <- igraph::get.adjacency(g1) # Row to column
-A <- Matrix::t(A)
-det(A)
-
-```
-
-
-```{r}
-ggplot(data) +
-  geom_point(mapping = aes(x = size, y = determinant, size = size, color = beta, shape = factor(n))) +
+ggplot(data2[30:nrow(data2),], mapping = aes(col = p, x = log(beta), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
   scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "size", y = "determinant")
-
+  labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  guides(col = guide_legend("Link Density"))  +
+  theme_bw()
 ```
+Link density is a function of size so E2\propto ln(Beta) is still pretty useful.
 
-
-
-
-
-
-
-
-## Get Different Data
-
-
-constants:
+it seems that this is very nearly linear for low densities, the web would have a low density, for example ba graphs appear bounded above by 1/2:
 
 ```{r}
-n <- 10
-p <- 1:n/n
-beta <- 1:n/n
-beta <- runif(n)*100
-sz <- 1:n/n+100
-input_var <- expand.grid("n" = n, "p" = p, "beta" = beta, "size" = sz)
-```
-
-functions:
-
-```{r}
-random_graph <- function(n, p, beta, size) {
-      g1 <- igraph::erdos.renyi.game(n = sz, p)
-      A <- igraph::get.adjacency(g1) # Row to column
-      A <- Matrix::t(A)
-
-      A_dens <- mean(A)
-      T      <- PageRank::power_walk_prob_trans(A)
-      e2     <- eigen(T, only.values = TRUE)$values[2] # R orders by descending magnitude
-      A_det  <- det(A)
-      return(c(abs(e2), A_det, A_dens))
+n_vec <- 0:20
+m <- 3
+y <- c()
+for (n in n_vec) {
+    x <- sample_pa(n = n, power = 3, m = m) %>% 
+      get.adjacency() %>% 
+      mean()
+    y <- c(y, x)
 }
+plot(n_vec, y)
+length(n_vec)
+length(y)
 ```
 
-Map the function
+So considering small Densities is wise, let's have a look.
 
-```{r}
-nc <- length(random_graph(1, 1, 1, 1))
-Y <- matrix(ncol = nc, nrow = nrow(input_var))
-for (i in 1:nrow(input_var)) {
-  X <- as.vector(input_var[i,])
-  Y[i,] <-  random_graph(X$n, X$p, X$beta, X$size)
-}
-if (sum(abs(Y) != abs(Re(Y))) == 0) {
-  Y <- Re(Y)
-}
-nrow(input_var)
-nrow(Y)
-Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "determinant")
-data <- cbind(input_var, Y)
-
-
-
-```
-
-
+So at this stage I would like to fit a model over what we have in the first plotly diagram, but, I'm going to look at ba graphs in case there is something more insightful.
 
 ```{r}
 
-chival <- dchisq(seq(from = 0, to = 40, length.out = 100), df = 10)*7
-index  <- seq(from = 0, to = 2.2, length.out = 100)
-chidata  <- data.frame(index = index, chi = chival)
-ggplot(data) +
-  geom_point(mapping = aes(x = determinant, y = eigenvalue2, size = size, color = beta, shape = factor(n))) +
+ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = log(beta*p), y = eigenvalue2)) +
+  geom_point(size = 0.5) +
+  stat_smooth() +
   scale_size_continuous(range = c(0.1,1)) +
-  labs(x = "Density of Adjacency Matrix", y = "Second Eigenvalue of Power Walk Transition Probability Matrix")
-
-```
-
-```{r}
-g1 <- igraph::erdos.renyi.game(n = sz, p)
-coords <- layout_with_fr(g1, dim = 3)
-# plot(g1)
-# rglplot(g1, layout=coords, size = 0.1)
-```
-
-
-```{r}
-
-## Not run: 
-g <- make_lattice( c(5,5,5) )
-coords <- layout_with_fr(g, dim=3)
-rglplot(g, layout=coords)
-
-## End(Not run)
-
-
-
-```
-
-
-```{r}
-n <- sz <- size <-  100
-p <- 0.4
-g1 <- igraph::erdos.renyi.game(n = sz, p)
-A <- igraph::get.adjacency(g1) # Row to column
-A <- Matrix::t(A)
-det(A)
+  labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density") ) +
+  
+  guides(col = guide_legend("Link Density"))  +
+  theme_bw()
 ```
 
 
 
+It seems for very low densities that it is linear and then logarithmic for
+moderate densities. BA models have density~=m/n so for the BA model we'll
+just use beta.
