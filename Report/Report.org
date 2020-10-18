@@ -2506,89 +2506,20 @@ And setting $\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}$  from eqref:s
 ** Conclusion
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
 
-** TODO The Second Eigenvalue
-Because the Power Walk relates to the random surfer as demonstrated in section [[#relating-terms-in-power-walk-to-random-surfer]], what can be said about $\xi_{2}$
-**** Applying this to Power Walk
-Let $\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2$ return the second value of a transition, probability Matrix, then observe that:
+More investigation will be required to determine further connections between these two methods.
 
+* Conclusion
+In this report an approach to implement and investigate the random surfer and random walk /PageRank/ methods was presented and a linear model was implemented to try and provide insight into the behaviour of the second eigenvalue of the probability transition matrix corresponding to the power walk method.
 
-\begin{align}
-    \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny RS}} \right)  \leq \left\lvert \alpha \right\rvert  \implies      \Lambda_{\left( 2 \right)} \left( \mathbf{T}_{\text{\tiny PW}} \right) \leq \left\lvert \frac{\alpha - \mathbf{D}_{\mathbf{a}} \mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}  \right\rvert
-\end{align}
+The model appears not to perform well for graphs over 1000 vertices, this is unfourtunate and limits the amount of insight the model can provide into the behaviour of the power walk method.
 
-where:
+A relationship between the random surfer and power walk method was also presented, this relationship appears to be restricted to unweighted adjacency matrices, it is not clear however if this could be expanded.
 
+Further investigation is required to understand the relationship between the
+second eigenvalue and the method parameters of the power walk method, such
+further investigation should focus on investigating the relationship between the
+power walk and random surfer models and implementing non-linear models.
 
- - $\lambda_{\left( 2 \right)} \left( \mathbf{T} \right)$ refers to the transition probability matrix of the power walk and random surfer approaces as indicated.
-***** My attempt
-\begin{align}
-    \beta \mathbf{1}_{\tiny \left[ n, n \right] }    &= \frac{1- \Theta}{\Theta} \label{eq:betasig}\\
-%    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
-\end{align}
-
-where:
-- $\Theta = \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{B}}^{- 1}$
-
-So I thought maybe if I could find a value of $\beta$ that satisfied eqref:eq:betasig then I could show circumstances under which $\left\lvert \xi_2 \right\rvert < \alpha$.
-
-Seemingly it's only satisfied where $\beta = 1$ though, using this simulation:
-
-#+begin_src R
-g1 <- igraph::erdos.renyi.game(n = 9, 0.2)
-A <- igraph::get.adjacency(g1) # Row to column
-A <- t(A)
-# plot(g1)
-
-## * Finding beta values to behave like Random Surfer
-  beta <- 10
-  B <- beta^A
-
-  DA     <- PageRank::create_sparse_diag_sc_inv_mat(A)
-  DB_inv <- PageRank::create_sparse_diag_scaling_mat(B)
-
- THETA <- DA %*% DB_inv
-
-THETA <- function(A, beta) {
-  B  <- beta^A
-  DA     <- PageRank::create_sparse_diag_sc_inv_mat(A)
-  DB_inv <- PageRank::create_sparse_diag_scaling_mat(B)
-  return(DA %*% DB_inv)
-}
-
-THETA_inv <- function(A, beta) {
-  B  <- beta^A
-  DB     <- PageRank::create_sparse_diag_sc_inv_mat(B)
-  DA_inv <- PageRank::create_sparse_diag_scaling_mat(A)
-  return(DA %*% DB_inv)
-}
-
-beta_func <- function(A, beta) {
-    return(1-THETA(A, beta^A) %*% THETA_inv(A, beta^A))
-}
-
-THETA(A, 10) %*% THETA_inv(A, 10)
-
-
-eta <- 10^-6
-beta <- 1.01
-while (mean(beta*matrix(1, nrow(A), ncol(A)) - beta_func(A, beta)) > eta) {
-    beta <- beta + 0.01
-    print(beta)
-    print(diag(beta_func(A, beta)))
-    print(beta*matrix(1, nrow(A), ncol(A)))
-    print(beta_func(A, beta))
-#    Sys.sleep(0.1)
-}
-
-beta
-
-
-diag(beta_func(A, beta))
-beta
-
-
-## * blah
-#+end_src
 
 * Appendix
 

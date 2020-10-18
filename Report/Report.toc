@@ -114,40 +114,36 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {\nobreakspace {}9.5\nobreakspace {}}Conclusion}{57}{subsection.9.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.6\nobreakspace {}}The Second Eigenvalue}{57}{subsection.9.6}%
+\contentsline {section}{\numberline {\nobreakspace {}10\nobreakspace {}}Conclusion}{57}{section.10}%
 \defcounter {refsection}{0}\relax 
-\contentsline {paragraph}{Applying this to Power Walk}{57}{subsection.9.6}%
+\contentsline {section}{\numberline {\nobreakspace {}11\nobreakspace {}}Appendix}{57}{section.11}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subparagraph}{My attempt}{57}{equation.9.62}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.1\nobreakspace {}}Graph Diagrams}{57}{subsection.11.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}10\nobreakspace {}}Appendix}{59}{section.10}%
+\contentsline {section}{\numberline {\nobreakspace {}12\nobreakspace {}}my to do list}{60}{section.12}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}10.1\nobreakspace {}}Graph Diagrams}{59}{subsection.10.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}12.1\nobreakspace {}}Use BA Graphs}{60}{subsection.12.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}11\nobreakspace {}}my to do list}{61}{section.11}%
+\contentsline {subsection}{\numberline {\nobreakspace {}12.2\nobreakspace {}}Look at the ScatterPlot Matrix}{60}{subsection.12.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.1\nobreakspace {}}Use BA Graphs}{61}{subsection.11.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}12.3\nobreakspace {}}Compare eigenvalue2 and iterations}{60}{subsection.12.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.2\nobreakspace {}}Look at the ScatterPlot Matrix}{61}{subsection.11.2}%
+\contentsline {subsection}{\numberline {\nobreakspace {}12.4\nobreakspace {}}Look at using an SVM/logReg or other classifier}{60}{subsection.12.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.3\nobreakspace {}}Compare eigenvalue2 and iterations}{61}{subsection.11.3}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}12.4.1\nobreakspace {}}Measure Iterations and E2 values}{60}{subsubsection.12.4.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.4\nobreakspace {}}Look at using an SVM/logReg or other classifier}{61}{subsection.11.4}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}12.4.2\nobreakspace {}}Are any values indicative of E2 Values?}{60}{subsubsection.12.4.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.1\nobreakspace {}}Measure Iterations and E2 values}{61}{subsubsection.11.4.1}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}12.4.3\nobreakspace {}}Use Method Parameters with a log reg to predict a number of iterations}{60}{subsubsection.12.4.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.2\nobreakspace {}}Are any values indicative of E2 Values?}{61}{subsubsection.11.4.2}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}12.4.4\nobreakspace {}}Use a ROC Curve to set a threshold}{60}{subsubsection.12.4.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.3\nobreakspace {}}Use Method Parameters with a log reg to predict a number of iterations}{61}{subsubsection.11.4.3}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}12.4.5\nobreakspace {}}Discuss the results.}{60}{subsubsection.12.4.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.4\nobreakspace {}}Use a ROC Curve to set a threshold}{61}{subsubsection.11.4.4}%
+\contentsline {subsection}{\numberline {\nobreakspace {}12.5\nobreakspace {}}Tie the Report together.}{60}{subsection.12.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.5\nobreakspace {}}Discuss the results.}{61}{subsubsection.11.4.5}%
+\contentsline {subsection}{\numberline {\nobreakspace {}12.6\nobreakspace {}}Typeset the Report}{60}{subsection.12.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.5\nobreakspace {}}Tie the Report together.}{61}{subsection.11.5}%
+\contentsline {subsection}{\numberline {\nobreakspace {}12.7\nobreakspace {}}TODO Diamater}{60}{subsection.12.7}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.6\nobreakspace {}}Typeset the Report}{61}{subsection.11.6}%
-\defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.7\nobreakspace {}}TODO Diamater}{61}{subsection.11.7}%
-\defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.8\nobreakspace {}}Improving the Performance of Page Rank}{61}{subsection.11.8}%
+\contentsline {subsection}{\numberline {\nobreakspace {}12.8\nobreakspace {}}Improving the Performance of Page Rank}{60}{subsection.12.8}%
