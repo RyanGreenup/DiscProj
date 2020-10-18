@@ -599,45 +599,6 @@
       \verb https://igraph.org/r/doc/as_adjacency_matrix.html
       \endverb
     \endentry
-    \entry{garritanoWikipediaArticleNetworks2019}{online}{}
-      \name{author}{1}{}{%
-        {{hash=3d1f4409b106619d806f0e759dc2e5d2}{%
-           family={Garritano},
-           familyi={G\bibinitperiod},
-           given={Andrea},
-           giveni={A\bibinitperiod}}}%
-      }
-      \strng{namehash}{3d1f4409b106619d806f0e759dc2e5d2}
-      \strng{fullhash}{3d1f4409b106619d806f0e759dc2e5d2}
-      \strng{bibnamehash}{3d1f4409b106619d806f0e759dc2e5d2}
-      \strng{authorbibnamehash}{3d1f4409b106619d806f0e759dc2e5d2}
-      \strng{authornamehash}{3d1f4409b106619d806f0e759dc2e5d2}
-      \strng{authorfullhash}{3d1f4409b106619d806f0e759dc2e5d2}
-      \field{sortinit}{G}
-      \field{sortinithash}{62eb2aa29549e4fdbd3cb154ec5711cb}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{Kaggle is the world’s largest data science community with powerful tools and resources to help you achieve your data science goals.}
-      \field{journaltitle}{Kaggle}
-      \field{langid}{english}
-      \field{month}{12}
-      \field{title}{Wikipedia {{Article Networks}}}
-      \field{urlday}{3}
-      \field{urlmonth}{10}
-      \field{urlyear}{2020}
-      \field{year}{2019}
-      \field{dateera}{ce}
-      \field{urldateera}{ce}
-      \verb{file}
-      \verb /home/ryan/Zotero/storage/LWJI5SB3/wikipedia-article-networks.html
-      \endverb
-      \verb{urlraw}
-      \verb https://kaggle.com/andreagarritano/wikipedia-article-networks
-      \endverb
-      \verb{url}
-      \verb https://kaggle.com/andreagarritano/wikipedia-article-networks
-      \endverb
-    \endentry
     \entry{guptaWTFWhoFollow2013}{inproceedings}{}
       \name{author}{6}{}{%
         {{hash=67f9f7afd2e23a7b841fed71274ab7da}{%
@@ -886,66 +847,6 @@
       \endverb
       \keyw{knowledge}
     \endentry
-    \entry{langvilleReorderingPageRankProblem2006}{article}{}
-      \name{author}{2}{}{%
-        {{hash=f579305f4490bb8fbb116886a015e519}{%
-           family={Langville},
-           familyi={L\bibinitperiod},
-           given={Amy\bibnamedelima N.},
-           giveni={A\bibinitperiod\bibinitdelim N\bibinitperiod}}}%
-        {{hash=4c69e3607c3315a1262f92ab7e95985b}{%
-           family={Meyer},
-           familyi={M\bibinitperiod},
-           given={Carl\bibnamedelima D.},
-           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
-      }
-      \list{location}{1}{%
-        {Philadelphia, United States, Philadelphia}%
-      }
-      \list{publisher}{1}{%
-        {Society for Industrial and Applied Mathematics}%
-      }
-      \strng{namehash}{5358d1eec454e7aeff3b1a4aecc271ce}
-      \strng{fullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
-      \strng{bibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
-      \strng{authorbibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
-      \strng{authornamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
-      \strng{authorfullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
-      \field{extraname}{1}
-      \field{sortinit}{L}
-      \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{We describe a reordering particularly suited to the PageRank problem, which reduces the computation of the PageRank vector to that of solving a much smaller system and then using forward substitution to get the full solution vector. We compare the theoretical rates of convergence of the original PageRank algorithm to that of the new reordered PageRank algorithm, showing that the new algorithm can do no worse than the original algorithm. We present results of an experimental comparison on five datasets, which demonstrate that the reordered PageRank algorithm can provide a speedup of as much as a factor of 6. We also note potential additional benefits that result from the proposed reordering.}
-      \field{issn}{10648275}
-      \field{journaltitle}{SIAM Journal on Scientific Computing; Philadelphia}
-      \field{langid}{english}
-      \field{number}{6}
-      \field{pagetotal}{9}
-      \field{title}{A {{Reordering}} for the {{PageRank Problem}}}
-      \field{urlday}{19}
-      \field{urlmonth}{8}
-      \field{urlyear}{2020}
-      \field{volume}{27}
-      \field{year}{2006}
-      \field{dateera}{ce}
-      \field{urldateera}{ce}
-      \field{pages}{9}
-      \range{pages}{1}
-      \verb{doi}
-      \verb http://dx.doi.org.ezproxy.uws.edu.au/10.1137/040607551
-      \endverb
-      \verb{file}
-      \verb /home/ryan/Zotero/storage/I5R5A6YY/Langville and Meyer - 2006 - A Reordering for the PageRank Problem.pdf
-      \endverb
-      \verb{urlraw}
-      \verb http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1
-      \endverb
-      \verb{url}
-      \verb http://search.proquest.com/docview/921138313/abstract/24AFC1417CF6412BPQ/1
-      \endverb
-      \keyw{Mathematics}
-    \endentry
     \entry{langvilleGooglePageRankScience2012}{book}{}
       \name{author}{2}{}{%
         {{hash=f579305f4490bb8fbb116886a015e519}{%
@@ -971,7 +872,6 @@
       \strng{authorbibnamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
       \strng{authornamehash}{5358d1eec454e7aeff3b1a4aecc271ce}
       \strng{authorfullhash}{5358d1eec454e7aeff3b1a4aecc271ce}
-      \field{extraname}{2}
       \field{sortinit}{L}
       \field{sortinithash}{dad3efd0836470093a7b4a7bb756eb8c}
       \field{labelnamesource}{author}
@@ -1347,7 +1247,6 @@
       \endverb
     \endentry
   \enddatalist
-  \missing{albertDiameterWorldWideWeb1999}
 \endrefsection
 \endinput
 

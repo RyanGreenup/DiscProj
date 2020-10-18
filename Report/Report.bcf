@@ -2228,22 +2228,17 @@
     <bcf:citekey order="36">barabasiScalefreeCharacteristicsRandom2000</bcf:citekey>
     <bcf:citekey order="37">zengPracticalSimulationMethod2013</bcf:citekey>
     <bcf:citekey order="38">barabasiLinkedNewScience2002</bcf:citekey>
-    <bcf:citekey order="39">langvilleGooglePageRankScience2012</bcf:citekey>
-    <bcf:citekey order="40">barabasiScalefreeCharacteristicsRandom2000</bcf:citekey>
-    <bcf:citekey order="41">zengPracticalSimulationMethod2013</bcf:citekey>
-    <bcf:citekey order="42">garritanoWikipediaArticleNetworks2019</bcf:citekey>
-    <bcf:citekey order="43">haveliwalaSecondEigenvalueGoogle2003</bcf:citekey>
-    <bcf:citekey order="44">langvilleGooglePageRankScience2012</bcf:citekey>
-    <bcf:citekey order="44">barabasiPhysicsWeb2001</bcf:citekey>
-    <bcf:citekey order="44">barabasiScalefreeCharacteristicsRandom2000</bcf:citekey>
-    <bcf:citekey order="45">langvilleGooglePageRankScience2012</bcf:citekey>
-    <bcf:citekey order="45">barabasiPhysicsWeb2001</bcf:citekey>
-    <bcf:citekey order="45">barabasiScalefreeCharacteristicsRandom2000</bcf:citekey>
-    <bcf:citekey order="46">DOTLanguage</bcf:citekey>
-    <bcf:citekey order="46">DOTGraphDescription2020</bcf:citekey>
-    <bcf:citekey order="47">albertDiameterWorldWideWeb1999</bcf:citekey>
-    <bcf:citekey order="48">langvilleReorderingPageRankProblem2006</bcf:citekey>
-    <bcf:citekey order="49">langvilleGooglePageRankScience2012</bcf:citekey>
+    <bcf:citekey order="39">barabasiScalefreeCharacteristicsRandom2000</bcf:citekey>
+    <bcf:citekey order="40">langvilleGooglePageRankScience2012</bcf:citekey>
+    <bcf:citekey order="41">haveliwalaSecondEigenvalueGoogle2003</bcf:citekey>
+    <bcf:citekey order="42">langvilleGooglePageRankScience2012</bcf:citekey>
+    <bcf:citekey order="42">barabasiPhysicsWeb2001</bcf:citekey>
+    <bcf:citekey order="42">barabasiScalefreeCharacteristicsRandom2000</bcf:citekey>
+    <bcf:citekey order="43">langvilleGooglePageRankScience2012</bcf:citekey>
+    <bcf:citekey order="43">barabasiPhysicsWeb2001</bcf:citekey>
+    <bcf:citekey order="43">barabasiScalefreeCharacteristicsRandom2000</bcf:citekey>
+    <bcf:citekey order="44">DOTLanguage</bcf:citekey>
+    <bcf:citekey order="44">DOTGraphDescription2020</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="nty">

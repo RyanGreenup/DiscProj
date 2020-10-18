@@ -1,20 +1,19 @@
 [0] Config.pm:304> INFO - This is Biber 2.14
 [0] Config.pm:307> INFO - Logfile is 'Report.blg'
-[65] biber:322> INFO - === Sun Oct 18, 2020, 17:12:24
-[75] Biber.pm:415> INFO - Reading 'Report.bcf'
-[125] Biber.pm:943> INFO - Found 31 citekeys in bib section 0
-[135] Biber.pm:4256> INFO - Processing section 0
-[135] Utils.pm:75> INFO - Globbing data source './resources/references.bib'
-[135] Utils.pm:91> INFO - Globbed data source './resources/references.bib' to ./resources/references.bib
-[143] Biber.pm:4455> INFO - Looking for bibtex format file './resources/references.bib' for section 0
-[153] bibtex.pm:1653> INFO - LaTeX decoding ...
-[327] bibtex.pm:1471> INFO - Found BibTeX data source './resources/references.bib'
-[432] Utils.pm:304> WARN - ISBN '978-3-540-77468-6 978-3-540-77469-3' in entry 'meghabghabSearchEnginesLink2008' is invalid - run biber with '--validate_datamodel' for details.
-[480] Utils.pm:304> WARN - I didn't find a database entry for 'albertDiameterWorldWideWeb1999' (section 0)
-[508] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[508] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[508] Biber.pm:4084> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
-[508] Biber.pm:4090> INFO - No sort tailoring available for locale 'en-US'
-[534] bbl.pm:652> INFO - Writing 'Report.bbl' with encoding 'UTF-8'
-[548] bbl.pm:755> INFO - Output to Report.bbl
-[548] Biber.pm:128> INFO - WARNINGS: 2
+[55] biber:322> INFO - === Sun Oct 18, 2020, 18:46:21
+[65] Biber.pm:415> INFO - Reading 'Report.bcf'
+[112] Biber.pm:943> INFO - Found 28 citekeys in bib section 0
+[122] Biber.pm:4256> INFO - Processing section 0
+[122] Utils.pm:75> INFO - Globbing data source './resources/references.bib'
+[122] Utils.pm:91> INFO - Globbed data source './resources/references.bib' to ./resources/references.bib
+[130] Biber.pm:4455> INFO - Looking for bibtex format file './resources/references.bib' for section 0
+[139] bibtex.pm:1653> INFO - LaTeX decoding ...
+[296] bibtex.pm:1471> INFO - Found BibTeX data source './resources/references.bib'
+[390] Utils.pm:304> WARN - ISBN '978-3-540-77468-6 978-3-540-77469-3' in entry 'meghabghabSearchEnginesLink2008' is invalid - run biber with '--validate_datamodel' for details.
+[450] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[450] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[450] Biber.pm:4084> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[450] Biber.pm:4090> INFO - No sort tailoring available for locale 'en-US'
+[475] bbl.pm:652> INFO - Writing 'Report.bbl' with encoding 'UTF-8'
+[487] bbl.pm:755> INFO - Output to Report.bbl
+[488] Biber.pm:128> INFO - WARNINGS: 1

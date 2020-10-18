@@ -1,55 +1,34 @@
-\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
-\BOOKMARK [2][-]{subsection.1.1}{The PageRank Method}{section.1}% 2
-\BOOKMARK [2][-]{subsection.1.2}{Power Walk and the Random Surfer}{section.1}% 3
-\BOOKMARK [2][-]{subsection.1.3}{Stability and Convergence}{section.1}% 4
-\BOOKMARK [0][-]{part.1}{I Implementing PageRank}{}% 5
-\BOOKMARK [1][-]{section.2}{Definitions use in this report}{part.1}% 6
-\BOOKMARK [2][-]{subsection.2.1}{Notation}{section.2}% 7
-\BOOKMARK [1][-]{section.3}{Mathematics of Page Rank}{part.1}% 8
-\BOOKMARK [2][-]{subsection.3.1}{The Stationary Distribution of a Probability Transition Matrix}{section.3}% 9
-\BOOKMARK [2][-]{subsection.3.2}{Random Surfer Model}{section.3}% 10
-\BOOKMARK [3][-]{subsubsection.3.2.1}{Problems with the Stationary Distribution}{subsection.3.2}% 11
-\BOOKMARK [3][-]{subsubsection.3.2.2}{Markov Chains}{subsection.3.2}% 12
-\BOOKMARK [3][-]{subsubsection.3.2.3}{Limitations}{subsection.3.2}% 13
-\BOOKMARK [2][-]{subsection.3.3}{Power walk}{section.3}% 14
-\BOOKMARK [1][-]{section.4}{Sparse Matrices}{part.1}% 15
-\BOOKMARK [2][-]{subsection.4.1}{Solving the Stationary Distribution}{section.4}% 16
-\BOOKMARK [1][-]{section.5}{Implementing the Models}{part.1}% 17
-\BOOKMARK [2][-]{subsection.5.1}{Implementing the Random Surfer}{section.5}% 18
-\BOOKMARK [3][-]{subsubsection.5.1.1}{Ordinary Matrices}{subsection.5.1}% 19
-\BOOKMARK [3][-]{subsubsection.5.1.2}{Sparse Matrices}{subsection.5.1}% 20
-\BOOKMARK [2][-]{subsection.5.2}{Power Walk Method}{section.5}% 21
-\BOOKMARK [3][-]{subsubsection.5.2.1}{Ordinary Matrices}{subsection.5.2}% 22
-\BOOKMARK [3][-]{subsubsection.5.2.2}{Sparse Matrices}{subsection.5.2}% 23
-\BOOKMARK [1][-]{section.6}{Creating a Package}{part.1}% 24
-\BOOKMARK [0][-]{part.2}{II Investigating 2}{}% 25
-\BOOKMARK [1][-]{section.7}{Erdos Renyi Graphs}{part.2}% 26
-\BOOKMARK [2][-]{subsection.7.1}{Introduction}{section.7}% 27
-\BOOKMARK [2][-]{subsection.7.2}{Correlation Plot}{section.7}% 28
-\BOOKMARK [1][-]{section.8}{Barabasi Albert Graphs}{part.2}% 29
-\BOOKMARK [2][-]{subsection.8.1}{Theory}{section.8}% 30
-\BOOKMARK [2][-]{subsection.8.2}{Modelling}{section.8}% 31
-\BOOKMARK [3][-]{subsubsection.8.2.1}{Model}{subsection.8.2}% 32
-\BOOKMARK [1][-]{section.9}{Relating the Power Walk to the Random Surfer}{part.2}% 33
-\BOOKMARK [2][-]{subsection.9.1}{Introduction}{section.9}% 34
-\BOOKMARK [2][-]{subsection.9.2}{Value of [1st Term]}{section.9}% 35
-\BOOKMARK [2][-]{subsection.9.3}{Value of \1732nd Term\175}{section.9}% 36
-\BOOKMARK [2][-]{subsection.9.4}{Equate the Power Walk to the Random Surfer}{section.9}% 37
-\BOOKMARK [2][-]{subsection.9.5}{Conclusion}{section.9}% 38
-\BOOKMARK [1][-]{section.10}{Conclusion}{part.2}% 39
-\BOOKMARK [1][-]{section.11}{Appendix}{part.2}% 40
-\BOOKMARK [2][-]{subsection.11.1}{Graph Diagrams}{section.11}% 41
-\BOOKMARK [1][-]{section.12}{my to do list}{part.2}% 42
-\BOOKMARK [2][-]{subsection.12.1}{Use BA Graphs}{section.12}% 43
-\BOOKMARK [2][-]{subsection.12.2}{Look at the ScatterPlot Matrix}{section.12}% 44
-\BOOKMARK [2][-]{subsection.12.3}{Compare eigenvalue2 and iterations}{section.12}% 45
-\BOOKMARK [2][-]{subsection.12.4}{Look at using an SVM/logReg or other classifier}{section.12}% 46
-\BOOKMARK [3][-]{subsubsection.12.4.1}{Measure Iterations and E2 values}{subsection.12.4}% 47
-\BOOKMARK [3][-]{subsubsection.12.4.2}{Are any values indicative of E2 Values?}{subsection.12.4}% 48
-\BOOKMARK [3][-]{subsubsection.12.4.3}{Use Method Parameters with a log reg to predict a number of iterations}{subsection.12.4}% 49
-\BOOKMARK [3][-]{subsubsection.12.4.4}{Use a ROC Curve to set a threshold}{subsection.12.4}% 50
-\BOOKMARK [3][-]{subsubsection.12.4.5}{Discuss the results.}{subsection.12.4}% 51
-\BOOKMARK [2][-]{subsection.12.5}{Tie the Report together.}{section.12}% 52
-\BOOKMARK [2][-]{subsection.12.6}{Typeset the Report}{section.12}% 53
-\BOOKMARK [2][-]{subsection.12.7}{TODO Diamater}{section.12}% 54
-\BOOKMARK [2][-]{subsection.12.8}{Improving the Performance of Page Rank}{section.12}% 55
+\BOOKMARK [1][-]{section.0.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.0.1.1}{The PageRank Method}{section.0.1}% 2
+\BOOKMARK [2][-]{subsection.0.1.2}{Power Walk and the Random Surfer}{section.0.1}% 3
+\BOOKMARK [2][-]{subsection.0.1.3}{Stability and Convergence}{section.0.1}% 4
+\BOOKMARK [1][-]{section.0.2}{Definitions use in this report}{}% 5
+\BOOKMARK [2][-]{subsection.0.2.1}{Notation}{section.0.2}% 6
+\BOOKMARK [-1][-]{part.1}{I Implementing PageRank}{}% 7
+\BOOKMARK [0][-]{section.0.3}{Mathematics of Page Rank}{part.1}% 8
+\BOOKMARK [1][-]{subsection.0.3.1}{The Stationary Distribution of a Probability Transition Matrix}{section.0.3}% 9
+\BOOKMARK [2][-]{subsection.0.3.2}{Random Surfer Model}{subsection.0.3.1}% 10
+\BOOKMARK [2][-]{subsection.0.3.3}{Power walk}{subsection.0.3.1}% 11
+\BOOKMARK [1][-]{section.0.4}{Sparse Matrices}{section.0.3}% 12
+\BOOKMARK [2][-]{subsection.0.4.1}{Solving the Stationary Distribution}{section.0.4}% 13
+\BOOKMARK [1][-]{section.0.5}{Implementing the Models}{section.0.3}% 14
+\BOOKMARK [2][-]{subsection.0.5.1}{Implementing the Random Surfer}{section.0.5}% 15
+\BOOKMARK [2][-]{subsection.0.5.2}{Power Walk Method}{section.0.5}% 16
+\BOOKMARK [1][-]{section.0.6}{Creating a Package}{section.0.3}% 17
+\BOOKMARK [-1][-]{part.2}{II Investigating 2}{}% 18
+\BOOKMARK [0][-]{section.0.7}{Erdos Renyi Graphs}{part.2}% 19
+\BOOKMARK [1][-]{subsection.0.7.1}{Introduction}{section.0.7}% 20
+\BOOKMARK [2][-]{subsection.0.7.2}{Correlation Plot}{subsection.0.7.1}% 21
+\BOOKMARK [1][-]{section.0.8}{Barabasi Albert Graphs}{section.0.7}% 22
+\BOOKMARK [2][-]{subsection.0.8.1}{Theory}{section.0.8}% 23
+\BOOKMARK [2][-]{subsection.0.8.2}{Modelling}{section.0.8}% 24
+\BOOKMARK [1][-]{section.0.9}{Relating the Power Walk to the Random Surfer}{section.0.7}% 25
+\BOOKMARK [2][-]{subsection.0.9.1}{Introduction}{section.0.9}% 26
+\BOOKMARK [2][-]{subsection.0.9.2}{Value of [1st Term]}{section.0.9}% 27
+\BOOKMARK [2][-]{subsection.0.9.3}{Value of \1732nd Term\175}{section.0.9}% 28
+\BOOKMARK [2][-]{subsection.0.9.4}{Equate the Power Walk to the Random Surfer}{section.0.9}% 29
+\BOOKMARK [2][-]{subsection.0.9.5}{Conclusion}{section.0.9}% 30
+\BOOKMARK [1][-]{section.0.10}{Conclusion}{section.0.7}% 31
+\BOOKMARK [1][-]{section.0.11}{Appendix}{section.0.7}% 32
+\BOOKMARK [1][-]{section.Alph0.1}{Matrix Density}{section.0.7}% 33
+\BOOKMARK [2][-]{subsection.Alph0.1.1}{Graph Diagrams}{section.Alph0.1}% 34
