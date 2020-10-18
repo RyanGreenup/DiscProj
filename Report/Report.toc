@@ -62,7 +62,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {paragraph}{Creating the Probability Transition Matrix}{18}{listing.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {paragraph}{Solving the Random Surfer via the Power Method}{21}{listing.7}%
+\contentsline {paragraph}{Solving the Random Surfer via the Power Method}{22}{listing.7}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {\nobreakspace {}5.2\nobreakspace {}}Power Walk Method}{23}{subsection.0.5.2}%
 \defcounter {refsection}{0}\relax 
@@ -114,8 +114,8 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {\nobreakspace {}10\nobreakspace {}}Conclusion}{58}{section.0.10}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}11\nobreakspace {}}Appendix}{59}{section.0.11}%
+\contentsline {section}{\numberline {\nobreakspace {}11\nobreakspace {}}Appendix}{58}{section.0.11}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}1\nobreakspace {}}Matrix Density}{59}{section.Alph0.1}%
+\contentsline {section}{\numberline {\nobreakspace {}1\nobreakspace {}}Matrix Density}{58}{section.Alph0.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}1.1\nobreakspace {}}Graph Diagrams}{59}{subsection.Alph0.1.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}1.1\nobreakspace {}}Graph Diagrams}{61}{subsection.Alph0.1.1}%

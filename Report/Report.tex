@@ -26,7 +26,7 @@
 \usetikzlibrary{lindenmayersystems}
 \author{Ryan Greenup}
 \date{\today}
-\title{Page Rank}
+\title{Investigating the Second Eigen Value of the Power Walk Page Rank Method}
 \hypersetup{
  pdfauthor={Ryan Greenup},
  pdftitle={Page Rank},
@@ -44,7 +44,7 @@
 \section{Introduction}
 \label{sec:org93e4f0c}
 Any collection of interconnected information can form a network structure,
-consider for example citations, webpages, wikis, power grids, wiring diagrams, encyclopedias and interpersonal
+this can include for example citation networks, webpages, wikis, power grids, wiring diagrams, encyclopedias and interpersonal
 relationships. The analysis of these networks can be used to draw insights about
 the behaviour of such networks.
 
@@ -53,7 +53,7 @@ the measure of the importance, popularity and relevance of a node. In a
 relatively small graph, visualised in such a way so as to minimise the
 overlapping of edges, a general expectation would be that the centrality score
 would be correlated with geometric-centrality, this is demonstrated in figure
-\ref{example-rs-graph} where the 2nd vertex has the highest \emph{PageRank} score and
+\ref{example-rs-graph} where the 2nd vertex has the highest \emph{PageRank} score \footnote{See listing \ref{eigenSol-rand-surf} for the \textit{Random Surfer} solution } and
 is geometrically very central.
 
 \subsection{The PageRank Method}
@@ -63,7 +63,7 @@ There are multiple ways to measure network centrality but this report is
 concerned with the \emph{PageRank} method, this method asserts that the centrality of
 a vertex can be measured by the frequency of traversal during a random walk.
 
-This approach relies on the assumption tha the random walk can:
+This approach relies on the assumption that the random walk can:
 
 \begin{enumerate}
 \item Traverse the entire network
@@ -71,7 +71,7 @@ This approach relies on the assumption tha the random walk can:
 \end{enumerate}
 
 
-and so the \emph{PageRank} method involves modifying a graph in some way to adress
+and so the \emph{PageRank} method involves modifying a graph in some way to address
 these assumptions, specifically by modifying the corresponding probability
 transition matrix to be stochastic and primitive.
 
@@ -80,12 +80,12 @@ transition matrix to be stochastic and primitive.
 The typical method to adjust the transition probability matrix is the \emph{Random
 Surfer}, introduced by Page and Brin in 1998
  \cite{larrypageAnatomyLargescaleHypertextual1998} as a distinguishing feature of
-the \emph{Google} search engine, this aproach essentially introduces some probability
+the \emph{Google} search engine, this approach essentially introduces some probability
 of teleporting to other nodes during a random walk, this is illustrated in
 figure \ref{fig:rseg}.
 
 A shortcoming of this approach is that it assumes all edges are positively weighted. This
-menas that the model treats any link as an endorsement of the destination
+means that the model treats any link as an endorsement of the destination
 node, this may not necessarily always be true (consider for exmple burned-in
 advertisements or negative reviews). In the past attributing weights to links was not particularly feasible, recent developments in sentiment analysis has however made this possible meaning that this limitation is more significant.
 
@@ -97,7 +97,7 @@ These individual approaches are discussed in more detail at \S \ref{PageRank-Gen
 \subsection{Stability and Convergence}
 \label{sec:orgcefa601}
 
-The rate at which the algorithm for \emph{PageRank} converges to a solution and the stability of that solution can both be measured by the second eigenvalue of the corresponding transition probability matrix (The details of this are discussed at \ref{implement_models} )
+The rate at which the algorithm for \emph{PageRank} converges to a solution and the stability of that solution can both be measured by the second eigenvalue of the corresponding transition probability matrix (the details of this are discussed at \ref{implement_models} )
 
 It is not clear how the second eigenvalue is related to the method parameters of the \emph{Power Walk} algorithm \cite[\textsection 3.4]{parkPowerWalkRevisiting2013} and this report aims to:
 
@@ -116,7 +116,7 @@ transition probability matrix and the second eigenvalue
 The following definitions are used throughout this report \footnote{see generally \cite[Ch. 15]{langvilleGooglePageRankScience2012} for further reading}:
 
 \begin{description}
-\item[{Markov Chains}] are discrete mathematical model such that future values depend only on current values \cite[\textsection 1.5]{larsonElementaryLinearAlgebra1991}, this captures the concept of a random walk because the next destination depends only on the current location.
+\item[{Markov Chains}] are discrete mathematical models such that future values depend only on current values \cite[\textsection 1.5]{larsonElementaryLinearAlgebra1991}, this captures the concept of a random walk because the next destination depends only on the current location.
 \item[{Stochastic Matrices}] contain only positive values where each column sums to 1 \cite{langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991} (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
 \begin{itemize}
 \item some authors use rows (see e.g. \cite[\textsection 15.3]{langvilleGooglePageRankScience2012}), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
@@ -153,7 +153,7 @@ the scope of this report (see e.g.
 \item In the literature (see e.g.
 \cite{guptaWTFWhoFollow2013,langvilleGooglePageRankScience2012}) the term \emph{Random
 Surfer} is usually used to refer specifically to the smoothing
-algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the entire concept including the \emph{Random Surfer}. In this report the term \emph{PageRank} is used more generally to denote the concept the model \emph{Random Surfer} or \emph{Power Walk} is denoted specifically where necessary.
+algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the entire concept including the \emph{Random Surfer}. In this report the term \emph{PageRank} will be used generally to denote the concept of measuring node centrality by the frequency of node traversal during a random walk and the models \emph{Random Surfer} or \emph{Power Walk} will be denoted specifically where necessary.
 \end{itemize}
 \end{description}
 \subsection{Notation}
@@ -167,6 +167,10 @@ algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the e
 \begin{itemize}
 \item Is the \emph{transition probability matrix} of a graph, this matrix indicates the probability of a movement during a random walk, such that \(\mathf{T}_{i,j}\) is equal to the probability of travelling \(j \rightarrow  i\) during a random walk.
 \end{itemize}
+\item \(n\)
+\begin{itemize}
+\item Refers to the number of vertices in a graph, \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
+\end{itemize}
 \item \(\mathbf{D}_{\mathbf{A}}=\mathrm{diag}\left(\vec{1}\mathbf{A}\right)\)
 \item \(\mathbf{D}_{\mathbf{A}}^{- 1}  =
    \begin{cases}
@@ -179,10 +183,6 @@ algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the e
 \item Where \(\mathbf{D}^{-1}\) is a matrix such that multiplication with which scales each column of \(\mathbf{A}\) to 1.
 \item \(\mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\mathbf{D}^{-1}_{\mathbf{A}} = \frac{1}{\vec{1}\mathbf{D}_{\mathbf{A}}}\) for some stochastic matrix \(\mathbf{A}\)
 \end{itemize}
-\end{itemize}
-\item \(n\)
-\begin{itemize}
-\item Refers to the number of vertices in a graph, \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
 \end{itemize}
 \item \(\mathbf{E}_{i,j} = \frac{1}{n}\)
 \begin{itemize}
@@ -202,11 +202,11 @@ algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the e
 \end{itemize}
 \item \(\xi_{n}\)
 \begin{itemize}
-\item The \(n^{\mathrm{th}}\) largest eigenvalue of \(\mathbf{T}\), the use of \(\lambda\) has been avoided because some authors use \(\lambda\) to represent damping factor \(\alpha\), given that \(\alpha\)=\(\xi_{2}\) for certain graphs, this can be very ambiguous.
+\item The \(n^{\mathrm{th}}\) largest eigenvalue of a transition probability matrix \(\mathbf{T}\), the use of \(\lambda\) has been avoided because some authors use \(\lambda\) to represent damping factor \(\alpha\), given that \(\alpha\)=\(\xi_{2}\) for certain graphs, this can be very ambiguous.
 \end{itemize}
 \item \(\alpha\)
 \begin{itemize}
-\item A probability such that \(\left(1-\alpha\)$\backslash$) represents of teleporting from one vertex to another during a random walk, see \ref{fig:rseg}.
+\item A probability such that \(1-\alpha\) represents the probability of teleporting from one vertex to another during a random walk, see \ref{fig:rseg}.
 \begin{itemize}
 \item In the literature \(\alpha\) is often referred to as a damping factor (see e.g.  \cite{berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005}) or a smoothing constant (see e.g \cite{koppelMeasuringDirectIndirect2014}).
 \end{itemize}
@@ -261,13 +261,14 @@ multiplication:
 This relationship is a linear recurrence relation, more generally however it is
 a \emph{Markov Chain} and \cite[\S 4.4]{langvilleGooglePageRankScience2012} and
 Finding the Stationary point for this relationship will give a frequency
-distribution for the nodes and a metric to measure the centrality of vertices.
+distribution for the nodes corresponding to the random walk and thus a metric to
+measure the centrality of vertices.
 
 \subsection{Random Surfer Model}
 \label{sec:org046df67}
 \subsubsection{Problems with the Stationary Distribution}
 \label{issues}
-The approach to measuring centrality using a stationary distrubition in \S\ref{stationary-distribution-of-t} has the following issues
+The approach to measuring centrality using the stationary distrubition in \S\ref{stationary-distribution-of-t} has the following issues
 
 \begin{enumerate}
 \item Convergence of \eqref{eq:recurrence}
@@ -304,7 +305,7 @@ simply any process that evolves depending on it's current condition, it's
 interesting to note however that the theory of \emph{Markov Chains} is not mentioned in any
 of the original papers by page and brin
 \cite[\textsection 4.4]{langvilleGooglePageRankScience2012}}  and it is known
-that the relationship will converge to a value (this is known as the power method):
+that the relationship will converge to a value when iterated:
 
 \begin{itemize}
 \item for a stochastic irreducible markov chain \cite[\textsection 1.5.5]{larsonElementaryLinearAlgebra1991},
@@ -327,7 +328,7 @@ matrix must be made stochastic, to acheive this a uniform probability of telepor
 
  \begin{wrapfigure}{R}{0.4\textwidth}
      \includegraphics[width=\0.38\textwidth]{media/dot/reducible_graph_example.dot.png}
-     \caption{\label{irreducible-example}Example of a reducible graph, observe that although \(C\) is not a dead end as discussed in \S \ref{stochastic}, there is no way to travel from \(C\) to \(A\), by adding an edge such an edge in the resulting graph is irreducible. The resulting graph is also aperiodic (due to the loop on \(B\)) and stochastic, so there will be a stationary distribution corresponding to \eqref{eq:recurrence}.}
+     \caption{\label{irreducible-example}Example of a reducible graph, observe that although \(C\) is not a dead end as discussed in \S \ref{stochastic}, there is no way to travel from \(C\) to \(A\) and the graph is hence reducible, by adding an edge to connect \(C\rightarrow A\) travel is permitted to any node from all nodes and hence the resulting graph is reducible. The resulting graph is also aperiodic (due to the loop on \(B\)) and stochastic, so there will be a stationary distribution corresponding to \eqref{eq:recurrence}.}
  \end{wrapfigure}
 
 \begin{align}
@@ -390,7 +391,7 @@ links promote aversion rather than endorsement.
 
 
 The \emph{Power Walk} method is an alternative approach to develop a probability
-transition matrix to use in place of \(\mathbf{T}\) in \eqref{eq:recurrence} (and \(\mathbf{S}\) in \eqref{eq:random-surfer-recurrence}).
+transition matrix to use in place of \(\mathbf{T}\) in \eqref{eq:recurrence} (and \(\mathbf{S}\) in \eqref{eq:random-surfer-recurrence}), it presents the benefit of being able to use real-weighted edges (as opposed to strictly positive).
 
 Let the probability of travelling to a non-adjacent vertex be some value \(x\)
 and \(\beta\) be the ratio of probability between following an edge or
@@ -403,7 +404,7 @@ teleporting to another vertex.
 \end{wrapfigure}
 
 This transition probability matrix \(\left( \mathbf{W}\right)\) would be such that the probability of
-travelling to some vertex \(j \rightarrow i\) would be :
+travelling to some vertex \(j \rightarrow i\) would be \cite{parkPowerWalkRevisiting2013}:
 
 \begin{align}
 \mathbf{W}_{i, j} = x\beta^{\mathbf{A_{i,j}}} \label{eq:prob-power-walk}
@@ -503,7 +504,7 @@ an ordinary matrix and then improved to work with sparse matrices and
 algorithms, the results can be verified against \(\xi_{1}\).
 
 The implementation has been performed with \emph{\textbf{R}} and the preamble is
-provided in listing \ref{preamble}, an exemplar graph was created in listing \ref{ex-fig-r} and shown in figure \ref{example-rs-graph}, and the corresponding adjacency matrix provided in listing \ref{adj-mat-random-surf}, for the sake of comparison this graph was reproduced from \cite{parkPowerWalkRevisiting2013}.
+provided in listing \ref{preamble}, an exemplar graph was created in listing \ref{ex-fig-r} and shown in figure \ref{example-rs-graph}, and the corresponding adjacency matrix provided in listing \ref{adj-mat-random-surf} (for the sake of comparison this graph was reproduced from \cite{parkPowerWalkRevisiting2013}).
 
 
 
@@ -591,12 +592,14 @@ The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
 
-if \(\mathbf{A}\) had vertices with a 0 out-degree, the relationship in \eqref{eq:basic-trans-def} would not work, instead columns that sum to 0 would
+if \(\mathbf{A}\) had vertices with a 0 out-degree, the relationship in
+\eqref{eq:basic-trans-def} would not work, instead columns that sum to 0 would
 need to be left while all other columns be divided by the column sum to get
-\(\mathbf{T}\). An alternative approach using sparse matrices will be presented
-below and in this case there exists corresponding \(\mathbf{T}\) that is
-stochastic and so it is sufficient to use the relationship at
-\eqref{eq:basic-trans-def}, this is shown in listing \ref{basic-trans-def}.
+\(\mathbf{T}\). An alternative approach, that addresses this issue using sparse
+matrices will be presented below at \S \ref{sec:sparse-mat-random-surf} but in
+this case there exists corresponding \(\mathbf{T}\) that is stochastic and so it
+is sufficient to use the relationship at \eqref{eq:basic-trans-def}, this is
+shown in listing \ref{basic-trans-def}.
 
 \begin{listing}[htbp]
     \begin{tcolorbox}
@@ -765,14 +768,15 @@ $$
 1 \vec{p} = S\vec{p}
 $$
 
-\begin{minted}[]{r}
-  (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1]) %>% Re() %>%  round(2)
-\end{minted}
-
-\begin{verbatim}
-[1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
-\end{verbatim}
-
+\begin{tcolorbox}
+    \begin{minted}[]{r}
+    (p     <- eigen(S)$values[1] * eigen(S)$vectors[,1]) %>% Re() %>%  round(2)
+    \end{minted}
+\tcblower
+    \begin{verbatim}
+    [1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
+    \end{verbatim}
+\end{tcolorbox}
 
 \begin{tcolorbox}
     \begin{minted}[]{r}
@@ -866,7 +870,7 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
 \end{tcolorbox}
 
 \subsubsection{Sparse Matrices}
-\label{sec:org1aa2d1c}
+\label{sec:sparse-mat-random-surf}
 \paragraph{Creating the Probability Transition Matrix}
 \label{sec:org04def23}
 Implementing the page rank method on a larger graph requires the use of more
@@ -924,12 +928,13 @@ As before in section \ref{probability-transition-matrix}, the probability transi
 \end{enumerate}
 
 To implement this for a sparseMatrix of the class \texttt{dgCMatrix}, the same
-technique of multiplying by a diagonalised matrix as in \eqref{eq:diagScaleDef} may be
+technique of multiplying by a diagonalised matrix as in \eqref{eq:basic-trans-def} may be
 implemented, using sparse matrices has the advantage however that only non-zero
-elements will be operated on, meaning that columns that some to zero can still
-be used to create a probability transition matrix \footnote{Although this matrix may
+elements will be operated on, meaning that columns that sum to zero can still
+be used to create a probability transition matrix \footnote{Although this matrix will
 still have columns that sum to zero and will hence be non-stochastic}
-pracice an error however to create this new matrix, a new \texttt{sparseMatrix} will
+
+To create this new matrix, a new \texttt{sparseMatrix} will
 need to be created using the properties of the original matrix, this can be done
 like so:
 
@@ -1027,9 +1032,9 @@ and hence the probability transition matrix may be implemented by performing mat
 
 \paragraph{Solving the Random Surfer via the Power Method}
 \label{random-surfer-sparse-fix}
-Solving the eigenvalues for such a large matrix will not feasible, instead the power method will need to be used to find the stationary point.
+Solving the eigenvalues for large matrices will not feasible, instead the power method will need to be used to find the stationary point.
 
-However, creating a matrix of background probabilites (denoted by \texttt{B} in section \ref{page-rank-random-surfer}) will not be feasible, it would simply be too large, instead some algebra can be used to reduce \(B\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
+However, creating a matrix of background probabilites (denoted by \texttt{B} in section \ref{page-rank-random-surfer}) will make \(\mathbf{S}\)  non sparse, instead some algebra can be used to reduce \(\mathbf{B}\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
 
 The power method is given by:
 
@@ -1142,7 +1147,7 @@ Create the Adjacency Matrix
     beta <- β <- 0.867
     (W <- adj_to_probTrans(A, beta = β)) %>% round(2)
     \end{minted}
-
+\tcblower
     \begin{verbatim}
     [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
     1  0.10 0.09  0.1 0.10 0.10 0.10  0.1 0.11 0.11   0.1
@@ -1228,7 +1233,7 @@ Use the power method
 
     p %>% as.vector()
     \end{minted}
-
+\tcblower
     \begin{verbatim}
     [1] 0.10153165 0.10159353 0.09609664 0.09725145 0.10153165 0.10008449
     [7] 0.09865794 0.10157348 0.10155286 0.10012631
@@ -1666,7 +1671,7 @@ We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colsum
 In order to investigate the effect of the model parameters on the second
 Eigenvalue it will be necessary to use these functions, in order to document and
 work with them in a modular way they were placed into an \textbf{\emph{R}} package and made
-available on \emph{GitHub} [fn: \url{https://github.com/RyanGreenup/PageRank}], to load this package use the \texttt{devtools} library as shown in listing .
+available on \emph{GitHub}  \footnote{\url{https://github.com/RyanGreenup/PageRank}}, to load this package use the \texttt{devtools} library as shown in listing .
 
 \begin{listing}[htbp]
     \begin{tcolorbox}
@@ -1842,7 +1847,7 @@ There also appears to be some relationship between \(\beta\) and the trace of th
         plot(data, labels = c("Mean\nEdges", "β", "Size", "ξ₂", "Trace"))
         \end{minted}
     \end{tcolorbox}
-\caption{\label{plotly_dens}Density of Plot or something, see \ref{fig:plotly_dens}}
+\caption{\label{plotly_dens} Plot Model Diagnostics for data corresponding to graphs, see figure \ref{fig:plotly_dens}}
 \end{listing}
 
 
@@ -2416,7 +2421,6 @@ To test the model, we can measure the eigenvalue resulting from values within th
     \end{verbatim}
 \end{tcolorbox}
 
-That's actually pretty close, but, how does it perform on graphs outside the range of size?
 
 \begin{tcolorbox}
     \begin{minted}[]{r}
