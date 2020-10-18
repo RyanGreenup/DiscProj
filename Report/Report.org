@@ -1584,9 +1584,9 @@ range of graphs with respect to the parameters of the /Power Walk/ method.
 ** Correlation Plot
 
 By looping over many random graphs for a variety of probabilities a data set can
-be constructed and a correlation plot generated. To implement this a data frame
-of input values was constructed in listing [[input_var]], a function that builds a
-data frame with the second eigenvalue, density, determinant and trace was constructed in listing [[output_def]] and finally a correlation plot was generated in listing [[corrplot]] shown in figure [[fig:corrplot]].
+be constructed and a correlation plot generated. To implement this
+input values were specified listing [[input_var]], a function that builds a
+data frame with the second eigenvalue, density, determinant and trace was constructed in listing [[output_def]], a function to map this over the cartesian product of the input variables was created in listing [[func-sim]] and finally a correlation plot was generated in listing [[corrplot]] shown in figure [[fig:corrplot]]. The correlation plot in figure [[fig:corrplot]] considers the Spearman correlation coefficient, which is concerned with a monotone relationship between the variables, this is appropriate here as the complex relationship between the variables is likely non-linear.
 
 
 #+NAME: input_var
@@ -1595,7 +1595,7 @@ data frame with the second eigenvalue, density, determinant and trace was constr
 # Generate Constants
 p         <- seq(from = 0.01, to = 0.99, length.out = 5)
 beta      <- seq(from = 1   , to = 20  , length.out = 20)
-size      <- seq(from = 100 , to = 1000, length.out = 5) %>% rev()
+size      <- seq(from = 100 , to = 1000, length.out = 5) %>% rev() # Big First
 input_var <- expand.grid("p" = p , "beta" = beta, "size" = size)
 
 # Print out a sample of all the rows
@@ -1604,12 +1604,12 @@ input_var[sample(1:nrow(input_var), 6),]
 
 #+RESULTS: input_var
 :         p beta size
-: 53  0.500   11 1000
-: 398 0.500   20  325
-: 303 0.500    1  325
-: 347 0.255   10  325
-: 330 0.990    6  325
-: 162 0.255   13  775
+: 130 0.990    6  775
+: 140 0.990    8  775
+: 300 0.990   20  550
+: 479 0.745   16  100
+: 377 0.255   16  325
+: 425 0.990    5  100
 
 #+NAME: output_def
 #+CAPTION: Function to return a vector \(\left\langle \left\lvert \xi_2 \right\rvert,
@@ -1632,8 +1632,8 @@ random_graph <- function(p, beta, size) {
 #+RESULTS:
 
 
-Now a function to return a data frame of results:
-
+#+NAME: func-sim
+#+CAPTION: A function to return a dataframe of simulated graphs using the ~random_graph~ function in listing [[output_def]].
 #+begin_src R
 sim_graphs <- function(filename, p, beta, size) {
 
@@ -1656,6 +1656,8 @@ sim_graphs <- function(filename, p, beta, size) {
 }
 #+end_src
 
+#+RESULTS: func-sim
+
 #+RESULTS:
 
 
@@ -1670,23 +1672,29 @@ if (file.exists(filename)) {
 
   } else {
     data <- sim_graphs(filename, p, beta, size)
-    sim_graphs(filename, p, beta, size)
 
 }
-head(data)
 cormat = cor(data, method = 'spearman')
 rownames(cormat) <- colnames(cormat) <- c("Prob\nEdges", "β", "Size", "ξ₂", "Trace")
 corrplot(cormat, method = "ellipse", type = "lower")
 #+end_src
 
+#+NAME: fig:corrplot
+#+CAPTION: Correlation plot of parameters of /Power Walk/ parameters and graph properties.
+#+attr_html: :width 400px
+#+attr_latex: :width 12cm
 #+RESULTS: corrplot
 [[file:media/corrplot.png]]
 
-This shows a clear relationship between the average number of edges, \beta and \xi_2.
+The correlation plot shows a moderate relationship between size, the uniform probability of linking two nodes (\(p\)) and the size of the graph with \(\xi_{2}\). It's worth noting that \(p = \mathrm{mean}\left(\mathbf{A}\right)\).
 
-The average number of edges is equal to the \(p\) parameter.
+To inspect these relationships more closely a scatterplot matrix was produced in
+figure [[plotly_dens]] and shown in figure [[fig:plotly_dens]]. The matrix indicates a
+negative relationship between \(\xi_{2}\) with \(p\) and size and a positive
+relationship between \(\beta\) and \(\xi_{2}\), these relationships also indicate some degree of interaction.
 
-To inspect this, let's hold size constant and have alook :
+
+There also appears to be some relationship between \(\beta\) and the trace of the matrix, this won't be considered for the moment because the trace is not a parameter of the power walk method.
 
 #+NAME: plotly_dens
 #+CAPTION:  Density of Plot or something, see [[fig:plotly_dens]]
@@ -1695,8 +1703,6 @@ plot(data, labels = c("Mean\nEdges", "β", "Size", "ξ₂", "Trace"))
 #+END_SRC
 
 
-#+NAME: plotly_dens
-#+CAPTION:  Density of Plot or something, see [[fig:plotly_dens]]
 #+NAME: fig:plotly_dens
 #+CAPTION: Plot of the Density of the Adjacency Matrix, Beta Value of the Power Walk method with \(\xi_{2}\) represented by the vertical \(z\) axis.
 #+attr_html: :width 400px
@@ -1704,16 +1710,14 @@ plot(data, labels = c("Mean\nEdges", "β", "Size", "ξ₂", "Trace"))
 #+RESULTS: plotly_dens
 [[file:media/cor_matrix-er.png]]
 
-There appears also to be a relationship with the trace, I'm actually waiting to generate the data on this one.
 
-TODO make plot of trace
+By looking at the \(\xi_{2}\) value for a variety of \(p\) values with a
+constant size a pattern may be emerge, a corresponding data set is produced in
+[[er_constant_size]], a plot produced in listing [[l:fig:er_constant_size]] and the
+corresponding plot shown in figure [[constant_size_erdos_density]].
 
-Although the trace may be interesting with which to plot with, it requires first solving the power walk method, so, it might not be insightful.
-
-Density will be dependent on \(p\) in the Erdos Renyi model, so, let's look at a few different values.
-
-Size did not appear to have any effect on the eigenvalue, so we'll fix
-
+#+NAME: er_constant_size
+#+CAPTION: Produce a data frame of graphs corresponding to a constant size and link density.
 #+begin_src R
 filename <- "resources/erdosData_constant_size.rds"
 
@@ -1728,10 +1732,14 @@ if (file.exists(filename)) {
 }
 #+end_src
 
+#+RESULTS: er_constant_size
+
 #+RESULTS:
 
+#+NAME: l:fig:er_constant_size
+#+CAPTION: Produce a plot of \(\xi_{2}\) for a constant size and a few link densities.
 #+BEGIN_SRC R :exports both :results output graphics file :file media/constant_size_erdos_density.png :eval never-export
-ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = beta, y = eigenvalue2)) +
+ggplot(data2, mapping = aes(col = factor(p), x = beta, y = eigenvalue2)) +
   geom_point(size = 0.5) +
   stat_smooth() +
   scale_size_continuous(range = c(0.1,1)) +
@@ -1740,6 +1748,9 @@ ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = beta, y = eige
   theme_bw()
 #+end_src
 
+#+RESULTS: l:fig:er_constant_size
+[[file:media/constant_size_erdos_density.png]]
+
 #+NAME: constant_size_erdos_density
 #+CAPTION: Constant Size Erdos Density
 #+attr_html: :width 400px
@@ -1747,9 +1758,10 @@ ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = beta, y = eige
 #+RESULTS:
 [[file:media/constant_size_erdos_density.png]]
 
-It appears that for low densities the relationship becomes more and more linear, we may be able to drop a sqrt transform for network graphs with an outdegree (m) significantly smaller than there size (i.e. p ~= m/n)
+This resulting trens are well defined and positive, the data appears to have a
+concave down curvature and non constant variance, a sqrt transform is applied in
+listing [[constant_size_erdos_density_sqrt]] and shown in figure [[fig:er_constant_size]].
 
-The noise is from the fact that setting \(p\) is probabilitsitc, this would be reduced if the simulated graphs were larger, but then calculating the eigenvalue of W becomes prohibitive.
 
 #+NAME: constant_size_erdos_density_sqrt
 #+CAPTION: listing:constant_size_erdos_density_sqrt
@@ -1771,10 +1783,23 @@ ggplot(data2[30:nrow(data2),], mapping = aes(col = factor(p), x = sqrt(beta), y 
 #+RESULTS: constant_size_erdos_density_sqrt
 [[file:media/constant_size_erdos_density_sqrt.png]]
 
-So there's a strong positive relationship for \(\xi_{2} ~ sqrt(beta)\), at low link densities, nearly positive does this persist over many sizes?
+
+The root transform did not significantly normalise the variance or make the
+relationship much more linear. The noise would result from using \(p\) as a
+probability in forming the graphs as opposed to strictly enforcing the link
+density, this variance should be constant so this transform is not desirable.
+
+Both plots in figures
+[[fig:constant_size_erdos_density_sqrt]]
+[[constant_size_erdos_density]]
+appear to indicate a more linear relationship between \(\xi_{2}\) and \(\beta\) for smaller link densities and \(\beta\) values.
+
+
+In order to determine whether or not this relationship persists over many sizes a data set containing the relationship between \(\xi_{2}\) and \(\beta\) was produced for sizes ranging from 100 to 1000 vertices in listing [[l:gen_erdos_data_constant_dens]], a corresponding plot was produced in listing [[constant_dens_erdos_density]] and shown in figure ref:fig:constant_dens_erdos_density.
+
 
 #+NAME: l:gen_erdos_data_constant_dens
-#+CAPTION:
+#+CAPTION: Produce a data set of a variety of sizes ranging from 100 to 1000 vertices.
 #+attr_html: :width 400px
 #+attr_latex: :width 12cm
 #+begin_src R
@@ -1813,9 +1838,7 @@ ggplot(data2, mapping = aes(col = factor(size), x = (beta), y = eigenvalue2)) +
 #+RESULTS: constant_dens_erdos_density
 [[file:media/constant_dens_erdos_density.png]]
 
-So \(p\) is mean(degree)/size, prob of one node to any other.
-
-This appears to have a slight curvature, it's less than log so let's transform it:
+This relationship appears to have a slight curvature, this curvature is very slight so a root transform is more appropriate than a log transofrm, this is implemented in listing [[l:constant_dens_erdos_density_sqrt]]  and shown in [[fig:constant_dens_erdos_density_sqrt]].
 
 #+NAME: l:constant_dens_erdos_density_sqrt
 #+CAPTION: listing:constant_size_erdos_density_sqrt
@@ -1838,6 +1861,10 @@ ggplot(data2, mapping = aes(col = factor(size), x = sqrt(beta), y = eigenvalue2)
 #+RESULTS: l:constant_dens_erdos_density_sqrt
 [[file:media/constant_dens_erdos_density_sqrt.png]]
 
+
+The plot shown in [[fig:constant_dens_erdos_density_sqrt]]  demonstrates a very strong linear relationship between \(\xi_{2}\) and \(\sqrt{\beta}\) for a variety of constant link densities.
+
+The next question is how
 
 So this seems to suggest that we have a relationship of \(\xi_{2} \sim \sqrt\{\beta\} \)
 
@@ -2007,7 +2034,7 @@ if (file.exists(filename)) {
 
 #+NAME: l:ba_data_plot
 #+CAPTION: l:ba_data_plot
-#+BEGIN_SRC R :exports both :results output graphics file :file media/constant_dens_erdos_density_sqrt.png :eval never-export
+#+BEGIN_SRC R :exports both :results output graphics file :file media/constant_dens_ba_density_sqrt.png :eval never-export
 data2$p <- round((data2$m/data2$size), 2)
 
 ggplot(data2, mapping = aes(col = factor(p), x = beta, y = eigenvalue2)) +
@@ -2164,20 +2191,20 @@ lm(formula = eigenvalue2 ~ 0 + p * size + p + beta, data = data2)
 
 Residuals:
       Min        1Q    Median        3Q       Max
--0.108540 -0.009742 -0.001943  0.007044  0.070279
+-0.108811 -0.009673 -0.001948  0.007289  0.069467
 
 Coefficients:
          Estimate Std. Error t value Pr(>|t|)
-p       1.344e+00  2.662e-02  50.478   <2e-16 ***
-size   -3.393e-05  1.292e-06 -26.260   <2e-16 ***
-beta    3.918e-03  5.208e-05  75.231   <2e-16 ***
-p:size -1.437e-03  1.684e-04  -8.532   <2e-16 ***
+p       1.348e+00  2.661e-02  50.651   <2e-16 ***
+size   -3.404e-05  1.292e-06 -26.358   <2e-16 ***
+beta    3.923e-03  5.205e-05  75.367   <2e-16 ***
+p:size -1.446e-03  1.683e-04  -8.592   <2e-16 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 0.01806 on 2796 degrees of freedom
-Multiple R-squared:  0.9086,	Adjusted R-squared:  0.9085
-F-statistic:  6949 on 4 and 2796 DF,  p-value: < 2.2e-16
+Residual standard error: 0.01805 on 2796 degrees of freedom
+Multiple R-squared:  0.9089,	Adjusted R-squared:  0.9088
+F-statistic:  6975 on 4 and 2796 DF,  p-value: < 2.2e-16
 #+end_example
 
 So we have :
@@ -2222,9 +2249,34 @@ abs(e2_pred <-
 : [1] 0.003952193
 : [1] 0.003962502
 
-That's actually pretty close.
+That's actually pretty close, but, how does it perform on graphs outside the range of size?
 
-Alright well what if I weight the adj mat?
+#+begin_src R
+m         <- 1
+beta      <- 3
+size <- n <- 2000
+
+
+g <- igraph::sample_pa(power = 3, n = n, m = m)
+A <- t(as.matrix(igraph::get.adjacency(g)))
+W <- PageRank::power_walk_prob_trans(A, beta = beta)
+
+p <- mean(A)
+(e2 <- abs(eigen(W, only.values = TRUE)$values[2]) )
+
+abs(e2_pred <-
+  p      *   1.344
++ size   * - 3.393e-05
++ beta   *   3.918e-03
++ p*size * - 1.437e-03
+  )
+#+end_src
+
+#+RESULTS:
+: [1] 0.001329781
+: [1] 0.03968164
+
+This suggests that for large graphs this model is not a good fit.
 
 * Relating the Power Walk to the Random Surfer
   :PROPERTIES:
