@@ -94,62 +94,62 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {\nobreakspace {}7.2\nobreakspace {}}Correlation Plot}{31}{subsection.7.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}8\nobreakspace {}}Barabasi Albert Graphs}{43}{section.8}%
+\contentsline {section}{\numberline {\nobreakspace {}8\nobreakspace {}}Barabasi Albert Graphs}{41}{section.8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}8.1\nobreakspace {}}Theory}{43}{subsection.8.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}8.1\nobreakspace {}}Theory}{41}{subsection.8.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}8.2\nobreakspace {}}Modelling}{43}{subsection.8.2}%
+\contentsline {subsection}{\numberline {\nobreakspace {}8.2\nobreakspace {}}Modelling}{41}{subsection.8.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}9\nobreakspace {}}Relating the Power Walk to the Random Surfer}{52}{section.9}%
+\contentsline {section}{\numberline {\nobreakspace {}9\nobreakspace {}}Relating the Power Walk to the Random Surfer}{51}{section.9}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.1\nobreakspace {}}Introduction}{52}{subsection.9.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.1\nobreakspace {}}Introduction}{51}{subsection.9.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.2\nobreakspace {}}Value of [1st Term]}{53}{subsection.9.2}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.2\nobreakspace {}}Value of [1st Term]}{51}{subsection.9.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.3\nobreakspace {}}Value of \{2nd Term\}}{54}{subsection.9.3}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.3\nobreakspace {}}Value of \{2nd Term\}}{52}{subsection.9.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.4\nobreakspace {}}Equate the Power Walk to the Random Surfer}{55}{subsection.9.4}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.4\nobreakspace {}}Equate the Power Walk to the Random Surfer}{53}{subsection.9.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.5\nobreakspace {}}Conclusion}{56}{subsection.9.5}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.5\nobreakspace {}}Conclusion}{54}{subsection.9.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.6\nobreakspace {}}The Second Eigenvalue}{56}{subsection.9.6}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.6\nobreakspace {}}The Second Eigenvalue}{54}{subsection.9.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}9.6.1\nobreakspace {}}The Random Surfer}{56}{subsubsection.9.6.1}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}9.6.1\nobreakspace {}}The Random Surfer}{54}{subsubsection.9.6.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}9.6.2\nobreakspace {}}Power Walk}{56}{subsubsection.9.6.2}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}9.6.2\nobreakspace {}}Power Walk}{55}{subsubsection.9.6.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {paragraph}{Applying this to Power Walk}{57}{subsubsection.9.6.2}%
+\contentsline {paragraph}{Applying this to Power Walk}{55}{subsubsection.9.6.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subparagraph}{My attempt}{57}{equation.9.62}%
+\contentsline {subparagraph}{My attempt}{55}{equation.9.62}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}10\nobreakspace {}}Appendix}{58}{section.10}%
+\contentsline {section}{\numberline {\nobreakspace {}10\nobreakspace {}}Appendix}{56}{section.10}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}10.1\nobreakspace {}}Graph Diagrams}{58}{subsection.10.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}10.1\nobreakspace {}}Graph Diagrams}{56}{subsection.10.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}11\nobreakspace {}}my to do list}{61}{section.11}%
+\contentsline {section}{\numberline {\nobreakspace {}11\nobreakspace {}}my to do list}{59}{section.11}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.1\nobreakspace {}}Use BA Graphs}{61}{subsection.11.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.1\nobreakspace {}}Use BA Graphs}{59}{subsection.11.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.2\nobreakspace {}}Look at the ScatterPlot Matrix}{61}{subsection.11.2}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.2\nobreakspace {}}Look at the ScatterPlot Matrix}{59}{subsection.11.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.3\nobreakspace {}}Compare eigenvalue2 and iterations}{61}{subsection.11.3}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.3\nobreakspace {}}Compare eigenvalue2 and iterations}{59}{subsection.11.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.4\nobreakspace {}}Look at using an SVM/logReg or other classifier}{61}{subsection.11.4}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.4\nobreakspace {}}Look at using an SVM/logReg or other classifier}{59}{subsection.11.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.1\nobreakspace {}}Measure Iterations and E2 values}{61}{subsubsection.11.4.1}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.1\nobreakspace {}}Measure Iterations and E2 values}{59}{subsubsection.11.4.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.2\nobreakspace {}}Are any values indicative of E2 Values?}{61}{subsubsection.11.4.2}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.2\nobreakspace {}}Are any values indicative of E2 Values?}{59}{subsubsection.11.4.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.3\nobreakspace {}}Use Method Parameters with a log reg to predict a number of iterations}{61}{subsubsection.11.4.3}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.3\nobreakspace {}}Use Method Parameters with a log reg to predict a number of iterations}{59}{subsubsection.11.4.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.4\nobreakspace {}}Use a ROC Curve to set a threshold}{61}{subsubsection.11.4.4}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.4\nobreakspace {}}Use a ROC Curve to set a threshold}{59}{subsubsection.11.4.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.5\nobreakspace {}}Discuss the results.}{61}{subsubsection.11.4.5}%
+\contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.5\nobreakspace {}}Discuss the results.}{59}{subsubsection.11.4.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.5\nobreakspace {}}Tie the Report together.}{61}{subsection.11.5}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.5\nobreakspace {}}Tie the Report together.}{59}{subsection.11.5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.6\nobreakspace {}}Typeset the Report}{61}{subsection.11.6}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.6\nobreakspace {}}Typeset the Report}{59}{subsection.11.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.7\nobreakspace {}}TODO Diamater}{61}{subsection.11.7}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.7\nobreakspace {}}TODO Diamater}{59}{subsection.11.7}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.8\nobreakspace {}}Improving the Performance of Page Rank}{61}{subsection.11.8}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.8\nobreakspace {}}Improving the Performance of Page Rank}{59}{subsection.11.8}%

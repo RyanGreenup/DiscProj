@@ -1724,21 +1724,7 @@ if (file.exists(filename)) {
     beta <- seq(from = 1  , to = 10  , length.out = 1000)
     size <- 1000
 
-    input_var <- expand.grid("p" = p, "beta" = beta, "size" = size)
-
-    nc <- length(random_graph(1, 1, 1))
-    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
-    for (i in 1:nrow(input_var)) {
-        X     <- as.vector(input_var[i,])
-        Y[i,] <-  random_graph(X$p, X$beta, X$size)
-        print(i/nrow(input_var))
-    }
-    if (sum(abs(Y) != abs(Re(Y))) == 0) {
-        Y <- Re(Y)
-    }
-    d <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
-    (data2 <- cbind(input_var, Y)) %>% head()
-    saveRDS(data2, filename)
+    data2 <- sim_graphs(filename, p, beta, size)
 }
 #+end_src
 
@@ -1801,21 +1787,7 @@ if (file.exists(filename)) {
     beta <- seq(from = 1  , to = 10  , length.out = 1000)
     size <- seq(from = 100, to = 1000, length.out = 5   )
 
-    input_var <- expand.grid("p" = p, "beta" = beta, "size" = size)
-
-    nc <- length(random_graph(1, 1, 1))
-    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
-    for (i in 1:nrow(input_var)) {
-        X     <- as.vector(input_var[i,])
-        Y[i,] <-  random_graph(X$p, X$beta, X$size)
-        print(i/nrow(input_var)) # Only in inferior buffer
-    }
-    if (sum(abs(Y) != abs(Re(Y))) == 0) {
-        Y <- Re(Y)
-    }
-    d <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
-    (data2 <- cbind(input_var, Y)) %>% head()
-    saveRDS(data2, filename)
+    data2 <- sim_graphs(filename, p, beta, size)
 }
 #+end_src
 
@@ -2027,19 +1999,7 @@ if (file.exists(filename)) {
 
     input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
 
-    nc <- length(random_graph_pa(1, 1, 1))
-    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
-    for (i in 1:nrow(input_var)) {
-        X     <- as.vector(input_var[i,])
-        Y[i,] <-  random_graph_pa(X$m, X$beta, X$size)
-        print(i/nrow(input_var))
-    }
-    if (sum(abs(Y) != abs(Re(Y))) == 0) {
-        Y <- Re(Y)
-    }
-    Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
-    (data2 <- cbind(input_var, Y)) %>% head()
-    saveRDS(data2, filename)
+    data2 <- sim_graphs(filename, p, beta, size)
 }
 #+end_src
 
@@ -2073,19 +2033,11 @@ because the densities are so low there is also no need for a log transform eithe
 
 let's look at a constant beta value, say 6, how does \(\xi_{2}\) change in response to p?
 
-#+NAME: l:baData_constant_size
-#+CAPTION: l:baData_constant_size
+
 #+begin_src R
-filename <- "resources/BAData_constant_size.rds"
+sim_graphs_pa <- function(filename, m, beta, size) {
 
-if (file.exists(filename)) {
-    data2 <- readRDS(filename)
-} else {
-    m    <- seq(from = 1, to = 9, length.out = 15)
-    beta <- 5
-    sz    <- seq(from = 100, to = 500, length.out = 7)
-
-    input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
+    input_var <- expand.grid("m" = m, "beta" = beta, "size" = size)
 
     nc <- length(random_graph_pa(1, 1, 1))
     Y  <- matrix(ncol = nc, nrow = nrow(input_var))
@@ -2098,8 +2050,28 @@ if (file.exists(filename)) {
         Y <- Re(Y)
     }
     Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
-    (data2 <- cbind(input_var, Y)) %>% head()
+    data2 <- cbind(input_var, Y)
     saveRDS(data2, filename)
+    return(data2)
+}
+#+end_src
+
+#+RESULTS:
+
+
+#+NAME: l:baData_constant_size
+#+CAPTION: l:baData_constant_size
+#+begin_src R
+filename <- "resources/BAData_constant_size.rds"
+
+if (file.exists(filename)) {
+    data2 <- readRDS(filename)
+} else {
+    m       <- seq(from = 1, to = 9, length.out = 15)
+    beta    <- 5
+    size    <- seq(from = 100, to = 500, length.out = 7)
+
+    data2 <- sim_graphs_pa(filename, m, beta, size)
 }
 #+end_src
 
@@ -2112,7 +2084,7 @@ if (file.exists(filename)) {
 data2$p <- round((data2$m/data2$size), 2)
 
 names(data2)
-ggplot(data2, mapping = aes(col = factor(size), x = p, y = eigenvalue2)) +
+ggplot(data2, mapping = aes(col = factor(round(size)), x = p, y = eigenvalue2)) +
   geom_point(size = 0.5) +
   stat_smooth(method = 'lm', size = 0.4, se = FALSE) +
   scale_size_continuous(range = c(0.1,1)) +
@@ -2139,18 +2111,35 @@ a good model might then incorparte p*size+p:
 #+NAME: l:mlm_hist_ba
 #+CAPTION: l:mlm_hist_ba
 #+BEGIN_SRC R :exports both :results output graphics file :file media/ba_hist_mlm_mod.png :eval never-export
-filename <- "resources/BAData.rds"
-data2 <- readRDS(filename)
+filename <- "resources/BAData_lots.rds"
+
+if (file.exists(filename)) {
+    data_lots <- readRDS(filename)
+} else {
+    m       <- seq(from = 1, to = 9, length.out = 10)
+    beta    <- seq(from = 1, to = 20, length.out = 40)
+    size    <- seq(from = 100, to = 500, length.out = 5) %>% rev()
+    size    <- c(size, 750, 1000)
+
+    data_lots <- sim_graphs_pa(filename, m, beta, size)
+}
+
+head(data_lots)
+
+data2 <- data_lots
 data2$p <- data2$m/data2$size
 
-q <- quantile(mod$residuals, c(0.025, 0.975))
-ci1 <- q[1]
-ci2 <- q[2]
 
 mod <- lm(eigenvalue2 ~ 0 + p*size + p + beta, data2)
+
+q <- quantile(mod$residuals, c(0.025, 0.5, 0.975))
+cil <- q[1]
+cih <- q[2]
+cir <- q[3]
+
 hist(mod$residuals, breaks = 50, xlab = "Residuals",
-     title = "Histogram of Residuals for MLM")
-abline(v = c(ci1, ci2))
+     main = "Histogram of Residuals")
+abline(v = c(cil, cih, cir))
 
 #+end_src
 
@@ -2175,26 +2164,26 @@ lm(formula = eigenvalue2 ~ 0 + p * size + p + beta, data = data2)
 
 Residuals:
       Min        1Q    Median        3Q       Max
--0.030751 -0.004571 -0.001238  0.004179  0.029725
+-0.108540 -0.009742 -0.001943  0.007044  0.070279
 
 Coefficients:
          Estimate Std. Error t value Pr(>|t|)
-p       3.404e-01  1.761e-02  19.332   <2e-16 ***
-size   -3.957e-05  1.925e-06 -20.555   <2e-16 ***
-beta    6.568e-03  1.545e-04  42.502   <2e-16 ***
-p:size -2.777e-04  1.334e-04  -2.083   0.0376 *
+p       1.344e+00  2.662e-02  50.478   <2e-16 ***
+size   -3.393e-05  1.292e-06 -26.260   <2e-16 ***
+beta    3.918e-03  5.208e-05  75.231   <2e-16 ***
+p:size -1.437e-03  1.684e-04  -8.532   <2e-16 ***
 ---
 Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
 
-Residual standard error: 0.008223 on 896 degrees of freedom
-Multiple R-squared:  0.9018,	Adjusted R-squared:  0.9014
-F-statistic:  2058 on 4 and 896 DF,  p-value: < 2.2e-16
+Residual standard error: 0.01806 on 2796 degrees of freedom
+Multiple R-squared:  0.9086,	Adjusted R-squared:  0.9085
+F-statistic:  6949 on 4 and 2796 DF,  p-value: < 2.2e-16
 #+end_example
 
 So we have :
 
 \begin{align}
-\xi_{2} &= 0.34 p +  \frac{3n}{10^{5}} + \frac{6\beta}{10^{3}} - \frac{2.8 p n}{10^{4}} \\
+\left\lvert \xi_{2} \right\rvert &= 1.34 p -  \frac{3.4n}{10^{5}} + \frac{3.9\beta}{10^{3}} - \frac{1.4 p n}{10^{3}} \\
         &p = \mathrm{mean}\left( \mathbf{A}\right)
 \end{align}
 
@@ -2204,14 +2193,14 @@ For an unweighted adjacency matrix from the internet we may expect:
 p \approx \frac{\mathrm{mean}\left(\mathrm{outdegree}\right)}{n}
 \]
 
-for larger graphs we get \(p \rightarrow 0\) so the eigenvalue will be reduced for smaller graphs.
+for larger graphs we get \(p \rightarrow 0\) so the eigenvalue will be reduced for larger graphs.
 
 OK so lets test this by predicting the value of the eigenvalue on a large BA graph:
 
 #+begin_src R
-m    <- 3
-n    <- 500
-beta <- 3
+m         <- 1
+beta      <- 3
+size <- n <- 500
 
 
 g <- igraph::sample_pa(power = 3, n = n, m = m)
@@ -2220,12 +2209,18 @@ W <- PageRank::power_walk_prob_trans(A, beta = beta)
 
 p <- mean(A)
 (e2 <- abs(eigen(W, only.values = TRUE)$values[2]) )
-(e2_pred  <- 0.34*p + 3*n/10^5 + 6*beta/10^3-2.8*p*n/10^4)
+
+abs(e2_pred <-
+  p      *   1.344
++ size   * - 3.393e-05
++ beta   *   3.918e-03
++ p*size * - 1.437e-03
+  )
 #+end_src
 
 #+RESULTS:
-: [1] 0.004271481
-: [1] 0.0341952
+: [1] 0.003952193
+: [1] 0.003962502
 
 That's actually pretty close.
 
