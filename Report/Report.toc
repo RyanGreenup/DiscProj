@@ -94,47 +94,45 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {\nobreakspace {}7.2\nobreakspace {}}Correlation Plot}{31}{subsection.7.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}8\nobreakspace {}}Barabasi Albert Graphs}{43}{section.8}%
+\contentsline {section}{\numberline {\nobreakspace {}8\nobreakspace {}}Barabasi Albert Graphs}{42}{section.8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}8.1\nobreakspace {}}Theory}{43}{subsection.8.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}8.1\nobreakspace {}}Theory}{42}{subsection.8.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}8.2\nobreakspace {}}Modelling}{43}{subsection.8.2}%
+\contentsline {subsection}{\numberline {\nobreakspace {}8.2\nobreakspace {}}Modelling}{42}{subsection.8.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {\nobreakspace {}8.2.1\nobreakspace {}}Model}{45}{subsubsection.8.2.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {\nobreakspace {}9\nobreakspace {}}Relating the Power Walk to the Random Surfer}{53}{section.9}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.1\nobreakspace {}}Introduction}{53}{subsection.9.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.1\nobreakspace {}}Introduction}{54}{subsection.9.1}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {\nobreakspace {}9.2\nobreakspace {}}Value of [1st Term]}{54}{subsection.9.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.3\nobreakspace {}}Value of \{2nd Term\}}{54}{subsection.9.3}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.3\nobreakspace {}}Value of \{2nd Term\}}{55}{subsection.9.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}9.4\nobreakspace {}}Equate the Power Walk to the Random Surfer}{55}{subsection.9.4}%
+\contentsline {subsection}{\numberline {\nobreakspace {}9.4\nobreakspace {}}Equate the Power Walk to the Random Surfer}{56}{subsection.9.4}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {\nobreakspace {}9.5\nobreakspace {}}Conclusion}{57}{subsection.9.5}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {\nobreakspace {}9.6\nobreakspace {}}The Second Eigenvalue}{57}{subsection.9.6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}9.6.1\nobreakspace {}}The Random Surfer}{57}{subsubsection.9.6.1}%
-\defcounter {refsection}{0}\relax 
-\contentsline {subsubsection}{\numberline {\nobreakspace {}9.6.2\nobreakspace {}}Power Walk}{57}{subsubsection.9.6.2}%
-\defcounter {refsection}{0}\relax 
-\contentsline {paragraph}{Applying this to Power Walk}{57}{subsubsection.9.6.2}%
+\contentsline {paragraph}{Applying this to Power Walk}{57}{subsection.9.6}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subparagraph}{My attempt}{57}{equation.9.62}%
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {\nobreakspace {}10\nobreakspace {}}Appendix}{59}{section.10}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}10.1\nobreakspace {}}Graph Diagrams}{60}{subsection.10.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}10.1\nobreakspace {}}Graph Diagrams}{59}{subsection.10.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {\nobreakspace {}11\nobreakspace {}}my to do list}{60}{section.11}%
+\contentsline {section}{\numberline {\nobreakspace {}11\nobreakspace {}}my to do list}{61}{section.11}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.1\nobreakspace {}}Use BA Graphs}{60}{subsection.11.1}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.1\nobreakspace {}}Use BA Graphs}{61}{subsection.11.1}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.2\nobreakspace {}}Look at the ScatterPlot Matrix}{60}{subsection.11.2}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.2\nobreakspace {}}Look at the ScatterPlot Matrix}{61}{subsection.11.2}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.3\nobreakspace {}}Compare eigenvalue2 and iterations}{60}{subsection.11.3}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.3\nobreakspace {}}Compare eigenvalue2 and iterations}{61}{subsection.11.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {\nobreakspace {}11.4\nobreakspace {}}Look at using an SVM/logReg or other classifier}{60}{subsection.11.4}%
+\contentsline {subsection}{\numberline {\nobreakspace {}11.4\nobreakspace {}}Look at using an SVM/logReg or other classifier}{61}{subsection.11.4}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{\numberline {\nobreakspace {}11.4.1\nobreakspace {}}Measure Iterations and E2 values}{61}{subsubsection.11.4.1}%
 \defcounter {refsection}{0}\relax 

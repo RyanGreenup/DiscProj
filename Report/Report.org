@@ -212,7 +212,6 @@ a /Markov Chain/ and [[cite:langvilleGooglePageRankScience2012][\S 4.4]] and
 Finding the Stationary point for this relationship will give a frequency
 distribution for the nodes and a metric to measure the centrality of vertices.
 
-
 ** Random Surfer Model
 *** Problems with the Stationary Distribution
 :PROPERTIES:
@@ -1569,7 +1568,7 @@ library(tidyverse) # Maybe, TODO check if this is used, I don't think it is
 #+LATEX: \part{Investigating \(\xi_{2}\)}
 * Erdos Renyi Graphs
 :PROPERTIES:
-:CUSTOM_ID: second-eigenvalue
+:CUSTOM_ID: erdos-renyi
 :END:
 ** Introduction
 The /Erdos Renyi/ game, first published in 1959 cite:renyiRandomGraphs1959 creates a graph by assuming that the number of nodes is constant and the probability of interlinking these nodes is equal.
@@ -1582,6 +1581,9 @@ provide a broader picture for the overall behaviour of \(\xi_{2}\) over a broad
 range of graphs with respect to the parameters of the /Power Walk/ method.
 
 ** Correlation Plot
+:PROPERTIES:
+:CUSTOM_ID: correlation-plot
+:END:
 
 By looping over many random graphs for a variety of probabilities a data set can
 be constructed and a correlation plot generated. To implement this
@@ -1604,12 +1606,12 @@ input_var[sample(1:nrow(input_var), 6),]
 
 #+RESULTS: input_var
 :         p beta size
-: 130 0.990    6  775
-: 140 0.990    8  775
-: 300 0.990   20  550
-: 479 0.745   16  100
-: 377 0.255   16  325
-: 425 0.990    5  100
+: 237 0.255    8  550
+: 13  0.500    3 1000
+: 438 0.500    8  100
+: 456 0.010   12  100
+: 209 0.745    2  550
+: 384 0.745   17  325
 
 #+NAME: output_def
 #+CAPTION: Function to return a vector \(\left\langle \left\lvert \xi_2 \right\rvert,
@@ -1862,35 +1864,7 @@ ggplot(data2, mapping = aes(col = factor(size), x = sqrt(beta), y = eigenvalue2)
 [[file:media/constant_dens_erdos_density_sqrt.png]]
 
 
-The plot shown in [[fig:constant_dens_erdos_density_sqrt]]  demonstrates a very strong linear relationship between \(\xi_{2}\) and \(\sqrt{\beta}\) for a variety of constant link densities.
-
-The next question is how
-
-So this seems to suggest that we have a relationship of \(\xi_{2} \sim \sqrt\{\beta\} \)
-
-non constant variance is a worry.
-
-
-#+BEGIN_SRC R :exports both :results output graphics file :file media/both_sqrt.png :eval never-export
-filename <- "resources/erdosData.rds"
-data <- readRDS(filename)
-
-ggplot(data2, mapping = aes(col = factor(size), x = sqrt(beta), y = eigenvalue2)) +
-  geom_point(size = 0.5) +
-  stat_smooth() +
-  scale_size_continuous(range = c(0.1,1)) +
-  labs(x = TeX("\\sqrt{β}"), y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue for uniform degree"), subtitle = "mean degree ÷ size = 5%" ) +
-  guides(col = guide_legend("Size"))  +
-  theme_bw()
-#+end_src
-
-#+RESULTS:
-[[file:media/both_sqrt.png]]
-
-This suggests that a model that considers the size, average value of the weighted adjacency matrix and sqrt beta we'd have something.
-
-A linear model looks promisint.
-
+The plot shown in [[fig:constant_dens_erdos_density_sqrt]]  demonstrates a very strong linear relationship between \(\xi_{2}\) and \(\sqrt{\beta}\) for a variety of constant link densities, the variance however is still non-constant over \(\sqrt{\beta}\).
 
 * Barabasi Albert Graphs
 :PROPERTIES:
@@ -1984,16 +1958,20 @@ hist(igraph::degree(igraph::erdos.renyi.game(n, 0.2)),
 ** Modelling
 At each step of the Barabassi-Albert algorithm, one node is added and linked to \(m\) other nodes with a probability proportional to the degree of that vertex.
 
-This means that the average of the unweighted adjacency matrix would be \(\mathrm{mean}\left(\mathbf{A}\right) \in \left[ \frac{m}{n}, \frac{m+1}{n} \right]\).
+This means that the average of the unweighted adjacency matrix would be given by \(p = \mathrm{mean}\left(\mathbf{A}\right) \in \left[ \frac{m}{n}, \frac{m+1}{n} \right]\) and the relationship identified in [[#erdos-renyi]] can be determined from the parameters of a scale-free network.
 
-calculating the mean of a matrix is expensive, so to generate many matrices we'll just use this for the moment.
+In practice though measuring \(m\) (as the mean out degree) will be imprecise and the adjacency matrix will be wieghted any way, so taking the mean of the weighted adjacency matrix would still be necessary to implement this type of model in practice.
 
-in practice though measuring \(m\) (as the mean out degree) will be imprecise and the adjacency matrix will be wieghted any way, so taking the mean of the matrix will still be necessary.
+A function to generate a random Barabassi-Albert graph and return the value of
+\(\xi_{2}\) corresponding to the Power Walk method is provided in listing
+[[random_graph_pa]], another function to map this over the cartesian product of
+input variables is provided in listing [[sim_graphs_pa]] and finally a dataset containing 9
+different link densities was created in listing [[l:gen_ba_data]].
 
-plot(data2$m/data2$size, data2$A_dens)
+This data plotted by listing [[l:ba_data_plot]] and shown in [[fig:ba_data_plot]].
 
-Using this knowledge we'll create a dataset with 9 different density values and confirm that the trend holds:
-
+#+NAME: random_graph_pa
+#+CAPTION: A function to build a random graph using the Barabassi-Albert Model and return the value of \(\xi_{2}\) corresponding to the /Power Walk/ method.
 #+begin_src R
 random_graph_pa <- function(m, beta, size) {
       g1 <- igraph::sample_pa(n = size, power = 3, m = m)
@@ -2009,6 +1987,31 @@ random_graph_pa <- function(m, beta, size) {
 #+end_src
 
 #+RESULTS:
+
+#+NAME: sim_graphs_pa
+#+CAPTION: Return \(\xi_{2}\) values by mapping the ~random_graph_pa~ function from listing [[random_graph_pa]] over the cartesian product of input variables.
+#+begin_src R
+sim_graphs_pa <- function(filename, m, beta, size) {
+
+    input_var <- expand.grid("m" = m, "beta" = beta, "size" = size)
+
+    nc <- length(random_graph_pa(1, 1, 1))
+    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
+    for (i in 1:nrow(input_var)) {
+        X     <- as.vector(input_var[i,])
+        Y[i,] <-  random_graph_pa(X$m, X$beta, X$size)
+        print(i/nrow(input_var))
+    }
+    if (sum(abs(Y) != abs(Re(Y))) == 0) {
+        Y <- Re(Y)
+    }
+    Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
+    data2 <- cbind(input_var, Y)
+    saveRDS(data2, filename)
+    return(data2)
+}
+#+end_src
+
 
 #+NAME: l:gen_ba_data
 #+CAPTION:
@@ -2026,7 +2029,7 @@ if (file.exists(filename)) {
 
     input_var <- expand.grid("m" = m, "beta" = beta, "size" = sz)
 
-    data2 <- sim_graphs(filename, p, beta, size)
+    data2 <- sim_graphs_pa(filename, p, beta, size)
 }
 #+end_src
 
@@ -2052,38 +2055,18 @@ ggplot(data2, mapping = aes(col = factor(p), x = beta, y = eigenvalue2)) +
 #+attr_html: :width 400px
 #+attr_latex: :width 12cm
   #+RESULTS: l:ba_data_plot
-  [[file:media/constant_dens_erdos_density_sqrt.png]]
+  [[file:media/constant_dens_ba_density_sqrt.png]]
 
-Due to the relationship between size and density this seems to work even better for BA graphs, which is precisely where we might anticipate the use of the power walk method.
+Due to the relationship between size and density in the barabassi albert model this approach seems to work even better for BA graphs, which is precisely the type of graph where we might anticipate the use of the power walk method.
 
-because the densities are so low there is also no need for a log transform either.
+The low link densities are such that there is no need for a log/root transform either, such a transform was found to be unsuitable in \S [[#correlation-plot]] so this is encouraging.
 
-let's look at a constant beta value, say 6, how does \(\xi_{2}\) change in response to p?
+To determine the relationship that the link density \(p\) may have, the value of
+\(\beta\) will be fixed and the behaviour of \(\xi_{2} \sim p\) can be
+investigated. A corresponding data set is produced in listing
+[[l:baData_constant_size]], plotted in listing [[l:ba_data_constant_size_plot]] and
+shown in figure [[fig:ba_data_constant_size_plot]].
 
-
-#+begin_src R
-sim_graphs_pa <- function(filename, m, beta, size) {
-
-    input_var <- expand.grid("m" = m, "beta" = beta, "size" = size)
-
-    nc <- length(random_graph_pa(1, 1, 1))
-    Y  <- matrix(ncol = nc, nrow = nrow(input_var))
-    for (i in 1:nrow(input_var)) {
-        X     <- as.vector(input_var[i,])
-        Y[i,] <-  random_graph_pa(X$m, X$beta, X$size)
-        print(i/nrow(input_var))
-    }
-    if (sum(abs(Y) != abs(Re(Y))) == 0) {
-        Y <- Re(Y)
-    }
-    Y <- as.data.frame(Y); colnames(Y) <- c("eigenvalue2", "trace")
-    data2 <- cbind(input_var, Y)
-    saveRDS(data2, filename)
-    return(data2)
-}
-#+end_src
-
-#+RESULTS:
 
 
 #+NAME: l:baData_constant_size
@@ -2129,17 +2112,28 @@ ggplot(data2, mapping = aes(col = factor(round(size)), x = p, y = eigenvalue2)) 
   [[file:media/ba_constant_size_plot.png]]
 
 
-OK so clearly the effect on the eigenvalue that \(p\) has depends on the size of the graph, so \(p\) and size interact.
+This seems to suggest that the effect on the eigenvalue that \(p\) has depends on the size of the graph, so  \(p\) and size interact with respect to \(\xi_{2}\).
 
-I should gen more data for this bit if possible.
+Hence an appropriate model will consider the value of \(p\), \(p*n\) and \(\beta\), where \(n\) is the size of the graph.
 
-a good model might then incorparte p*size+p:
+*** Model
+A simple model to consider the variables found to influence \(\xi_{2}\) is
+multiple linear regression, although it is a very simple model it is easy to
+interpret and may offer insights into the behaviour of \(\xi_{2}\) in response
+to different graphs.
+
+More data was generated and a model fitted to training data in listing
+[[l:mlm_hist_ba]] a corresponding residual histogram for the testing data is provided in [[fig:mlm_hist_ba]] and a summary of the model provided in listing [[mod_summary]].
+
+In fitting the model in listing [[l:mlm_hist_ba]] the identity \(p = \frac{m}{n} \) was implemented because taking the mean value of a large matrix is resource intensive and would have reduced the number of data points in the analysis.
+
 
 #+NAME: l:mlm_hist_ba
 #+CAPTION: l:mlm_hist_ba
 #+BEGIN_SRC R :exports both :results output graphics file :file media/ba_hist_mlm_mod.png :eval never-export
 filename <- "resources/BAData_lots.rds"
 
+# Load the DAta
 if (file.exists(filename)) {
     data_lots <- readRDS(filename)
 } else {
@@ -2151,34 +2145,43 @@ if (file.exists(filename)) {
     data_lots <- sim_graphs_pa(filename, m, beta, size)
 }
 
-head(data_lots)
-
-data2 <- data_lots
+# Create the link density variable
+data2   <- data_lots
 data2$p <- data2$m/data2$size
 
+# Use 80% testing data
+n   <- nrow(data2)
+r   <- 0.8
+train <- sample(x = 1:nrow(data2), size = r*n)
 
-mod <- lm(eigenvalue2 ~ 0 + p*size + p + beta, data2)
+# Fit the Model
+mod       <- lm(eigenvalue2 ~ 0 + p*size + p + beta, data = data2, subset = train)
+test_pred <- predict(object = mod)[-train]
+test_res  <- test_pred-data2$eigenvalue2[-train]
 
-q <- quantile(mod$residuals, c(0.025, 0.5, 0.975))
+# Make the Plot
+q <- quantile(test_res, c(0.025, 0.5, 0.975))
+quantile(test_res)
 cil <- q[1]
 cih <- q[2]
 cir <- q[3]
 
-hist(mod$residuals, breaks = 50, xlab = "Residuals",
+hist(test_res, breaks = 50, xlab = "Residuals",
      main = "Histogram of Residuals")
 abline(v = c(cil, cih, cir))
 
 #+end_src
 
 #+NAME: fig:mlm_hist_ba
-#+CAPTION: fig:mlm_hist_ba
+#+CAPTION: Histogram of the test set residuals for the multiple linear regression model fitted in listing [[l:mlm_hist_ba]], these residuals appear reasonably normal and are centred around zero, this suggests that the model may be an appropriate estimate on the domain that it was fitted.
 #+attr_html: :width 400px
 #+attr_latex: :width 12cm
 #+RESULTS: l:mlm_hist_ba
 [[file:media/ba_hist_mlm_mod.png]]
 
-So the residuals are normal ish, except for that spike just before 0, that's fairly concerning, this might be an acceptable model though, let's get it in written form.
 
+#+NAME: mod_summary
+#+CAPTION: Summarise the Coefficients of the model.
 #+begin_src R
 summary(mod)
 #+end_src
@@ -2207,7 +2210,7 @@ Multiple R-squared:  0.9089,	Adjusted R-squared:  0.9088
 F-statistic:  6975 on 4 and 2796 DF,  p-value: < 2.2e-16
 #+end_example
 
-So we have :
+The residuals appear reasonably normal, this suggests that the model may be an appropriate estimation over the domain on which it was fitted, the corresponding model is given by:
 
 \begin{align}
 \left\lvert \xi_{2} \right\rvert &= 1.34 p -  \frac{3.4n}{10^{5}} + \frac{3.9\beta}{10^{3}} - \frac{1.4 p n}{10^{3}} \\
@@ -2216,18 +2219,19 @@ So we have :
 
 For an unweighted adjacency matrix from the internet we may expect:
 
-\[
-p \approx \frac{\mathrm{mean}\left(\mathrm{outdegree}\right)}{n}
-\]
+\begin{align}
+p &\approx \frac{m}{n} \\
+  &= \frac{\mathrm{mean}\left(\mathrm{outdegree}\right)}{n}
+\end{align}
 
-for larger graphs we get \(p \rightarrow 0\) so the eigenvalue will be reduced for larger graphs.
+for larger scale free graphs \(p \rightarrow 0\) so this model seems to suggest that the eigenvalue will be reduced for larger graphs.
 
-OK so lets test this by predicting the value of the eigenvalue on a large BA graph:
+To test the model, we can measure the eigenvalue resulting from values within the domain of the model and from outside the domain:
 
 #+begin_src R
 m         <- 1
 beta      <- 3
-size <- n <- 500
+size <- n <- 50
 
 
 g <- igraph::sample_pa(power = 3, n = n, m = m)
@@ -2246,8 +2250,8 @@ abs(e2_pred <-
 #+end_src
 
 #+RESULTS:
-: [1] 0.003952193
-: [1] 0.003962502
+: [1] 0.03689031
+: [1] 0.03499164
 
 That's actually pretty close, but, how does it perform on graphs outside the range of size?
 
@@ -2276,18 +2280,19 @@ abs(e2_pred <-
 : [1] 0.001329781
 : [1] 0.03968164
 
-This suggests that for large graphs this model is not a good fit.
+Unfourtunately this suggests that for large graphs this model is not a good fit,
+which means that this model can only provide insight into the behaviour of
+\(\xi_{2}\) for graphs with less than 1000 vertices.
 
 * Relating the Power Walk to the Random Surfer
   :PROPERTIES:
   :CUSTOM_ID: relate-to-random-surfer
   :END:
+It has been shown that \(\xi_{2} \leq \alpha\) for a transition probability matrix corresponding the random surfer model and that \(\xi_{2} = \alpha \) if there are atleast two closed subgraphs in the initial network cite:haveliwalaSecondEigenvalueGoogle2003. This is demonstrated by figure [[example-rs-graph]] and figure [[r-var-random-surfer]] where \(\alpha = \xi_{2} = 0.8123456789 \).
+
+Finding a connection between the random surfer and the the power walk methods could provide insight into the relationship of \(\xi_{2}\) and the parameters of the power walk method.
+
 ** Introduction
-These are notes relating to [[cite:parkPowerWalkRevisiting2013][\textsection 3.3]], probably won't put this in the report, just arbitrary notes
-
-So if a term in the Power Walk can be related to $\alpha$ in the random
-surfer, which is in turn $\xi_2$, I'll be able to understand it better. [fn:: Although I'm not quite sure why $\alpha$ is $\xi_{2}$ either]
-
 Consider the equation:
 
 
@@ -2432,7 +2437,7 @@ Define the matrix $\mathbf{D}_{\mathbf{M}}$:
 \end{align}
 
 
-To scale each column of that matrix to 1, each column will need to be divieded by the column sum, unless the column is already zero, this needs to be done to turn an adjacency matrix into a matrix of probabilities:
+To scale each column of that matrix to 1, each column will need to be divieded by the column sum, unless the column is already zero, this needs to be done to turn an adjacency matrix into a transition probability matrix:
 
 \begin{align}
     \mathbf{D}_{\mathbf{A}} ^{- 1} :  \left[     \mathbf{D}_{\mathbf{A}} ^{- 1}  \right]_i =
@@ -2470,23 +2475,15 @@ So these are equivalent when:
 \mathbf{D}_{\mathbf{A}}  \left( \beta -  1 \right)\mathbf{D}_{\mathbf{B}}^{- 1} &=  \vec{1}\alpha =  \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1} \label{eq:eqalpha}
 \end{align}
 
+Solving for \(\beta\):
 
-Solving for $\beta$  with eqref:fl :
-
-\begin{align}
-    \beta&= \frac{1- \Theta}{\Theta}\\
-%    \beta&= \frac{\alpha - \mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{- 1}}{\mathbf{D}_{\mathbf{A}}\mathbf{D}_{\mathbf{B}}^{-1}}
-\end{align}
+\[
+\beta \mathbf{J}  = \left( 1 - \Theta \right) \Theta^{-1} \label{eq:betadef}
+\]
 
 where: [fn:bvl]
 
 - $\Theta = \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{B}}^{- 1}$
-
-but we can't really do this so instead:
-
-\[
-\beta \mathbf{1}_{\tiny \left[ n,n \right]}  = \left( 1 - \Theta \right) \Theta^{-1} \label{eq:betadef}
-\]
 
 If $\beta$ is set accordingly then by eqref:eq:eqalpha:
 
@@ -2510,9 +2507,6 @@ And setting $\Gamma = \mathbf{I}- n \mathbf{D}_{\mathbf{B}}^{- 1}$  from eqref:s
 So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
 
 ** TODO The Second Eigenvalue
-*** TODO The Random Surfer
-The Second eigenvalue \(\xi_2\) of the Power Surfer is less than $\alpha$ ([[file:Proposal/Propsal.org::#stability-convergence][See 3.2; Stability and Concvergence, of proposal]]).
-*** TODO Power Walk
 Because the Power Walk relates to the random surfer as demonstrated in section [[#relating-terms-in-power-walk-to-random-surfer]], what can be said about $\xi_{2}$
 **** Applying this to Power Walk
 Let $\Lambda_{\left( 2 \right)}\left( \mathbf{T} \right) = \lambda_2$ return the second value of a transition, probability Matrix, then observe that:
@@ -2633,8 +2627,7 @@ image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
 Graph Diagrams shown in [[#markov]] where produced using ~DOT~ (see cite:DOTLanguage,DOTGraphDescription2020).
 * Footnotes
 
-[fn:bvl] NOTE: Similar to a signmoid function, which is a solution to $p \propto p(1-p)$, I wonder if this provides a connection to the exponential nature of the power walk
-`﻿erdos.renyi﻿`﻿erdos.renyi﻿``
+[fn:bvl] This is similar to a signmoid function, which is a solution to $p \propto p(1-p)$, I wonder if this provides a connection to the exponential nature of the power walk
 
 * my to do list
 ** TODO Use BA Graphs
