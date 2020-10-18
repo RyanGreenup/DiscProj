@@ -497,6 +497,7 @@ provided in listing \ref{preamble}, an exemplar graph was created in listing \re
 
 
 \begin{listing}[htbp]
+\begin{tcolorbox}
 \begin{minted}[]{r}
   if (require("pacman")) {
       library(pacman)
@@ -509,10 +510,12 @@ provided in listing \ref{preamble}, an exemplar graph was created in listing \re
 #   options(scipen=20) # Resist Scientific Notation
 \end{minted}
 \caption{\label{preamble}Implemented Packages used in this report}
+\end{tcolorbox}
 \end{listing}
 
 
 \begin{listing}[htbp]
+\begin{tcolorbox}
 \begin{minted}[]{r}
 g1 <- igraph::graph.formula(
                 1++2, 1+-8, 1+-5,
@@ -523,8 +526,8 @@ g1 <- igraph::graph.formula(
 plot(g1)
 \end{minted}
 \caption{\label{ex-fig-r}Produce exemplar graph in figure \ref{example-rs-graph}}
+\end{tcolorbox}
 \end{listing}
-
 
 
 \begin{figure}{r}{0.4\textwidth}
@@ -536,28 +539,31 @@ plot(g1)
 
 
 \begin{listing}[htbp]
-\begin{minted}[]{r}
-  A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE)
+    \begin{tcolorbox}
+        \begin{minted}[]{r}
+        A <- igraph::get.adjacency(g1, names = TRUE, sparse = FALSE)
 
-  ## igraph gives back the transpose
-  (A <- t(A))
-\end{minted}
-\caption{\label{adj-mat-random-surf}Return the Adjacency Matrix corresponding to figure \ref{example-rs-graph}}
+        ## igraph gives back the transpose
+        (A <- t(A))
+        \end{minted}
+        \caption{\label{adj-mat-random-surf}Return the Adjacency Matrix corresponding to figure \ref{example-rs-graph}}
+    \tcblower
+        \begin{verbatim}
+        1 2 8 5 7 6 9 3 4 10
+        1  0 1 1 1 0 0 0 0 0  0
+        2  1 0 1 1 1 1 1 0 0  0
+        8  0 0 0 0 0 0 0 0 0  0
+        5  0 0 1 0 0 0 0 0 0  0
+        7  0 0 1 0 0 0 0 0 0  0
+        6  0 0 1 0 0 0 0 0 0  0
+        9  0 0 0 0 0 0 0 0 0  0
+        3  0 0 0 1 0 1 1 0 1  1
+        4  0 0 0 1 0 0 1 1 0  1
+        10 0 0 0 0 0 0 0 0 0  0
+        \end{verbatim}
+    \end{tcolorbox}
 \end{listing}
 
-\begin{verbatim}
-   1 2 8 5 7 6 9 3 4 10
-1  0 1 1 1 0 0 0 0 0  0
-2  1 0 1 1 1 1 1 0 0  0
-8  0 0 0 0 0 0 0 0 0  0
-5  0 0 1 0 0 0 0 0 0  0
-7  0 0 1 0 0 0 0 0 0  0
-6  0 0 1 0 0 0 0 0 0  0
-9  0 0 0 0 0 0 0 0 0  0
-3  0 0 0 1 0 1 1 0 1  1
-4  0 0 0 1 0 0 1 1 0  1
-10 0 0 0 0 0 0 0 0 0  0
-\end{verbatim}
 
 
 \subsection{Implementing the Random Surfer}
@@ -581,63 +587,55 @@ stochastic and so it is sufficient to use the relationship at
 \eqref{eq:basic-trans-def}, this is shown in listing \ref{basic-trans-def}.
 
 \begin{listing}[htbp]
-\begin{minted}[]{r}
-(T <- A %*% diag(1/colSums(A)))
-
-\end{minted}
-\caption{\label{basic-trans-def}Solve the Transition Probability Matrix by scaling each column to 1 using matrix multiplication.}
+    \begin{tcolorbox}
+        \begin{minted}[]{r}
+        (T <- A %*% diag(1/colSums(A)))
+        \end{minted}
+        \caption{\label{basic-trans-def}Solve the Transition Probability Matrix by scaling each column to 1 using matrix multiplication.}
+    \tcblower
+        \begin{verbatim}
+        [,1] [,2] [,3] [,4] [,5] [,6]      [,7] [,8] [,9] [,10]
+        1     0    1  0.2 0.25    0  0.0 0.0000000    0    0   0.0
+        2     1    0  0.2 0.25    1  0.5 0.3333333    0    0   0.0
+        8     0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
+        5     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+        7     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+        6     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
+        9     0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
+        3     0    0  0.0 0.25    0  0.5 0.3333333    0    1   0.5
+        4     0    0  0.0 0.25    0  0.0 0.3333333    1    0   0.5
+        10    0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
+        \end{verbatim}
+    \end{tcolorbox}
 \end{listing}
 
-\begin{verbatim}
-   [,1] [,2] [,3] [,4] [,5] [,6]      [,7] [,8] [,9] [,10]
-1     0    1  0.2 0.25    0  0.0 0.0000000    0    0   0.0
-2     1    0  0.2 0.25    1  0.5 0.3333333    0    0   0.0
-8     0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
-5     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
-7     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
-6     0    0  0.2 0.00    0  0.0 0.0000000    0    0   0.0
-9     0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
-3     0    0  0.0 0.25    0  0.5 0.3333333    0    1   0.5
-4     0    0  0.0 0.25    0  0.0 0.3333333    1    0   0.5
-10    0    0  0.0 0.00    0  0.0 0.0000000    0    0   0.0
-\end{verbatim}
 
 
 \subparagraph{Create a Function}
 \label{create-a-function}
-\begin{minted}[]{r}
-   adj_to_probTrans <- function(A) {
-     A %*% diag(1/colSums(A))
-   }
+\begin{tcolorbox}
+    \begin{minted}[]{r}
+    adj_to_probTrans <- function(A) {
+        A %*% diag(1/colSums(A))
+    }
 
-   (T <- adj_to_probTrans(A)) %>% round(2)
-\end{minted}
-
-\begin{verbatim}
-Loading required package: usethis
-Loading required package: PageRank
-
-Attaching package: ‘PageRank’
-
-The following object is masked _by_ ‘.GlobalEnv’:
-
-    adj_to_probTrans
-\end{verbatim}
-
-
-\begin{verbatim}
-  ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-  ## 1     0    1    0    0 0.25  0.0    0  0.2 0.00   0.0
-  ## 2     1    0    0    0 0.25  0.5    1  0.2 0.33   0.0
-  ## 3     0    0    0    1 0.25  0.5    0  0.0 0.33   0.5
-  ## 4     0    0    1    0 0.25  0.0    0  0.0 0.33   0.5
-  ## 5     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
-  ## 6     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
-  ## 7     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
-  ## 8     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
-  ## 9     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
-  ## 10    0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
-\end{verbatim}
+    (T <- adj_to_probTrans(A)) %>% round(2)
+    \end{minted}
+\tcblower
+    \begin{verbatim}
+    ##    [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+    ## 1     0    1    0    0 0.25  0.0    0  0.2 0.00   0.0
+    ## 2     1    0    0    0 0.25  0.5    1  0.2 0.33   0.0
+    ## 3     0    0    0    1 0.25  0.5    0  0.0 0.33   0.5
+    ## 4     0    0    1    0 0.25  0.0    0  0.0 0.33   0.5
+    ## 5     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+    ## 6     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+    ## 7     0    0    0    0 0.00  0.0    0  0.2 0.00   0.0
+    ## 8     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+    ## 9     0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+    ## 10    0    0    0    0 0.00  0.0    0  0.0 0.00   0.0
+    \end{verbatim}
+\end{tcolorbox}
 
 \paragraph{Page Rank Random Surfer}
 \label{page-rank-random-surfer}
@@ -661,83 +659,87 @@ These are
 assigned to \emph{\textbf{R}} variables in listing \ref{r-var-random-surfer}.
 
 \begin{listing}[htbp]
-\begin{minted}[]{r}
-  B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
-  l <- 0.8123456789
+    \begin{tcolorbox}
+        \begin{minted}[]{r}
+        B <- matrix(rep(1/nrow(T), length.out = nrow(T)**2), nrow = nrow(T))
+        l <- 0.8123456789
 
-  (S <- l*T+(1-l)*B) %>% round(2)
-
-
-\end{minted}
-\caption{\label{r-var-random-surfer}Assign Random Surfer Variables, observe the unique value given to \texttt{l}, this will be relevant later.}
+        (S <- l*T+(1-l)*B) %>% round(2)
+        \end{minted}
+        \caption{\label{r-var-random-surfer}Assign Random Surfer Variables, observe the unique value given to \texttt{l}, this will be relevant later.}
+    \tcblower
+        \begin{verbatim}
+        [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
+        1  0.02 0.83 0.18 0.22 0.02 0.02 0.02 0.02 0.02  0.02
+        2  0.83 0.02 0.18 0.22 0.83 0.42 0.29 0.02 0.02  0.02
+        8  0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+        5  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+        7  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+        6  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+        9  0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+        3  0.02 0.02 0.02 0.22 0.02 0.42 0.29 0.02 0.83  0.42
+        4  0.02 0.02 0.02 0.22 0.02 0.02 0.29 0.83 0.02  0.42
+        10 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
+        \end{verbatim}
+    \end{tcolorbox}
 \end{listing}
 
-\begin{verbatim}
-   [,1] [,2] [,3] [,4] [,5] [,6] [,7] [,8] [,9] [,10]
-1  0.02 0.83 0.18 0.22 0.02 0.02 0.02 0.02 0.02  0.02
-2  0.83 0.02 0.18 0.22 0.83 0.42 0.29 0.02 0.02  0.02
-8  0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
-5  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
-7  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
-6  0.02 0.02 0.18 0.02 0.02 0.02 0.02 0.02 0.02  0.02
-9  0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
-3  0.02 0.02 0.02 0.22 0.02 0.42 0.29 0.02 0.83  0.42
-4  0.02 0.02 0.02 0.22 0.02 0.02 0.29 0.83 0.02  0.42
-10 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02 0.02  0.02
-\end{verbatim}
 \subparagraph{Eigen Value Method}
 \label{eigen-value-method}
 The eigenvector corresponding to the the eigenvalue of 1 will be the
 stationary point, this is shown in listing \ref{eigenSol-rand-surf}
 
 \begin{listing}[htbp]
-\begin{minted}[]{r}
-print(eigen(S, symmetric = FALSE, only.values = TRUE)$values, 9)
-print(eigen(S, symmetric = FALSE)$vectors, 3)
-\end{minted}
+    \begin{tcolorbox}
+        \begin{minted}[]{r}
+        print(eigen(S, symmetric = FALSE, only.values = TRUE)$values, 9)
+        print(eigen(S, symmetric = FALSE)$vectors, 3)
+        \end{minted}
+    \tcblower
+        \begin{verbatim}
+        [1]  1.00000000e+00+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
+        [3]  8.12345679e-01+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
+        [5]  5.81488197e-10+0.0000000e+00i -5.81487610e-10+0.0000000e+00i
+        [7] -6.74980227e-16+0.0000000e+00i  3.21036747e-17+0.0000000e+00i
+        [9]  1.34928172e-18+1.1137323e-17i  1.34928172e-18-1.1137323e-17i
+                [,1]         [,2]         [,3]         [,4]         [,5]
+        [1,] 0.4873+0i -7.07e-01+0i  5.00e-01+0i -2.07e-03+0i -6.74e-01+0i
+        [2,] 0.5268+0i  7.07e-01+0i  5.00e-01+0i  2.07e-03+0i -9.62e-02+0i
+        [3,] 0.0424+0i  9.09e-18+0i -3.50e-17+0i -5.05e-17+0i  1.38e-09+0i
+        [4,] 0.0493+0i -1.25e-18+0i -1.65e-16+0i  4.25e-17+0i  3.85e-01+0i
+        [5,] 0.0493+0i -8.30e-18+0i -3.75e-17+0i  3.71e-17+0i  3.85e-01+0i
+        [6,] 0.0493+0i -8.30e-18+0i -3.75e-17+0i  9.76e-18+0i  3.85e-01+0i
+        [7,] 0.0424+0i -1.32e-18+0i -3.50e-17+0i  1.60e-17+0i -3.01e-08+0i
+        [8,] 0.4915+0i -2.98e-03+0i -5.00e-01+0i -7.07e-01+0i -9.62e-02+0i
+        [9,] 0.4804+0i  2.98e-03+0i -5.00e-01+0i  7.07e-01+0i -2.89e-01+0i
+        [10,] 0.0424+0i  5.57e-18+0i -3.77e-17+0i  3.14e-18+0i -3.24e-08+0i
+                    [,6]         [,7]         [,8]                [,9]
+        [1,]  6.74e-01+0i  6.53e-01+0i -2.15e-01+0i -2.00e-01+1.53e-01i
+        [2,]  9.62e-02+0i  1.09e-01+0i -1.96e-01+0i -1.59e-01+0.00e+00i
+        [3,]  1.38e-09+0i  1.42e-15+0i -2.84e-16+0i -6.73e-17+1.32e-16i
+        [4,] -3.85e-01+0i -4.37e-01+0i  7.85e-01+0i  6.37e-01+0.00e+00i
+        [5,] -3.85e-01+0i -3.56e-01+0i  2.81e-01+0i  2.84e-02-1.63e-01i
+        [6,] -3.85e-01+0i -3.58e-01+0i -3.68e-01+0i  4.84e-02-2.68e-01i
+        [7,] -3.01e-08+0i -2.63e-02+0i -2.34e-01+0i -3.47e-02+4.29e-01i
+        [8,]  9.62e-02+0i  1.32e-01+0i -6.40e-02+0i -1.09e-01-2.84e-01i
+        [9,]  2.89e-01+0i  3.11e-01+0i  1.20e-01+0i -1.34e-01-1.50e-01i
+        [10,] -3.24e-08+0i -2.82e-02+0i -1.08e-01+0i -7.64e-02+2.83e-01i
+                            [,10]
+        [1,] -2.00e-01-1.53e-01i
+        [2,] -1.59e-01-0.00e+00i
+        [3,] -6.73e-17-1.32e-16i
+        [4,]  6.37e-01+0.00e+00i
+        [5,]  2.84e-02+1.63e-01i
+        [6,]  4.84e-02+2.68e-01i
+        [7,] -3.47e-02-4.29e-01i
+        [8,] -1.09e-01+2.84e-01i
+        [9,] -1.34e-01+1.50e-01i
+        [10,] -7.64e-02-2.83e-01i
+        \end{verbatim}
+    \end{tcolorbox}
 \caption{\label{eigenSol-rand-surf}Solve the Eigen vectors and Eigen values of the transition probability matrix corresponding to the graph.}
 \end{listing}
 
-\begin{verbatim}
- [1]  1.00000000e+00+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
- [3]  8.12345679e-01+0.0000000e+00i -8.12345679e-01+0.0000000e+00i
- [5]  5.81488197e-10+0.0000000e+00i -5.81487610e-10+0.0000000e+00i
- [7] -6.74980227e-16+0.0000000e+00i  3.21036747e-17+0.0000000e+00i
- [9]  1.34928172e-18+1.1137323e-17i  1.34928172e-18-1.1137323e-17i
-           [,1]         [,2]         [,3]         [,4]         [,5]
- [1,] 0.4873+0i -7.07e-01+0i  5.00e-01+0i -2.07e-03+0i -6.74e-01+0i
- [2,] 0.5268+0i  7.07e-01+0i  5.00e-01+0i  2.07e-03+0i -9.62e-02+0i
- [3,] 0.0424+0i  9.09e-18+0i -3.50e-17+0i -5.05e-17+0i  1.38e-09+0i
- [4,] 0.0493+0i -1.25e-18+0i -1.65e-16+0i  4.25e-17+0i  3.85e-01+0i
- [5,] 0.0493+0i -8.30e-18+0i -3.75e-17+0i  3.71e-17+0i  3.85e-01+0i
- [6,] 0.0493+0i -8.30e-18+0i -3.75e-17+0i  9.76e-18+0i  3.85e-01+0i
- [7,] 0.0424+0i -1.32e-18+0i -3.50e-17+0i  1.60e-17+0i -3.01e-08+0i
- [8,] 0.4915+0i -2.98e-03+0i -5.00e-01+0i -7.07e-01+0i -9.62e-02+0i
- [9,] 0.4804+0i  2.98e-03+0i -5.00e-01+0i  7.07e-01+0i -2.89e-01+0i
-[10,] 0.0424+0i  5.57e-18+0i -3.77e-17+0i  3.14e-18+0i -3.24e-08+0i
-              [,6]         [,7]         [,8]                [,9]
- [1,]  6.74e-01+0i  6.53e-01+0i -2.15e-01+0i -2.00e-01+1.53e-01i
- [2,]  9.62e-02+0i  1.09e-01+0i -1.96e-01+0i -1.59e-01+0.00e+00i
- [3,]  1.38e-09+0i  1.42e-15+0i -2.84e-16+0i -6.73e-17+1.32e-16i
- [4,] -3.85e-01+0i -4.37e-01+0i  7.85e-01+0i  6.37e-01+0.00e+00i
- [5,] -3.85e-01+0i -3.56e-01+0i  2.81e-01+0i  2.84e-02-1.63e-01i
- [6,] -3.85e-01+0i -3.58e-01+0i -3.68e-01+0i  4.84e-02-2.68e-01i
- [7,] -3.01e-08+0i -2.63e-02+0i -2.34e-01+0i -3.47e-02+4.29e-01i
- [8,]  9.62e-02+0i  1.32e-01+0i -6.40e-02+0i -1.09e-01-2.84e-01i
- [9,]  2.89e-01+0i  3.11e-01+0i  1.20e-01+0i -1.34e-01-1.50e-01i
-[10,] -3.24e-08+0i -2.82e-02+0i -1.08e-01+0i -7.64e-02+2.83e-01i
-                    [,10]
- [1,] -2.00e-01-1.53e-01i
- [2,] -1.59e-01-0.00e+00i
- [3,] -6.73e-17-1.32e-16i
- [4,]  6.37e-01+0.00e+00i
- [5,]  2.84e-02+1.63e-01i
- [6,]  4.84e-02+2.68e-01i
- [7,] -3.47e-02-4.29e-01i
- [8,] -1.09e-01+2.84e-01i
- [9,] -1.34e-01+1.50e-01i
-[10,] -7.64e-02-2.83e-01i
-\end{verbatim}
 
 
 So in this case the stationary point corresponds to the eigenvector given by:
@@ -760,88 +762,96 @@ $$
 \end{verbatim}
 
 
-\begin{minted}[]{r}
-  (p_new <- S %*% p) %>% Re()  %>% as.vector() %>% round(2)
-\end{minted}
-
-\begin{verbatim}
-[1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
-\end{verbatim}
+\begin{tcolorbox}
+    \begin{minted}[]{r}
+        (p_new <- S %*% p) %>% Re()  %>% as.vector() %>% round(2)
+    \end{minted}
+ \tcblower
+    \begin{verbatim}
+    [1] 0.49 0.53 0.04 0.05 0.05 0.05 0.04 0.49 0.48 0.04
+    \end{verbatim}
+\end{tcolorbox}
 
 
 However this vector does not sum to 1 so the scale should be adjusted
 (for probabilities the vector should sum to 1):
 
-\begin{minted}[]{r}
-  (p_new <- p_new/sum(p_new)) %>% Re() %>% as.vector() %>% round(2)
-\end{minted}
-
-\begin{verbatim}
-[1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
-\end{verbatim}
+\begin{tcolorbox}
+    \begin{minted}[]{r}
+    (p_new <- p_new/sum(p_new)) %>% Re() %>% as.vector() %>% round(2)
+    \end{minted}
+\tcblower
+    \begin{verbatim}
+    [1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
+    \end{verbatim}
+\end{tcolorbox}
 
 \subparagraph{Power Value Method}
 \label{power-value-method}
 Using the power method should give the same result as the eigenvalue method, again but for scale:
 
-\begin{minted}[]{r}
-  p_new <- p_new *123456789
+\begin{tcolorbox}
+    \begin{minted}[]{r}
+    p_new <- p_new *123456789
 
-  while (sum(round(p, 9) != round(p_new, 9))) {
-      (p     <- p_new)
-      (p_new <- S %*% p)
-  }
+    while (sum(round(p, 9) != round(p_new, 9))) {
+        (p     <- p_new)
+        (p_new <- S %*% p)
+    }
 
-  round(Re(p_new), 2) %>% as.vector()
-\end{minted}
-
-\begin{verbatim}
-[1] 26602900 28759738  2316720  2693115  2693115  2693115  2316720 26834105
-[9] 26230539  2316720
-\end{verbatim}
-
+    round(Re(p_new), 2) %>% as.vector()
+    \end{minted}
+\tcblower
+    \begin{verbatim}
+    [1] 26602900 28759738  2316720  2693115  2693115  2693115  2316720 26834105
+    [9] 26230539  2316720
+    \end{verbatim}
+\end{tcolorbox}
 
 If scaled to 1 the
 same value will be returned:
 
-\begin{minted}[]{r}
-  (p_new <- p_new/sum(p_new)) %>% Re %>% as.vector() %>% round(2)
-\end{minted}
-
-\begin{verbatim}
-[1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
-\end{verbatim}
-
+\begin{tcolorbox}
+    \begin{minted}[]{r}
+    (p_new <- p_new/sum(p_new)) %>% Re %>% as.vector() %>% round(2)
+    \end{minted}
+\tcblower
+    \begin{verbatim}
+    [1] 0.22 0.23 0.02 0.02 0.02 0.02 0.02 0.22 0.21 0.02
+    \end{verbatim}
+\end{tcolorbox}
 \subparagraph{Scaling}
 \label{scaling}
 If the initial state sums to 1, then the scale of the stationary
 vector will also sum to 1, so this isn't in practice an issue for the power method:
 
-\begin{minted}[]{r}
-  p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-  p_new <- S %*% p
+\begin{tcolorbox}
+    \begin{minted}[]{r}
+    p     <- c(1, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+    p_new <- S %*% p
 
-  while (sum(round(p, 9) != round(p_new, 9))) {
-      (p     <- p_new)
-      (p_new <- S %*% p)
-  }
+    while (sum(round(p, 9) != round(p_new, 9))) {
+        (p     <- p_new)
+        (p_new <- S %*% p)
+    }
 
-  cbind(p_new, p)
-\end{minted}
-
-\begin{verbatim}
-         [,1]       [,2]
-1  0.21548349 0.21548349
-2  0.23295388 0.23295388
-8  0.01876543 0.01876543
-5  0.02181424 0.02181424
-7  0.02181424 0.02181424
-6  0.02181424 0.02181424
-9  0.01876543 0.01876543
-3  0.21735625 0.21735625
-4  0.21246737 0.21246737
-10 0.01876543 0.01876543
-\end{verbatim}
+    cbind(p_new, p)
+    \end{minted}
+\tcblower
+    \begin{verbatim}
+            [,1]       [,2]
+    1  0.21548349 0.21548349
+    2  0.23295388 0.23295388
+    8  0.01876543 0.01876543
+    5  0.02181424 0.02181424
+    7  0.02181424 0.02181424
+    6  0.02181424 0.02181424
+    9  0.01876543 0.01876543
+    3  0.21735625 0.21735625
+    4  0.21246737 0.21246737
+    10 0.01876543 0.01876543
+    \end{verbatim}
+\end{tcolorbox}
 
 \subsubsection{Sparse Matrices}
 \label{sec:org1aa2d1c}
@@ -853,41 +863,43 @@ efficient form of matrix storage as discussed at \ref{sparse-matrix}
 A sparse matrix can be created using the following syntax, which will return a
 matrix of the class \texttt{dgCMatrix}:
 
-\begin{minted}[]{r}
-library(Matrix)
-## Create Example Matrix
-n <- 20
-m <- 10^6
-i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 90)
-A <- sparseMatrix(i, j, x = x, dims = c(m, m))
+\begin{tcolorbox}
+    \begin{minted}[]{r}
+    library(Matrix)
+    ## Create Example Matrix
+    n <- 20
+    m <- 10^6
+    i <- sample(1:m, size = n); j <- sample(1:m, size = n); x <- rpois(n, lambda = 90)
+    A <- sparseMatrix(i, j, x = x, dims = c(m, m))
 
-summary(A)
-\end{minted}
-
-\begin{verbatim}
-1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
-        i      j   x
-1  141572  65888  92
-2  547799  69135  87
-3  368656 123865  87
-4  881320 129763 111
-5   53637 154979  92
-6  193808 192238 100
-7  467415 260074  86
-8   28105 276311  79
-9  481097 316591 102
-10 559159 319674  93
-11 927895 322174  77
-12 562619 372818  82
-13 123000 391022  80
-14  75909 417462  70
-15 309593 457917  78
-16 434992 521070 101
-17 617821 769436  93
-18 673173 811478 103
-19 860284 841473 104
-20 734100 852938  83
-\end{verbatim}
+    summary(A)
+    \end{minted}
+\tcblower
+    \begin{verbatim}
+    1000000 x 1000000 sparse Matrix of class "dgCMatrix", with 20 entries
+            i      j   x
+    1  141572  65888  92
+    2  547799  69135  87
+    3  368656 123865  87
+    4  881320 129763 111
+    5   53637 154979  92
+    6  193808 192238 100
+    7  467415 260074  86
+    8   28105 276311  79
+    9  481097 316591 102
+    10 559159 319674  93
+    11 927895 322174  77
+    12 562619 372818  82
+    13 123000 391022  80
+    14  75909 417462  70
+    15 309593 457917  78
+    16 434992 521070 101
+    17 617821 769436  93
+    18 673173 811478 103
+    19 860284 841473 104
+    20 734100 852938  83
+    \end{verbatim}
+\end{tcolorbox}
 
 As before in section \ref{probability-transition-matrix}, the probability transition matrix can be found by:
 
@@ -910,25 +922,25 @@ need to be created using the properties of the original matrix, this can be done
 like so:
 
 \begin{listing}[htbp]
-\begin{minted}[]{r}
- sparse_diag <- function(mat) {
+    \begin{minted}[]{r}
+    sparse_diag <- function(mat) {
 
-  ## Get the Dimensions
-  n <- nrow(mat)
+    ## Get the Dimensions
+    n <- nrow(mat)
 
-  ## Make a Diagonal Matrix of Column Sums
-  D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
+    ## Make a Diagonal Matrix of Column Sums
+    D <- sparseMatrix(i = 1:n, j = 1:n, x = colSums(mat), dims = c(n,n))
 
-  ## Throw away explicit Zeroes
-  D <- drop0(D)
+    ## Throw away explicit Zeroes
+    D <- drop0(D)
 
-  ## Inverse the Values
-  D@x <- 1/D@x
+    ## Inverse the Values
+    D@x <- 1/D@x
 
-  ## Return the Diagonal Matrix
-  return(D)
-}
-\end{minted}
+    ## Return the Diagonal Matrix
+    return(D)
+    }
+    \end{minted}
 \caption{\label{sparse-diag}A function that takes in a column \(\rightarrow\) row adjacency matrix (\(\mathbf{A}\)) and returns a diagonal matrix (\(\mathbf{D}^{-1}_{\mathbf{A}}}\)) such that \(\vec{1}\mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\)}
 \end{listing}
 
