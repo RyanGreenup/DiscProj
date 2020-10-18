@@ -717,6 +717,44 @@
       \endverb
       \keyw{graph processing,hadoop,link prediction}
     \endentry
+    \entry{haveliwalaSecondEigenvalueGoogle2003}{article}{}
+      \name{author}{2}{}{%
+        {{hash=7b7065e349af2a3505ccfbe205c56572}{%
+           family={Haveliwala},
+           familyi={H\bibinitperiod},
+           given={Taher},
+           giveni={T\bibinitperiod}}}%
+        {{hash=f0ee340803b143e6f928bb6f4548609d}{%
+           family={Kamvar},
+           familyi={K\bibinitperiod},
+           given={Sepander},
+           giveni={S\bibinitperiod}}}%
+      }
+      \strng{namehash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{fullhash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{bibnamehash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{authorbibnamehash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{authornamehash}{ca043c59361df28cc7b135bf516fbb3e}
+      \strng{authorfullhash}{ca043c59361df28cc7b135bf516fbb3e}
+      \field{sortinit}{H}
+      \field{sortinithash}{6db6145dae8dc9e1271a8d556090b50a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{We determine analytically the modulus of the second eigenvalue forthe web hyperlink matrix used by Google for computing PageRank. Specifically,we prove the following statement:“For any matrixA= [cP+ (1−c)E]T, wherePis ann×nrow-stochasticmatrix,Eis a nonnegativen×nrank-one row-stochastic matrix, and0≤c≤1,the second eigenvalue ofAhas modulus|λ2|≤c. Furthermore, ifPhas at leasttwo irreducible closed subsets, the second eigenvalueλ2=c.”This statement has implications for the convergence rate ofthe standard PageR-ank algorithm as the web scales, for the stability of PageRank to perturbations tothe link structure of the web, for the detection of Google spammers, and for thedesign of algorithms to speed up PageRan}
+      \field{journaltitle}{Stanford Technical Report}
+      \field{title}{The {{Second Eigenvalue}} of the {{Google Matrix}}}
+      \field{year}{2003}
+      \field{dateera}{ce}
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/BEMZEB8M/Haveliwala and Kamvar - 2003 - The Second Eigenvalue of the Google Matrix.pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi5x7iBhqnrAhVTfisKHQp8CrYQFjAAegQIBRAB&url=https%3A%2F%2Fnlp.stanford.edu%2Fpubs%2Fsecondeigenvalue.pdf&usg=AOvVaw3Em9lm2qOuWEN23PXhUS8J
+      \endverb
+      \verb{url}
+      \verb https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi5x7iBhqnrAhVTfisKHQp8CrYQFjAAegQIBRAB&url=https%3A%2F%2Fnlp.stanford.edu%2Fpubs%2Fsecondeigenvalue.pdf&usg=AOvVaw3Em9lm2qOuWEN23PXhUS8J
+      \endverb
+    \endentry
     \entry{IgraphManualPages}{online}{}
       \field{sortinit}{I}
       \field{sortinithash}{9417e9a1288a9371e2691d999083ed39}
