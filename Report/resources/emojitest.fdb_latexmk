@@ -1,0 +1,12 @@
+# Fdb version 3
+["pdflatex"] 1603077393 "emojitest.tex" "emojitest.pdf" "emojitest" 1603077393
+  "/usr/share/texmf-dist/tex/latex/base/article.cls" 1591545468 20023 e427dd9e17e239bf926ef3aab67fe35e ""
+  "/usr/share/texmf-dist/tex/latex/base/size10.clo" 1591545468 8446 9874cccac5fee462272c582807dbbf56 ""
+  "/usr/share/texmf-dist/web2c/texmf.cnf" 1591545468 33301 a3134070eacafb10b1f371612ce2650d ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1602289343 2514054 10d69bfa1273ee273aa86f93f69de4b9 ""
+  "coloremoji.sty" 0 -1 0 ""
+  "emojitest.aux" 1603077393 8 a94a2480d3289e625eea47cd1b285758 ""
+  "emojitest.tex" 1603077387 146 06b5a7af87ee0267b2869adbff0c2143 ""
+  (generated)
+  "emojitest.log"
+  "emojitest.pdf"
