@@ -44,7 +44,7 @@
 \section{Introduction}
 \label{sec:org93e4f0c}
 Any collection of interconnected information can form a network structure,
-this can include for example citation networks, webpages, wikis, power grids, wiring diagrams, encyclopedias and interpersonal
+this can include for example citation networks, web-pages, wikis, power grids, wiring diagrams, encyclopedias and interpersonal
 relationships. The analysis of these networks can be used to draw insights about
 the behaviour of such networks.
 
@@ -86,7 +86,7 @@ figure \ref{fig:rseg}.
 
 A shortcoming of this approach is that it assumes all edges are positively weighted. This
 means that the model treats any link as an endorsement of the destination
-node, this may not necessarily always be true (consider for exmple burned-in
+node, this may not necessarily always be true (consider for example burned-in
 advertisements or negative reviews). In the past attributing weights to links was not particularly feasible, recent developments in sentiment analysis has however made this possible meaning that this limitation is more significant.
 
 The \emph{Power Walk} approach, introduced by Park and Simoff in 2013 \cite{parkPowerWalkRevisiting2013} is an alternative way to create a transition
@@ -178,7 +178,7 @@ algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the e
    \left[ \frac{1}{\mathbf{D}_{\mathbf{A}}} \right] ,& \enspace \enspace \left[ \mathbf{D}_{\mathbf{A}} \right]_i \neq 0
    \end{cases}\)
 \begin{itemize}
-\item A diagonal scaling matrix such that \(\mathbf{T} = \mathbf{A} \mathbf{D}_{\mathbf{A}}^{-1}\), the piecewise definition is such that \(\mathbf{D}^{-1}_{\mathbf{A}}\) is still defined even if \(\mathbf{A}\) is a reducible graph.
+\item A diagonal scaling matrix such that \(\mathbf{T} = \mathbf{A} \mathbf{D}_{\mathbf{A}}^{-1}\), the piece-wise definition is such that \(\mathbf{D}^{-1}_{\mathbf{A}}\) is still defined even if \(\mathbf{A}\) is a reducible graph.
 \begin{itemize}
 \item Where \(\mathbf{D}^{-1}\) is a matrix such that multiplication with which scales each column of \(\mathbf{A}\) to 1.
 \item \(\mathbf{D}^{-1}_{\mathbf{A}} = \vec{1}\mathbf{D}^{-1}_{\mathbf{A}} = \frac{1}{\vec{1}\mathbf{D}_{\mathbf{A}}}\) for some stochastic matrix \(\mathbf{A}\)
@@ -229,7 +229,7 @@ Where each element of the matrix indicates whether or not travel from
 vertex \(j\) to vertex \(i\) is possible with a value of 1. \footnote{Some
 authors define an adjacency matrix transposed (see e.g.
 \cite{rosenDiscreteMathematicsIts2007,meghabghabSearchEnginesLink2008})
-this unfourtunately includes the \texttt{igraph} library
+this unfortunately includes the \texttt{igraph} library
 \cite{gaborcsardiIgraphManualPages2019} but that convention will not be
 followed in this paper}
 
@@ -246,7 +246,7 @@ The value of \(\mathbf{D}^{-1}_{\mathbf{A}}\) is such that under matrix
 multiplication \(\mathbf{A}\) will have columns that sum to 1 \footnote{such a matrix is said to be a \emph{column stochastic
 matrix}, for a
 reducible or non-stochastic graph the definition of
-\(\mathbf{D}^{-1}_{\mathbf{A}}\) needs to piecewise, as shown in \S \ref{definitions}}, this matrix is the \emph{transition probability
+\(\mathbf{D}^{-1}_{\mathbf{A}}\) needs to piece-wise, as shown in \S \ref{definitions}}, this matrix is the \emph{transition probability
 matrix} \(\mathbf{T}\).
 
 During the random walk, the running tally of frequencies, at the
@@ -268,7 +268,7 @@ measure the centrality of vertices.
 \label{sec:org046df67}
 \subsubsection{Problems with the Stationary Distribution}
 \label{issues}
-The approach to measuring centrality using the stationary distrubition in \S\ref{stationary-distribution-of-t} has the following issues
+The approach to measuring centrality using the stationary distribution in \S\ref{stationary-distribution-of-t} has the following issues
 
 \begin{enumerate}
 \item Convergence of \eqref{eq:recurrence}
@@ -303,12 +303,12 @@ meaningful.
 The relationship in \eqref{eq:recurrence} is a \emph{Markov Chain} \footnote{A \emph{Markov Chain} is
 simply any process that evolves depending on it's current condition, it's
 interesting to note however that the theory of \emph{Markov Chains} is not mentioned in any
-of the original papers by page and brin
+of the original papers by page and Brin
 \cite[\textsection 4.4]{langvilleGooglePageRankScience2012}}  and it is known
 that the relationship will converge to a value when iterated:
 
 \begin{itemize}
-\item for a stochastic irreducible markov chain \cite[\textsection 1.5.5]{larsonElementaryLinearAlgebra1991},
+\item for a stochastic irreducible Markov chain \cite[\textsection 1.5.5]{larsonElementaryLinearAlgebra1991},
 \item regardless of the initial condition of the process for an \emph{aperiodic} Markov chain \cite[\textsection 4.4]{langvilleGooglePageRankScience2012}
 \end{itemize}
 
@@ -316,14 +316,14 @@ and so these concepts will be explored in order to address the issues with \eqre
 
 \paragraph{Stochastic}
 \label{stochastic}
-If some vertex had a 0 outdegree the corresponding column sum for the adjacency
+If some vertex had a 0 out-degree the corresponding column sum for the adjacency
 matrix describing that graph would also be zero and the matrix non-stochastic,
 this could occur in the context of a random walk where a link to a page with no
 outgoing links was followed (e.g. an image), this would be the end of the
 walk.
 
 So to ensure that \eqref{eq:recurrence} will converge, the probability transition
-matrix must be made stochastic, to acheive this a uniform probability of teleporing from a dead end to any other vertex could be introduced:
+matrix must be made stochastic, to achieve this a uniform probability of teleporting from a dead end to any other vertex could be introduced:
 
 
  \begin{wrapfigure}{R}{0.4\textwidth}
@@ -354,7 +354,7 @@ An a periodic graph has only one eigenvalue that lies on the unit circle, this i
 
 \paragraph{The Fix}
 \label{fix}
-To ensure that the transition probability matrix is primitive (i.e. irreducible and aperiodic) as well as stochastic, instead of mereley introducing the possibility to teleport out of dead ends, some probability of teleporting to any node at any time can be introduced (\(1- \alpha\)), this approach is known as the \emph{Random Surfer} model and the corresponding transition probability matrix is given by \cite{larrypageAnatomyLargescaleHypertextual1998} :
+To ensure that the transition probability matrix is primitive (i.e. irreducible and aperiodic) as well as stochastic, instead of merely introducing the possibility to teleport out of dead ends, some probability of teleporting to any node at any time can be introduced (\(1- \alpha\)), this approach is known as the \emph{Random Surfer} model and the corresponding transition probability matrix is given by \cite{larrypageAnatomyLargescaleHypertextual1998} :
 
 \begin{align}
 \mathbf{S} = \alpha \mathbf{T} + \frac{(1- \alpha)}{n} \mathbf{J} \label{eq:random-surfer}
@@ -362,7 +362,7 @@ To ensure that the transition probability matrix is primitive (i.e. irreducible 
 
 This matrix is primitive and stochastic and so will converge
 \cite[\textsection 4.5]{langvilleGooglePageRankScience2012}, it is also
-unfourtunately completely dense, making it resource intensive to work with (see
+unfortunately completely dense, making it resource intensive to work with (see
 \S \ref{solving-stationary-dist}).
 
 Using this the relation ship in \eqref{eq:recurrence} can now be re
@@ -435,7 +435,7 @@ would exist.
 
 \section{Sparse Matrices}
 \label{sparse-matrix}
-Most Adjacency matrices resulting from webpages and analagous networks
+Most Adjacency matrices resulting from web-pages and analogous networks
 result in sparse adjacency matrices (see figure \ref{fig:den_undir_ba}),
 this is a good thing because it requires far less computational
 resources to work with a sparse matrix than a dense matrix
@@ -447,7 +447,7 @@ resources to work with a sparse matrix than a dense matrix
  \caption{\label{fig:rseg}A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue \emph{teleportation} edges are introduced, these may be followed with a probability of \(1 - \alpha\)}
  \end{wrapfigure}
 
-Sparse matrices can be expressed in alternetive forms so as to reduce the memory
+Sparse matrices can be expressed in alternative forms so as to reduce the memory
 footprint associated with that matrix, one such method is \emph{Compressed Column
 Storage}, this involves listing only the non-zero elements as in \eqref{eq:ordinary}
 and \eqref{eq:crc}, this is implemented in \textbf{\emph{R}} with the \texttt{Matrix} package \cite{douglasbatesMatrixSparseDense2019}.
@@ -474,7 +474,7 @@ and \eqref{eq:crc}, this is implemented in \textbf{\emph{R}} with the \texttt{Ma
 \subsection{Solving the Stationary Distribution}
 \label{solving-stationary-dist}
 The relationship in \eqref{eq:recurrence} \footnote{This assumes that the transition probability matrix \(\mathbf{T}\) is stochastic and primitive as it would be for \(\mathbf{S}\)
-and \(\mathbf{W}\)} is equivelant to the eigenvalue value problem, where
+and \(\mathbf{W}\)} is equivalent to the eigenvalue value problem, where
 \(\vec{p} = \lim_{i \rightarrow \infty} \left( \vec{p_{i}}\right)\) is the
 eigenvector \footnote{More accurately the eigenvector scaled specifically to 1, so it would be more correct to say the eigenvector \(\vec{x} / \sum \vec{x}\)} \(\vec{x}\) that corresponds to the eigenvalue \(\xi=1\):
 
@@ -491,7 +491,7 @@ in \ref{fix}, this approach is known as the power method
 implemented to solve the stationary point.
 
 As mentioned in \S\S \ref{fix} and \ref{pwalk}, the \emph{Random Surfer} and \emph{Power Walk}
-transtition probability matrices are completely dense, that means applying the
+transition probability matrices are completely dense, that means applying the
 power method will not be able to take advantage of using sparse matrix
 algorithms.
 
@@ -927,8 +927,8 @@ As before in section \ref{probability-transition-matrix}, the probability transi
 \item Scaling the columns to one
 \end{enumerate}
 
-To implement this for a sparseMatrix of the class \texttt{dgCMatrix}, the same
-technique of multiplying by a diagonalised matrix as in \eqref{eq:basic-trans-def} may be
+To implement this for a sparse matrix of the class \texttt{dgCMatrix}, the same
+technique of multiplying by a diagonalized matrix as in \eqref{eq:basic-trans-def} may be
 implemented, using sparse matrices has the advantage however that only non-zero
 elements will be operated on, meaning that columns that sum to zero can still
 be used to create a probability transition matrix \footnote{Although this matrix will
@@ -1034,7 +1034,7 @@ and hence the probability transition matrix may be implemented by performing mat
 \label{random-surfer-sparse-fix}
 Solving the eigenvalues for large matrices will not feasible, instead the power method will need to be used to find the stationary point.
 
-However, creating a matrix of background probabilites (denoted by \texttt{B} in section \ref{page-rank-random-surfer}) will make \(\mathbf{S}\)  non sparse, instead some algebra can be used to reduce \(\mathbf{B}\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
+However, creating a matrix of background probabilities (denoted by \texttt{B} in section \ref{page-rank-random-surfer}) will make \(\mathbf{S}\)  non sparse, instead some algebra can be used to reduce \(\mathbf{B}\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
 
 The power method is given by:
 
@@ -1346,7 +1346,7 @@ where:
 \begin{itemize}
 \item A vector\ldots{}(\(n\times 1\) matrix)
 \end{itemize}
-\item[{\(\vec{\delta^{\mathrm{T}}}\)}] refers to the transpoxe of \(\vec{\detla}\) (\(1\times n\) matrix)
+\item[{\(\vec{\delta^{\mathrm{T}}}\)}] refers to the transpose of \(\vec{\detla}\) (\(1\times n\) matrix)
 \item[{\(\vec{\delta^{\mathrm{T}}} \vec{p_{i}}\)}] is some number (because it's a dot product)
 \end{itemize}
 
@@ -1445,7 +1445,7 @@ In this case a vertical single column matrix will represent a vector and \(\otim
 
 Define \(\vec{\delta}\) as the column sums of
 \[\begin{aligned}
-     \vec{\delta} & = \mathtt{colsum} (\text{{\bfseries{B}}})^{- 1}\\
+     \vec{\delta} & = \mathtt{ColSums} (\text{{\bfseries{B}}})^{- 1}\\
      & = \frac{1}{\overrightarrow{1^{{\scriptsize \ensuremath{\boldsymbol{T}}}}}
      \ensuremath{\boldsymbol{B}}}
    \end{aligned}\]
@@ -1721,7 +1721,7 @@ By looping over many random graphs for a variety of probabilities a data set can
 be constructed and a correlation plot generated. To implement this input values
 were specified in listing \ref{input_var}, a function that builds a data frame with
 the second eigenvalue, density, determinant and trace was constructed in listing
-\ref{output_def}, a function to map this over the cartesian product of the input
+\ref{output_def}, a function to map this over the Cartesian product of the input
 variables was created in listing \ref{func-sim} and finally a correlation plot
 was generated in listing \ref{corrplot} shown in figure \ref{fig:corrplot}. The
 correlation plot in figure \ref{fig:corrplot} considers the Spearman correlation
@@ -1801,7 +1801,7 @@ variables is likely non-linear.
         }
         \end{minted}
     \end{tcolorbox}
-    \caption{\label{func-sim}A function to return a dataframe of simulated graphs using the \texttt{random\_graph} function in listing \ref{output_def}.}
+    \caption{\label{func-sim}A function to return a data-frame of simulated graphs using the \texttt{random\_graph} function in listing \ref{output_def}.}
 \end{listing}
 
 \begin{listing}[htbp]
@@ -1822,7 +1822,7 @@ variables is likely non-linear.
         corrplot(cormat, method = "ellipse", type = "lower")
         \end{minted}
     \end{tcolorbox}
-\caption{\label{corrplot}Produce a correlation plot Created from a dataframe constructed from the values assigned in listing \ref{input_var} by using the function defined in listing \ref{output_def}, see figure \ref{fig:corrplot}.}
+\caption{\label{corrplot}Produce a correlation plot Created from a data-frame constructed from the values assigned in listing \ref{input_var} by using the function defined in listing \ref{output_def}, see figure \ref{fig:corrplot}.}
 \end{listing}
 
 \begin{figure}[htbp]
@@ -1833,7 +1833,7 @@ variables is likely non-linear.
 
 The correlation plot shows a moderate relationship between size, the uniform probability of linking two nodes (\(p\)) and the size of the graph with \(\xi_{2}\). It's worth noting that \(p = \mathrm{mean}\left(\mathbf{A}\right)\).
 
-To inspect these relationships more closely a scatterplot matrix was produced in
+To inspect these relationships more closely a scatter-plot matrix was produced in
 figure \ref{plotly_dens} and shown in figure \ref{fig:plotly_dens}. The matrix indicates a
 negative relationship between \(\xi_{2}\) with \(p\) and size and a positive
 relationship between \(\beta\) and \(\xi_{2}\), these relationships also indicate some degree of interaction.
@@ -1907,8 +1907,8 @@ corresponding plot shown in figure \ref{constant_size_erdos_density}.
 \caption{\label{constant_size_erdos_density}Constant Size Erdos Density}
 \end{figure}
 
-This resulting trens are well defined and positive, the data appears to have a
-concave down curvature and non constant variance, a sqrt transform is applied in
+This resulting trends are well defined and positive, the data appears to have a
+concave down curvature and non constant variance, a square root transform is applied in
 listing \ref{constant_size_erdos_density_sqrt} and shown in figure .
 
 
@@ -1990,7 +1990,7 @@ In order to determine whether or not this relationship persists over many sizes 
 \caption{\label{fig:constant_dens_erdos_density}fig:constant\textsubscript{dens}\textsubscript{erdos}\textsubscript{density}}
 \end{figure}
 
-This relationship appears to have a slight curvature, this curvature is very slight so a root transform is more appropriate than a log transofrm, this is implemented in listing \ref{l:constant_dens_erdos_density_sqrt}  and shown in \ref{fig:constant_dens_erdos_density_sqrt}.
+This relationship appears to have a slight curvature, this curvature is very slight so a root transform is more appropriate than a log transform, this is implemented in listing \ref{l:constant_dens_erdos_density_sqrt}  and shown in \ref{fig:constant_dens_erdos_density_sqrt}.
 
 \begin{listing}[htbp]
     \begin{tcolorbox}
@@ -2041,7 +2041,7 @@ constructed node by node where each time a new node is introduced it is randomly
 connected to \(m\) other nodes with a constant probability. Despite the probability of
 connecting to any given node being constant as in the Erdos Renyi game, such a
 graph will be different and favour nodes introduced earlier with respect to the number edges.
-This shows that the precense of network growth is an import feature in modelling
+This shows that the presence of network growth is an import feature in modelling
 networks.
 
 Simply considering growth however is not sufficient to simulate graphs with a
@@ -2054,7 +2054,7 @@ expected that links to more popular nodes would be made. A simple approach is to
 one node to another is proportional to the number of links, i.e. a node with
 twice as many links will be twice as likely to receive a link from a new node.
 
-These two distinguishing features departing from the \emph{Erdos Renyi} model, known as \emph{Growth} and \emph{Preferrential Attachment}, are what set the Barabassi-Albert model apart from the Erdos-Renyi model and why it is better suited to modelling networks such as the web. \cite[Ch. 7]{barabasiLinkedNewScience2002}
+These two distinguishing features departing from the \emph{Erdos Renyi} model, known as \emph{Growth} and \emph{Preferential Attachment}, are what set the Barabassi-Albert model apart from the Erdos-Renyi model and why it is better suited to modelling networks such as the web. \cite[Ch. 7]{barabasiLinkedNewScience2002}
 
 
 
@@ -2112,11 +2112,11 @@ At each step of the Barabassi-Albert algorithm, one node is added and linked to 
 
 This means that the average of the unweighted adjacency matrix would be given by \(p = \mathrm{mean}\left(\mathbf{A}\right) \in \left[ \frac{m}{n}, \frac{m+1}{n} \right]\) and the relationship identified in  \S \ref{erdos-renyi} can be determined from the parameters of a scale-free network.
 
-In practice though measuring \(m\) (as the mean out degree) will be imprecise and the adjacency matrix will be wieghted any way, so taking the mean of the weighted adjacency matrix would still be necessary to implement this type of model in practice.
+In practice though measuring \(m\) (as the mean out degree) will be imprecise and the adjacency matrix will be weighted any way, so taking the mean of the weighted adjacency matrix would still be necessary to implement this type of model in practice.
 
 A function to generate a random Barabassi-Albert graph and return the value of
 \(\xi_{2}\) corresponding to the Power Walk method is provided in listing
-\ref{random_graph_pa}, another function to map this over the cartesian product of
+\ref{random_graph_pa}, another function to map this over the Cartesian product of
 input variables is provided in listing \ref{sim_graphs_pa} and finally a dataset containing 9
 different link densities was created in listing \ref{l:gen_ba_data}.
 
@@ -2165,7 +2165,7 @@ This data is plotted by listing \ref{l:ba_data_plot} and shown in figure \ref{fi
         }
         \end{minted}
     \end{tcolorbox}
-\caption{\label{sim_graphs_pa}Return \(\xi_{2}\) values by mapping the \texttt{random\_graph\_pa} function from listing \ref{random_graph_pa} over the cartesian product of input variables.}
+\caption{\label{sim_graphs_pa}Return \(\xi_{2}\) values by mapping the \texttt{random\_graph\_pa} function from listing \ref{random_graph_pa} over the Cartesian product of input variables.}
 \end{listing}
 
 
@@ -2187,7 +2187,7 @@ This data is plotted by listing \ref{l:ba_data_plot} and shown in figure \ref{fi
         }
         \end{minted}
     \end{tcolorbox}
- \caption{\label{l:gen_ba_data} map the \texttt{sim\_graphs\_pa} function over the cartesian product of various input variables}
+ \caption{\label{l:gen_ba_data} map the \texttt{sim\_graphs\_pa} function over the Cartesian product of various input variables}
 \end{listing}
 
 \begin{listing}[htbp]
@@ -2214,7 +2214,7 @@ This data is plotted by listing \ref{l:ba_data_plot} and shown in figure \ref{fi
 \caption{\label{fig:ba_data_plot} Plot of \(\xi_{2}\sim \beta\) for various values of \mathrm{mean}\left(\mathbf{A}\right)\) corresponding to the \textit{Power Walk} method. Produced by listing \ref{l:ba_data_plot} }
 \end{figure}
 
-Due to the relationship between size and density in the barabassi albert model this approach seems to work even better for BA graphs, which is precisely the type of graph where we might anticipate the use of the power walk method.
+Due to the relationship between size and density in the Barabassi Albert model this approach seems to work even better for BA graphs, which is precisely the type of graph where we might anticipate the use of the power walk method.
 
 The low link densities are such that there is no need for a log/root transform either, such a transform was found to be unsuitable in \S \ref{correlation-plot} so this is encouraging.
 
@@ -2450,13 +2450,13 @@ To test the model, we can measure the eigenvalue resulting from values within th
     \end{verbatim}
 \end{tcolorbox}
 
-Unfourtunately this suggests that for large graphs this model is not a good fit,
+Unfortunately this suggests that for large graphs this model is not a good fit,
 which means that this model can only provide insight into the behaviour of
 \(\xi_{2}\) for graphs with less than 1000 vertices.
 
 \section{Relating the Power Walk to the Random Surfer}
 \label{relate-to-random-surfer}
-It has been shown that \(\xi_{2} \leq \alpha\) for a transition probability matrix corresponding the random surfer model and that \(\xi_{2} = \alpha\) if there are atleast two closed subgraphs in the initial network \cite{haveliwalaSecondEigenvalueGoogle2003}. This is demonstrated by figure \ref{example-rs-graph} and figure \ref{r-var-random-surfer} where \(\alpha = \xi_{2} = 0.8123456789\).
+It has been shown that \(\xi_{2} \leq \alpha\) for a transition probability matrix corresponding the random surfer model and that \(\xi_{2} = \alpha\) if there are at least two closed sub-graphs in the initial network \cite{haveliwalaSecondEigenvalueGoogle2003}. This is demonstrated by figure \ref{example-rs-graph} and figure \ref{r-var-random-surfer} where \(\alpha = \xi_{2} = 0.8123456789\).
 
 Finding a connection between the random surfer and the the power walk methods could provide insight into the relationship of \(\xi_{2}\) and the parameters of the power walk method.
 
@@ -2602,7 +2602,7 @@ Define the matrix \(\mathbf{D}_{\mathbf{M}}\):
 \end{align}
 
 
-To scale each column of that matrix to 1, each column will need to be divieded by the column sum, unless the column is already zero, this needs to be done to turn an adjacency matrix into a transition probability matrix:
+To scale each column of that matrix to 1, each column will need to be divided by the column sum, unless the column is already zero, this needs to be done to turn an adjacency matrix into a transition probability matrix:
 
 \begin{align}
     \mathbf{D}_{\mathbf{A}} ^{- 1} :  \left[     \mathbf{D}_{\mathbf{A}} ^{- 1}  \right]_i =
@@ -2646,7 +2646,7 @@ Solving for \(\beta\):
 \beta \mathbf{J}  = \left( 1 - \Theta \right) \Theta^{-1} \label{eq:betadef}
 \]
 
-where: \footnote{This is similar to a signmoid function, which is a solution to \(p \propto p(1-p)\), I wonder if this provides a connection to the exponential nature of the power walk}
+where: \footnote{This is similar to a Sigmoid function, which is a solution to \(p \propto p(1-p)\), I wonder if this provides a connection to the exponential nature of the power walk}
 
 \begin{itemize}
 \item \(\Theta = \mathbf{D}_{\mathbf{A}} \mathbf{D}_{\mathbf{B}}^{- 1}\)
@@ -2672,7 +2672,7 @@ Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}
 
 \subsection{Conclusion}
 \label{sec:orgad79e88}
-So when the adjacency matrix is stictly boolean, the power walk is equivalent to the random surfer.
+So when the adjacency matrix is strictly boolean, the power walk is equivalent to the random surfer.
 
 More investigation will be required to determine further connections between these two methods.
 
@@ -2680,7 +2680,7 @@ More investigation will be required to determine further connections between the
 \label{sec:orgc228632}
 In this report an approach to implement and investigate the random surfer and random walk \emph{PageRank} methods was presented and a linear model was implemented to try and provide insight into the behaviour of the second eigenvalue of the probability transition matrix corresponding to the power walk method.
 
-The model appears not to perform well for graphs over 1000 vertices, this is unfourtunate and limits the amount of insight the model can provide into the behaviour of the power walk method.
+The model appears not to perform well for graphs over 1000 vertices, this is unfortunate and limits the amount of insight the model can provide into the behaviour of the power walk method.
 
 A relationship between the random surfer and power walk method was also presented, this relationship appears to be restricted to unweighted adjacency matrices, it is not clear however if this could be expanded.
 
@@ -2720,7 +2720,7 @@ The \mathbf{\mathit{R}} code displayed in listing \ref{r-den_undir_ba} creates a
         image(A, axes = FALSE, frame.plot = TRUE, main = title, xlab = "", ylab = "",  )
         \end{minted}
     \end{tcolorbox}
-\caption{\label{r-den_undir_ba}\textbf{\emph{R}} code to produce an image illustrating the density of a simulated Barabasi-Albert graph, the \emph{Barabasi-Albert} graph is a good analouge for the link structure of the internet \cite{langvilleGooglePageRankScience2012,barabasiPhysicsWeb2001,barabasiScalefreeCharacteristicsRandom2000} see the output in figure \ref{fig:den_undir_ba}}
+\caption{\label{r-den_undir_ba}\textbf{\emph{R}} code to produce an image illustrating the density of a simulated Barabasi-Albert graph, the \emph{Barabasi-Albert} graph is a good analogue for the link structure of the internet \cite{langvilleGooglePageRankScience2012,barabasiPhysicsWeb2001,barabasiScalefreeCharacteristicsRandom2000} see the output in figure \ref{fig:den_undir_ba}}
 \end{listing}
 
 \begin{figure}[htbp]
