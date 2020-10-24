@@ -2,7 +2,7 @@
 %%%
 % Created 2020-10-18 Sun 17:08
 % Intended LaTeX compiler: pdflatex
-\documentclass[11pt]{report}
+\documentclass[11pt, twoside]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
@@ -97,7 +97,10 @@ These individual approaches are discussed in more detail at \S \ref{PageRank-Gen
 \subsection{Stability and Convergence}
 \label{sec:orgcefa601}
 
-The rate at which the algorithm for \emph{PageRank} converges to a solution and the stability of that solution can both be measured by the second eigenvalue of the corresponding transition probability matrix (the details of this are discussed at \ref{implement_models} )
+The rate at which the algorithm for \emph{PageRank} converges to a solution and
+the stability of that solution can both be measured by the second eigenvalue of
+the corresponding transition probability matrix\footnote{This is discussed in \S
+  \ref{sec:e2-discussion}}.
 
 It is not clear how the second eigenvalue is related to the method parameters of the \emph{Power Walk} algorithm \cite[\textsection 3.4]{parkPowerWalkRevisiting2013} and this report aims to:
 
@@ -492,39 +495,44 @@ Sparse matrices can be expressed in alternative forms so as to reduce the memory
 footprint associated with that matrix, one such method is \emph{Compressed Column
 Storage}, this involves listing only the non-zero elements and using a \textit{pointer} vector, this as is shown in \eqref{eq:ordinary}
 and table \ref{table:col-storage}. The \textit{Value} column of table \ref{table:col-storage} contains the non-zero values of the matrix following column-major order \footnote{\textit{Column-Major Order} means that the values are transcribed top-to-bottom, left-to-right and is the approach that \textit{\textbf{R}}, \textit{Julia} and \textit{Fortran} take to matrices and vectors, as opposed to \textit{Row-Major Order} which is used by \textbf{\textit{C}} and \textit{Python}, this often means that paying mind to the direction of operations when using nested loops to iterate over matrices can have a distinct effect on performance.} and the \textit{Row Index} column indicates which row the value corresponds to. The \textit{Pointer} column is such that the  \(i^{\mathrm{th}}\) entry gives the index of the \textit{Values} column that corresponds to the first non-zero element in the \(i^{\mathrm{th}}\) row of the matrix, for example the \(3^{\mathrm{rd}}\) row has \(\phi\) as the first non-zero value, this is the \(2^{\mathrm{nd}}\) entry in the values column and so 2 is the corresponding value \cite{IntelMathKernel}. This is implemented in \textbf{\emph{R}} with the \texttt{Matrix} package \cite{douglasbatesMatrixSparseDense2019}.
-\begin{align}
-    \begin{bmatrix}
-	1 & 0 & 0 & 0 & 0 \\
-	0 & 0 & 7 & 0 & 0 \\
-	0 & \phi & 0 & 2 & 0 \\
-	0 & 0 & 0 & 0 & \pi \\
-	0 & 0 & 13 & 0 & 0 \\
-    \end{bmatrix}  \label{eq:ordinary}
-\end{align}
 
-\hypertarget{table:col-storage}{}
-\begin{longtable}[]{@{}lll@{}}
-\caption{Compressed Column Storage corresponding to
-\label{table:col-storage}
-eqref:eq:ordinary}\tabularnewline
-\toprule
-\emph{\textbf{Value}} & \emph{\textbf{Row Index}} &
-\textbf{\emph{Pointer}}\tabularnewline
-\midrule
-\endfirsthead
-\toprule
-\emph{\textbf{Value}} & \emph{\textbf{Row Index}} &
-\textbf{\emph{Pointer}}\tabularnewline
-\midrule
-\endhead
-1 & 1 & 1\tabularnewline
-\(\phi\) & 3 & 3\tabularnewline
-7 & 2 & 2\tabularnewline
-13 & 5 & 5\tabularnewline
-2 & 3 & 4\tabularnewline
-π & 4 &\tabularnewline
-\bottomrule
-\end{longtable}
+\begin{minipage}{0.5\textwidth}
+    \hypertarget{table:col-storage}{}
+    \begin{longtable}[]{@{}lll@{}}
+    \caption{Compressed Column Storage corresponding to
+    \label{table:col-storage}
+    \eqref{eq:ordinary}}\tabularnewline
+    \toprule
+    \emph{\textbf{Value}} & \emph{\textbf{Row Index}} &
+    \textbf{\emph{Pointer}}\tabularnewline
+    \midrule
+    \endfirsthead
+    \toprule
+    \emph{\textbf{Value}} & \emph{\textbf{Row Index}} &
+    \textbf{\emph{Pointer}}\tabularnewline
+    \midrule
+    \endhead
+    1 & 1 & 1\tabularnewline
+    \(\phi\) & 3 & 3\tabularnewline
+    7 & 2 & 2\tabularnewline
+    13 & 5 & 5\tabularnewline
+    2 & 3 & 4\tabularnewline
+    \(\pi\) & 4 &\tabularnewline
+    \bottomrule
+    \end{longtable}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+    \begin{align}
+        \begin{bmatrix}
+        1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 7 & 0 & 0 \\
+        0 & \phi & 0 & 2 & 0 \\
+        0 & 0 & 0 & 0 & \pi \\
+        0 & 0 & 13 & 0 & 0 \\
+        \end{bmatrix}  \label{eq:ordinary}
+    \end{align}
+\end{minipage}
+
 
 
 \subsection{Solving the Stationary Distribution}
@@ -561,6 +569,8 @@ With some effort however it is possible to express the algorithms in such a way 
 
 \section{Implementing the Models}
 \label{implement_models}
+
+
 To Implement the models via the power method, first they'll be implemented using
 an ordinary matrix and then improved to work with sparse matrices and
 algorithms, the results can be verified against \(\xi_{1}\).
@@ -587,12 +597,7 @@ plot(g1)
 \end{listing}
 
 
-\begin{wrapfigure}{R}{0.4\textwidth}
-\begin{center}
-\includegraphics[width=0.38\textwidth]{media/example-graph-power-walk.png}
-\end{center}
-\caption{\label{example-rs-graph}Exemplar graph for \emph{PageRank} examples, produced in listing \ref{ex-fig-r}}
-\end{wrapfigure}
+
 
 
 \begin{listing}[htbp]
@@ -622,11 +627,20 @@ plot(g1)
 \end{listing}
 
 
+%\begin{wrapfigure}{R}{0.45\textwidth}
+\begin{figure}
+\begin{center}
+\includegraphics[width=0.45\textwidth]{media/example-graph-power-walk.png}
+\end{center}
+\caption{\label{example-rs-graph}Exemplar graph for \emph{PageRank} examples, produced in listing \ref{ex-fig-r}}
+\end{figure}
 
 \subsection{Implementing the Random Surfer}
 \label{sec:orgb756c9c}
 \subsubsection{Ordinary Matrices}
 \label{implementing-page-rank-methods}
+Before implementing the \textit{Random Surfer} model on a sparse matrix, it will
+be implemented for ordinary matrix objects.
 \paragraph{Probability Transition Matrix}
 \label{probability-transition-matrix}
 The probability transition matrix is such that each column of the
@@ -635,7 +649,7 @@ scaled to 1.
 
 if \(\mathbf{A}\) had vertices with a 0 out-degree, the relationship in
 \eqref{eq:basic-trans-def} would not work, instead columns that sum to 0 would
-need to be left while all other columns be divided by the column sum to get
+need to remain while all other columns be divided by the column sum to get
 \(\mathbf{T}\). An alternative approach, that addresses this issue using sparse
 matrices will be presented below at \S \ref{sec:sparse-mat-random-surf} but in
 this case there exists corresponding \(\mathbf{T}\) that is stochastic and so it
@@ -699,7 +713,7 @@ Recall from \ref{fix} the following variables of the \emph{Random Surfer} model:
 
 
 \begin{align}
-    \mathbf{B} &= \alpha T +  \left( 1- \alpha \right)B :\\
+    \mathbf{B} &= \alpha \mathbf{T} +  \left( 1- \alpha \right)\mathbf{B} :\\
 \ \\
     \mathbf{B}&= \begin{bmatrix}
     \frac{1}{n} & \frac{1}{n} & \ldots & \frac{1}{n} \\
@@ -806,7 +820,7 @@ So in this case the stationary point corresponds to the eigenvector given by:
 this can be verified by using identity \eqref{eq:eigenprob}:
 
 $$
-1 \vec{p} = S\vec{p}
+1 \vec{p} = \mathbf{S}\vec{p}
 $$
 
 \begin{tcolorbox}
@@ -1073,10 +1087,10 @@ and hence the probability transition matrix may be implemented by performing mat
 
 \paragraph{Solving the Random Surfer via the Power Method}
 \label{random-surfer-sparse-fix}
-Solving the eigenvalues for large matrices will not feasible, instead the power method will need to be used to find the stationary point.
+Solving eigenvalues for large matrices is not feasible, instead the power method will need to be used to find the stationary point.
 
 However, creating a matrix of background probabilities (denoted by \texttt{B} in section \ref{page-rank-random-surfer}) will make \(\mathbf{S}\)  non sparse, instead some algebra can be used to reduce \(\mathbf{B}\) from a matrix into a vector containing only \(\frac{1-\alpha}{N}\).
-
+\ \\
 The power method is given by:
 
 \begin{align}
@@ -1086,7 +1100,7 @@ The power method is given by:
 where:
 
 \begin{align}
-S &= \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \\
+\mathbf{S} &= \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \\
 \vec{p} &= \left( \alpha \mathbf{T} +  \left( 1 - \alpha \right) \mathbf{B} \right) \vec{p}\\
 &= \alpha \mathbf{T}\vec{p} +  \left( 1-\alpha \right) \mathbf{B} \vec{p}
 \end{align}
@@ -1110,7 +1124,7 @@ Let \(\mathbf{F}= \mathbf{B}\vec{p}\), consider the value of \(\mathbf{F}\) :
 \vdots  \\
 \left( \sum^{m}_{i= 0}   \left[ p_i \right]  \right) \times \frac{1}{N} \\
 \end{bmatrix}  \\
-& \text{Probabilities sum to 1 and hence:} \\
+ \text{Probabilities sum to 1 and hence:} \\
 &= \begin{bmatrix}
 \frac{1}{N} \\
 \frac{1}{N} \\
@@ -1255,9 +1269,8 @@ Look at the Eigenvalues:
     \end{verbatim}
 \end{tcolorbox}
 
-Unlike the \emph{Random Surfer} Model in listing \ref{eigenSol-rand-surf} at \ref{eigen-value-method} the relationship between the second eigenvalue and the model parameters is not as clear, this provides that the
+Observe that, unlike the \emph{Random Surfer} Model in listing \ref{eigenSol-rand-surf} at \S \ref{eigen-value-method}, the relationship between the second eigenvalue and the model parameters is not immediately clear.
 
-Use the power method
 
 \begin{tcolorbox}
     \begin{minted}[]{r}
@@ -1286,69 +1299,8 @@ Use the power method
 \label{sec:org5192cbb}
 \paragraph{Theory; Simplifying Power Walk to be solved with Sparse Matrices}
 \label{sec:org82fb181}
-The Random Surfer model is:
 
-$$\begin{aligned}
-    \mathbf{S} &= \alpha \mathbf{T} +  \mathbf{F}  \label{eq:sparse-RS}\end{aligned}$$
-
-where:
-
-\begin{itemize}
-\item \(\mathbf{T}\)
-
-\begin{itemize}
-\item is an \(i \times j\) matrix that describes the probability of
-traveling from vertex \(j\) to \(i\)
-
-\begin{itemize}
-\item This is transpose from the way that \texttt{igraph} produces an adjacency
-matrix.
-\end{itemize}
-\end{itemize}
-
-\item \(\mathbf{F} = \begin{bmatrix} \frac{1}{n} \\ \frac{1}{n} \\ \frac{1}{n} \vdots \end{bmatrix}\)
-\end{itemize}
-
-Interpreting the transition probability matrix in this way is such that
-\(\mathbf{T}= \mathbf{A}\mathbf{D}^{- 1}_A\) under the following
-conditions:
-
-
-\begin{itemize}
-\item No column of \(\mathbf{A}\) sums to zero
-
-\begin{itemize}
-\item If this does happen the question arises how to deal with
-\(\mathbf{D_\mathbf{A}^{- 1}}\)
-
-\begin{itemize}
-\item I've been doing \(\mathbf{D}^{\mathrm{T}}_{\mathbf{A}, i, j} := \mathtt{diag} \left( {\frac{1}{\mathtt{colSums}\left( \mathbf{A} \right)}} \right)\)
-and then replacing any \(0\) on the diagonal with 1.
-\end{itemize}
-
-\item What is done in the paper is to make another matrix \(\mathbf{Z}\)
-that is filled with 0, if a column sum of \(\mathbf{A}\) adds to zero
-then that column in \(\mathbf{Z}\) becomes \(\frac{1}{n}\)
-
-\begin{itemize}
-\item This has the effect of making each row identical
-
-\item The probability of going from an orphaned vertex to any other
-vertex would hence be \(\frac{1}{n}\)
-
-\item The idea with this method is then to use
-\(D_\mathbf{\left( A+Z \right)}^{- 1}\) this will be consistent with
-the \emph{Random Surfer} the method using \(\mathbf{F}\) in
-[[\#eq:sparse-RS][]] \eqref{eq:sparse-RS}
-\end{itemize}
-
-where each row is identical that is a 0
-\end{itemize}
-\end{itemize}
-
-The way to deal with the \emph{Power Walk} is more or less the same.
-
-observe that:
+Modifying the Power Walk method to work with sparse matrices is very similar to the approach implemented for the random surfer in \S \ref{random-surfer-sparse-fix}, observe that all elements of \(\mathbf{B}\) are postive values: \footnote{Here the use of exponentiation in \eqref{eq:b-is-pos} is used to denote an element wise exponentiation and not an actual matrix exponential.}
 
 \begin{align}
    \left( \mathbf{B} = \beta^{\mathbf{A}} \right)\wedge \left( \mathbf{A}_{i, j}\right)\in \mathbb{R}  \implies  \left\lvert \mathbf{B}_{i, j} \right\rvert > 0 \quad \forall i,j>n\in \mathbb{Z}^+ \label{eq:b-is-pos}
@@ -1356,22 +1308,18 @@ observe that:
 
 
 
-Be mindful that the use of exponentiation in \eqref{eq:b-is-pos} is not an element wise
-exponentiation and not an actual matrix exponential.
 
-So if I have:
+Define \(\mathbf{O}\) to be a completely dense matrix of 0:
 
 \begin{itemize}
-\item \(\mathbf{O}_{i, j} := 0, \quad \forall i,j\leq n \in \mathbb{Z}^+\)
-
-\item \(\vec{p_i}\) as the state distribution, being a vector of length \(n\)
+\item \(\mathbf{O}_{i, j} \coloneqq 0, \quad \forall i,j\leq n \)
 \end{itemize}
 
-Then It can be shown (see \eqref{eq:sparse-power-walk} at \ref{solve-background-prob-power-walk-sparse}):
+It can be shown (see \eqref{eq:sparse-power-walk} at \S \ref{solve-background-prob-power-walk-sparse}):
 
 \begin{align}
-	\mathbf{O} \mathbf{D}_{\mathbf{B}}^{- 1} \vec{p}_{i} &= \left( \vec{\delta}^{\mathrm{T}} \vec{p}_{i} \right) \vec{1} \\
-	&=    \mathtt{repeat} \left( \vec{p} \bullet \vec{\delta}^{\mathrm{T}}, \mathtt{n}  \right)
+	\mathbf{O} \mathbf{D}_{\mathbf{B}}^{- 1} \vec{p}_{i} &= \left( \vec{\delta}^{\mathrm{T}} \vec{p}_{i} \right) \vec{1} \label{eq:to-prove-back} \\
+	&=    \mathtt{repeat} \left(  \vec{\delta} \bullet \vec{p}, \enspace \mathtt{n}  \right)
 \end{align}
 
 
@@ -1380,16 +1328,8 @@ Then It can be shown (see \eqref{eq:sparse-power-walk} at \ref{solve-background-
 where:
 
 \begin{itemize}
-\item \(\vec{\delta_i} = \frac{1}{\mathtt{colSums} \left( \mathbf{B} \right)}\)
-\begin{itemize}
-\item A vector\ldots{}(\(n\times 1\) matrix)
-\end{itemize}
-\item[{\(\vec{1}\) }] is a vector containing all 1's
-\begin{itemize}
-\item A vector\ldots{}(\(n\times 1\) matrix)
-\end{itemize}
-\item[{\(\vec{\delta^{\mathrm{T}}}\)}] refers to the transpose of \(\vec{\delta}\) (\(1\times n\) matrix)
-\item[{\(\vec{\delta^{\mathrm{T}}} \vec{p_{i}}\)}] is some number (because it's a dot product)
+  \item \(\vec{\delta}=\left(\vec{1}\mathbf{B}\right)\) Represents a scaling vector and is equal to the diagonal entries of \(\mathbf{D}_{\mathbf{B}}^{-1}\)
+    \item {\(\vec{\delta^{\mathrm{T}}} \vec{p_{i}}\)} is equal to some real value.
 \end{itemize}
 
 This means we can do:
@@ -1414,10 +1354,7 @@ This means we can do:
   \overrightarrow{p_i})
 \end{align}
 
-where:
-
-
-Let \((\mathbf{B}-\mathbf{O}) = \mathbf{B_{\mathbf{O}}}\):
+If we let \((\mathbf{B}-\mathbf{O}) = \mathbf{B_{\mathbf{O}}}\):
 
 \begin{eqnarray*}
   \overrightarrow{p_{i + 1}} & = \mathbf{B_{\mathbf{O}}} \mathbf{D}_{\mathbf{B}}^{- 1}
@@ -1462,6 +1399,7 @@ And so the the power method can be implemented using sparse matrices:
 
 in terms of \textbf{\emph{R}}:
 
+
 \begin{tcolorbox}
     \begin{minted}[]{r}
     p_new <- Bo %*% diag(colSums(B)+n) %*% p + rep(t(δ) %*% p, n)
@@ -1479,14 +1417,12 @@ in terms of \textbf{\emph{R}}:
 
 \subparagraph{Solving the Background Probability}
 \label{solve-background-prob-power-walk-sparse}
-In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the \emph{Kronecker Product}):
+% In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the \emph{Kronecker Product}):
+%
+To show the identity in \eqref{eq:to-prove-back} define \(\vec{\delta}\), as before, as the inverse of the  column sums of \(\mathbf{B}\):
 
-
-
-Define \(\vec{\delta}\) as the column sums of
 \[\begin{aligned}
-     \vec{\delta} & = \mathtt{colSums} (\text{{\bfseries{B}}})^{- 1}\\
-     & = \frac{1}{\overrightarrow{1^{{\scriptsize \ensuremath{\boldsymbol{T}}}}}
+     \vec{\delta} & = \mathtt{colSums} (\text{{\bfseries{B}}})^{- 1} = \vec{1}\mathbf{B}
      \ensuremath{\boldsymbol{B}}}
    \end{aligned}\]
 
@@ -1494,7 +1430,7 @@ Define \(\vec{\delta}\) as the column sums of
 Then we have:
 
 
-\[ \begin{aligned}
+\begin{align}
      \mathbf{OD}_{\mathbf{B}}^{- 1} \overrightarrow{p_i} & = \left(
      \begin{array}{cccc}
        1 & 1 & 1 & \\
@@ -1545,35 +1481,33 @@ Then we have:
      \overrightarrow{p_i})  \vec{1}\\
      & = \mathtt{repeat} (\overrightarrow{\delta} \overrightarrow{p_i}
      \mathtt{, n}) \label{eq:sparse-power-walk}
-   \end{aligned} \]
+   \end{align}
+
 Observe also that If we let \(\vec{\delta}\) and \(p_i\) be 1 dimensional
 vectors, this can also be expressed as a dot product:
 
-\begin{center}
-\begin{tabular}{ll}
-Matrices & Vectors\\
-\(\vec{\delta^{\mathrm{T}}} \vec{p_{i}}\) & \(\vec{\delta} \vec{p_{i}}\)\\
-\end{tabular}
-
-\end{center}
+\begin{longtable}[]{@{}ll@{}}
+\toprule
+Matrices & Vectors\tabularnewline
+\midrule
+\endhead
+\(\vec{\delta^{\mathrm{T}}} \vec{p_{i}}\) &
+\(\vec{\delta} \bullet \vec{p_{i}}\)\tabularnewline
+\bottomrule
+\end{longtable}
 
 \paragraph{Practical; Implementing the Power Walk on Sparse Matrices}
+The Power Walk method, using the theory from \S \ref{sec:org82fb181}, can be implemented thusly:
 \label{sec:org3a8ba15}
-\subparagraph{Inspect the newly created matrix and create constants}
-\label{sec:org6f79a11}
-\subparagraph{Setup}
-\label{sec:org19fbb8e}
 \begin{enumerate}
-\item Define function to create DiagonalsSparse Diagonal Function
+\item Define a function to create a diagonal sparse matrix.
 \label{sec:org74d4373}
 
-Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the \texttt{sparse\_diag} function in listing \ref{sparse-diag} will still work.
+Unlike the Random Surfer model the diagonal scaling matrix will always be given by  \(\mathbf{D}_{B}^{-1} = \mathbf{B} \enspace \mathrm{diag}\left( \frac{1}{\vec{1}\mathbf{B}}\right)\) because \(\beta^{\mathbf{A}_{i,j}} \neq 0 \quad \forall \mathbf{A}_{i,j}\), this is convenient but in any case the \texttt{sparse\_diag} function in listing \ref{sparse-diag} is more general and has already been implemented.
 \end{enumerate}
 
-\subparagraph{Power Walk}
-\label{sec:org4e03252}
 \begin{enumerate}
-\item Define B
+\item Define the matrix \(\mathbf{B}\)
 \label{sec:orgde2e7a6}
 
 \begin{tcolorbox}
@@ -1635,7 +1569,8 @@ Unlike the Random Surfer model the diagonal scaling matrix will always be given 
 
 \item Solve the Scaling Matrix
 \label{sec:org91a6dae}
-We don't need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colSums\left(B\_o\right)+n}\) being 0:
+
+Observe that there is no need to worry about any terms of \(\delta_{\mathbf{B}} = \mathtt{colSums\left(B\_o\right)+n}\) being 0:
 
 \begin{tcolorbox}
     \begin{minted}[]{r}
@@ -1742,15 +1677,56 @@ available on \emph{GitHub}  \footnote{\url{https://github.com/RyanGreenup/PageRa
 
 
 \part{Investigating \(\xi_{2}\)}
+\section{The Second Eigen Value}
+\label{sec:e2-discussion}
+\subsection{Convergence}
+The second eigenvalue (\(\xi_{2}\)) refers to the second largest\footnote{with respect to magnitude} eigenvalue of the probability transition matrix for some graph. The further \(\left\lvert \xi_{2}\right\rvert\) is from the value 1 faster the \textit{PageRank} method will converge to the stationary point \cite{bryan250000002006}, this can be seen by diagonalising the matrix \(\mathbf{T}\) and observing that a smaller value of \(\xi_{2}\) implies all other eigenvalues, other than the first, are smaller still and hence \(\Lambda\) will reduce to a rank 1 matrix quicker if \(\left\lvert \xi_{2} \right\rvert \) is smaller:
+
+\begin{align}
+    \vec{p} &= \lim_{k \rightarrow \infty} \left[ \mathbf{T}^{k} \vec{p}_0 \right]\\
+    &= \lim_{k \rightarrow \infty} \left[\left(  \mathbf{V} \Lambda \mathbf{V}^{- 1} \right)^k \right] \vec{p_0} \\
+    &= \mathbf{V}
+    \lim_{k \rightarrow \infty}
+    \begin{bmatrix}
+	\xi_1^k &  0       & 0        &                 \\
+	0       & \xi_2^k  & 0        & \cdots          \\
+	0       & 0        & \xi_3^k  &                 \\
+	        & \vdots              &        & \ddots
+    \end{bmatrix}
+    \mathbf{V}^{- 1} \vec{p}_0
+\end{align}
+
+
+\subsection{Stability}
+The first eigenvalue of \(\mathbf{T}\) will be 1 and so the smaller
+\(\left\lvert \xi_{2}\right\rvert \) is, the further apart the first and second
+eigenvalus are. The greater the distance between the first and second eigenvalue is, the more stable the stationary point will be to perturbations in the corresponding graph
+\cite{ngStableAlgorithmsLink2001}.
+
+\subsection{Discussion}
+With respect to the Random Surfer model, it has been shown that
+$\xi_{2}$  is bounded above by the smoothing
+constant $\alpha$
+and if the corresponding graph has more than 1
+closed subgraph is equal to $\alpha$
+\cite{haveliwalaSecondEigenvalueGoogle2003}. It has also been shown that the power method
+will always converge $\forall \alpha <1$ \cite{bianchiniPageRank2005} and that an
+$\alpha$ closer to the value of 1 does not necessarily correspond to a more
+meaningful ranking \cite{boldiPageRankFunctionDamping2005}, hence, given the upper
+bound of $\xi_{2} \leq \alpha$, the value of $\alpha$ can be tuned away from
+1 in order to improve the convergence and stability of the \textit{PageRank}.
+
+Being able to determine whether or not any such a relationships exists with the \(\beta\) value for the Power Walk method is important because it can be used determine how to modify the parameters in favour of a more stable solution that can be solved more quickly.
+
+In order to investigate this a variety of graphs will be simulated to observe the behaviour of the method parameters and \(\xi_{2}\).
+
+
+
 \section{Erdos Renyi Graphs}
 \label{erdos-renyi}
 \subsection{Introduction}
 \label{sec:org56225bf}
-The \emph{Erdos Renyi} game, first published in 1959 \cite{renyiRandomGraphs1959} creates a graph by assuming that the number of nodes is constant and the probability of interlinking these nodes is equal.
-
-This is implemented in \textbf{\emph{R}} \cite[IgraphManualPagesa]{IgraphManualPages}
-
-The Erdos Renyi game does not produce graphs consistent with networks such as
+The \emph{Erdos Renyi} game, first published in 1959 \cite{renyiRandomGraphs1959} creates a graph by assuming that the number of nodes is constant and the probability of interlinking these nodes is equal. This approach does not produce graphs consistent with networks such as
 the web (see \ref{barabassi-albert}) or wikis, however, Sampling these graphs will
 provide a broader picture for the overall behavior of \(\xi_{2}\) over a broad
 range of graphs with respect to the parameters of the \emph{Power Walk} method.
@@ -1937,19 +1913,16 @@ corresponding plot shown in figure \ref{constant_size_erdos_density}.
 \caption{\label{l:fig:er_constant_size}Produce a plot of \(\xi_{2}\) for a constant size and a few link densities.}
 \end{listing}
 
-\begin{center}
-\includegraphics[width=.9\linewidth]{media/constant_size_erdos_density.png}
-\end{center}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=12cm]{media/constant_size_erdos_density.png}
-\caption{\label{constant_size_erdos_density}Constant Size Erdos Density}
+\includegraphics[width=.9\linewidth]{media/constant_size_erdos_density.png}
+\caption{\label{fig:constant_size_erdos_density}} Second Eigenvalue (\({\xi_{2}}\)) for a variety of generated \textit{Erdos Renyi} graphs}
 \end{figure}
 
 This resulting trends are well defined and positive, the data appears to have a
-concave down curvature and non constant variance, a sqrt transform is applied in
-listing \ref{constant_size_erdos_density_sqrt} and shown in figure .
+concave down curvature and non constant variance, a square root transform is applied to the \(\Beta\) in
+listing \ref{constant_size_erdos_density_sqrt} and shown in figure \ref{fig:constant_size_erdos_density_sqrt}.
 
 
 \begin{listing}[htbp]
@@ -1964,14 +1937,14 @@ listing \ref{constant_size_erdos_density_sqrt} and shown in figure .
         theme_bw()
         \end{minted}
     \end{tcolorbox}
-\caption{\label{constant_size_erdos_density_sqrt}listing:constant\textsubscript{size}\textsubscript{erdos}\textsubscript{density}\textsubscript{sqrt}}
+\caption{\label{constant_size_erdos_density_sqrt} Create a plot of the randomly generated \textit{Erdos-Renyi} graphs}
 \end{listing}
 
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=12cm]{media/constant_size_erdos_density_sqrt.png}
-\caption{\label{fig:constant_size_erdos_density_sqrt}fig:constant\textsubscript{size}\textsubscript{erdos}\textsubscript{density}\textsubscript{sqrt}}
+\caption{\label{fig:constant_size_erdos_density_sqrt}} Second Eigenvalue plotted against (\(\sqrt{\xi_{2}}\)) for a variety of generated \textit{Erdos Renyi} graphs}
 \end{figure}
 
 
@@ -2020,14 +1993,14 @@ In order to determine whether or not this relationship persists over many sizes 
         theme_bw()
         \end{minted}
     \end{tcolorbox}
-\caption{\label{constant_dens_erdos_density}listing:constant\textsubscript{size}\textsubscript{erdos}\textsubscript{density}}
+\caption{\label{constant_dens_erdos_density}Create a plot of of randomly generated \textit{Erdos-Renyi} graphs for a variety of sizes}
 \end{listing}
 
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=12cm]{media/constant_dens_erdos_density.png}
-\caption{\label{fig:constant_dens_erdos_density}fig:constant\textsubscript{dens}\textsubscript{erdos}\textsubscript{density}}
+\caption{\label{fig:constant_dens_erdos_density}Second eigenvalue plotted against \(\{beta}\) for a variety of differently sized randomly generated \textit{Erdos-Renyi} graphs}
 \end{figure}
 
 This relationship appears to have a slight curvature, this curvature is very slight so a root transform is more appropriate than a log transform, this is implemented in listing \ref{l:constant_dens_erdos_density_sqrt}  and shown in \ref{fig:constant_dens_erdos_density_sqrt}.
@@ -2044,7 +2017,7 @@ This relationship appears to have a slight curvature, this curvature is very sli
         theme_bw()
         \end{minted}
     \end{tcolorbox}
-\caption{\label{l:constant_dens_erdos_density_sqrt}listing:constant\textsubscript{size}\textsubscript{erdos}\textsubscript{density}\textsubscript{sqrt}}
+\caption{\label{l:constant_dens_erdos_density_sqrt}Create a plot of of randomly generated \textit{Erdos-Renyi} graphs for a variety of sizes, plotted against \(\sqrt{\beta}\)}
 \end{listing}
 
 
@@ -2052,7 +2025,7 @@ This relationship appears to have a slight curvature, this curvature is very sli
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=12cm]{media/constant_dens_erdos_density_sqrt.png}
-\caption{\label{fig:constant_dens_erdos_density_sqrt}fig:constant\textsubscript{dens}\textsubscript{erdos}\textsubscript{density}\textsubscript{sqrt}}
+\caption{\label{fig:constant_dens_erdos_density_sqrt} Second eigenvalue plotted against \(\sqrt{beta}\) for a variety of differently sized randomly generated \textit{Erdos-Renyi} graphs}
 \end{figure}
 
 
@@ -2067,7 +2040,7 @@ The plot shown in \ref{fig:constant_dens_erdos_density_sqrt}  demonstrates a ver
 \begin{wrapfigure}{R}{0.4\textwidth}
   %\centering
 \includegraphics[width=0.38\textwidth]{media/degree_dist_er_ba.png}
-\caption{\label{fig:degree-distribution-hist}histograms of degree distribution of Erdos-Renyi and Barabassi-Albert graphs produced in listing \ref{degree-distribution-hist}}
+\caption{\label{fig:degree-distribution-hist}Histograms of degree distribution of \textit{Erdos-Renyi} and \textit{Barabassi-Albert} graphs produced in listing \ref{degree-distribution-hist}}
 \end{wrapfigure}
 
 The \emph{Erdos Renyi} game is a random network, a superior approach to model the web
@@ -2307,7 +2280,7 @@ shown in figure \ref{fig:ba_data_constant_size_plot}.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=12cm]{media/ba_constant_size_plot.png}
-\caption{\label{fig:ba_data_constant_size_plot}fig:ba\textsubscript{data}\textsubscript{constant}\textsubscript{size}\textsubscript{plot}}
+\caption{\label{fig:ba_data_constant_size_plot} Second Eigenvalue plotted against matrix density for a variety of sizes from randomly generated \textit{Barabassi-Albert} graphs}
 \end{figure}
 
 

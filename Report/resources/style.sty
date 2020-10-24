@@ -12,6 +12,7 @@
 %\RequirePackage[Latin,Greek,Emoticons]{ucharclasses}
 %\RequirePackage[framemethod=tikz]{mdframed}
 \RequirePackage{comment}
+\RequirePackage{mathtools}
 \RequirePackage{import} %This is allows relative directories
 % \RequirePackage{tikz}
 \RequirePackage{xcolor}
@@ -20,7 +21,8 @@
 \RequirePackage[T1]{fontenc}
 %\RequirePackage{extsizes} % More Font Sizes
 \RequirePackage[utf8]{inputenc}
-\RequirePackage{sectsty} %Need it for underlining Sections
+%\RequirePackage{sectsty} %Need it for underlining Sections
+                           % Titlesec is incompatible with org-mode (Maybe not sure)
 \RequirePackage{lmodern}
 \RequirePackage{enumitem}
 \RequirePackage{ifxetex,ifluatex} % This doesn't work with org-mode
@@ -29,18 +31,15 @@
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[mono=false]{libertine} %% No UTF8 in mono,
 \setlength{\tabcolsep}{6pt}
-\RequirePackage[margin=1in]{geometry}
+  \RequirePackage[margin = 1in]{geometry}
+% \RequirePackage{canoniclayout}
 \setlength{\columnsep}{0.75in} % Set column seperation
 %\twocolumn
 \addtolength{\skip\footins}{2pc plus 5pt} %Add whitespace before footnotes`
-%\RequirePackage{tgadventor}
-% Titlesec is incompatible with org-mode
 % ** Styles
-%\RequirePackage{titlesec} % Section Colours
 % *** Colours
 %\RequirePackage[svgnames, x11names, dvipsnames]{xcolor} %This is included with mdframed
 % ** Graphics
-
 \RequirePackage{graphicx}
 % ** AmsMath
 \RequirePackage{amsmath, amssymb, amsthm}
@@ -72,6 +71,7 @@
    backref=page %hyperlink references
 }
 % * Styling/Aesthetics
+% % * Styling/Aesthetics
 % ** Section Numbering
 %Remove Section Numbers----------------
 % \makeatletter
@@ -87,21 +87,20 @@
 \renewcommand{\thesubsection}{~\arabic{section}.\arabic{subsection}~}
 \setcounter{subsubsection}{1}
 \renewcommand{\thesubsubsection}{~\arabic{section}.\arabic{subsection}.\arabic{subsubsection}~}
-%%%%%%%%%%%%%%%%%%%%%
+\setcounter{secnumdepth}{4}
+% ** Section Names
+% Rename Chapters because a reports not a book
+% \renewcommand{\chaptername}{Division}
 
 
+% ** New Lines no Indent for paragraphs
+\usepackage[parfill]{parskip}
 % ** Font Style
-%Change the Font------------------------------
-%\RequirePackage{PoiretOne}
- % \renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
-% ** Rule AFter Sectioning
-% Add rule after sections ------------------------------
-\RequirePackage{titlesec}
-
-	% Formatting----------------------------------------
-	\widowpenalty=1000
-	\clubpenalty=1000
-% ** Page Breaks
+% ** Penalise Page Breaks
+% Formatting----------------------------------------
+\widowpenalty=500 % use 500 or something huge like 10000
+\clubpenalty=500     % https://www.texfaq.org/FAQ-widows
+ \raggedbottom      % Let pages stop earlier for better breaking
 % ** Problem Boxes
 
 % Problem boxes --------------------------------------
@@ -116,13 +115,63 @@
 }{\endproof}
 
 %\renewenvironment{proof}{{\bfseries \fontfamily{ccr} \selectfont Proof}}{*something*}
-% ** Heading Colours
+% ** Heading Style
 % *** Define Heading Colours
-\definecolor{colsse}{RGB}{136, 73, 143}
-\definecolor{colsss}{RGB}{156, 118, 160}
-\definecolor{colspg}{RGB}{218, 168, 224}
-\definecolor{coltit}{RGB}{84, 65, 86}
-\definecolor{colname}{RGB}{236, 66 ,255}
+% These probably need some work to be honest
+%\definecolor{part}{RGB}{136, 73, 143}
+%\definecolor{chap}{RGB}{34, 174, 209}
+\definecolor{sec}{HTML}{1A1423}
+\definecolor{subsec}{HTML}{372549}
+\definecolor{subsubsec}{HTML}{C2948A}
+\definecolor{paragraph}{HTML}{7EA8BE}
+\definecolor{subparagrap}{HTML}{17A398}
+\RequirePackage{booktabs}
+
+% sectsty is by far the easiest way to style sections, use that (but only on it's own)
+
+
+\RequirePackage[]{sectsty}
+
+% *** Change Colours
+% **** Section
+\sectionfont{\color{sec}}
+% **** SubSection
+\subsectionfont{\color{subsec}}
+% **** SubSubSection
+\subsubsectionfont{\color{subsubsec}}
+% **** Paragraph
+\paragraphfont{\color{paragraph}}
+% **** SubParagraph
+\paragraphfont{\color{subparagraph}}
+
+% *** Actually Just use One style Instead
+\definecolor{midnightblue}{rgb}{0.1, 0.1, 0.44}
+%\allsectionsfont{  \mdseries\itshape\underline }
+\allsectionsfont{ \color{midnightblue} \sffamily}
+
+
+
+%
+% ** Header
+\RequirePackage{fancyhdr}
+\RequirePackage{lastpage}
+\pagestyle{fancy}
+\cfoot[]{}
+\rfoot{\thepage\ of \pageref{LastPage}}
+\usepackage[bottom]{footmisc} % Makes footnotes go to the bottom which helps
+
+\renewcommand{\headrulewidth}{0.3mm}% 2pt header rule
+\renewcommand{\footrulewidth}{0.3mm}% 2pt header rule
+\renewcommand{\headrule}{\hbox to\headwidth{%
+  \color{midnightblue}\leaders\hrule height \headrulewidth\hfill}}
+\renewcommand{\footrule}{\hbox to\headwidth{%
+  \color{midnightblue}\leaders\hrule height \headrulewidth\hfill}}
+
+%
+% For \usepackage{fancyheadings}
+    % \renewcommand{\headrulewidth{0.1mm}}
+    % \renewcommand{\footrulewidth{0.1mm}} % looks weird with footnotes
+    %
 
 % * Code Blocks
 % ** Listings Package
