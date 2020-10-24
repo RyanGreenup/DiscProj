@@ -217,6 +217,7 @@ algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the e
 \part{Implementing PageRank}
 \section{Mathematics of Page Rank}
 \label{PageRank-Generally}
+\cite[\S 1.1.7]{chingMarkovChainsModels2006}
 \subsection{The Stationary Distribution of a Probability Transition Matrix}
 \label{stationary-distribution-of-t}
 A graph can be expressed as an adjacency matrix \(\mathbf{A}\):
@@ -255,14 +256,46 @@ vector \(\vec{p}\), this vector can be determined for each step by matrix
 multiplication:
 
 \begin{align}
-\vec{p_{i+1}} = \mathbf{T}\vec{p_{i}} \label{eq:recurrence}
+\vec{p}_{i+1} = \mathbf{T}\vec{p}_{i} \label{eq:recurrence}
 \end{align}
 
 This relationship is a linear recurrence relation, more generally however it is
-a \emph{Markov Chain} and \cite[\S 4.4]{langvilleGooglePageRankScience2012} and
+a \emph{Markov Chain} \cite[\S 4.4]{langvilleGooglePageRankScience2012} and
 Finding the Stationary point for this relationship will give a frequency
 distribution for the nodes corresponding to the random walk and thus a metric to
 measure the centrality of vertices.
+
+\subsubsection{The Stationary Distribution of a Markov Chain}
+The stationary distribution \(\left(p\right)\) of a Markov Chain is a vector that sums to 1 and
+does not change upon further iteration \cite[\S 1.1.7]{chingMarkovChainsModels2006}, for example in the case of \eqref{eq:recurrence}, if:
+
+\[
+  \mathbf{T} =
+  \begin{bmatrix}
+    1 & 0 \\
+    0 & 1 \
+  \end{bmatrix}
+\]
+
+the corresponding stationary distribution\footnote{Also
+  known as the \textit{Stationary Point}} would be \(p = \langle \frac{1}{2}, \frac{1}{2} \rangle\).
+and if \eqref{eq:recurrence} converges to a value generally the following relationship holds (see \S \ref{sec:org046df67}):
+
+\[
+  p = \lim_{i \rightarrow \infty} \left(p_{i}\right)
+\]
+
+This value represents the probability of a random walk being present on that
+node at any given iteration and so ascribing this value to a centrality metric
+is quite intuitive. For example, the node most commonly traversed during a random walk
+will have the highest corresponding value in \(p\) and is hence considered the
+most central of the graph. This is a particularly appropriate framework for
+measruing the centrality of interlinked documents, such as pages on the
+web\footnote{Although web pages are a classical example of interlinked
+  documents, a lot of modern software use a wiki-like approach that also exhibits
+  this structure (e.g. \textit{Joplin}, \textit{Notable}, \textit{DokuWiki},
+  \texttt{org-mode}, \textit{Markdown} etc.) }, because navigation involves
+following links between pages.
 
 \subsection{Random Surfer Model}
 \label{sec:org046df67}
@@ -297,7 +330,7 @@ meaningful.
 
 \begin{wrapfigure}{R}{0.4\textwidth}
     \includegraphics[width=0.38\textwidth]{media/dot/stochastic_graph_example.dot.png}
-    \caption{\label{fig:stochastic-example}\(D\) is a \emph{dangling node}, a dead end during a random walk, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other vertex as per \eqref{eq:nearly-random-surfer} (denoted in red) will cause \(\mathbf{T}\) to be stochastic.}
+    \caption{\label{fig:stochastic-example}\(D\) is a \emph{dangling node}, a dead end during a random walk that acts as a \textit{rank sink}, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other vertex as per \eqref{eq:nearly-random-surfer} (denoted in red) will cause \(\mathbf{T}\) to be stochastic.}
 \end{wrapfigure}
 
 The relationship in \eqref{eq:recurrence} is a \emph{Markov Chain} \footnote{A \emph{Markov Chain} is
@@ -318,12 +351,18 @@ and so these concepts will be explored in order to address the issues with \eqre
 \label{stochastic}
 If some vertex had a 0 out-degree the corresponding column sum for the adjacency
 matrix describing that graph would also be zero and the matrix non-stochastic,
-this could occur in the context of a random walk where a link to a page with no
-outgoing links was followed (e.g. an image), this would be the end of the
-walk.
+this could occur in the context of a random walk where a link to a node with no
+outgoing links was followed, as in \(D\) in Figure \ref{fig:stochastic-example},
+such a node acts as a \textit{rank
+  sink} \cite[\S 4.3]{langvilleGooglePageRankScience2012} which is a node that
+accumulates a higher \textit{PageRank} at each iteration and would represent the
+end of the walk. This could occur in the context of the web by following a
+hyperlink to a destination with no outgoing links (e.g. a PDF, image or text
+file would be a destination with no outgoing links).
 
-So to ensure that \eqref{eq:recurrence} will converge, the probability transition
-matrix must be made stochastic, to achieve this a uniform probability of teleporting from a dead end to any other vertex could be introduced:
+So to ensure that \eqref{eq:recurrence} will converge, the probability
+transition matrix must be made stochastic, to achieve this a uniform probability
+of teleporting from a dead end to any other vertex could be introduced:
 
 
  \begin{wrapfigure}{R}{0.4\textwidth}
@@ -349,12 +388,18 @@ A graph that allows travel from any given vertex to any other vertex is said to 
 
 \paragraph{Aperiodic}
 \label{sec:org2c6170b}
-An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \(\mathbf{A}\) is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative (or helpful in this context because the graph may still be reducible or non-stochastic)}
+An aperiodic graph has a corresponding transition probability matrix (\(\mathbf{A}\)) with only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \(\mathbf{A}\) is aperiodic. A graph that is periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative (or helpful in this context because the graph may still be reducible or non-stochastic)} as shown in Figure \ref{fig:aperiodic}.
 
 
 \paragraph{The Fix}
 \label{fix}
-To ensure that the transition probability matrix is primitive (i.e. irreducible and aperiodic) as well as stochastic, instead of merely introducing the possibility to teleport out of dead ends, some probability of teleporting to any node at any time can be introduced (\(1- \alpha\)), this approach is known as the \emph{Random Surfer} model and the corresponding transition probability matrix is given by \cite{larrypageAnatomyLargescaleHypertextual1998} :
+To ensure that the transition probability matrix is primitive (i.e. irreducible
+and aperiodic) as well as stochastic, instead of merely introducing the
+possibility to teleport out of dead ends, some probability of teleporting to any
+node at any time can be introduced (\(1- \alpha\)), this would make travel between any nodes possible during the random would as illustrated in Figure \ref{fig:rseg}. This
+approach is known as the \emph{Random Surfer} model and the corresponding
+transition probability matrix is given by
+\cite{larrypageAnatomyLargescaleHypertextual1998} :
 
 \begin{align}
 \mathbf{S} = \alpha \mathbf{T} + \frac{(1- \alpha)}{n} \mathbf{J} \label{eq:random-surfer}
@@ -400,7 +445,7 @@ teleporting to another vertex.
 
  \begin{wrapfigure}{R}{0.6\textwidth}
  \includegraphics[width=0.55\textwidth]{media/dot/aperiodic.dot.png}
- \caption{\label{fig:aperiodic}A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic (this does not represent the random surfer or power walk models, which would in theory connect every vertex with some probability)}
+ \caption{\label{fig:aperiodic}A graph that is periodic with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic (this does not represent the random surfer or power walk models, which would in theory connect every vertex with some probability)}
 \end{wrapfigure}
 
 This transition probability matrix \(\left( \mathbf{W}\right)\) would be such that the probability of
@@ -442,37 +487,54 @@ resources to work with a sparse matrix than a dense matrix
  \cite[\textsection 4.2]{langvilleGooglePageRankScience2012} .
 
 
+
+Sparse matrices can be expressed in alternative forms so as to reduce the memory
+footprint associated with that matrix, one such method is \emph{Compressed Column
+Storage}, this involves listing only the non-zero elements and using a \textit{pointer} vector, this as is shown in \eqref{eq:ordinary}
+and table \ref{table:col-storage}. The \textit{Value} column of table \ref{table:col-storage} contains the non-zero values of the matrix following column-major order \footnote{\textit{Column-Major Order} means that the values are transcribed top-to-bottom, left-to-right and is the approach that \textit{\textbf{R}}, \textit{Julia} and \textit{Fortran} take to matrices and vectors, as opposed to \textit{Row-Major Order} which is used by \textbf{\textit{C}} and \textit{Python}, this often means that paying mind to the direction of operations when using nested loops to iterate over matrices can have a distinct effect on performance.} and the \textit{Row Index} column indicates which row the value corresponds to. The \textit{Pointer} column is such that the  \(i^{\mathrm{th}}\) entry gives the index of the \textit{Values} column that corresponds to the first non-zero element in the \(i^{\mathrm{th}}\) row of the matrix, for example the \(3^{\mathrm{rd}}\) row has \(\phi\) as the first non-zero value, this is the \(2^{\mathrm{nd}}\) entry in the values column and so 2 is the corresponding value \cite{IntelMathKernel}. This is implemented in \textbf{\emph{R}} with the \texttt{Matrix} package \cite{douglasbatesMatrixSparseDense2019}.
+\begin{align}
+    \begin{bmatrix}
+	1 & 0 & 0 & 0 & 0 \\
+	0 & 0 & 7 & 0 & 0 \\
+	0 & \phi & 0 & 2 & 0 \\
+	0 & 0 & 0 & 0 & \pi \\
+	0 & 0 & 13 & 0 & 0 \\
+    \end{bmatrix}  \label{eq:ordinary}
+\end{align}
+
+\hypertarget{table:col-storage}{}
+\begin{longtable}[]{@{}lll@{}}
+\caption{Compressed Column Storage corresponding to
+\label{table:col-storage}
+eqref:eq:ordinary}\tabularnewline
+\toprule
+\emph{\textbf{Value}} & \emph{\textbf{Row Index}} &
+\textbf{\emph{Pointer}}\tabularnewline
+\midrule
+\endfirsthead
+\toprule
+\emph{\textbf{Value}} & \emph{\textbf{Row Index}} &
+\textbf{\emph{Pointer}}\tabularnewline
+\midrule
+\endhead
+1 & 1 & 1\tabularnewline
+\(\phi\) & 3 & 3\tabularnewline
+7 & 2 & 2\tabularnewline
+13 & 5 & 5\tabularnewline
+2 & 3 & 4\tabularnewline
+π & 4 &\tabularnewline
+\bottomrule
+\end{longtable}
+
+
+\subsection{Solving the Stationary Distribution}
+\label{solving-stationary-dist}
+
  \begin{wrapfigure}{R}{0.6\textwidth}
  \includegraphics[width=0.6\textwidth]{media/dot/random_surfer.dot.png}
  \caption{\label{fig:rseg}A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model \eqref{eq:random-surfer} blue \emph{teleportation} edges are introduced, these may be followed with a probability of \(1 - \alpha\)}
  \end{wrapfigure}
 
-Sparse matrices can be expressed in alternative forms so as to reduce the memory
-footprint associated with that matrix, one such method is \emph{Compressed Column
-Storage}, this involves listing only the non-zero elements as in \eqref{eq:ordinary}
-and \eqref{eq:crc}, this is implemented in \textbf{\emph{R}} with the \texttt{Matrix} package \cite{douglasbatesMatrixSparseDense2019}.
-
-\begin{align}
-    \begin{bmatrix}
-	1 & 0 & 0 & 0 & 0 \\
-	0 & 0 & 0 & 0 & 0 \\
-	0 & \phi & 0 & 0 & 0 \\
-	0 & 0 & 0 & 0 & \pi \\
-	0 & 0 & 0 & 0 & 0 \\
-    \end{bmatrix}  \label{eq:ordinary} \\
-    \ \nonumber \\
-    \ \nonumber \\
-    \begin{matrix}
-	\mathrm{Row\ Index} & \mathrm{Col\ Index} & \mathrm{Value}\\
-	1 & 1 & 1 \\
-	3 & 2 & \phi \\
-	4 & 5 & \pi \\
-    \end{matrix}  \label{eq:crc}
-\end{align}
-
-
-\subsection{Solving the Stationary Distribution}
-\label{solving-stationary-dist}
 The relationship in \eqref{eq:recurrence} \footnote{This assumes that the transition probability matrix \(\mathbf{T}\) is stochastic and primitive as it would be for \(\mathbf{S}\)
 and \(\mathbf{W}\)} is equivalent to the eigenvalue value problem, where
 \(\vec{p} = \lim_{i \rightarrow \infty} \left( \vec{p_{i}}\right)\) is the
@@ -485,10 +547,10 @@ eigenvector \footnote{More accurately the eigenvector scaled specifically to 1, 
 Solving eigenvectors for large matrices can be very resource intensive and so
 this approach isn't suitable for analyzing large networks, it is however an appropriate method to check against and will be implemented in this report for that purpose.
 
-Upon iteration \eqref{eq:random-surfer-recurrence} and \eqref{eq:power-walk-recurrence} will converge to stable stationary points, as discussed
-in \ref{fix}, this approach is known as the power method
+Upon iteration \eqref{eq:recurrence}  will converge to a stable stationary point if \(\mathbf{T}\) is given by \eqref{eq:random-surfer} or \eqref{eq:prob-power-walk}, as discussed
+in \S \ref{fix}. This approach of iterating the relationship until it converges to the stationary point is known as the power method
 \cite{larsonElementaryLinearAlgebra1991a} and is what in practice must be
-implemented to solve the stationary point.
+implemented to solve the stationary point due to how resource intensive it is to solve eigenvalues for large matrices.
 
 As mentioned in \S\S \ref{fix} and \ref{pwalk}, the \emph{Random Surfer} and \emph{Power Walk}
 transition probability matrices are completely dense, that means applying the
@@ -507,24 +569,6 @@ The implementation has been performed with \emph{\textbf{R}} and the preamble is
 provided in listing \ref{preamble}, an exemplar graph was created in listing \ref{ex-fig-r} and shown in figure \ref{example-rs-graph}, and the corresponding adjacency matrix provided in listing \ref{adj-mat-random-surf} (for the sake of comparison this graph was reproduced from \cite{parkPowerWalkRevisiting2013}).
 
 
-
-
-\begin{listing}[htbp]
-\begin{tcolorbox}
-\begin{minted}[]{r}
-  if (require("pacman")) {
-      library(pacman)
-    }else{
-      install.packages("pacman")
-      library(pacman)
-    }
-
-    pacman::p_load(tidyverse, Matrix, igraph, plotly, plot3d, mise, docstring, mise, corrplot, latex2exp)
-#   options(scipen=20) # Resist Scientific Notation
-\end{minted}
-\caption{\label{preamble}Implemented Packages used in this report}
-\end{tcolorbox}
-\end{listing}
 
 
 \begin{listing}[htbp]
@@ -583,9 +627,6 @@ plot(g1)
 \label{sec:orgb756c9c}
 \subsubsection{Ordinary Matrices}
 \label{implementing-page-rank-methods}
-\paragraph{Adjacency Matrix}
-\label{adjacency-matrix}
-
 \paragraph{Probability Transition Matrix}
 \label{probability-transition-matrix}
 The probability transition matrix is such that each column of the
@@ -802,7 +843,7 @@ However this vector does not sum to 1 so the scale should be adjusted
     \end{verbatim}
 \end{tcolorbox}
 
-\subparagraph{Power Value Method}
+\subparagraph{Power Method}
 \label{power-value-method}
 Using the power method should give the same result as the eigenvalue method, again but for scale:
 
@@ -1118,6 +1159,7 @@ So instead the power method can be implemented by performing an algorithm that i
 
 \subsection{Power Walk Method}
 \label{sec:org97c1330}
+
 Recall from \ref{pwalk} that the power walk is given by:
 
 \begin{align*}
@@ -2730,4 +2772,34 @@ The \(\mathbf{\mathit{R}}\) code displayed in listing \ref{r-den_undir_ba} creat
 \subsection{Graph Diagrams}
 \label{sec:orgc4aeb84}
 Graph Diagrams shown in \ref{markov} where produced using \texttt{DOT} (see \cite{DOTLanguage,DOTGraphDescription2020}).
+
+
+\subsection{\textit{\textbf{R}} Packages}
+\label{sec:orgc4aeb84}
+
+The packages used for analysis in this report are provided in listing \ref{preamble}
+\begin{listing}[htbp]
+\begin{tcolorbox}
+\begin{minted}[]{r}
+  if (require("pacman")) {
+      library(pacman)
+    }else{
+      install.packages("pacman")
+      library(pacman)
+    }
+
+    pacman::p_load(tidyverse, Matrix, igraph, plotly, plot3d, mise, docstring, mise, corrplot, latex2exp)
+#   options(scipen=20) # Resist Scientific Notation
+\end{minted}
+\caption{\label{preamble}Implemented Packages used in this report}
+\end{tcolorbox}
+\end{listing}
 \end{document}
+
+
+  %%% Local Variables:
+  %%% TeX-command-extra-options: "-shell-escape"
+  %%% coding: utf-8
+  %%% mode: latex
+  %%% TeX-engine: xetex
+  %%% End:
