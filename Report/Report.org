@@ -260,6 +260,7 @@ walk.
 So to ensure that eqref:eq:recurrence will converge, the probability transition
 matrix must be made stochastic, to acheive this a uniform probability of teleporing from a dead end to any other vertex could be introduced:
 
+
 \begin{align}
 \mathrm{S} &= \mathrm{T}+ \frac{\vec{a} \cdot \vec{1}^{\mathrm{T}} }{n} \label{eq:nearly-random-surfer} \\
 & a_{i} = \begin{cases}

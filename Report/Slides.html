@@ -22,6 +22,7 @@
         document.getElementsByTagName( 'head' )[0].appendChild( link );
     }
 </script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <link rel="stylesheet" type="text/css" href="./resources/style_slides.css">
 <script type="text/javascript" src="https://orgmode.org/org-info.js">
 // @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
@@ -48,39 +49,59 @@ org_html_manager.setup();  // activate after the parameters are set
 <body>
 <div class="reveal">
 <div class="slides">
-<section id="sec-title-slide"><h1 class="title">The Stationary Distribution of a Markov chain</h1><h2 class="author">Ryan Greenup</h2><p class="date">Created: 2020-11-08 Sun 15:39</p>
+<section id="sec-title-slide"><h1 class="title">The Stationary Distribution of a Markov chain</h1><h2 class="author">Ryan Greenup</h2><p class="date">Created: 2020-11-08 Sun 23:35</p>
 </section>
 <section id="table-of-contents"><div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
 <ul>
-<li><a href="#/slide-org4e384ec">1. Introduction</a></li>
-<li><a href="#/slide-org35dea0a">2. What is the <i>PageRank</i></a></li>
-<li><a href="#/slide-org34a29c7">3. Mathematics of Page Rank</a>
+<li><a href="#/slide-orgeff5317">1. Introduction</a></li>
+<li><a href="#/slide-org1e87d20">2. What is the <i>PageRank</i></a></li>
+<li><a href="#/slide-org2068c00">3. Mathematics of Page Rank</a>
 <ul>
-<li><a href="#/slide-orgaf44e2e">3.1. The Stationary Distribution of a Probability Transition Matrix</a></li>
-<li><a href="#/slide-org6b8885e">3.2. Random Surfer Model</a>
+<li><a href="#/slide-orga8eafcd">3.1. The Stationary Distribution of a Probability Transition Matrix</a>
 <ul>
-<li><a href="#/slide-orgadd40b0">3.2.1. Problems with the Stationary Distribution</a></li>
-<li><a href="#/slide-org38a91f0">3.2.2. Markov Chains</a></li>
-<li><a href="#/slide-org256478c">3.2.3. Limitations</a></li>
+<li><a href="#/slide-org55fa329">3.1.1. Adjacency Matrix</a></li>
+<li><a href="#/slide-orgb093db5">3.1.2. Transition Probability Matrix</a></li>
+<li><a href="#/slide-orgf8e28a8">3.1.3. Markov Chain</a></li>
 </ul>
 </li>
-<li><a href="#/slide-org508183d">3.3. Power Walk</a></li>
 </ul>
 </li>
-<li><a href="#/slide-orgda639d4">4. Sparce Matrices</a></li>
-<li><a href="#/slide-org47d6cd2">5. Implementing the Models</a>
+<li><a href="#/slide-org2283039">4. Problems with the Stationary Distribution</a>
 <ul>
-<li><a href="#/slide-org6bc33d0">5.1. Implementing the Random Surfer</a></li>
-<li><a href="#/slide-org3aa9d40">5.2. Implementing the Power Walk</a></li>
+<li><a href="#/slide-org1554d7c">4.1. Stochastic</a>
+<ul>
+<li><a href="#/slide-orgf525bae">4.1.1. Potential fix</a></li>
 </ul>
 </li>
-<li><a href="#/slide-orgddfbef7">6. Creating a Package</a></li>
-<li><a href="#/slide-org97c8cf2">7. Types of Graphs</a>
+<li><a href="#/slide-org6e544ef">4.2. Irreducible</a></li>
+<li><a href="#/slide-orgcc6c162">4.3. Aperiodic</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org8689f57">5. Random Surfer Model</a>
 <ul>
-<li><a href="#/slide-org7e40340">7.1. Erdos Renyi</a></li>
-<li><a href="#/slide-org2c48ba0">7.2. Barabasi Albert</a></li>
+<li><a href="#/slide-org4937d88">5.1. The Fix</a></li>
+<li><a href="#/slide-org790922b">5.2. Limitations</a></li>
+<li><a href="#/slide-orga8daded">5.3. Power Walk</a>
+<ul>
+<li><a href="#/slide-orgcd7294d">5.3.1. Solving a Formula</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#/slide-org03869bc">6. Sparce Matrices</a></li>
+<li><a href="#/slide-org21d37b4">7. Implementing the Models</a>
+<ul>
+<li><a href="#/slide-orgaf67597">7.1. Implementing the Random Surfer</a></li>
+<li><a href="#/slide-org97e8382">7.2. Implementing the Power Walk</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org71c1d1c">8. Creating a Package</a></li>
+<li><a href="#/slide-orga3701bf">9. Types of Graphs</a>
+<ul>
+<li><a href="#/slide-org5d01691">9.1. Erdos Renyi</a></li>
+<li><a href="#/slide-org6f4f6bd">9.2. Barabasi Albert</a></li>
 </ul>
 </li>
 </ul>
@@ -89,14 +110,15 @@ org_html_manager.setup();  // activate after the parameters are set
 </section>
 
 <section>
-<section id="slide-org4e384ec">
-<h2 id="org4e384ec"><span class="section-number-2">1</span> Introduction</h2>
+<section id="slide-orgeff5317">
+<h2 id="orgeff5317"><span class="section-number-2">1</span> Introduction</h2>
 <p>
-This report was concerned with building on the page range approach of measuring node centrality in a graph, by investigating the <i>Power Walk</i> method.
+This report was concerned with building on the page range approach of measuring
+node centrality in a graph, by investigating the <i>Power Walk</i> method.
 </p>
 
 </section>
-<section id="slide-org4e384ec-split">
+<section id="slide-orgeff5317-split">
 
 <p>
 This required researching:
@@ -104,40 +126,40 @@ This required researching:
 
 <ul>
 <li>The Mathematics of <i>PageRank</i> and relationship to Markov Chains</li>
-<li>How <b><i>R</i></b> implements:
+<li>How <i><b>R</b></i> implements:
 <ul>
 <li>Packages</li>
 <li>Sparse Matrices</li>
 
 </ul></li>
-<li>Different algorithms to simulate graph structures.</li>
+<li>Different algorithms to simulate graph structures. \(.\)</li>
 
 </ul>
 
 </section>
 </section>
 <section>
-<section id="slide-org35dea0a">
-<h2 id="org35dea0a"><span class="section-number-2">2</span> What is the <i>PageRank</i></h2>
+<section id="slide-org1e87d20">
+<h2 id="org1e87d20"><span class="section-number-2">2</span> What is the <i>PageRank</i></h2>
 <p>
 <i>PageRank</i> measures node centrality by recording the frequency that nodes are traversed during a random walk, i.e. walk around a graph, for a long time and record where you went:
 </p>
 
 
-<div id="orga3b0c52" class="figure">
+<div id="orgc426452" class="figure">
 <p><img src="media/random_walk_ggplot.gif" alt="random_walk_ggplot.gif" />
 </p>
 </div>
 
 </section>
-<section id="slide-org35dea0a-split">
+<section id="slide-org1e87d20-split">
 
 <p>
 this goes on for a while and we get this:
 </p>
 
 
-<div id="orgfa64f3f" class="figure">
+<div id="org0a8a24b" class="figure">
 <p><img src="media/Pagerank_distribution_ggplot.png" alt="Pagerank_distribution_ggplot.png" />
 </p>
 </div>
@@ -145,96 +167,458 @@ this goes on for a while and we get this:
 </section>
 </section>
 <section>
-<section id="slide-org34a29c7">
-<h2 id="org34a29c7"><span class="section-number-2">3</span> Mathematics of Page Rank</h2>
+<section id="slide-org2068c00">
+<h2 id="org2068c00"><span class="section-number-2">3</span> Mathematics of Page Rank</h2>
 <div class="outline-text-2" id="text-3">
 </div>
 </section>
-<section id="slide-orgaf44e2e">
-<h3 id="orgaf44e2e"><span class="section-number-3">3.1</span> The Stationary Distribution of a Probability Transition Matrix</h3>
-</section>
-<section id="slide-org6b8885e">
-<h3 id="org6b8885e"><span class="section-number-3">3.2</span> Random Surfer Model</h3>
-<div class="outline-text-3" id="text-3-2">
+<section id="slide-orga8eafcd">
+<h3 id="orga8eafcd"><span class="section-number-3">3.1</span> The Stationary Distribution of a Probability Transition Matrix</h3>
+<div class="outline-text-3" id="text-3-1">
 </div>
 </section>
-<section id="slide-orgadd40b0">
-<h4 id="orgadd40b0"><span class="section-number-4">3.2.1</span> Problems with the Stationary Distribution</h4>
-</section>
-<section id="slide-org38a91f0">
-<h4 id="org38a91f0"><span class="section-number-4">3.2.2</span> Markov Chains</h4>
-<div class="outline-text-4" id="text-3-2-2">
+<section id="slide-org55fa329">
+<h4 id="org55fa329"><span class="section-number-4">3.1.1</span> Adjacency Matrix</h4>
+<p>
+A graph can be described with an adjacency matrix \(\mathbf{A}\):
+</p>
+
+ <div style="width: 100%; overflow: hidden;">
+     <div style="width: 600px; float: left;">
+        <img src="./media/example_graph_dot.png">
+     </div>
+     <div style="margin-left: 620px;">
+        \begin{align*}
+            \begin{bmatrix}
+                    0 & 1 & 1 & 1 \\
+                    1 & 0 & 1 & 1 \\
+                    1 & 1 & 0 & 1 \\
+                    0 & 0 & 1 & 0 \\
+            \end{bmatrix}
+        \end{align*}
+     </div>
 </div>
-<ol class="org-ol">
-<li><a id="org85de7cb"></a>Stochastic<br />
-<div id="org8d77453" class="figure">
+
+<div class="NOTE" id="org1bda761">
+<p>
+This Adjacency matrix doesn&rsquo;t need to be strictly 1 or 0, for example the marvel data set I did the number of interactions as the value, these are called weights, we&rsquo;ll come back to these.
+</p>
+
+</div>
+
+</section>
+<section id="slide-orgb093db5">
+<h4 id="orgb093db5"><span class="section-number-4">3.1.2</span> Transition Probability Matrix</h4>
+<p>
+We are concerned with a random walk, we&rsquo;ll want the transition probability matrix \(\mathbf{T}\).
+</p>
+
+ <div style="width: 100%; overflow: hidden;">
+     <div style="width: 600px; float: left;">
+        <img src="./media/example_graph_dot.png">
+     </div>
+     <div style="margin-left: 620px;">
+        \begin{align*}
+            \begin{bmatrix}
+                    0           & \frac{1}{2} & \frac{1}{3} & \frac{1}{3} \\
+                    \frac{1}{2} & 0 & \frac{1}{3} & \frac{1}{3} \\
+                    \frac{1}{2} & \frac{1}{2} & 0 & \frac{1}{3} \\
+                    0           & 0 & \frac{1}{3} & 0 \\
+            \end{bmatrix}
+        \end{align*}
+     </div>
+</div>
+
+</section>
+<section id="slide-orgf8e28a8">
+<h4 id="orgf8e28a8"><span class="section-number-4">3.1.3</span> Markov Chain</h4>
+<p>
+The <i>PageRank</i> will be given by the stationary distribution of the Markov Chain:
+</p>
+
+\[
+\vec{p} \leftarrow \mathbf{T} \vec{p}
+\]
+
+
+</section>
+</section>
+<section>
+<section id="slide-org2283039">
+<h2 id="org2283039"><span class="section-number-2">4</span> Problems with the Stationary Distribution</h2>
+<div class="outline-text-2" id="text-4">
+</div>
+</section>
+<section id="slide-org1554d7c">
+<h3 id="org1554d7c"><span class="section-number-3">4.1</span> Stochastic</h3>
+<p>
+A stochastic adjacency matrix has colums that sum to 1.*
+</p>
+
+<aside class="notes">
+<p>
+-I put an * here because unless the random surfer matrix is rescaled to 1 colum-wise, It isn&rsquo;t necessarily going to be non-stochastic. This isn&rsquo;t in practice an issue because:
+</p>
+
+<ol>
+<li>It only occurs if the adjacency matrix has a dangling node</li>
+<li>The resulting Stationary distribution can just be scaled relative to 1, as you would with an eigen vector.</li>
+
+</ol>
+
+<p>
+In saying that though, I just figured out last night that my random surfer implementation does not scale to 1 after solving via the power method, which is unfourtunate, but that&rsquo;s the advantage to having everything inside a package.
+</p>
+
+</aside>
+
+
+<div id="org80e435a" class="figure">
 <p><img src="media/dot/stochastic_graph_example.dot.png" alt="stochastic_graph_example.dot.png" />
 </p>
 </div>
-</li>
-<li><a id="org47b4a30"></a>Irreducible<br />
-<div id="orgf2d3c1b" class="figure">
-<p><img src="media/dot/reducible_graph_example.dot.png" alt="reducible_graph_example.dot.png" />
-</p>
-</div>
-</li>
 
-<li><a id="orga97c962"></a>Aperiodic<br />
-<div id="org0f69170" class="figure">
+<ul>
+<li>Dead ends, or dangling nodes, act as a rank sink, the random walk gets stuck there.</li>
+
+</ul>
+
+</section>
+<section id="slide-orgf525bae">
+<h4 id="orgf525bae"><span class="section-number-4">4.1.1</span> Potential fix</h4>
+<p>
+Just teleport out of dead-ends:
+</p>
+
+\[
+\mathbf{S} = \mathbf{T} + \left[\mathrm{deg}\left(V_i\right)=0\right] \frac{\left(\vec{1}\right)^{\mathrm{T}}}{n}
+\]
+
+<aside class="notes">
+<ul>
+<li>A potential fix is to just have the random walk teleport out of dead ends randomly
+<ul>
+<li>This is actually how I progammed the animation before</li>
+
+</ul></li>
+<li>This is not sufficient however to ensure that the Markov Chain will converge, it needs to be irreducible as well.
+<ul>
+<li>If also aperiodic then from any IC</li>
+
+</ul></li>
+<li>The notation of square brackets is just a true false thing, I found it in <i>Knuth&rsquo;s Concrete Mathematics</i> and thought it was very convenient.</li>
+
+</ul>
+
+</aside>
+
+</section>
+<section id="slide-org6e544ef">
+<h3 id="org6e544ef"><span class="section-number-3">4.2</span> Irreducible</h3>
+<p>
+A graph that can be fully traversed is irreducible.
+<img src="media/dot/reducible_graph_example.dot.png" alt="reducible_graph_example.dot.png" />
+</p>
+
+<ul>
+<li>A reducible graph won&rsquo;t have a meaninful <i>PageRank</i> because the random walk won&rsquo;t visit all pages or subgraphs.</li>
+
+</ul>
+
+</section>
+<section id="slide-orgcc6c162">
+<h3 id="orgcc6c162"><span class="section-number-3">4.3</span> Aperiodic</h3>
+<p>
+An aperiodic graph has only one eigenvalue that lies on the unit circle.
+</p>
+
+<aside class="notes">
+<ul>
+<li>Strictly speaking a unique Stationary point will exist when the Transition Probability Matrix is stochastic and irreducible.</li>
+<li>The advantage to an aperiodic graph is that the markov chain will converge to the stationary point regardless of the initial condition.</li>
+<li>The conditions necessary for a graph to become aperiodic, other than just adding edges, is something I&rsquo;ve since fogotten to be honest, I&rsquo;ll have to look into it when I get time.
+<ul>
+<li>It would be sufficient to add a loop</li>
+
+</ul></li>
+
+</ul>
+
+</aside>
+
+
+<div id="org90e20d3" class="figure">
 <p><img src="media/dot/aperiodic.dot.png" alt="aperiodic.dot.png" />
 </p>
 </div>
-</li>
 
-<li><a id="org7fbe2de"></a>The Fix<br />
-<div id="org0e83bf0" class="figure">
-<p><img src="media/dot/random_surfer.dot.png" alt="random_surfer.dot.png" />
-</p>
-</div>
-</li>
-</ol>
-</section>
-<section id="slide-org256478c">
-<h4 id="org256478c"><span class="section-number-4">3.2.3</span> Limitations</h4>
-</section>
-<section id="slide-org508183d">
-<h3 id="org508183d"><span class="section-number-3">3.3</span> Power Walk</h3>
+<ul>
+<li>Adding Edges can make a graph aperiodic.</li>
+
+</ul>
+
+
 </section>
 </section>
 <section>
-<section id="slide-orgda639d4">
-<h2 id="orgda639d4"><span class="section-number-2">4</span> Sparce Matrices</h2>
-</section>
-</section>
-<section>
-<section id="slide-org47d6cd2">
-<h2 id="org47d6cd2"><span class="section-number-2">5</span> Implementing the Models</h2>
+<section id="slide-org8689f57">
+<h2 id="org8689f57"><span class="section-number-2">5</span> Random Surfer Model</h2>
 <div class="outline-text-2" id="text-5">
 </div>
 </section>
-<section id="slide-org6bc33d0">
-<h3 id="org6bc33d0"><span class="section-number-3">5.1</span> Implementing the Random Surfer</h3>
-</section>
-<section id="slide-org3aa9d40">
-<h3 id="org3aa9d40"><span class="section-number-3">5.2</span> Implementing the Power Walk</h3>
-</section>
-</section>
-<section>
-<section id="slide-orgddfbef7">
-<h2 id="orgddfbef7"><span class="section-number-2">6</span> Creating a Package</h2>
-</section>
-</section>
-<section>
-<section id="slide-org97c8cf2">
-<h2 id="org97c8cf2"><span class="section-number-2">7</span> Types of Graphs</h2>
-<div class="outline-text-2" id="text-7">
+<section id="slide-org4937d88">
+<h3 id="org4937d88"><span class="section-number-3">5.1</span> The Fix</h3>
+<p>
+The fix is to introduce a background probability of teleporting:
+</p>
+
+$$
+\mathbf{S} = \alpha \mathbf{T} + (1-\alpha) \frac{\left(\vec{1}\right)\left(\vec{1}\right)^{\mathrm{T}}}{n}
+$$
+
+<aside class="notes">
+<ul>
+<li>must take a step</li>
+<li>That step could be blue or black</li>
+<li>alpha determines how much more comfortable it is to take black</li>
+
+</ul>
+
+</aside>
+
+
+<div id="org88e4fcc" class="figure">
+<p><img src="media/dot/random_surfer.dot.png" alt="random_surfer.dot.png" />
+</p>
 </div>
 </section>
-<section id="slide-org7e40340">
-<h3 id="org7e40340"><span class="section-number-3">7.1</span> Erdos Renyi</h3>
+<section id="slide-org790922b">
+<h3 id="org790922b"><span class="section-number-3">5.2</span> Limitations</h3>
+<ul>
+<li>The edges can only be positively weighted</li>
+
+</ul>
+
+<aside class="notes">
+<p>
+So yeah, we have direction of edges, but all links necessarily good ?
+</p>
+
+<p>
+A article advising of websites that are trying to seperate you from your credit card details, well, that&rsquo;s probably not a link a reader would be like to follow&#x2026;right.
+</p>
+
+<p>
+Other than that though I&rsquo;d say this worked out pretty well for page and brin, actually they didn&rsquo;t even need to look at markov chains in there paper that introduced these.
+</p>
+
+</aside>
+
+
 </section>
-<section id="slide-org2c48ba0">
-<h3 id="org2c48ba0"><span class="section-number-3">7.2</span> Barabasi Albert</h3>
+<section id="slide-orga8daded">
+<h3 id="orga8daded"><span class="section-number-3">5.3</span> Power Walk</h3>
+<p>
+A different way to come at the problem is instead to let the weights be:
+</p>
+
+<blockquote >
+<p>
+The ratio of probability of teleporting as opposed to following an edge.
+</p>
+</blockquote>
+
+<aside class="notes">
+<ul>
+<li>Instead of talking about:
+<ul>
+<li>How much more comfortable or desirable it is to teleport</li>
+
+</ul></li>
+<li>Lets talk about how many times better it is to avoid teleporting</li>
+
+</ul>
+
+</aside>
+
+</section>
+<section id="slide-orgcd7294d">
+<h4 id="orgcd7294d"><span class="section-number-4">5.3.1</span> Solving a Formula</h4>
+<p>
+if we let \(x\) be the probability of teleporting we get:
+</p>
+
+<div>
+\begin{align}
+\mathbf{W}_{i, j} = x\beta^{\mathbf{A_{i,j}}} \label{eq:prob-power-walk}
+\end{align}
+
+</div>
+
+</section>
+<section id="slide-orgcd7294d-split">
+
+<p>
+The random walk has to go somewhere on the graph so the probability is constrained to 1:
+</p>
+
+
+<div>
+\begin{align}
+      1 &= \sum^{n}_{j= 1}   \left[ x \beta^{\mathbf{A_{i,j}}} \right] \\
+       \implies  x&= \left( \sum^{n}_{j= 1}   \beta^{\mathbf{A_{i,j}}}
+       \right)^{-1} \label{eq:powerwalk-x-val}
+\end{align}
+
+</div>
+
+</section>
+<section id="slide-orgcd7294d-split">
+
+<p>
+And so by Substitution:
+</p>
+
+
+<p>
+\[
+\mathbf{W}_{i,j} = \frac{\beta^{\mathbf{A}_i,j}}{\sum^{n}_{i=j} \left[ \beta^{\mathbf{A}_{i,j}} \right] }
+\]
+</p>
+
+<ul>
+<li>stochastic</li>
+<li>irreducible</li>
+<li>aperiodic</li>
+
+</ul>
+
+<div class="NOTE" id="org26f6530">
+<p>
+I believe because it is completely dense that it is aperiodic, I&rsquo;m going to have to double check that.
+</p>
+
+<p>
+So my research question was concerned with stability and rate of convergence of this algorthithm.
+</p>
+
+<p>
+Time was mostly spent just researching around this though.
+</p>
+
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org03869bc">
+<h2 id="org03869bc"><span class="section-number-2">6</span> Sparce Matrices</h2>
+<div class="NOTE" id="orgbb18683">
+<ul>
+<li>No time to discuss</li>
+<li>You guys don&rsquo;t want to hear it</li>
+
+</ul>
+
+</div>
+</section>
+</section>
+<section>
+<section id="slide-org21d37b4">
+<h2 id="org21d37b4"><span class="section-number-2">7</span> Implementing the Models</h2>
+<div class="NOTE" id="orgb47aa4b">
+<ul>
+<li>Took ages due to mistakes</li>
+<li>Just applied it to sparse matrices paying graeat mind to zeros and linear algebra.</li>
+<li>remember to scale eigenvalues.</li>
+
+</ul>
+
+</div>
+</section>
+<section id="slide-orgaf67597">
+<h3 id="orgaf67597"><span class="section-number-3">7.1</span> Implementing the Random Surfer</h3>
+</section>
+<section id="slide-org97e8382">
+<h3 id="org97e8382"><span class="section-number-3">7.2</span> Implementing the Power Walk</h3>
+</section>
+</section>
+<section>
+<section id="slide-org71c1d1c">
+<h2 id="org71c1d1c"><span class="section-number-2">8</span> Creating a Package</h2>
+<div class="NOTE" id="org94110af">
+<ul>
+<li>Not to hard</li>
+<li>A few tricks like remembering to specify the namespace</li>
+<li>Made life a lot easier</li>
+
+</ul>
+
+</div>
+</section>
+</section>
+<section>
+<section id="slide-orga3701bf">
+<h2 id="orga3701bf"><span class="section-number-2">9</span> Types of Graphs</h2>
+<p>
+Need to simulate graphs to investigate model behaviour.
+</p>
+
+</section>
+<section id="slide-org5d01691">
+<h3 id="org5d01691"><span class="section-number-3">9.1</span> Erdos Renyi</h3>
+<ul>
+<li>This model with a bag of nodes and then interlinks them randomly.</li>
+<li>It was first published in 1959</li>
+<li>It is not consistent with Network Graphs</li>
+
+</ul>
+
+<div class="NOTE" id="org4d4b120">
+<ul>
+<li>I started with the erdos<sub>renyi</sub> because it was a general graph.</li>
+<li>I was not familiar with other graphs and so I started here.</li>
+
+</ul>
+
+<p>
+The idea is that each edge has a specified probability of appearing in the graph.
+</p>
+
+<p>
+In this case that probability is 40%.
+</p>
+
+<p>
+Another way to imagine it is the mean value of the boolean adjacency matrix would be 0.4.
+</p>
+
+</div>
+
+
+<div id="orge4977bc" class="figure">
+<p><img src="media/erdos_growth.gif" alt="erdos_growth.gif" />
+</p>
+</div>
+</section>
+<section id="slide-org6f4f6bd">
+<h3 id="org6f4f6bd"><span class="section-number-3">9.2</span> Barabasi Albert</h3>
+<ul>
+<li>Unlike Erdos-Reny, the Barabassi-Albert graph is built organically</li>
+<li>The probability of a new node connecting to an on old one is proportional to the degree of that node
+<ul>
+<li>i.e. rich get richer.</li>
+
+</ul></li>
+
+</ul>
+
+
+<div id="org6c26b90" class="figure">
+<p><img src="media/network_growth.gif" alt="network_growth.gif" />
+</p>
+<p><span class="figure-number">Figure 7: </span>Growth of a network, each node makes one connection, the probability of that connection being proportional to the degree of that node. The colour and size is measured by the Random Surfer PageRank.</p>
+</div>
 </section>
 </section>
 </div>

@@ -26,7 +26,7 @@ mise()
 
 ## * Create Variables
 # Number of nodes
-n <- 500
+n <- 300
 # Empty vector for degrees:
 degree_vec <- rep(0, n)
 
@@ -123,7 +123,7 @@ p <-  ggplot(edgesdf, aes(x = xval, y = yval)) +
         axis.text.x=element_blank())
 p
 
-
+library(PageRank)
 
 theplot <- function(i) {
   
@@ -131,14 +131,22 @@ theplot <- function(i) {
 edgesdf <- rbind(starts, ends)
 edgesdf <- edgesdf[edgesdf$edgenum<=i, ]
 laytgdf <- laytg[1:i, ]
+# make the node value the pagerank not the index value
+# laytgdf$node <-  PageRank::power_walk_stationary_point(adj_mat[1:i, 1:i], beta = 10, eta = 0.05) # Does not work after 80?
+laytgdf$node <-  PageRank::random_surfer_stationary(adj_mat[1:i, 1:i], alpha = 0.85, dp=2)
+
+
 
 p <-  ggplot(edgesdf, aes(x = xval, y = yval)) +
   geom_line(aes(group = edgenum), lty = 3, col = "darkgrey", size = 0.3) +
-  geom_point(data = laytgdf, aes(x = xval, y = yval, col = node), size = 2) +
+  geom_point(data = laytgdf, aes(x = xval, y = yval, col = node, size = node)) +
   labs(x = "", y = "") +
 #  geom_label_repel(data = laytgdf, aes(x = xval, y = yval, label = node, col = node), size = 1.5, nudge_x = 0, nudge_y = 0) +
   guides(col = FALSE) +
   theme_classic() +
+  scale_size_continuous(range = c(1, 5)) +
+  scale_color_gradient(high = "red", low = "blue")  +
+  guides(size = FALSE) +
   theme(axis.line = element_blank(),  # https://stackoverflow.com/a/6542792/12843551
         axis.text.y=element_blank(),axis.ticks=element_blank(),
         axis.text.x=element_blank())
@@ -146,16 +154,15 @@ filename = paste0("/home/ryan/Downloads/graphs/00000", sprintf("%03d", i), ".png
 
  ggsave(filename, plot = p, width = 10, height = 10, units = 'cm')
  
-p
 
 
 
   
 }
 
-theplot(3)
+theplot(90)
 
-for(i in 1:n) {
+for(i in 3:n) {
   theplot(i)
 }
 

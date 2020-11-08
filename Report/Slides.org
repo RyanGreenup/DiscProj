@@ -1,5 +1,6 @@
 #+TITLE: The Stationary Distribution of a Markov chain
 #+INFOJS_OPT: view:info toc:3
+#+OPTIONS: tex:t
 #+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="./resources/style_slides.css">
 :REVEAL:
 #+REVEAL_THEME: white
@@ -18,7 +19,7 @@ This required researching:
 - How /*R*/ implements:
   + Packages
   + Sparse Matrices
-- Different algorithms to simulate graph structures. \(\ldot\)
+- Different algorithms to simulate graph structures. \(.\)
 
 * What is the /PageRank/
 /PageRank/ measures node centrality by recording the frequency that nodes are traversed during a random walk, i.e. walk around a graph, for a long time and record where you went:
@@ -54,6 +55,9 @@ A graph can be described with an adjacency matrix \(\mathbf{A}\):
 </div>
 #+end_export
 
+#+BEGIN_NOTE
+This Adjacency matrix doesn't need to be strictly 1 or 0, for example the marvel data set I did the number of interactions as the value, these are called weights, we'll come back to these.
+#+END_NOTE
 
 *** Transition Probability Matrix
 
@@ -96,7 +100,16 @@ We are concerned with a random walk, we'll want the transition probability matri
 
 *** Markov Chain
 
-$$\begin{bmatrix} 0 \\ \frac{1}{2} \\ \frac{1}{2} \\ 0 \\ \end{bmatrix} = \begin{bmatrix} 0 & \frac{1}{2} & \frac{1}{2} & \frac{1}{3} \\ \frac{1}{2} & 0 & \frac{1}{2} & \frac{1}{3} \\ \frac{1}{2} & \frac{1}{2} & 0 & \frac{1}{3} \\ 0 & 0 & \frac{1}{2} & 0 \\ \end{bmatrix} \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ \end{bmatrix}$$
+The /PageRank/ will be given by the stationary distribution of the Markov Chain:
+
+#+begin_export html
+\[
+\vec{p} \leftarrow \mathbf{T} \vec{p}
+\]
+#+end_export
+
+#+begin_comment
+\[\begin{bmatrix} 0 \\ \frac{1}{2} \\ \frac{1}{2} \\ 0 \\ \end{bmatrix} = \begin{bmatrix} 0 & \frac{1}{2} & \frac{1}{2} & \frac{1}{3} \\ \frac{1}{2} & 0 & \frac{1}{2} & \frac{1}{3} \\ \frac{1}{2} & \frac{1}{2} & 0 & \frac{1}{3} \\ 0 & 0 & \frac{1}{2} & 0 \\ \end{bmatrix} \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ \end{bmatrix}$$
 
 #+REVEAL: split
 \[\begin{bmatrix}
@@ -140,6 +153,7 @@ $$\begin{bmatrix} 0 \\ \frac{1}{2} \\ \frac{1}{2} \\ 0 \\ \end{bmatrix} = \begin
  \frac{1}{4} \\
  \frac{1}{4} \\
 \end{bmatrix}\]
+
 #+REVEAL: split
 \[\ldots\]
 
@@ -151,33 +165,203 @@ $$\begin{bmatrix} 0 \\ \frac{1}{2} \\ \frac{1}{2} \\ 0 \\ \end{bmatrix} = \begin
 0.32 \\
 0.107
 \end{bmatrix}\]
+#+end_comment
 
-** Random Surfer Model
 
-*** Problems with the Stationary Distribution
-*** Markov Chains
-**** Stochastic
+* Problems with the Stationary Distribution
+** Stochastic
+A stochastic adjacency matrix has colums that sum to 1.*
+
+#+BEGIN_NOTES
+-I put an * here because unless the random surfer matrix is rescaled to 1 colum-wise, It isn't necessarily going to be non-stochastic. This isn't in practice an issue because:
+
+1. It only occurs if the adjacency matrix has a dangling node
+2. The resulting Stationary distribution can just be scaled relative to 1, as you would with an eigen vector.
+
+In saying that though, I just figured out last night that my random surfer implementation does not scale to 1 after solving via the power method, which is unfourtunate, but that's the advantage to having everything inside a package.
+#+END_NOTES
+
 [[file:media/dot/stochastic_graph_example.dot.png]]
-**** Irreducible
+
+- Dead ends, or dangling nodes, act as a rank sink, the random walk gets stuck there.
+
+*** Potential fix
+Just teleport out of dead-ends:
+
+#+begin_export html
+\[
+\mathbf{S} = \mathbf{T} + \left[\mathrm{deg}\left(V_i\right)=0\right] \frac{\left(\vec{1}\right)^{\mathrm{T}}}{n}
+\]
+#+end_export
+
+#+BEGIN_NOTES
+- A potential fix is to just have the random walk teleport out of dead ends randomly
+  + This is actually how I progammed the animation before
+- This is not sufficient however to ensure that the Markov Chain will converge, it needs to be irreducible as well.
+  + If also aperiodic then from any IC
+- The notation of square brackets is just a true false thing, I found it in /Knuth's Concrete Mathematics/ and thought it was very convenient.
+  #+END_NOTES
+
+#+begin_comment
+\[
+\begin{align}
+\mathrm{S} &= \mathrm{T}+ \frac{\vec{a} \cdot \vec{1}^{\mathrm{T}} }{n} \label{eq:nearly-random-surfer} \\
+& a_{i} = \begin{cases}
+    1      , &\enspace \mathrm{deg}\left( V_{i}\right) = 0  \\
+    0      , &\enspace \mathrm{deg}\left( V_{i}\right) \neq 0
+\end{cases}
+\end{align}
+\]
+#+end_comment
+
+** Irreducible
+A graph that can be fully traversed is irreducible.
 [[file:media/dot/reducible_graph_example.dot.png]]
 
-**** Aperiodic
+- A reducible graph won't have a meaninful /PageRank/ because the random walk won't visit all pages or subgraphs.
+
+** Aperiodic
+
+An aperiodic graph has only one eigenvalue that lies on the unit circle.
+
+#+BEGIN_NOTES
+- Strictly speaking a unique Stationary point will exist when the Transition Probability Matrix is stochastic and irreducible.
+- The advantage to an aperiodic graph is that the markov chain will converge to the stationary point regardless of the initial condition.
+- The conditions necessary for a graph to become aperiodic, other than just adding edges, is something I've since fogotten to be honest, I'll have to look into it when I get time.
+  + It would be sufficient to add a loop
+#+END_NOTES
+
 [[file:media/dot/aperiodic.dot.png]]
 
-**** The Fix
+- Adding Edges can make a graph aperiodic.
+
+
+* Random Surfer Model
+** The Fix
+The fix is to introduce a background probability of teleporting:
+
+#+begin_export html
+$$
+\mathbf{S} = \alpha \mathbf{T} + (1-\alpha) \frac{\left(\vec{1}\right)\left(\vec{1}\right)^{\mathrm{T}}}{n}
+$$
+#+end_export
+
+#+BEGIN_NOTES
+- must take a step
+- That step could be blue or black
+- alpha determines how much more comfortable it is to take black
+
+#+END_NOTES
+
 [[file:media/dot/random_surfer.dot.png]]
-*** Limitations
+** Limitations
+- The edges can only be positively weighted
+
+#+BEGIN_NOTES
+So yeah, we have direction of edges, but all links necessarily good ?
+
+A article advising of websites that are trying to seperate you from your credit card details, well, that's probably not a link a reader would be like to follow...right.
+
+Other than that though I'd say this worked out pretty well for page and brin, actually they didn't even need to look at markov chains in there paper that introduced these.
+#+END_NOTES
+
+
 ** Power Walk
+A different way to come at the problem is instead to let the weights be:
+
+#+begin_quote
+The ratio of probability of teleporting as opposed to following an edge.
+#+end_quote
+
+#+BEGIN_NOTES
+- Instead of talking about:
+  + How much more comfortable or desirable it is to teleport
+- Lets talk about how many times better it is to avoid teleporting
+
+#+END_NOTES
+
+*** Solving a Formula
+if we let \(x\) be the probability of teleporting we get:
+
+\begin{align}
+\mathbf{W}_{i, j} = x\beta^{\mathbf{A_{i,j}}} \label{eq:prob-power-walk}
+\end{align}
+
+#+REVEAL: split
+
+The random walk has to go somewhere on the graph so the probability is constrained to 1:
+
+
+\begin{align}
+      1 &= \sum^{n}_{j= 1}   \left[ x \beta^{\mathbf{A_{i,j}}} \right] \\
+       \implies  x&= \left( \sum^{n}_{j= 1}   \beta^{\mathbf{A_{i,j}}}
+       \right)^{-1} \label{eq:powerwalk-x-val}
+\end{align}
+
+#+REVEAL: split
+
+And so by Substitution:
+
+
+\[
+\mathbf{W}_{i,j} = \frac{\beta^{\mathbf{A}_i,j}}{\sum^{n}_{i=j} \left[ \beta^{\mathbf{A}_{i,j}} \right] }
+\]
+
+- stochastic
+- irreducible
+- aperiodic
+
+#+BEGIN_NOTE
+I believe because it is completely dense that it is aperiodic, I'm going to have to double check that.
+
+So my research question was concerned with stability and rate of convergence of this algorthithm.
+
+Time was mostly spent just researching around this though.
+#+END_NOTE
+
 * Sparce Matrices
+#+BEGIN_NOTE
+- No time to discuss
+- You guys don't want to hear it
+#+END_NOTE
 * Implementing the Models
+#+BEGIN_NOTE
+- Took ages due to mistakes
+- Just applied it to sparse matrices paying graeat mind to zeros and linear algebra.
+- remember to scale eigenvalues.
+#+END_NOTE
 ** Implementing the Random Surfer
 ** Implementing the Power Walk
 * Creating a Package
+#+BEGIN_NOTE
+- Not to hard
+- A few tricks like remembering to specify the namespace
+- Made life a lot easier
+#+END_NOTE
 * Types of Graphs
+Need to simulate graphs to investigate model behaviour.
+
 ** Erdos Renyi
+- This model with a bag of nodes and then interlinks them randomly.
+- It was first published in 1959
+- It is not consistent with Network Graphs
+
+#+BEGIN_NOTE
+- I started with the erdos_renyi because it was a general graph.
+- I was not familiar with other graphs and so I started here.
+
+The idea is that each edge has a specified probability of appearing in the graph.
+
+In this case that probability is 40%.
+
+Another way to imagine it is the mean value of the boolean adjacency matrix would be 0.4.
+#+END_NOTE
+
 [[file:media/erdos_growth.gif]]
 ** Barabasi Albert
-Really the main distinction is that the graph grows organically, with the probability of a new node linking to an old node being proportional to the degree.
+- Unlike Erdos-Reny, the Barabassi-Albert graph is built organically
+- The probability of a new node connecting to an on old one is proportional to the degree of that node
+  + i.e. rich get richer.
 
 #+NAME: network_growth
 #+CAPTION: Growth of a network, each node makes one connection, the probability of that connection being proportional to the degree of that node. The colour and size is measured by the Random Surfer PageRank.
