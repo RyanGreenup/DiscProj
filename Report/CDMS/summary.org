@@ -1,0 +1,16 @@
+#+TITLE:  Summary
+
+This report is an investigation into the application of the /Page Rank/
+approach to measuring node centrality in networks.
+
+The /Page Rank/ approach was initially developed as an integral component of
+/Google/ and asserts that the centrality of a node can be measured by how likely
+that node is to be traversed by mere chance. This report investigates the
+underlying assumptions required to measure such a likelihood as well as
+different approaches to measure it.
+
+In order to study the limitations and behaviour of alternative /Page Rank/
+approaches this report also investigate two different but common models for
+networks and uses these models to simulate a variety of networks and consider
+the /Page Rank/ measurements.
+

@@ -1,0 +1,39 @@
+#+TITLE: Investigating the Second Eigen Value of the Power Walk Page Rank Method
+#+INFOJS_OPT: view:info toc:3
+#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="./resources/style_slides.css">
+
+
+* Introduction
+This report was concerned with building on the page range approach of measuring node centrality in a graph, by investigating the /Power Walk/ method.
+
+This required researching:
+
+- The Mathematics of /PageRank/ and relationship to Markov Chains
+- How */R/* implements:
+  + Packages
+  + Sparse Matrices
+- Different algorithms to simulate graph structures.
+
+* What is the /PageRank/
+/PageRank/ is a measure of node centrality and is me the
+
+
+* Mathematics of Page Rank
+** The Stationary Distribution of a Probability Transition Matrix
+** Random Surfer Model
+*** Problems with the Stationary Distribution
+*** Markov Chains
+**** Stochastic
+**** Irreducible
+**** Aperiodic
+**** The Fix
+*** Limitations
+** Power Walk
+* Sparce Matrices
+* Implementing the Models
+** Implementing the Random Surfer
+** Implementing the Power Walk
+* Creating a Package
+* Types of Graphs
+** Erdos Renyi
+** Barabasi Albert

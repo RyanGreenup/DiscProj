@@ -1,0 +1,223 @@
+#+TITLE: Cdms Summary
+
+* Mathematics of Page Rank
+   :PROPERTIES:
+   :CUSTOM_ID: PageRank-Generally
+   :END:
+** The Stationary Distribution of a Probability Transition Matrix
+:PROPERTIES:
+:CUSTOM_ID: stationary-distribution-of-t
+:END:
+A graph can be expressed as an adjacency matrix \(\mathbf{A}\):
+
+\[
+\mathbf{A}_{i,j} \in \left\{ 0,1 \right\}
+\]
+
+Where each element of the matrix indicates whether or not travel from
+vertex \(j\) to vertex \(i\) is possible with a value of 1. [fn:: Some
+authors define an adjacency matrix transposed (see e.g.
+cite:rosenDiscreteMathematicsIts2007,meghabghabSearchEnginesLink2008)
+this unfourtunately includes the ~igraph~ library
+cite:gaborcsardiIgraphManualPages2019 but that convention will not be
+followed in this paper]
+
+During a random walk on a graph the probability of arriving at vertex \(j\) from vertex
+\(i\) can similarly be described as an element of a transition probability
+matrix \(\mathbf{T}_{i,j}\), this matrix can be described by the following
+relationship:
+
+\begin{align}
+\mathbf{T} &= \mathbf{A} \mathbf{D}^{-1}_{\mathbf{A}} \label{eq:basic-trans-def}
+\end{align}
+
+The value of \(\mathbf{D}^{-1}_{\mathbf{A}}\) is such that under matrix
+multiplication \(\mathbf{A} \) will have columns that sum to 1 [fn:: such a matrix is said to be a /column stochastic
+matrix/, for a
+reducible or non-stochastic graph the definition of
+\(\mathbf{D}^{-1}_{\mathbf{A}}\) needs to piecewise, as shown in \S ref:definitions], this matrix is the /transition probability
+matrix/ \(\mathbf{T}\).
+
+During the random walk, the running tally of frequencies, at the
+\(i^{\mathrm{th}}\) step of the walk, can be described by a state distribution
+vector \(\vec{p}\), this vector can be determined for each step by matrix
+multiplication:
+
+\begin{align}
+\vec{p_{i+1}} = \mathbf{T}\vec{p_{i}} \label{eq:recurrence}
+\end{align}
+
+This relationship is a linear recurrence relation, more generally however it is
+a /Markov Chain/ and [[cite:langvilleGooglePageRankScience2012][\S 4.4]] and
+Finding the Stationary point for this relationship will give a frequency
+distribution for the nodes and a metric to measure the centrality of vertices.
+
+** Random Surfer Model
+*** Problems with the Stationary Distribution
+:PROPERTIES:
+:CUSTOM_ID: issues
+:END:
+The approach to measuring centrality using a stationary distrubition in \S[[#stationary-distribution-of-t]] has the following issues
+
+1. Convergence of eqref:eq:recurrence
+   a. Will this relationship converge or diverge?
+   b. How quickly will it converge?
+   c. Will it converge uniquely?
+2. Reducible graphs
+   1. If it is not possible to perform a random walk across an entire graph for
+      all initial conditions the resulting frequencies of node traversal are not
+      meaningful.
+3. Cycles
+   1. A graph that is cyclical may not converge uniquely
+      1. Consider for example the graph \( {\big (} A {\big )} \longleftrightarrow {\big (} B {\big )}\) or taking a directed edge into a closed loop.
+
+*** Markov Chains
+:PROPERTIES:
+:CUSTOM_ID: markov
+:END:
+The relationship in eqref:eq:recurrence is a /Markov Chain/ [fn::A /Markov Chain/ is
+simply any process that evolves depending on it's current condition, it's
+interesting to note however that the theory of /Markov Chains/ is not mentioned in any
+of the original papers by page and brin
+[[cite:langvilleGooglePageRankScience2012][\textsection 4.4]] ]  and it is known
+that the relationship will converge to a value (this is known as the power method):
+
+- for a stochastic irreducible markov chain [[cite:larsonElementaryLinearAlgebra1991][\textsection 1.5.5]],
+- regardless of the initial condition of the process for an /aperiodic/ Markov chain [[cite:langvilleGooglePageRankScience2012][\textsection 4.4]]
+
+and so these concepts will be explored in order to address the issues with eqref:eq:recurrence.
+
+**** Stochastic
+:PROPERTIES:
+:CUSTOM_ID: stochastic
+:END:
+If some vertex had a 0 outdegree the corresponding column sum for the adjacency
+matrix describing that graph would also be zero and the matrix non-stochastic,
+this could occur in the context of a random walk where a link to a page with no
+outgoing links was followed (e.g. an image), this would be the end of the
+walk.
+
+So to ensure that eqref:eq:recurrence will converge, the probability transition
+matrix must be made stochastic, to acheive this a uniform probability of teleporing from a dead end to any other vertex could be introduced:
+
+\begin{align}
+\mathrm{S} &= \mathrm{T}+ \frac{\vec{a} \cdot \vec{1}^{\mathrm{T}} }{n} \label{eq:nearly-random-surfer} \\
+& a_{i} = \begin{cases}
+    1      , &\enspace \mathrm{deg}\left( V_{i}\right) = 0  \\
+    0      , &\enspace \mathrm{deg}\left( V_{i}\right) \neq 0
+\end{cases}
+\end{align}
+
+This however would not be sufficient to ensure that eqref:eq:recurrence would converge, in addition the transition probability matrix must be made irreducible and aperiodic (i.e. primitive). cite:langvilleGooglePageRankScience2012
+
+# #+ATTR_LATEX: :float wrap
+#+NAME:  fig:stochastic-example
+#+CAPTION: \(D\) is a /dangling node/, a dead end during a random walk, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other vertex as per eqref:eq:nearly-random-surfer (denoted in red) will cause \(\mathbf{T}\) to be stochastic.
+#+attr_html: :width 400px
+#+attr_latex: :width 6cm
+[[file:media/dot/stochastic_graph_example.dot.png]]
+
+**** Irreducible
+A graph that allows travel from any given vertex to any other vertex is said to be irreducible cite:langvilleGooglePageRankScience2012, see for example figure [[irreducible-example]], this is important in the context of a random walk because only in an irreducible graph can all vertices be reached from any initial condition.
+
+#+NAME: irreducible-example
+#+CAPTION: Example of a reducible graph, observe that although \(C\) is not a dead end as discussed in \S [[#stochastic]], there is no way to travel from \(C\) to \(A\), by adding an edge such an edge in the resulting graph is irreducible. The resulting graph is also aperiodic (due to the loop on \(B\)) and stochastic, so there will be a stationary distribution corresponding to eqref:eq:recurrence.
+#+attr_html: :width 400px
+#+attr_latex: :width 6cm
+[[file:media/dot/reducible_graph_example.dot.png]]
+
+**** Aperiodic
+An a periodic graph has only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right) \) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \(\mathbf{A}\) is aperiodic. A graph that is a periodic can be made aperiodic by interlinking nodes [fn:: Actually it would be sufficient to merely link one vertex to itself [[cite:langvilleGooglePageRankScience2012][\textsection 15.2]] but this isn't very illustrative (or helpful in this context because the graph may still be reducible or non-stochastic)]
+
+
+#+NAME: fig:aperiodic
+#+CAPTION: A periodic graph with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic (this does not represent the random surfer or power walk models, which would in theory connect every vertex with some probability)
+#+attr_html: :width 400px
+#+attr_latex: :width 9cm
+[[file:media/dot/aperiodic.dot.png]]
+
+**** The Fix
+:PROPERTIES:
+:CUSTOM_ID: fix
+:END:
+To ensure that the transition probability matrix is primitive (i.e. irreducible and aperiodic) as well as stochastic, instead of mereley introducing the possibility to teleport out of dead ends, some probability of teleporting to any node at any time can be introduced (\(1- \alpha \)), this approach is known as the /Random Surfer/ model and the corresponding transition probability matrix is given by cite:larrypageAnatomyLargescaleHypertextual1998 :
+
+\begin{align}
+\mathbf{S} = \alpha \mathbf{T} + \frac{(1- \alpha)}{n} \mathbf{J} \label{eq:random-surfer}
+\end{align}
+
+This matrix is primitive and stochastic and so will converge
+[[cite:langvilleGooglePageRankScience2012][\textsection 4.5]], it is also
+unfourtunately completely dense, making it resource intensive to work with (see
+\S [[#solving-stationary-dist]]).
+
+Using this the relation ship in eqref:eq:recurrence can now be re
+expressed as:
+
+\begin{align}
+\vec{p_{i+1}} \rightarrow \mathbf{S} \vec{p}_{i} \label{eq:random-surfer-recurrence}
+\end{align}
+
+
+
+#+NAME: fig:rseg
+#+CAPTION:  A graph that is aperiodic, reducible and non-stochastic, by applying the random surfer model eqref:eq:random-surfer blue /teleportation/ edges are introduced, these may be followed with a probability of \(1 - \alpha \)
+#+attr_html: :width 400px
+#+attr_latex: :width 9cm
+[[file:media/dot/random_surfer.dot.png]]
+*** Limitations
+The /Random Surfer/ Model can only consider positively weighted edges, it cannot
+take into account negatively weighted edges which might indicate that
+links promote aversion rather than endorsement.
+** Power walk
+:PROPERTIES:
+:CUSTOM_ID: pwalk
+:END:
+The /Power Walk/ method is an alternative approach to develop a probability
+transition matrix to use in place of \(\mathbf{T}\) in eqref:eq:recurrence (and \(\mathbf{S}\) in eqref:eq:random-surfer-recurrence).
+
+Let the probability of travelling to a non-adjacent vertex be some value \(x\)
+and \(\beta\) be the ratio of probability between following an edge or
+teleporting to another vertex.
+
+This transition probability matrix \(\left( \mathbf{W}\right)\) would be such that the probability of
+travelling to some vertex \(j \rightarrow i\) would be :
+
+\begin{align}
+\mathbf{W}_{i, j} = x\beta^{\mathbf{A_{i,j}}} \label{eq:prob-power-walk}
+\end{align}
+
+The random walk is constrained to the graph and so the probability of travelling
+to one of the vertices generally is 1, hence:
+
+
+\begin{align}
+      1 &= \sum^{n}_{j= 1}   \left[ x \beta^{\mathbf{A_{i,j}}} \right] \\
+       \implies  x&= \left( \sum^{n}_{j= 1}   \beta^{\mathbf{A_{i,j}}}
+       \right)^{-1} \label{eq:powerwalk-x-val}
+\end{align}
+
+Substituting the value of \(x\) from eqref:eq:powerwalk-x-val into eqref:eq:prob-power-walk gives the probability as:
+
+\begin{align}
+      \mathbf{W}_{i,j} &= \frac{\beta^{\mathbf{A}__i,j}}{\sum^{n}_{i=j}
+      \left[ \beta^{\mathbf{A}_{i,j}} \right] } \label{eq:power-walk-recurrence}
+\end{align}
+
+In this model all vertices are interconnected by some probability of jumping to
+another vertex, so much like the random surfer model eqref:eq:random-surfer discussed
+at [[#fix]] \(\mathbf{W}\) will be a primitive stochastic matrix and so if
+\(\mathbf{W}\) was substituted with \(\mathbf{T}\) in eqref:eq:recurrence a solution
+would exist.
+
+
+
+* CDMS Showcase
+Hello Ryan,
+
+We would like to showcase your work for the discovery project. If you agree could you please send me by the 30th an quality image that captures the work) OR/AND video (just a 3 mins video of your project) plus a short text description of not more than 100 words?
+
+We will help with any editing of the 100 words so don’t worry if they are not perfect.
+
+All the best,
+Paul.

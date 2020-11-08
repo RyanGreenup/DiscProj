@@ -53,7 +53,7 @@ the measure of the importance, popularity and relevance of a node. In a
 relatively small graph, visualized in such a way so as to minimize the
 overlapping of edges, a general expectation would be that the centrality score
 would be correlated with geometric-centrality, this is demonstrated in figure
-\ref{example-rs-graph} where the 2nd vertex has the highest \emph{PageRank} score \footnote{See listing \ref{eigenSol-rand-surf} for the \textit{Random Surfer} solution } and
+\ref{example-rs-graph} where the 2nd node has the highest \emph{PageRank} score \footnote{See listing \ref{eigenSol-rand-surf} for the \textit{Random Surfer} solution } and
 is geometrically very central.
 
 \subsection{The PageRank Method}
@@ -61,7 +61,7 @@ is geometrically very central.
 
 There are multiple ways to measure network centrality but this report is
 concerned with the \emph{PageRank} method, this method asserts that the centrality of
-a vertex can be measured by the frequency of traversal during a random walk.
+a node can be measured by the frequency of traversal during a random walk.
 
 This approach relies on the assumption that the random walk can:
 
@@ -122,26 +122,26 @@ The following definitions are used throughout this report \footnote{see generall
 \item[{Markov Chains}] are discrete mathematical models such that future values depend only on current values \cite[\textsection 1.5]{larsonElementaryLinearAlgebra1991}, this captures the concept of a random walk because the next destination depends only on the current location.
 \item[{Stochastic Matrices}] contain only positive values where each column sums to 1 \cite{langvilleGooglePageRankScience2012,larsonElementaryLinearAlgebra1991} (i.e. \(\mathbf{T}\) is stochastic \(\iff \vec{1}\mathbf{T} = \vec{1}\))
 \begin{itemize}
-\item some authors use rows (see e.g. \cite[\textsection 15.3]{langvilleGooglePageRankScience2012}), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from vertex \(j\) to vertex \(i\).
+\item some authors use rows (see e.g. \cite[\textsection 15.3]{langvilleGooglePageRankScience2012}), in this paper columns will be used, i.e. columns will add to one and an entry \(\mathbf{A}_{i,j} \neq 0\) will indicate that travel is permitted from node \(j\) to node \(i\).
 \begin{itemize}
 \item \emph{Column Stochastic} and \emph{Row Stochastic} can be used to more clearly distinguish between which type of stochastic matrix is being used.
 \end{itemize}
 \item Many programming languages return \emph{unit-eigenvectors} \(\vec{x}\) such that \(\left\lvert \left\lvert \vec{x} \right\rvert \right\rvert = 1\) as opposed to \(\mathtt{sum} \left( \vec{\mathtt{x}}\right) = 1\), so when solving for a stationary vector it can be necessary to perform \(\vec{\mathtt{p}} \leftarrow \frac{\vec{\mathtt{p}}}{\sum \vec{p}}\)
 \end{itemize}
-\item[{Irreducible}] graphs have a path from from any given vertex to another vertex. \cite[\textsection 15.2]{langvilleGooglePageRankScience2012}
+\item[{Irreducible}] graphs have a path from from any given node to another node. \cite[\textsection 15.2]{langvilleGooglePageRankScience2012}
 \begin{description}
 \item[{Ergodic}] graphs are irreducible graphs with further constraints outside
 the scope of this report (see e.g.
 \cite{nathanaelackermancameronfreeralexkruckmanandrehanapatelProperlyErodicStructures2017,chenEigenvaluesInequalitiesErgodic2005})
 \begin{itemize}
-\item It is a necessary but not a sufficient condition of ergodic graphs that all vertices be reachable from any other vertices (see \cite{sazProbabilityTheoryThis} for a counter example.)
+\item It is a necessary but not a sufficient condition of ergodic graphs that all nodes be reachable from any other nodes (see \cite{sazProbabilityTheoryThis} for a counter example.)
 \end{itemize}
 \end{description}
 \item[{Primitive Matrices}] are non-negative irreducible matrices that have only one eigenvalue on the unit circle.
 \begin{itemize}
 \item If a matrix is primitive it will approach a limit under exponentiation \cite[\textsection 15.2]{langvilleGooglePageRankScience2012}, hence the significance of this concept.
 \end{itemize}
-\item[{Transition Probability Matrix}] is a stochastic matrix where each column is a vector of probabilities such that \(\mathbf{T}_{i,j}\) represents the probability of traveling from vertex \(j\) to vertex \(i\) during a random walk.
+\item[{Transition Probability Matrix}] is a stochastic matrix where each column is a vector of probabilities such that \(\mathbf{T}_{i,j}\) represents the probability of traveling from node \(j\) to node \(i\) during a random walk.
 \begin{itemize}
 \item Some Authors consider the transpose (see e.g. \cite{langvilleGooglePageRankScience2012}).
 \end{itemize}
@@ -172,7 +172,7 @@ algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the e
 \end{itemize}
 \item \(n\)
 \begin{itemize}
-\item Refers to the number of vertices in a graph, \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
+\item Refers to the number of nodes in a graph, \(n = \mathtt{nrow}\left(\mathbf{A}\right) = \mathtt{ncol}\left(\mathbf{A}\right)\)
 \end{itemize}
 \item \(\mathbf{D}_{\mathbf{A}}=\mathrm{diag}\left(\vec{1}\mathbf{A}\right)\)
 \item \(\mathbf{D}_{\mathbf{A}}^{- 1}  =
@@ -189,7 +189,7 @@ algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the e
 \end{itemize}
 \item \(\mathbf{E}_{i,j} = \frac{1}{n}\)
 \begin{itemize}
-\item A matrix of size \(n\times n\) representing the background probability of jumping to any vertex of a graph.
+\item A matrix of size \(n\times n\) representing the background probability of jumping to any node of a graph.
 \end{itemize}
 \item \(\vec{1}\)
 \begin{itemize}
@@ -209,7 +209,7 @@ algorithm shown in \eqref{eq:random-surfer}, but \emph{PageRank} refers to the e
 \end{itemize}
 \item \(\alpha\)
 \begin{itemize}
-\item A probability such that \(1-\alpha\) represents the probability of teleporting from one vertex to another during a random walk, see \ref{fig:rseg}.
+\item A probability such that \(1-\alpha\) represents the probability of teleporting from one node to another during a random walk, see \ref{fig:rseg}.
 \begin{itemize}
 \item In the literature \(\alpha\) is often referred to as a damping factor (see e.g.  \cite{berkhoutRankingNodesGeneral2018a,brinkmeierPageRankRevisited2006a,fuDampingFactorGoogle2006,kamvarAdaptiveMethodsComputation2004b,bianchiniPageRank2005}) or a smoothing constant (see e.g \cite{koppelMeasuringDirectIndirect2014}).
 \end{itemize}
@@ -230,14 +230,14 @@ A graph can be expressed as an adjacency matrix \(\mathbf{A}\):
 \]
 
 Where each element of the matrix indicates whether or not travel from
-vertex \(j\) to vertex \(i\) is possible with a value of 1. \footnote{Some
+node \(j\) to node \(i\) is possible with a value of 1. \footnote{Some
 authors define an adjacency matrix transposed (see e.g.
 \cite{rosenDiscreteMathematicsIts2007,meghabghabSearchEnginesLink2008})
 this unfortunately includes the \texttt{igraph} library
 \cite{gaborcsardiIgraphManualPages2019} but that convention will not be
 followed in this paper}
 
-During a random walk on a graph the probability of arriving at vertex \(j\) from vertex
+During a random walk on a graph the probability of arriving at node \(j\) from node
 \(i\) can similarly be described as an element of a transition probability
 matrix \(\mathbf{T}_{i,j}\), this matrix can be described by the following
 relationship:
@@ -266,7 +266,7 @@ This relationship is a linear recurrence relation, more generally however it is
 a \emph{Markov Chain} \cite[\S 4.4]{langvilleGooglePageRankScience2012} and
 Finding the Stationary point for this relationship will give a frequency
 distribution for the nodes corresponding to the random walk and thus a metric to
-measure the centrality of vertices.
+measure the centrality of nodes.
 
 \subsubsection{The Stationary Distribution of a Markov Chain}
 The stationary distribution \(\left(p\right)\) of a Markov Chain is a vector that sums to 1 and
@@ -333,7 +333,7 @@ meaningful.
 
 \begin{wrapfigure}{R}{0.4\textwidth}
     \includegraphics[width=0.38\textwidth]{media/dot/stochastic_graph_example.dot.png}
-    \caption{\label{fig:stochastic-example}\(D\) is a \emph{dangling node}, a dead end during a random walk that acts as a \textit{rank sink}, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other vertex as per \eqref{eq:nearly-random-surfer} (denoted in red) will cause \(\mathbf{T}\) to be stochastic.}
+    \caption{\label{fig:stochastic-example}\(D\) is a \emph{dangling node}, a dead end during a random walk that acts as a \textit{rank sink}, the corresponding probability transition matrix \((\mathbf{T})\) is hence non-stochastic (and also reducible), Introducing some probability of teleporting from a dead end to any other node as per \eqref{eq:nearly-random-surfer} (denoted in red) will cause \(\mathbf{T}\) to be stochastic.}
 \end{wrapfigure}
 
 The relationship in \eqref{eq:recurrence} is a \emph{Markov Chain} \footnote{A \emph{Markov Chain} is
@@ -352,7 +352,7 @@ and so these concepts will be explored in order to address the issues with \eqre
 
 \paragraph{Stochastic}
 \label{stochastic}
-If some vertex had a 0 out-degree the corresponding column sum for the adjacency
+If some node had a 0 out-degree the corresponding column sum for the adjacency
 matrix describing that graph would also be zero and the matrix non-stochastic,
 this could occur in the context of a random walk where a link to a node with no
 outgoing links was followed, as in \(D\) in Figure \ref{fig:stochastic-example},
@@ -365,7 +365,7 @@ file would be a destination with no outgoing links).
 
 So to ensure that \eqref{eq:recurrence} will converge, the probability
 transition matrix must be made stochastic, to achieve this a uniform probability
-of teleporting from a dead end to any other vertex could be introduced:
+of teleporting from a dead end to any other node could be introduced:
 
 
  \begin{wrapfigure}{R}{0.4\textwidth}
@@ -386,12 +386,12 @@ This however would not be sufficient to ensure that \eqref{eq:recurrence} would 
 
 \paragraph{Irreducible}
 \label{sec:org578c303}
-A graph that allows travel from any given vertex to any other vertex is said to be irreducible \cite{langvilleGooglePageRankScience2012}, see for example figure \ref{irreducible-example}, this is important in the context of a random walk because only in an irreducible graph can all vertices be reached from any initial condition.
+A graph that allows travel from any given node to any other node is said to be irreducible \cite{langvilleGooglePageRankScience2012}, see for example figure \ref{irreducible-example}, this is important in the context of a random walk because only in an irreducible graph can all nodes be reached from any initial condition.
 
 
 \paragraph{Aperiodic}
 \label{sec:org2c6170b}
-An aperiodic graph has a corresponding transition probability matrix (\(\mathbf{A}\)) with only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \(\mathbf{A}\) is aperiodic. A graph that is periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one vertex to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative (or helpful in this context because the graph may still be reducible or non-stochastic)} as shown in Figure \ref{fig:aperiodic}.
+An aperiodic graph has a corresponding transition probability matrix (\(\mathbf{A}\)) with only one eigenvalue that lies on the unit circle, this is important because \(\lim_{k\rightarrow \infty} \left( \frac{\mathbf{A}}{r}^{k} \right)\) exists for a non-negative irreducible matrix \(\mathbf{A}\) if and only if \(\mathbf{A}\) is aperiodic. A graph that is periodic can be made aperiodic by interlinking nodes \footnote{Actually it would be sufficient to merely link one node to itself \cite[\textsection 15.2]{langvilleGooglePageRankScience2012} but this isn't very illustrative (or helpful in this context because the graph may still be reducible or non-stochastic)} as shown in Figure \ref{fig:aperiodic}.
 
 
 \paragraph{The Fix}
@@ -441,25 +441,25 @@ links promote aversion rather than endorsement.
 The \emph{Power Walk} method is an alternative approach to develop a probability
 transition matrix to use in place of \(\mathbf{T}\) in \eqref{eq:recurrence} (and \(\mathbf{S}\) in \eqref{eq:random-surfer-recurrence}), it presents the benefit of being able to use real-weighted edges (as opposed to strictly positive).
 
-Let the probability of traveling to a non-adjacent vertex be some value \(x\)
+Let the probability of traveling to a non-adjacent node be some value \(x\)
 and \(\beta\) be the ratio of probability between following an edge or
-teleporting to another vertex.
+teleporting to another node.
 
 
  \begin{wrapfigure}{R}{0.6\textwidth}
  \includegraphics[width=0.55\textwidth]{media/dot/aperiodic.dot.png}
- \caption{\label{fig:aperiodic}A graph that is periodic with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic (this does not represent the random surfer or power walk models, which would in theory connect every vertex with some probability)}
+ \caption{\label{fig:aperiodic}A graph that is periodic with all eigenvalues on the unit circle \(\xi = \frac{\sqrt{2}}{2} e^{\frac{\pi i}{4} k}\), by adding in extra edges the graph is now aperiodic (this does not represent the random surfer or power walk models, which would in theory connect every node with some probability)}
 \end{wrapfigure}
 
 This transition probability matrix \(\left( \mathbf{W}\right)\) would be such that the probability of
-traveling to some vertex \(j \rightarrow i\) would be \cite{parkPowerWalkRevisiting2013}:
+traveling to some node \(j \rightarrow i\) would be \cite{parkPowerWalkRevisiting2013}:
 
 \begin{align}
 \mathbf{W}_{i, j} = x\beta^{\mathbf{A_{i,j}}} \label{eq:prob-power-walk}
 \end{align}
 
 The random walk is constrained to the graph and so the probability of traveling
-to one of the vertices generally is 1, hence:
+to one of the nodes generally is 1, hence:
 
 
 \begin{align}
@@ -475,8 +475,8 @@ Substituting the value of \(x\) from \eqref{eq:powerwalk-x-val} into \eqref{eq:p
 %     \left[ \beta^{\mathbf{A}_{i,j}} \right] } \label{eq:power-walk-recurrence}
 \end{align}
 
-In this model all vertices are interconnected by some probability of jumping to
-another vertex, so much like the random surfer model \eqref{eq:random-surfer} discussed
+In this model all nodes are interconnected by some probability of jumping to
+another node, so much like the random surfer model \eqref{eq:random-surfer} discussed
 at \ref{fix} \(\mathbf{W}\) will be a primitive stochastic matrix and so if
 \(\mathbf{W}\) was substituted with \(\mathbf{T}\) in \eqref{eq:recurrence} a solution
 would exist.
@@ -647,7 +647,7 @@ The probability transition matrix is such that each column of the
 initial state distribution (i.e. the transposed adjacency matrix) is
 scaled to 1.
 
-if \(\mathbf{A}\) had vertices with a 0 out-degree, the relationship in
+if \(\mathbf{A}\) had nodes with a 0 out-degree, the relationship in
 \eqref{eq:basic-trans-def} would not work, instead columns that sum to 0 would
 need to remain while all other columns be divided by the column sum to get
 \(\mathbf{T}\). An alternative approach, that addresses this issue using sparse
@@ -924,6 +924,7 @@ vector will also sum to 1, so this isn't in practice an issue for the power meth
     \end{verbatim}
 \end{tcolorbox}
 
+\newpage
 \subsubsection{Sparse Matrices}
 \label{sec:sparse-mat-random-surf}
 \paragraph{Creating the Probability Transition Matrix}
@@ -1183,6 +1184,7 @@ Recall from \ref{pwalk} that the power walk is given by:
 \label{sec:org3f6b537}
 Implementing the Power walk using ordinary matrices is very similar to the \emph{Random Surfer} model be done pretty much the same as it is with the random surfer, but doing it with Sparse Matrices is a bit trickier.
 
+\newpage
 Create the Adjacency Matrix
 
 \begin{tcolorbox}
@@ -1219,7 +1221,8 @@ Create the Adjacency Matrix
     \end{verbatim}
 \end{tcolorbox}
 
-Look at the Eigenvalues:
+\newpage
+Inspect the Eigenvalues:
 
 \begin{tcolorbox}
     \begin{minted}[]{r}
@@ -1415,6 +1418,7 @@ in terms of \textbf{\emph{R}}:
     \end{minted}
 \end{tcolorbox}
 
+\newpage
 \subparagraph{Solving the Background Probability}
 \label{solve-background-prob-power-walk-sparse}
 % In this case a vertical single column matrix will represent a vector and \(\otimes\) will represent the outer product (i.e. the \emph{Kronecker Product}):
@@ -1496,6 +1500,7 @@ Matrices & Vectors\tabularnewline
 \bottomrule
 \end{longtable}
 
+\newpage
 \paragraph{Practical; Implementing the Power Walk on Sparse Matrices}
 The Power Walk method, using the theory from \S \ref{sec:org82fb181}, can be implemented thusly:
 \label{sec:org3a8ba15}
@@ -1609,7 +1614,7 @@ Observe that there is no need to worry about any terms of \(\delta_{\mathbf{B}} 
     T <- Bo %*% DB
     \end{minted}
 \end{tcolorbox}
-
+\newpage
 \item Implement the Loop
 \label{sec:orgbb34a45}
 
@@ -1641,6 +1646,7 @@ Observe that there is no need to worry about any terms of \(\delta_{\mathbf{B}} 
 
 \end{enumerate}
 
+\newpage
 \section{Creating a Package}
 \label{create-package}
 In order to investigate the effect of the model parameters on the second
@@ -1905,7 +1911,7 @@ corresponding plot shown in figure \ref{constant_size_erdos_density}.
         geom_point(size = 0.5) +
         stat_smooth() +
         scale_size_continuous(range = c(0.1,1)) +
-        labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density for 100 vertices") ) +
+        labs(x = "Beta", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density for 100 nodes") ) +
         guides(col = guide_legend("Link Density"))  +
         theme_bw()
         \end{minted}
@@ -1932,7 +1938,7 @@ listing \ref{constant_size_erdos_density_sqrt} and shown in figure \ref{fig:cons
         geom_point(size = 0.5) +
         stat_smooth() +
         scale_size_continuous(range = c(0.1,1)) +
-        labs(x = "sqrt(β)", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density for 100 vertices") ) +
+        labs(x = "sqrt(β)", y = TeX("Second Eigenvalue"), title = TeX("Second Eigenvalue given Matrix Density for 100 nodes") ) +
         guides(col = guide_legend("Link Density"))  +
         theme_bw()
         \end{minted}
@@ -1959,7 +1965,7 @@ Both plots in figures
 appear to indicate a more linear relationship between \(\xi_{2}\) and \(\beta\) for smaller link densities and \(\beta\) values.
 
 
-In order to determine whether or not this relationship persists over many sizes a data set containing the relationship between \(\xi_{2}\) and \(\beta\) was produced for sizes ranging from 100 to 1000 vertices in listing \ref{l:gen_erdos_data_constant_dens}, a corresponding plot was produced in listing \ref{constant_dens_erdos_density} and shown in figure \ref{fig:constant_dens_erdos_density}.
+In order to determine whether or not this relationship persists over many sizes a data set containing the relationship between \(\xi_{2}\) and \(\beta\) was produced for sizes ranging from 100 to 1000 nodes in listing \ref{l:gen_erdos_data_constant_dens}, a corresponding plot was produced in listing \ref{constant_dens_erdos_density} and shown in figure \ref{fig:constant_dens_erdos_density}.
 
 
 \begin{listing}[htbp]
@@ -1978,7 +1984,7 @@ In order to determine whether or not this relationship persists over many sizes 
         }
         \end{minted}
     \end{tcolorbox}
-\caption{\label{l:gen_erdos_data_constant_dens}Produce a data set of a variety of sizes ranging from 100 to 1000 vertices.}
+\caption{\label{l:gen_erdos_data_constant_dens}Produce a data set of a variety of sizes ranging from 100 to 1000 nodes.}
 \end{listing}
 
 \begin{listing}[htbp]
@@ -2031,6 +2037,9 @@ This relationship appears to have a slight curvature, this curvature is very sli
 
 The plot shown in \ref{fig:constant_dens_erdos_density_sqrt}  demonstrates a very strong linear relationship between \(\xi_{2}\) and \(\sqrt{\beta}\) for a variety of constant link densities, the variance however is still non-constant over \(\sqrt{\beta}\).
 
+
+\subsection{Conclusion}
+The plots seem to indicate that for random graphs generally, there is a positive relationship between \(\beta\) and \(\xi_{2}\).
 \section{Barabasi Albert Graphs}
 \label{barabassi-albert}
 \subsection{Theory}
@@ -2072,7 +2081,7 @@ These two distinguishing features departing from the \emph{Erdos Renyi} model, k
 
 
 
-The Barabassi Albert model implements this scale free approach and predicts the following model of the degree of a vertex:
+The Barabassi Albert model implements this scale free approach and predicts the following model of the degree of a node:
 
 \[
 \mathrm{P}\left(k\right) \propto m^2 k^{-\gamma}
@@ -2081,9 +2090,9 @@ The Barabassi Albert model implements this scale free approach and predicts the 
 
 Where \(\mathrm{P}\left(k\right)\) is the probability of a node having \(k\) edges, \(m\) is the nodes added per step and \(\gamma\) is a constant.
 
-The Barabassi Albert model predicts that \(\gamma\) values of \(\gamma=3\) would
-represent networks such as the internet, this value is independent of \(m\) and
-in practice values of \(\gamma_{\mathrm{in}}= 2.1\) and
+The Barabassi Albert model can be solved analytically to predict that values of \(\gamma=3\) would
+represent networks such as the internet, this value is independent of \(m\).
+In practice values of \(\gamma_{\mathrm{in}}= 2.1\) and
 \(\gamma_{\mathrm{out}} = 2.45\) are observed
 \cite[]{barabasiScalefreeCharacteristicsRandom2000}, such a graph is said to be
 \textit{scale free} \cite[\textsection
@@ -2121,7 +2130,7 @@ in practice values of \(\gamma_{\mathrm{in}}= 2.1\) and
 
 \subsection{Modeling}
 \label{sec:orgb52cc3e}
-At each step of the Barabassi-Albert algorithm, one node is added and linked to \(m\) other nodes with a probability proportional to the degree of that vertex.
+At each step of the Barabassi-Albert algorithm, one node is added and linked to \(m\) other nodes with a probability proportional to the in-degree of the destination vertex raised to the power of \(\gamma\)
 
 This means that the average of the unweighted adjacency matrix would be given by \(p = \mathrm{mean}\left(\mathbf{A}\right) \in \left[ \frac{m}{n}, \frac{m+1}{n} \right]\) and the relationship identified in  \S \ref{erdos-renyi} can be determined from the parameters of a scale-free network.
 
@@ -2296,7 +2305,9 @@ interpret and may offer insights into the behavior of \(\xi_{2}\) in response
 to different graphs.
 
 More data was generated and a model fitted to training data in listing
-\ref{l:mlm_hist_ba} a corresponding residual histogram for the testing data is provided in \ref{fig:mlm_hist_ba} and a summary of the model provided in listing \ref{mod_summary}.
+\ref{l:mlm_hist_ba}. A corresponding residual histogram for the testing data is
+provided in \ref{fig:mlm_hist_ba} and a summary of the model provided in listing
+\ref{mod_summary}.
 
 In fitting the model in listing \ref{l:mlm_hist_ba} the identity \(p = \frac{m}{n}\) was implemented because taking the mean value of a large matrix is resource intensive and would have reduced the number of data points in the analysis.
 
@@ -2402,7 +2413,7 @@ p &\approx \frac{m}{n} \\
   &= \frac{\mathrm{mean}\left(\mathrm{out-degree}\right)}{n}
 \end{align}
 
-for larger scale free graphs \(p \rightarrow 0\) so this model seems to suggest that the eigenvalue will be reduced for larger graphs.
+For larger scale free graphs \(p \rightarrow 0\) so this model seems to suggest that the eigenvalue will be reduced for larger graphs.
 
 To test the model, we can measure the eigenvalue resulting from values within the domain of the model and from outside the domain:
 
@@ -2465,7 +2476,7 @@ To test the model, we can measure the eigenvalue resulting from values within th
 
 Unfortunately this suggests that for large graphs this model is not a good fit,
 which means that this model can only provide insight into the behavior of
-\(\xi_{2}\) for graphs with less than 1000 vertices.
+\(\xi_{2}\) for graphs with less than 1000 nodes.
 
 \section{Relating the Power Walk to the Random Surfer}
 \label{relate-to-random-surfer}
@@ -2686,15 +2697,13 @@ Where \(\mathbf{E}\) is square matrix of \(\frac{1}{n}\) as in \eqref{eq:bgval1}
 
 \subsection{Conclusion}
 \label{sec:orgad79e88}
-So when the adjacency matrix is strictly boolean, the power walk is equivalent to the random surfer.
-
 More investigation will be required to determine further connections between these two methods.
 
 \section{Conclusion}
 \label{sec:orgc228632}
 In this report an approach to implement and investigate the random surfer and random walk \emph{PageRank} methods was presented and a linear model was implemented to try and provide insight into the behavior of the second eigenvalue of the probability transition matrix corresponding to the power walk method.
 
-The model appears not to perform well for graphs over 1000 vertices, this is unfortunate and limits the amount of insight the model can provide into the behavior of the power walk method.
+The model appears not to perform well for graphs over 1000 nodes, this is unfortunate and limits the amount of insight the model can provide into the behavior of the power walk method.
 
 A relationship between the random surfer and power walk method was also presented, this relationship appears to be restricted to unweighted adjacency matrices, it is not clear however if this could be expanded.
 

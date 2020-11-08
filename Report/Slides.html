@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>The Stationary Distribution of a Markov chain</title>
+<meta name="author" content="(Ryan Greenup)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="./reveal.js/dist/reveal.css"/>
+
+<link rel="stylesheet" href="./reveal.js/dist/theme/white.css" id="theme"/>
+
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = './reveal.js/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+<link rel="stylesheet" type="text/css" href="./resources/style_slides.css">
+<script type="text/javascript" src="https://orgmode.org/org-info.js">
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+// @license-end
+</script>
+
+<script type="text/javascript">
+// @license magnet:?xt=urn:btih:1f739d935676111cfff4b4693e3816e664797050&amp;dn=gpl-3.0.txt GPL-v3-or-Later
+<!--/*--><![CDATA[/*><!--*/
+org_html_manager.set("TOC_DEPTH", "3");
+org_html_manager.set("LINK_HOME", "");
+org_html_manager.set("LINK_UP", "");
+org_html_manager.set("LOCAL_TOC", "1");
+org_html_manager.set("VIEW_BUTTONS", "0");
+org_html_manager.set("MOUSE_HINT", "underline");
+org_html_manager.set("FIXED_TOC", "0");
+org_html_manager.set("TOC", "3");
+org_html_manager.set("VIEW", "info");
+org_html_manager.setup();  // activate after the parameters are set
+/*]]>*///-->
+// @license-end
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">The Stationary Distribution of a Markov chain</h1><h2 class="author">Ryan Greenup</h2><p class="date">Created: 2020-11-08 Sun 15:39</p>
+</section>
+<section id="table-of-contents"><div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#/slide-org4e384ec">1. Introduction</a></li>
+<li><a href="#/slide-org35dea0a">2. What is the <i>PageRank</i></a></li>
+<li><a href="#/slide-org34a29c7">3. Mathematics of Page Rank</a>
+<ul>
+<li><a href="#/slide-orgaf44e2e">3.1. The Stationary Distribution of a Probability Transition Matrix</a></li>
+<li><a href="#/slide-org6b8885e">3.2. Random Surfer Model</a>
+<ul>
+<li><a href="#/slide-orgadd40b0">3.2.1. Problems with the Stationary Distribution</a></li>
+<li><a href="#/slide-org38a91f0">3.2.2. Markov Chains</a></li>
+<li><a href="#/slide-org256478c">3.2.3. Limitations</a></li>
+</ul>
+</li>
+<li><a href="#/slide-org508183d">3.3. Power Walk</a></li>
+</ul>
+</li>
+<li><a href="#/slide-orgda639d4">4. Sparce Matrices</a></li>
+<li><a href="#/slide-org47d6cd2">5. Implementing the Models</a>
+<ul>
+<li><a href="#/slide-org6bc33d0">5.1. Implementing the Random Surfer</a></li>
+<li><a href="#/slide-org3aa9d40">5.2. Implementing the Power Walk</a></li>
+</ul>
+</li>
+<li><a href="#/slide-orgddfbef7">6. Creating a Package</a></li>
+<li><a href="#/slide-org97c8cf2">7. Types of Graphs</a>
+<ul>
+<li><a href="#/slide-org7e40340">7.1. Erdos Renyi</a></li>
+<li><a href="#/slide-org2c48ba0">7.2. Barabasi Albert</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section>
+<section id="slide-org4e384ec">
+<h2 id="org4e384ec"><span class="section-number-2">1</span> Introduction</h2>
+<p>
+This report was concerned with building on the page range approach of measuring node centrality in a graph, by investigating the <i>Power Walk</i> method.
+</p>
+
+</section>
+<section id="slide-org4e384ec-split">
+
+<p>
+This required researching:
+</p>
+
+<ul>
+<li>The Mathematics of <i>PageRank</i> and relationship to Markov Chains</li>
+<li>How <b><i>R</i></b> implements:
+<ul>
+<li>Packages</li>
+<li>Sparse Matrices</li>
+
+</ul></li>
+<li>Different algorithms to simulate graph structures.</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-org35dea0a">
+<h2 id="org35dea0a"><span class="section-number-2">2</span> What is the <i>PageRank</i></h2>
+<p>
+<i>PageRank</i> measures node centrality by recording the frequency that nodes are traversed during a random walk, i.e. walk around a graph, for a long time and record where you went:
+</p>
+
+
+<div id="orga3b0c52" class="figure">
+<p><img src="media/random_walk_ggplot.gif" alt="random_walk_ggplot.gif" />
+</p>
+</div>
+
+</section>
+<section id="slide-org35dea0a-split">
+
+<p>
+this goes on for a while and we get this:
+</p>
+
+
+<div id="orgfa64f3f" class="figure">
+<p><img src="media/Pagerank_distribution_ggplot.png" alt="Pagerank_distribution_ggplot.png" />
+</p>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-org34a29c7">
+<h2 id="org34a29c7"><span class="section-number-2">3</span> Mathematics of Page Rank</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+</section>
+<section id="slide-orgaf44e2e">
+<h3 id="orgaf44e2e"><span class="section-number-3">3.1</span> The Stationary Distribution of a Probability Transition Matrix</h3>
+</section>
+<section id="slide-org6b8885e">
+<h3 id="org6b8885e"><span class="section-number-3">3.2</span> Random Surfer Model</h3>
+<div class="outline-text-3" id="text-3-2">
+</div>
+</section>
+<section id="slide-orgadd40b0">
+<h4 id="orgadd40b0"><span class="section-number-4">3.2.1</span> Problems with the Stationary Distribution</h4>
+</section>
+<section id="slide-org38a91f0">
+<h4 id="org38a91f0"><span class="section-number-4">3.2.2</span> Markov Chains</h4>
+<div class="outline-text-4" id="text-3-2-2">
+</div>
+<ol class="org-ol">
+<li><a id="org85de7cb"></a>Stochastic<br />
+<div id="org8d77453" class="figure">
+<p><img src="media/dot/stochastic_graph_example.dot.png" alt="stochastic_graph_example.dot.png" />
+</p>
+</div>
+</li>
+<li><a id="org47b4a30"></a>Irreducible<br />
+<div id="orgf2d3c1b" class="figure">
+<p><img src="media/dot/reducible_graph_example.dot.png" alt="reducible_graph_example.dot.png" />
+</p>
+</div>
+</li>
+
+<li><a id="orga97c962"></a>Aperiodic<br />
+<div id="org0f69170" class="figure">
+<p><img src="media/dot/aperiodic.dot.png" alt="aperiodic.dot.png" />
+</p>
+</div>
+</li>
+
+<li><a id="org7fbe2de"></a>The Fix<br />
+<div id="org0e83bf0" class="figure">
+<p><img src="media/dot/random_surfer.dot.png" alt="random_surfer.dot.png" />
+</p>
+</div>
+</li>
+</ol>
+</section>
+<section id="slide-org256478c">
+<h4 id="org256478c"><span class="section-number-4">3.2.3</span> Limitations</h4>
+</section>
+<section id="slide-org508183d">
+<h3 id="org508183d"><span class="section-number-3">3.3</span> Power Walk</h3>
+</section>
+</section>
+<section>
+<section id="slide-orgda639d4">
+<h2 id="orgda639d4"><span class="section-number-2">4</span> Sparce Matrices</h2>
+</section>
+</section>
+<section>
+<section id="slide-org47d6cd2">
+<h2 id="org47d6cd2"><span class="section-number-2">5</span> Implementing the Models</h2>
+<div class="outline-text-2" id="text-5">
+</div>
+</section>
+<section id="slide-org6bc33d0">
+<h3 id="org6bc33d0"><span class="section-number-3">5.1</span> Implementing the Random Surfer</h3>
+</section>
+<section id="slide-org3aa9d40">
+<h3 id="org3aa9d40"><span class="section-number-3">5.2</span> Implementing the Power Walk</h3>
+</section>
+</section>
+<section>
+<section id="slide-orgddfbef7">
+<h2 id="orgddfbef7"><span class="section-number-2">6</span> Creating a Package</h2>
+</section>
+</section>
+<section>
+<section id="slide-org97c8cf2">
+<h2 id="org97c8cf2"><span class="section-number-2">7</span> Types of Graphs</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+</section>
+<section id="slide-org7e40340">
+<h3 id="org7e40340"><span class="section-number-3">7.1</span> Erdos Renyi</h3>
+</section>
+<section id="slide-org2c48ba0">
+<h3 id="org2c48ba0"><span class="section-number-3">7.2</span> Barabasi Albert</h3>
+</section>
+</section>
+</div>
+</div>
+<script src="./reveal.js/dist/reveal.js"></script>
+<script src="./reveal.js/plugin/markdown/markdown.js"></script>
+<script src="./reveal.js/plugin/zoom/zoom.js"></script>
+<script src="./reveal.js/plugin/notes/notes.js"></script>
+
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+plugins: [RevealMarkdown,RevealZoom,RevealNotes],
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+]
+});
+</script>
+</body>
+</html>

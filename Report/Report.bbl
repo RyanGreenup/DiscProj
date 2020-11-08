@@ -16,10 +16,6 @@
   {}
 \endgroup
 
-\preamble{%
-\ifdefined\DeclarePrefChars\DeclarePrefChars{'’-}\else\fi%
-}
-
 
 \refsection{0}
   \datalist[entry]{nty/global//global/global}
@@ -303,6 +299,69 @@
       \verb http://portal.acm.org/citation.cfm?doid=1052934.1052938
       \endverb
     \endentry
+    \entry{boldiPageRankFunctionDamping2005}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=94daa93362557b56d0bd35012512b156}{%
+           family={Boldi},
+           familyi={B\bibinitperiod},
+           given={Paolo},
+           giveni={P\bibinitperiod}}}%
+        {{hash=47d6c6882ae35fa432ef72a93ad03cbb}{%
+           family={Santini},
+           familyi={S\bibinitperiod},
+           given={Massimo},
+           giveni={M\bibinitperiod}}}%
+        {{hash=fb3b77ad742e7c12096b67272f1cf7e5}{%
+           family={Vigna},
+           familyi={V\bibinitperiod},
+           given={Sebastiano},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{fullhash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{bibnamehash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{authorbibnamehash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{authornamehash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \strng{authorfullhash}{b6ae32b7f98c5336e05607c61b99c6c9}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{PageRank is defined as the stationary state of a Markov chain. The chain is obtained by perturbing the transition matrix induced by a web graph with a damping factor α that spreads uniformly part of the rank. The choice of α is eminently empirical, and in most cases the original suggestion α = 0.85 by Brin and Page is still used. Recently, however, the behaviour of PageRank with respect to changes in α was discovered to be useful in link-spam detection[21]. Moreover, an analytical justification of the value chosen for α is still missing. In this paper, we give the first mathematical analysis of PageRank when α changes. In particular, we show that, contrarily to popular belief, for real-world graphs values of α close to 1 do not give a more meaningful ranking. Then, we give closed-form formulae for PageRank derivatives of any order, and an extension of the Power Method that approximates them with convergence O (tk αt) for the k-th derivative. Finally, we show a tight connection between iterated computation and analytical behaviour by proving that the k-th iteration of the Power Method gives exactly the PageRank value obtained using a Maclaurin polynomial of degree k. The latter result paves the way towards the application of analytical methods to the study of PageRank.}
+      \field{booktitle}{Proceedings of the 14th International Conference on {{World Wide Web}}}
+      \field{day}{10}
+      \field{isbn}{978-1-59593-046-0}
+      \field{month}{5}
+      \field{series}{{{WWW}} '05}
+      \field{title}{{{PageRank}} as a Function of the Damping Factor}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2005}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{557\bibrangedash 566}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1145/1060745.1060827
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/ZQQJJBXR/Boldi et al. - 2005 - PageRank as a function of the damping factor.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://doi.org/10.1145/1060745.1060827
+      \endverb
+      \verb{url}
+      \verb http://doi.org/10.1145/1060745.1060827
+      \endverb
+      \keyw{approximation,PageRank,Web graph}
+    \endentry
     \entry{brinkmeierPageRankRevisited2006a}{article}{}
       \name{author}{1}{}{%
         {{hash=48c285fe931480d6d114703fea1df640}{%
@@ -353,6 +412,48 @@
       \endverb
       \keyw{Algorithms,Dynamical update,Google Inc.,Internet searching,link-analysis,Markov chain,Markov processes,Pagerank,personalization,random surfer,ranking algorithm,Stochastic processes,Theory,Web graph,Web page scoring,Web search,World Wide Web}
     \endentry
+    \entry{bryan250000002006}{article}{}
+      \name{author}{2}{}{%
+        {{hash=c753ec51f1e7f3b2eeb7503dde773488}{%
+           family={Bryan},
+           familyi={B\bibinitperiod},
+           given={Kurt},
+           giveni={K\bibinitperiod}}}%
+        {{hash=f162df0c51ce7aae7a28d23b21d526ee}{%
+           family={Leise},
+           familyi={L\bibinitperiod},
+           given={Tanya},
+           giveni={T\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Society for Industrial and Applied Mathematics}%
+      }
+      \strng{namehash}{b6fc285ffeca118d76eb196687207838}
+      \strng{fullhash}{b6fc285ffeca118d76eb196687207838}
+      \strng{bibnamehash}{b6fc285ffeca118d76eb196687207838}
+      \strng{authorbibnamehash}{b6fc285ffeca118d76eb196687207838}
+      \strng{authornamehash}{b6fc285ffeca118d76eb196687207838}
+      \strng{authorfullhash}{b6fc285ffeca118d76eb196687207838}
+      \field{sortinit}{B}
+      \field{sortinithash}{8de16967003c7207dae369d874f1456e}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Google's success derives in large part from its PageRank algorithm, which ranks the importance of web pages according to an eigenvector of a weighted link matrix. Analysis of the PageRank formula provides a wonderful applied topic for a linear algebra course. Instructors may assign this article as a project to more advanced students or spend one or two lectures presenting the material with assigned homework from the exercises. This material also complements the discussion of Markov chains in matrix algebra. Maple and Mathematica files supporting this material can be found at www.rose-hulman.edu/∼bryan.}
+      \field{eprinttype}{jstor}
+      \field{issn}{0036-1445}
+      \field{journaltitle}{SIAM Review}
+      \field{number}{3}
+      \field{shorttitle}{The \$25,000,000,000 {{Eigenvector}}}
+      \field{title}{The \$25,000,000,000 {{Eigenvector}}: {{The Linear Algebra}} behind {{Google}}}
+      \field{volume}{48}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \field{pages}{569\bibrangedash 581}
+      \range{pages}{13}
+      \verb{eprint}
+      \verb 20453840
+      \endverb
+    \endentry
     \entry{chenEigenvaluesInequalitiesErgodic2005}{book}{}
       \name{author}{1}{}{%
         {{hash=c92ddfea12b9538afec9a35147ef0cce}{%
@@ -386,6 +487,45 @@
       \field{dateera}{ce}
       \keyw{Eigenvalues,Ergodic theory,Inequalities (Mathematics)}
     \endentry
+    \entry{chingMarkovChainsModels2006}{book}{}
+      \name{author}{2}{}{%
+        {{hash=e10f363dd5a57a31c32f9f143a2d0e0c}{%
+           family={Ching},
+           familyi={C\bibinitperiod},
+           given={Wai\bibnamedelima Ki},
+           giveni={W\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=4a2222ab6569b8b6272c036f34204c1d}{%
+           family={Ng},
+           familyi={N\bibinitperiod},
+           given={Michael\bibnamedelima K.},
+           giveni={M\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, N.Y}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{bc5b8f3cdc65a6911765d9caea6f547d}
+      \strng{fullhash}{bc5b8f3cdc65a6911765d9caea6f547d}
+      \strng{bibnamehash}{bc5b8f3cdc65a6911765d9caea6f547d}
+      \strng{authorbibnamehash}{bc5b8f3cdc65a6911765d9caea6f547d}
+      \strng{authornamehash}{bc5b8f3cdc65a6911765d9caea6f547d}
+      \strng{authorfullhash}{bc5b8f3cdc65a6911765d9caea6f547d}
+      \field{sortinit}{C}
+      \field{sortinithash}{4c244ceae61406cdc0cc2ce1cb1ff703}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{isbn}{978-0-387-29335-6 978-0-387-29337-0}
+      \field{number}{83}
+      \field{pagetotal}{205}
+      \field{series}{International Series in Operations Research and Management Science}
+      \field{shorttitle}{Markov Chains}
+      \field{title}{Markov Chains: Models, Algorithms and Applications}
+      \field{year}{2006}
+      \field{dateera}{ce}
+      \keyw{Algorithms,Markov processes}
+    \endentry
     \entry{DOTGraphDescription2020}{inreference}{}
       \field{sortinit}{D}
       \field{sortinithash}{c438b3d5d027251ba63f5ed538d98af5}
@@ -417,7 +557,7 @@
       \verb https://en.wikipedia.org/w/index.php?title=DOT_(graph_description_language)&oldid=961944797
       \endverb
     \endentry
-    \entry{douglasbatesMatrixSparseDense2019}{software}{useprefix=true}
+    \entry{douglasbatesMatrixSparseDense2019}{software}{}
       \name{author}{2}{}{%
         {{hash=251ae23b46ec68e7ceea567f82286317}{%
            family={{Douglas Bates}},
@@ -716,23 +856,25 @@
       \verb https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwi5x7iBhqnrAhVTfisKHQp8CrYQFjAAegQIBRAB&url=https%3A%2F%2Fnlp.stanford.edu%2Fpubs%2Fsecondeigenvalue.pdf&usg=AOvVaw3Em9lm2qOuWEN23PXhUS8J
       \endverb
     \endentry
-    \entry{IgraphManualPages}{online}{}
+    \entry{IntelMathKernel}{online}{}
       \field{sortinit}{I}
       \field{sortinithash}{9417e9a1288a9371e2691d999083ed39}
       \field{labeltitlesource}{title}
-      \field{title}{Igraph {{R}} Manual Pages}
-      \field{urlday}{6}
+      \field{langid}{american}
+      \field{title}{{{Intel}}® {{Math Kernel Library Reference Manual}}; {{Sparse Matrix Storage Formats}}}
+      \field{type}{topic}
+      \field{urlday}{24}
       \field{urlmonth}{10}
       \field{urlyear}{2020}
       \field{urldateera}{ce}
       \verb{file}
-      \verb /home/ryan/Zotero/storage/ZVZ8RDTQ/sample_pa.html
+      \verb /home/ryan/Zotero/storage/7UPKW6LE/GUID-9FCEB1C4-670D-4738-81D2-F378013412B0.html
       \endverb
       \verb{urlraw}
-      \verb https://igraph.org/r/doc/sample_pa.html
+      \verb https://scc.ustc.edu.cn/zlsc/sugon/intel/mkl/mkl_manual/GUID-9FCEB1C4-670D-4738-81D2-F378013412B0.htm
       \endverb
       \verb{url}
-      \verb https://igraph.org/r/doc/sample_pa.html
+      \verb https://scc.ustc.edu.cn/zlsc/sugon/intel/mkl/mkl_manual/GUID-9FCEB1C4-670D-4738-81D2-F378013412B0.htm
       \endverb
     \endentry
     \entry{kamvarAdaptiveMethodsComputation2004b}{article}{}
@@ -1048,6 +1190,68 @@
       \endverb
       \verb{url}
       \verb https://math.mit.edu/~freer/papers/properly-ergodic-structures.pdf
+      \endverb
+    \endentry
+    \entry{ngStableAlgorithmsLink2001}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=49e889356ff39df159461bc2895c7e16}{%
+           family={Ng},
+           familyi={N\bibinitperiod},
+           given={Andrew\bibnamedelima Y.},
+           giveni={A\bibinitperiod\bibinitdelim Y\bibinitperiod}}}%
+        {{hash=7db7e2699fdef7f3893c06da82760343}{%
+           family={Zheng},
+           familyi={Z\bibinitperiod},
+           given={Alice\bibnamedelima X.},
+           giveni={A\bibinitperiod\bibinitdelim X\bibinitperiod}}}%
+        {{hash=8a36116840c7ee55901618c95fd08a58}{%
+           family={Jordan},
+           familyi={J\bibinitperiod},
+           given={Michael\bibnamedelima I.},
+           giveni={M\bibinitperiod\bibinitdelim I\bibinitperiod}}}%
+      }
+      \list{location}{1}{%
+        {New York, NY, USA}%
+      }
+      \list{publisher}{1}{%
+        {Association for Computing Machinery}%
+      }
+      \strng{namehash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{fullhash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{bibnamehash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{authorbibnamehash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{authornamehash}{4aedde36ca9272241426413cf79a0d10}
+      \strng{authorfullhash}{4aedde36ca9272241426413cf79a0d10}
+      \field{sortinit}{N}
+      \field{sortinithash}{98cf339a479c0454fe09153a08675a15}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The Kleinberg HITS and the Google PageRank algorithms are eigenvector methods for identifying ``authoritative'' or ``influential'' articles, given hyperlink or citation information. That such algorithms should give reliable or consistent answers is surely a desideratum, and in\textasciitilde\textbackslash cite\{ijcaiPaper\}, we analyzed when they can be expected to give stable rankings under small perturbations to the linkage patterns. In this paper, we extend the analysis and show how it gives insight into ways of designing stable link analysis methods. This in turn motivates two new algorithms, whose performance we study empirically using citation data and web hyperlink data.}
+      \field{booktitle}{Proceedings of the 24th Annual International {{ACM SIGIR}} Conference on {{Research}} and Development in Information Retrieval}
+      \field{day}{1}
+      \field{isbn}{978-1-58113-331-8}
+      \field{month}{9}
+      \field{series}{{{SIGIR}} '01}
+      \field{title}{Stable Algorithms for Link Analysis}
+      \field{urlday}{19}
+      \field{urlmonth}{8}
+      \field{urlyear}{2020}
+      \field{year}{2001}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \field{pages}{258\bibrangedash 266}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1145/383952.384003
+      \endverb
+      \verb{file}
+      \verb /home/ryan/Zotero/storage/B3KE4TRH/Ng et al. - 2001 - Stable algorithms for link analysis.pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://doi.org/10.1145/383952.384003
+      \endverb
+      \verb{url}
+      \verb http://doi.org/10.1145/383952.384003
       \endverb
     \endentry
     \entry{parkPowerWalkRevisiting2013}{inproceedings}{}

@@ -1,0 +1,57 @@
+#+TITLE: The Stationary Distribution of a Markov chain
+#+INFOJS_OPT: view:info toc:3
+#+HTML_HEAD_EXTRA: <link rel="stylesheet" type="text/css" href="./resources/style_slides.css">
+:REVEAL:
+#+REVEAL_THEME: white
+#+REVEAL: :frag (appear)
+:END:
+
+* Introduction
+This report was concerned with building on the page range approach of measuring node centrality in a graph, by investigating the /Power Walk/ method.
+
+#+REVEAL: split
+
+This required researching:
+
+- The Mathematics of /PageRank/ and relationship to Markov Chains
+- How */R/* implements:
+  + Packages
+  + Sparse Matrices
+- Different algorithms to simulate graph structures.
+
+* What is the /PageRank/
+/PageRank/ measures node centrality by recording the frequency that nodes are traversed during a random walk, i.e. walk around a graph, for a long time and record where you went:
+
+[[file:media/random_walk_ggplot.gif]]
+
+#+REVEAL: split
+
+this goes on for a while and we get this:
+
+[[file:media/Pagerank_distribution_ggplot.png]]
+
+* Mathematics of Page Rank
+** The Stationary Distribution of a Probability Transition Matrix
+** Random Surfer Model
+*** Problems with the Stationary Distribution
+*** Markov Chains
+**** Stochastic
+[[file:media/dot/stochastic_graph_example.dot.png]]
+**** Irreducible
+[[file:media/dot/reducible_graph_example.dot.png]]
+
+**** Aperiodic
+[[file:media/dot/aperiodic.dot.png]]
+
+**** The Fix
+[[file:media/dot/random_surfer.dot.png]]
+*** Limitations
+** Power Walk
+* Sparce Matrices
+* Implementing the Models
+** Implementing the Random Surfer
+** Implementing the Power Walk
+* Creating a Package
+* Types of Graphs
+** Erdos Renyi
+** Barabasi Albert

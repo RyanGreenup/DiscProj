@@ -1,0 +1,20 @@
+[0] Config.pm:304> INFO - This is Biber 2.14
+[0] Config.pm:307> INFO - Logfile is 'Report.blg'
+[53] biber:322> INFO - === Sun Oct 25, 2020, 01:56:44
+[63] Biber.pm:415> INFO - Reading 'Report.bcf'
+[109] Biber.pm:943> INFO - Found 32 citekeys in bib section 0
+[118] Biber.pm:4256> INFO - Processing section 0
+[118] Utils.pm:75> INFO - Globbing data source './resources/references.bib'
+[118] Utils.pm:91> INFO - Globbed data source './resources/references.bib' to ./resources/references.bib
+[125] Biber.pm:4455> INFO - Looking for bibtex format file './resources/references.bib' for section 0
+[132] bibtex.pm:1653> INFO - LaTeX decoding ...
+[279] bibtex.pm:1471> INFO - Found BibTeX data source './resources/references.bib'
+[366] Utils.pm:304> WARN - ISBN '978-0-387-29335-6 978-0-387-29337-0' in entry 'chingMarkovChainsModels2006' is invalid - run biber with '--validate_datamodel' for details.
+[370] Utils.pm:304> WARN - ISBN '978-3-540-77468-6 978-3-540-77469-3' in entry 'meghabghabSearchEnginesLink2008' is invalid - run biber with '--validate_datamodel' for details.
+[443] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[443] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[444] Biber.pm:4084> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[444] Biber.pm:4090> INFO - No sort tailoring available for locale 'en-US'
+[470] bbl.pm:652> INFO - Writing 'Report.bbl' with encoding 'UTF-8'
+[485] bbl.pm:755> INFO - Output to Report.bbl
+[485] Biber.pm:128> INFO - WARNINGS: 2
