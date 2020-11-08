@@ -7,17 +7,18 @@
 :END:
 
 * Introduction
-This report was concerned with building on the page range approach of measuring node centrality in a graph, by investigating the /Power Walk/ method.
+This report was concerned with building on the page range approach of measuring
+node centrality in a graph, by investigating the /Power Walk/ method.
 
 #+REVEAL: split
 
 This required researching:
 
 - The Mathematics of /PageRank/ and relationship to Markov Chains
-- How */R/* implements:
+- How /*R*/ implements:
   + Packages
   + Sparse Matrices
-- Different algorithms to simulate graph structures.
+- Different algorithms to simulate graph structures. \(\ldot\)
 
 * What is the /PageRank/
 /PageRank/ measures node centrality by recording the frequency that nodes are traversed during a random walk, i.e. walk around a graph, for a long time and record where you went:
@@ -32,7 +33,127 @@ this goes on for a while and we get this:
 
 * Mathematics of Page Rank
 ** The Stationary Distribution of a Probability Transition Matrix
+*** Adjacency Matrix
+A graph can be described with an adjacency matrix \(\mathbf{A}\):
+
+#+begin_export html
+ <div style="width: 100%; overflow: hidden;">
+     <div style="width: 600px; float: left;">
+        <img src="./media/example_graph_dot.png">
+     </div>
+     <div style="margin-left: 620px;">
+        \begin{align*}
+            \begin{bmatrix}
+                    0 & 1 & 1 & 1 \\
+                    1 & 0 & 1 & 1 \\
+                    1 & 1 & 0 & 1 \\
+                    0 & 0 & 1 & 0 \\
+            \end{bmatrix}
+        \end{align*}
+     </div>
+</div>
+#+end_export
+
+
+*** Transition Probability Matrix
+
+We are concerned with a random walk, we'll want the transition probability matrix \(\mathbf{T}\).
+
+#+begin_export html
+ <div style="width: 100%; overflow: hidden;">
+     <div style="width: 600px; float: left;">
+        <img src="./media/example_graph_dot.png">
+     </div>
+     <div style="margin-left: 620px;">
+        \begin{align*}
+            \begin{bmatrix}
+                    0           & \frac{1}{2} & \frac{1}{3} & \frac{1}{3} \\
+                    \frac{1}{2} & 0 & \frac{1}{3} & \frac{1}{3} \\
+                    \frac{1}{2} & \frac{1}{2} & 0 & \frac{1}{3} \\
+                    0           & 0 & \frac{1}{3} & 0 \\
+            \end{bmatrix}
+        \end{align*}
+     </div>
+</div>
+#+end_export
+
+#+begin_export latex
+\begin{minipage}{0.5\textwidth}
+    \includegraphics{./media/example_graph_dot.png}
+\end{minipage}
+\begin{minipage}{0.5\textwidth}
+    \begin{align*}
+        \begin{bmatrix}
+                0           & \frac{1}{2} & \frac{1}{2} & \frac{1}{3} \\
+                \frac{1}{2} & 0 & \frac{1}{2} & \frac{1}{3} \\
+                \frac{1}{2} & \frac{1}{2} & 0 & \frac{1}{3} \\
+                0           & 0 & \frac{1}{2} & 0 \\
+        \end{bmatrix}
+    \end{align*}
+\end{minipage}
+
+#+end_export
+
+*** Markov Chain
+
+$$\begin{bmatrix} 0 \\ \frac{1}{2} \\ \frac{1}{2} \\ 0 \\ \end{bmatrix} = \begin{bmatrix} 0 & \frac{1}{2} & \frac{1}{2} & \frac{1}{3} \\ \frac{1}{2} & 0 & \frac{1}{2} & \frac{1}{3} \\ \frac{1}{2} & \frac{1}{2} & 0 & \frac{1}{3} \\ 0 & 0 & \frac{1}{2} & 0 \\ \end{bmatrix} \begin{bmatrix} 1 \\ 0 \\ 0 \\ 0 \\ \end{bmatrix}$$
+
+#+REVEAL: split
+\[\begin{bmatrix}
+ \frac{1}{2} \\
+ \frac{1}{4} \\
+ \frac{1}{4} \\
+ \frac{1}{4} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 0 & \frac{1}{2} & \frac{1}{2} & \frac{1}{3} \\
+ \frac{1}{2} & 0 & \frac{1}{2} & \frac{1}{3} \\
+ \frac{1}{2} & \frac{1}{2} & 0 & \frac{1}{3} \\
+ 0 & 0 & \frac{1}{2} & 0 \\
+\end{array}
+\begin{bmatrix}
+ 0 \\
+ \frac{1}{2} \\
+ \frac{1}{2} \\
+ 0 \\
+\end{bmatrix}\]
+
+#+REVEAL: split
+
+\[\begin{bmatrix}
+ \frac{1}{3} \\
+ \frac{11}{24} \\
+ \frac{11}{24} \\
+ \frac{1}{8} \\
+\end{bmatrix}
+=
+\begin{bmatrix}
+ 0 & \frac{1}{2} & \frac{1}{2} & \frac{1}{3} \\
+ \frac{1}{2} & 0 & \frac{1}{2} & \frac{1}{3} \\
+ \frac{1}{2} & \frac{1}{2} & 0 & \frac{1}{3} \\
+ 0 & 0 & \frac{1}{2} & 0 \\
+\end{bmatrix}
+\begin{bmatrix}
+ \frac{1}{2} \\
+ \frac{1}{4} \\
+ \frac{1}{4} \\
+ \frac{1}{4} \\
+\end{bmatrix}\]
+#+REVEAL: split
+\[\ldots\]
+
+
+\[\vec{p} =
+\begin{bmatrix}
+0.286 \\
+0.286 \\
+0.32 \\
+0.107
+\end{bmatrix}\]
+
 ** Random Surfer Model
+
 *** Problems with the Stationary Distribution
 *** Markov Chains
 **** Stochastic
@@ -54,4 +175,10 @@ this goes on for a while and we get this:
 * Creating a Package
 * Types of Graphs
 ** Erdos Renyi
+[[file:media/erdos_growth.gif]]
 ** Barabasi Albert
+Really the main distinction is that the graph grows organically, with the probability of a new node linking to an old node being proportional to the degree.
+
+#+NAME: network_growth
+#+CAPTION: Growth of a network, each node makes one connection, the probability of that connection being proportional to the degree of that node. The colour and size is measured by the Random Surfer PageRank.
+[[file:media/network_growth.gif]]
